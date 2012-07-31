@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
+<CodeBlocks_project_file>
+	<FileVersion major="1" minor="6" />
+	<Project>
+		<Option title="geneClass" />
+		<Option pch_mode="2" />
+		<Option compiler="mingw64" />
+		<Build>
+			<Target title="Debug">
+				<Option output="../../libs/debug/geneClass" prefix_auto="1" extension_auto="1" />
+				<Option working_dir="" />
+				<Option object_output="obj/Debug/" />
+				<Option type="2" />
+				<Option compiler="gcc47" />
+				<Compiler>
+					<Add option="-Wall" />
+					<Add option="-std=c++11" />
+				</Compiler>
+				<Linker>
+					<Add option="-static-libgcc" />
+					<Add option="-static-libstdc++" />
+					<Add library="../../libs/debug/libmyUtilityFiles.a" />
+				</Linker>
+			</Target>
+			<Target title="Release">
+				<Option output="../../libs/release/geneClass" prefix_auto="1" extension_auto="1" />
+				<Option working_dir="" />
+				<Option object_output="obj/Release/" />
+				<Option type="2" />
+				<Option compiler="gcc47" />
+				<Option createDefFile="1" />
+				<Compiler>
+					<Add option="-O2" />
+					<Add option="-std=c++11" />
+					<Add directory="../../utility/myUtilityFiles" />
+					<Add directory="boost/boost" />
+					<Add directory="boost" />
+				</Compiler>
+				<Linker>
+					<Add option="-s" />
+					<Add option="-static-libgcc" />
+					<Add option="-static-libstdc++" />
+					<Add library="../../libs/release/libmyUtilityFiles.a" />
+				</Linker>
+			</Target>
+		</Build>
+		<Compiler>
+			<Add directory="../../myUtilityFiles" />
+		</Compiler>
+		<Unit filename="uFormatBase.cpp">
+			<Option weight="9" />
+		</Unit>
+		<Unit filename="uFormatBase.h" />
+		<Unit filename="uFormatChrom.h" />
+		<Unit filename="uFormatExperiment.h" />
+		<Unit filename="uFormats.h" />
+		<Unit filename="uFunctions.cpp">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="uFunctions.h" />
+		<Unit filename="uGeneException.cpp">
+			<Option compile="0" />
+		</Unit>
+		<Unit filename="uGeneException.h" />
+		<Unit filename="uRegion.cpp" />
+		<Unit filename="uRegion.h" />
+		<Unit filename="uTags.cpp">
+			<Option weight="7" />
+		</Unit>
+		<Unit filename="uTags.h">
+			<Option target="&lt;{~None~}&gt;" />
+		</Unit>
+		<Extensions>
+			<code_completion />
+			<debugger />
+			<DoxyBlocks>
+				<comment_style block="0" line="0" />
+				<doxyfile_project />
+				<doxyfile_build />
+				<doxyfile_warnings />
+				<doxyfile_output />
+				<doxyfile_dot />
+				<general />
+			</DoxyBlocks>
+			<envvars />
+		</Extensions>
+	</Project>
+</CodeBlocks_project_file>
