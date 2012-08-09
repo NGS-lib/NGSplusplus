@@ -80,7 +80,7 @@ public:
     {
         try{
             if (!((ourEnd>=getStart())&&(ourEnd>=0)))
-                throw;
+                throw 10;
             endPos=ourEnd;
         }
         catch(...)

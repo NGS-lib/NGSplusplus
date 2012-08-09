@@ -57,18 +57,20 @@ TEST(uGenericNGSTest, GETSET){
     {
         uGenericNGS uTest("chr1", 150, 200);
 
-
+    std::cerr << "Newline" <<endl;
     /**< Illegal end */
     EXPECT_ANY_THROW(uTest.setEnd(-10));
     EXPECT_ANY_THROW(uTest.setEnd(50));
     EXPECT_EQ(200,uTest.getEnd());
-    uTest.setEnd(150);
+
+    EXPECT_NO_THROW(uTest.setEnd(150));
+
     EXPECT_EQ(150,uTest.getEnd());
-    uTest.setEnd(225);
+    EXPECT_NO_THROW(uTest.setEnd(225));
     EXPECT_EQ(225,uTest.getEnd());
 
 
-
+     std::cerr << "Chrom" <<endl;
     /**< Chrom setss */
     EXPECT_EQ("chr1",uTest.getChr());
     uTest.setChr("");

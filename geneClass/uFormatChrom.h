@@ -177,6 +177,12 @@ public:
         return for_each(begin(VecSites), end(VecSites), f);
     }
 
+    template<class UnaryOperation>
+    UnaryOperation applyOnAllSites(const UnaryOperation f) const
+    {
+        return for_each(begin(VecSites), end(VecSites), f);
+    }
+
     /** \brief Accumulate information by querying all sites
       *
       * This function take a pointer to a function to accumulate some information;
@@ -836,7 +842,7 @@ void uGenericNGSChrom<_BASE_>::divideItemsIntoBinofSize(int N, SplitType type)
 }
     template <class _BASE_>
     void uGenericNGSChrom<_BASE_>:: inferChrSize(){
-    setChrSize( getMax)
+   // setChrSize( getMax)
 
 
     }

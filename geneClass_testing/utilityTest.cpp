@@ -11,7 +11,6 @@ TEST(utility, MeanTest)
 
 }
 
-
 TEST(utility, SDTest)
 {
     const vector<float> ourValues= {22, 11, 30, 0 ,50};

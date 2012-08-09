@@ -341,7 +341,7 @@ bool uGenericNGSExperiment<_CHROM_, _BASE_>::addSite(_BASE_ newSite)
 }
 
 template<typename _CHROM_, typename _BASE_>
-void uGenericNGSExperiment<_CHROM_, _BASE_>::inferChrSize() const{
+void uGenericNGSExperiment<_CHROM_, _BASE_>::inferChrSize(){
     applyOnAllChroms(std::mem_fun_ref(static_cast<void (_CHROM_::*)()>(&_CHROM_::inferChrSize)));
    //applyOnAllChroms(std::bind(static_cast<void (_CHROM_::*)()>(&_CHROM_::inferChrSize)));
 }
