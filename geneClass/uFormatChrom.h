@@ -71,6 +71,9 @@ public:
             throw;
         }
     };
+
+
+    //TODO verify this is working
     uGenericNGSChrom<_BASE_> getSubset(int start, int end, OverlapType overlap=OverlapType::OVERLAP_PARTIAL) const;
     uGenericNGSChrom<_BASE_> removeSubset(int start, int end, OverlapType overlap=OverlapType::OVERLAP_PARTIAL);
     std::vector<_BASE_> returnVecData()
@@ -94,8 +97,7 @@ public:
     uGenericNGSChrom<_BASE_> getOverlapping(uGenericNGSChrom &compareExp);
     template <class T2>
     uGenericNGSChrom<_BASE_> getDistinct(uGenericNGSChrom<T2> &compareExp);
-    bool addSite(_BASE_ newSite);
-    void removeSite(int position);
+    bool addSite(const _BASE_ & newSite);
     int getSubsetCount(int start, int end, OverlapType overlap=OverlapType::OVERLAP_PARTIAL);
 
   /**<  Wrappers around the STL algorithms*/
@@ -111,13 +113,14 @@ public:
       * \param unary_op UnaryOperation : Unary operation to perform on all the sites of the chromosome
       * \return A collection of values computed on each site by unary_op
       */
-    template<class UnaryOperation>
+//TODO erase
+ /*   template<class UnaryOperation>
     std::vector<_BASE_> transformAndGetVecData(UnaryOperation unary_op)
     {
         std::vector<_BASE_> copyVec(VecSites);
         for_each(begin(copyVec), end(copyVec), unary_op);
         return copyVec;
-    }
+    } */
 
     /** \brief Create a copy of the sites vector, transform it and return the copy
       *
@@ -131,6 +134,7 @@ public:
       * \param unary_op UnaryOperation : Unary operation to perform on the copied sites vector
       * \return A vector of the same type and length as the sites vector but with its sites transformed by unary_op
       */
+      //TODO send back a chrom
     template<class UnaryOperation>
     auto computeOnAllSites(UnaryOperation unary_op) -> std::vector<decltype(unary_op(_BASE_()))>
     {
@@ -151,6 +155,7 @@ public:
       * \param p UnaryPredicate : Unary predicate to evaluate on all sites
       * \return A collection containing all the sites for which the predicate is true
       */
+      //TODO return chrom, make a remove specificSites
     template<class UnaryPredicate>
     std::vector<_BASE_> getSpecificSites(UnaryPredicate pred) const
     {
@@ -197,6 +202,7 @@ public:
       * \return The information accumulated by querying all the sites
       */
     template<class BinaryOperation, class InitialValue>
+    //TODO to make private
     InitialValue accumulateSitesInfo(BinaryOperation binary_op, InitialValue init) const
     {
         // Force using sequential version for accumulate as parallel version
@@ -249,6 +255,7 @@ public:
     template<class Compare>
     bool isSorted(Compare comp) const
     {
+        //TODO use a bool and validate
         return is_sorted(begin(VecSites), end(VecSites), comp);
     }
 
@@ -339,7 +346,10 @@ public:
     uGenericNGSChrom(std::string consString):chr(consString){};
     uGenericNGSChrom(std::string consString, long int size);
 
+     int countUnique() const;
 private :
+     void removeSite(int position);
+
     static bool compareStart(const _BASE_ &item1, const _BASE_ &item2)
     {
         return item1.getStart() < item2.getStart();
@@ -350,8 +360,20 @@ private :
         return item1.getLenght() < item2.getLenght();
     }
 
+    static bool comparePos(const _BASE_ &item1, const _BASE_ &item2)
+    {
+        if ((item1.getStart() != item2.getStart()))
+            return item1.getStart() < item2.getStart();
+        else
+            return item1.getEnd() < item2.getEnd();
+    }
+
+
+
     long int chromSize=0;
 
+    template<class Compare>
+    const _BASE_ * findPrecedingSite(int position, Compare comp= compareStart);
 protected:
     std::vector<_BASE_> VecSites;
     std::string chr;
@@ -361,14 +383,18 @@ protected:
     unsigned long long avgSiteSize() const;
     unsigned long long minSiteSize() const;
     unsigned long long maxSiteSize() const;
-    int countUnique() const;
+
     unsigned long long sumSiteSize() const;
 
     int findPrecedingSite(int position, int low, int high);
     // float CorPeaks(uChipSeq otherChip,int extend);
-    std::vector<long long> quartilesSize() const;
+
 
     template<typename S, typename R> friend class uGenericNGSExperiment;
+
+private:
+      std::vector<long long> quartilesSize() const;
+
     // friend class uGenericNGSExperiment;
 };
 
@@ -387,12 +413,8 @@ uGenericNGSChrom<_BASE_>::uGenericNGSChrom(std::string consString, long int size
 }
 
 template <class _BASE_>
-bool uGenericNGSChrom<_BASE_>::addSite(_BASE_ newSite)
+bool uGenericNGSChrom<_BASE_>::addSite(const _BASE_ & newSite)
 {
-    //If we are trying to add an entry to the wrong chromosome;
-
-    chr = newSite.getChr();
-
     VecSites.push_back(newSite);
     return true;
 }
@@ -554,6 +576,7 @@ int uGenericNGSChrom<_BASE_>::countUnique() const
 
 //Return a vector containing 3 elements representing 1st, med and 3rd quartil.
 template <class _BASE_>
+//TODO remove this function and use utility::quartilesSize
 std::vector<long long> uGenericNGSChrom<_BASE_>::quartilesSize() const
 {
     std::vector<long long> vectorSizes;
@@ -603,17 +626,19 @@ void uGenericNGSChrom<_BASE_>::printStats(std::ostream& out) const
 
     quarts = this->quartilesSize();
 
-    out <<"Number of peaks"<< "\t"<< this->count()<<"\n";
-    out <<"Average Peak size:"<< "\t"<< this->avgSiteSize()<<"\n";
+    out <<"Number of sites"<< "\t"<< this->count()<<"\n";
+    out <<"Average sites size:"<< "\t"<< this->avgSiteSize()<<"\n";
     out <<"Median size: "<< "\t"<< quarts.at(1)<<"\n";
     out <<"q1 :" << "\t"<< quarts.at(0)<<"\n";
     out <<"q3 :" << "\t"<< quarts.at(2)<<"\n";
     auto minAndMax = minAndMaxSites(compareLenght);
-    out <<"Min Peak size:"<< "\t"<< minAndMax.first->getLenght() <<"\n";
-    out <<"Max Peak size:"<< "\t"<< minAndMax.second->getLenght() <<"\n";
+    out <<"Min sites size:"<< "\t"<< minAndMax.first->getLenght() <<"\n";
+    out <<"Max sites size:"<< "\t"<< minAndMax.second->getLenght() <<"\n";
 
 }
 
+
+//TODO, do we really need to keep this? User getSubset().count = same thing, but more memory usage.
 template <class _BASE_>
 int uGenericNGSChrom<_BASE_>::getSubsetCount(int start, int end, OverlapType overlap)
 {
@@ -645,9 +670,20 @@ int uGenericNGSChrom<_BASE_>::getSubsetCount(int start, int end, OverlapType ove
 
 //Find the site ending previous to our region
 template <class _BASE_>
-int uGenericNGSChrom<_BASE_>::findPrecedingSite(int position, int low, int high)
+template <class Compare>
+const _BASE_ *uGenericNGSChrom<_BASE_>::findPrecedingSite(int position, Compare comp)
 {
-    int  mid = (low + (high - low) / 2);
+    //TODO add sort condition bool and validate appropriate sort
+    //TODO make complimentary function
+
+    auto lower = std::lower_bound(VecSites.begin(), VecSites.end(), position, comp);
+
+    if (lower==VecSites.end()||(lower==VecSites.begin()))
+        return nullptr;
+
+    return (lower--);
+
+ /*   int  mid = (low + (high - low) / 2);
     if ((high < low)||((mid+1)>high))
         return -1; // not found
 
@@ -663,7 +699,7 @@ int uGenericNGSChrom<_BASE_>::findPrecedingSite(int position, int low, int high)
         {
             return mid;
         }
-    }
+    } */
 }
 
 
@@ -744,6 +780,9 @@ uGenericNGSChrom<_BASE_> uGenericNGSChrom<_BASE_>::removeSubset(int start, int e
 template <class _BASE_>
 uGenericNGSChrom<_BASE_> uGenericNGSChrom<_BASE_>::getOverlapping(uGenericNGSChrom &compareChr)
 {
+
+    //TODO, add overlap options and use previous getSubset
+
     uGenericNGSChrom<_BASE_> returnChr;
     for(auto it= VecSites.begin(); it!=VecSites.end(); it++)
     {

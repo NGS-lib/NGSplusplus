@@ -141,6 +141,14 @@ public:
 
     /**< Should this be there? */
     bool doesOverlap(uGenericNGS other,OverlapType type) const;
+
+
+
+    //TODO Substract region B
+    //TODO Merge
+
+
+
 };
 
 

@@ -36,6 +36,10 @@ class uRegion : public uGenericNGS
         void writeSignal(std::ostream& out) const;
         void writeRegion(std::ostream& out) const;
         void writeAll(std::ostream& out ) const;
+
+
+        //TODO substract regions (with options)
+
     protected:
     private:
 

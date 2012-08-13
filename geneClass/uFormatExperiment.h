@@ -35,10 +35,7 @@ public:
     _CHROM_ getDistinct(std::string chr, int start, int end, OverlapType options=OverlapType::OVERLAP_PARTIAL);
 
     //Should we be publicy allowing the turn of a pointer to our internal structure? I would assume not..
-    _CHROM_* getpChrom(const std::string & chrom)
-    {
-        return &(ExpMap[chrom]);
-    };
+
 
     const _CHROM_* getpChrom(const std::string & chrom) const
     {
@@ -47,22 +44,27 @@ public:
     };
 
 
-   // NGSExpIter first(){return ExpMap.begin();};
-   // NGSExpIter last(){return ExpMap.end();};
+    //TODO make const
     auto first()->decltype(ExpMap.begin()){return ExpMap.begin();};
     auto last()->decltype(ExpMap.end()){return ExpMap.end();};
     // auto adding_func(const Lhs &lhs, const Rhs &rhs) -> decltype(lhs+rhs)
   //  auto func_name(int x, int y) -> int;
 
-    void combine(_CHROM_);
-    bool addSite(_BASE_ newSite);
+    void combine(const _CHROM_ &);
+    bool addSite(const _BASE_ & newSite);
     long long count() const;
-    int avgExpSiteSize();
-    int minExpSiteSize();
-    int maxExpSiteSize();
-    int countExpUnique();
-    void cutDuplicates();
 
+  //  int avgExpSiteSize();
+  //  int minExpSiteSize();
+  //  int maxExpSiteSize();
+
+    int countExpUnique();
+
+    //TODO Implement merge
+    //void cutDuplicates();
+
+
+    //TODO MAKE WORK
     bool isEndfile()
     {
         return ourStream->eof();
@@ -323,12 +325,18 @@ public:
 
   uGenericNGSExperiment():op_mode(DEFAULT) {};
 
+    //TODO FIX THIS' MAKE EVERYTHIGN WITH IT PROTECTED
+    _CHROM_* getpChrom(const std::string & chrom)
+    {
+        return &(ExpMap[chrom]);
+    };
+
 
 };
 
 //Start uGenericNGSExperiment
 template<typename _CHROM_, typename _BASE_>
-bool uGenericNGSExperiment<_CHROM_, _BASE_>::addSite(_BASE_ newSite)
+bool uGenericNGSExperiment<_CHROM_, _BASE_>::addSite(const _BASE_ & newSite)
 {
     _CHROM_* ptempChrom;
 
@@ -393,6 +401,7 @@ template<typename _CHROM_, typename _BASE_>
     }
 }
 
+
 /** \brief Write our data as a legal bed file, filling only the first three columns
  *
  * \param out std::ofstream& stream to write to
@@ -456,7 +465,7 @@ template<typename _CHROM_, typename _BASE_>
 void uGenericNGSExperiment<_CHROM_, _BASE_>::sortData()
 {
     applyOnAllChroms(std::mem_fun_ref(static_cast<void (_CHROM_::*)()>(&_CHROM_::sortSites)));
-    //applyOnAllChroms(std::bind2nd(std::mem_fun_ref(&_CHROM_::outputBedFormat), std::cout));
+
 }
 
 
@@ -486,6 +495,8 @@ _BASE_ uGenericNGSExperiment<_CHROM_,_BASE_>::getSite(std::string chr, int posit
     return tempChrom->getSite( chr,position);
 }
 
+
+//TODO make removeSubset and make a version that takes and reveices an NGSExp
 template<typename _CHROM_, typename _BASE_>
 _CHROM_ uGenericNGSExperiment<_CHROM_,_BASE_>::getSubset(std::string chr, int start, int end, OverlapType options)
 {
@@ -531,18 +542,23 @@ _CHROM_ uGenericNGSExperiment<_CHROM_,_BASE_>::getDistinct(std::string chr, int 
 }
 
 template<typename _CHROM_, typename _BASE_>
-void uGenericNGSExperiment<_CHROM_,_BASE_>::combine(_CHROM_ inputChrom)
+void uGenericNGSExperiment<_CHROM_,_BASE_>::combine(const _CHROM_ & inputChrom)
 {
-    _CHROM_* tempChrom;
+    _CHROM_* currentChrom;
     std::vector<_BASE_> vecData;
 
-    tempChrom=&(ExpMap[inputChrom.getChr()]);
+    currentChrom=&(ExpMap[inputChrom.getChr()]);
+
+    for(auto itChrom =inputChrom.first(); itChrom!= inputChrom.last(); itChrom++){
+        currentChrom->addSite(*itChrom);
+    }
+    /*
     vecData=inputChrom.returnVecData();
 
     for (unsigned int k=0; k < vecData.size(); k++)
     {
         tempChrom->addSite(vecData.at(k));
-    }
+    } */
 }
 
 template<typename _CHROM_, typename _BASE_>
