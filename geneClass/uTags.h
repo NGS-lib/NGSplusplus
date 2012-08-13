@@ -9,11 +9,16 @@
 class uTags: public uGenericNGS
 {
 
+#define FORWARCHARD '+'
+#define REVERSECHAR '-'
+
+#define FORWARD 0
+#define REVERSE 1
+
 private:
-
-    char strand;
+    //0 = FORWARD, 1 = REVERSE
+    bool strand;
     //Optional
-
     //Map score, quality of the alignement.
     int mapScore;
 
@@ -25,7 +30,7 @@ private:
     char* cigar;
 
     //Paired End
-  // bool PE;
+    // bool PE;
     //Unmapped
     bool Unmapped;
     //Using Samtools definition here. Replace above variables by this when possible.
@@ -43,14 +48,32 @@ public:
     uTags& operator=  (uTags const& assign_from);
     ~uTags();
 
-     /**< Private, strand should -always- be implicit. In fact, it might not be necessary to store it */
+    /**< Private, strand should -always- be implicit. In fact, it might not be necessary to store it */
     void setStrand(char pStrand)
+    {
+        try
+        {
+            if (pStrand==REVERSECHAR)
+                strand=REVERSE;
+            else if (pStrand==FORWARCHARD)
+                strand=FORWARD;
+                else
+                   throw 20;
+            }
+        catch(...)
+        {
+            elem_throw e;
+            e << string_error("Failed in setStrand(char), value is neither + or -\n");
+            e << generic_error(*this);
+            throw e;
+        }
+    };
+    void setStrand(bool pStrand)
     {
         strand=pStrand;
     };
 
     void writeBedToOuput(std::ostream &out) const;
-
     void writetoBedCompletePE( std::ostream &out);
     void writeCompletedPESamToOutput(std::ostream &out);
     bool writeTrimmedSamToOutput(std::ostream &out, int left, int right);
@@ -62,8 +85,8 @@ public:
     void debugElem() const;
 
 
-
-    bool isMapped(){
+    bool isMapped()
+    {
         return Unmapped;
     }
     void setMapped(bool pmapped)
@@ -78,7 +101,8 @@ public:
 
     void setCigar(std::string pcigar)
     {
-        if (cigar!=nullptr) {
+        if (cigar!=nullptr)
+        {
             delete []cigar;
             cigar = nullptr;
         }
@@ -117,9 +141,15 @@ public:
     };
     char getStrand() const
     {
-        return strand;
+        if (strand)
+            return '-';
+        else
+            return '+';
     };
-
+    bool isReverse() const
+    {
+        return strand;
+    }
 
     void setSequence(std::string pSeq)
     {
@@ -133,7 +163,8 @@ public:
 
     void setPhred(std::string Phred)
     {
-        if (phredScore!=nullptr) {
+        if (phredScore!=nullptr)
+        {
             delete []phredScore;
             phredScore = nullptr;
         }
@@ -167,7 +198,8 @@ public:
 
     void setName(std::string pName)
     {
-        if (name!=nullptr) {
+        if (name!=nullptr)
+        {
             delete []name;
             name = nullptr;
         }
@@ -202,14 +234,17 @@ public:
         return PELenght;
     };
 
-    void setPELenght(int lenght){
-        try{
+    void setPELenght(int lenght)
+    {
+        try
+        {
             if  (lenght <0)
                 throw 10;
 
             PELenght=lenght;
         }
-        catch(...){
+        catch(...)
+        {
             std::cerr <<"Negative Paired end Lenght"<<std::endl;
             throw;
         }
@@ -219,7 +254,8 @@ public:
         return PELenght;
     };
 
-    void setMapQual(int score){
+    void setMapQual(int score)
+    {
         mapScore=score;
     }
 
@@ -277,8 +313,9 @@ uTags uGenericNGSChrom<uTags>::generateRandomSite
     return returnTag;
 }
 
-namespace factory{
-    uTags makeTagfromSamString(std::string samString, bool minimal=false);
+namespace factory
+{
+uTags makeTagfromSamString(std::string samString, bool minimal=false);
 }
 
 

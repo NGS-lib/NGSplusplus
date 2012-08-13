@@ -4,9 +4,10 @@
 #include <climits>
 #include <iostream>
 #include <map>
-#include "utility.h"
+#include "utility/utility.h"
 #include <algorithm>
 #include <parallel/numeric>
+#include <functional>
 
 template<typename _BASE_>
 class uGenericNGSChrom
@@ -590,6 +591,8 @@ std::vector<long long> uGenericNGSChrom<_BASE_>::returnSiteSizes() const
 template <class _BASE_>
 void uGenericNGSChrom<_BASE_>::outputBedFormat(std::ostream& out)
 {
+
+  // applyOnAllSites(bind(bind(&_BASE_::writeBedToOuput), out));
     applyOnAllSites(bind2nd(mem_fun_ref(&_BASE_::writeBedToOuput), out));
 }
 

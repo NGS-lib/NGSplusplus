@@ -44,14 +44,14 @@ uRegion::~uRegion()
 
 void uRegion::setScore(float p_score, int p_Pos)
 {
-    if (p_Pos>= (score.size()))
+    if (p_Pos>= ((int)score.size()))
         score.resize(p_Pos+1);
     score.at(p_Pos)=p_score;
 }
 
 float uRegion::getScore(int p_Pos) const
 {
-    if (p_Pos>= (score.size()))
+    if (p_Pos>= ((int)score.size()))
        return 0;
     return score.at(p_Pos);
 }

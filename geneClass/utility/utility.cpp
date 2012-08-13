@@ -1,7 +1,8 @@
 #include "utility.h"
-    //CPP file
+
     //Courtesy of the internet, thank you mister anonymous at
     //http://stackoverflow.com/questions/53849/how-do-i-tokenize-a-string-in-c
+    /**< Heavily modified */
 namespace utility{
 
     const std::string Tokenizer::DELIMITERS(" \t\n\r");

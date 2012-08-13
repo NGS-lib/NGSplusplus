@@ -4,7 +4,7 @@
 #include <string>
 #include <iostream>
 #include <vector>
-#include "utility.h"
+#include "utility/utility.h"
 #include "uGeneException.h"
 //Our basic Site for NGS format
 //Very weak class as there are many differences in the functionality of derived classes.
@@ -102,7 +102,6 @@ public:
             std::cerr << "throwing in setStartEnd" <<std::endl;
             throw;
         }
-
     };
 
 
@@ -120,6 +119,7 @@ public:
         return (endPos-startPos+1);
     };
 
+    /**< Strictly for debugging */
     virtual void debugElem() const
     {
         using namespace utility;
@@ -128,7 +128,7 @@ public:
         stringTocerr("Start "+numberToString((int)getStart()));
         stringTocerr("End " +numberToString((int)getEnd()));
     }
-
+    /**<  Divide our region into a certain number of subregions */
     std::vector<uGenericNGS> divideIntoBinofSize(int N, SplitType type=SplitType::STRICT);
     std::vector<uGenericNGS> divideIntoNBin(int N,SplitType ptype=SplitType::STRICT);
 
@@ -140,7 +140,7 @@ public:
     void trimSites(int trimLeft,int trimRight);
 
     /**< Should this be there? */
-    bool doesOverlap(uGenericNGS other) const;
+    bool doesOverlap(uGenericNGS other,OverlapType type) const;
 };
 
 

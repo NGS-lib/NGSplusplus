@@ -3,7 +3,7 @@
 #include <vector>
 #include "uFormatBase.h"
 #include <cassert>
-#include "utility.h"
+#include "utility/utility.h"
 
 /** \brief Increase size of the element. Coordinates can go no lower then 0,
  *
@@ -35,8 +35,10 @@ void uGenericNGS::extendSite(int extendLeft, int extendRight)
 
     if(uGenericNGS const * errorTagPoint=boost::get_error_info<generic_error>(e) )
         e << generic_error(*this);
-     if ( trace=(boost::get_error_info<string_error>(e) ))
+     if (trace=(boost::get_error_info<string_error>(e)))
         e << string_error(*trace+"Catching and re-throwing from extendSite("+utility::numberToString(extendLeft)+","+utility::numberToString(extendRight)+")\n");
+     else
+         e << string_error("Catching and re-throwing from extendSite("+utility::numberToString(extendLeft)+","+utility::numberToString(extendRight)+")\n");
         throw(e);
         return;
     }
@@ -61,7 +63,7 @@ void uGenericNGS::extendSite(int extend)
     {
         this->extendSite(extend,extend);
     }
-    catch(int err)
+    catch(...)
     {
         throw;
     }
@@ -112,15 +114,14 @@ void uGenericNGS::trimSites(int trim)
  * \return bool : True if overlap.
  *
  */
-bool uGenericNGS::doesOverlap(uGenericNGS other) const
+bool uGenericNGS::doesOverlap(uGenericNGS other, OverlapType type=OverlapType::OVERLAP_PARTIAL) const
 {
     bool returnb=false;
     if (getChr()==other.getChr())
-        returnb=utility::checkOverlap(this->startPos, this->endPos, other.startPos,other.endPos);
+        returnb=utility::isOverlap(this->startPos, this->endPos, other.startPos,other.endPos,type);
 
     return returnb;
 }
-
 
 /** \brief Output in Bed format, Endline can be optionally be delegated
  *
@@ -138,20 +139,6 @@ void uGenericNGS::writeBedToOuput(std::ostream &out, bool endLine) const
     if (endLine)
         out <<std::endl;
 }
-
-/** \brief Output in Bed format, Endline can be optionally be delegated
- *
- * \param out std::ostream& : Our output steram
- * \param endLine bool : If true, write endline
- * \return void
- *
- */
-
-//void uGenericNGS::writeBedToOuput(std::ostream &out) const
-//{
-//    out << chr << "\t" << startPos << "\t" << endPos << std::endl;
-//}
-
 
 
 /** \brief

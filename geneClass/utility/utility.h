@@ -10,49 +10,104 @@
 #include <iostream>
 #include <fstream>
 
+/**< When comparing intervals */
 enum class OverlapType
 {
     OVERLAP_PARTIAL, OVERLAP_COMPLETE, OVERLAP_CENTRE
 };
+/**< Used when querying a SAM flag */
+enum class SamQuery
+{
+    IS_PAIRED,ALL_ALIGNED_OK, UNMAPPED, NEXT_UNMAPPED, SEQ_REV_STRAND, SEQ_NEXT_REV_STRAND, FIRST_SEG, LAST_SEG, SECOND_ALIGN, FAIL_QUAL, DUPLICATE
+};
 
+/**< Used by our parser and others, defined file types we can load/write */
 enum class GenomicFileType
 {
     BED, SAM
 };
-//Assign Cout or not to ostream
-//std::ostream & outFile = ((outputPath.size()!=0) ? outputOS : std::cout);
+
 
 namespace utility
 {
+/**< Validate if A derives from B */
 
 template<typename Child, typename Parent>
 class IsDerivedFrom
 {
     static_assert(dynamic_cast<Parent*>(static_cast<Child*>(0)) == nullptr, "First class is not derived from the second");
 };
-
+/**< Some conversion functions */
 static std::string convertInt(int number);
+static int stringToInt(const std::string &ourStr);
+static float stringToNumber( const std::string &ourStr );
+/**< Template this */
+static inline  std::string clean_WString(const std::string & input_string);
+static inline std::string numberToString(const int & number);
+static inline std::string numberToString(const float & number);
+static inline std::string numberToString(const double & number);
+
+
+/**< Debugging functions */
+static inline void stringTocerr(const std::string & value);
+/**< Overlap functions */
 static bool isOverlap(int X1,int X2, int Y1, int Y2, OverlapType overlap=OverlapType::OVERLAP_PARTIAL);
 static bool isInInterval(const int pos, const int start, const int end);
 static bool checkOverlap(const int X1, const int X2, const int Y1, const int Y2);
-static int stringToInt(const std::string &ourStr);
-static float stringToNumber( const std::string &ourStr );
+static bool isRegionAInsideRegionB( int A1, int A2, int B1, int B2 );
+
+/**< Return the quartiles of a given vector */
 static std::vector<float> quartilesofVector(std::vector<float> inputVector);
 static std::string concatStringInt(std::string ourstring, int ourInt, bool concatstringleft=true);
 static float getSd(const std::vector<float> & ourVec, const float & mean);
 static float gaussianSim(float x1, float x2, float sd);
 static float getMean(const std::vector<float> & ourVec);
 static void debug_string(std::string input_string);
-/**< Template this */
-static inline  std::string clean_WString(const std::string & input_string);
-static inline std::string numberToString(const int & number);
-static inline std::string numberToString(const float & number);
-static inline std::string numberToString(const double & number);
-static inline void stringTocerr(const std::string & value);
 
 
+static inline bool querySamFlag(const int & flag, SamQuery toQuery)
+{
+bool query_result;
+    switch(toQuery)
+    {
+    case SamQuery::IS_PAIRED:
+            query_result=(flag&0x1);
+            break;
+    case SamQuery::ALL_ALIGNED_OK:
+            query_result=(flag&0x2);
+            break;
+    case SamQuery::UNMAPPED:
+            query_result=(flag&0x4);
+            break;
+    case SamQuery::NEXT_UNMAPPED:
+            query_result=(flag&0x8);
+            break;
+    case SamQuery::SEQ_REV_STRAND:
+            query_result=(flag&0x10);
+            break;
+    case SamQuery::SEQ_NEXT_REV_STRAND:
+            query_result=(flag&0x20);
+            break;
+    case SamQuery::FIRST_SEG:
+            query_result=(flag&0x40);
+            break;
+    case SamQuery::LAST_SEG:
+            query_result=(flag&0x80);
+            break;
+    case SamQuery::SECOND_ALIGN:
+            query_result=(flag&0x100);
+            break;
+    case SamQuery::FAIL_QUAL:
+            query_result=(flag&0x200);
+            break;
+    case SamQuery::DUPLICATE:
+            query_result=(flag&0x400);
+            break;
+    }
+return query_result;
+}
 
-//TODO Make more functional. Among other things, other a "Next Token and return" option;
+//TODO Make more functional. Among other things, offer a "Next Token and return" option;
 class Tokenizer
 {
 public:
@@ -308,10 +363,10 @@ inline static std::string concatStringInt(std::string ourstring, int ourInt, boo
 
 
 
-//Courtesy of the internet.
+
 inline static int stringToInt( const std::string &ourStr )
 {
-    //character array as argument
+
     std::stringstream ss(ourStr);
     int result;
     return ss >> result ? result : 0;
@@ -359,18 +414,22 @@ static inline void pause_input()
 
 
 
-static inline void number_to_cerr(const int & value){
- std::cerr << value <<std::endl;
+static inline void number_to_cerr(const int & value)
+{
+    std::cerr << value <<std::endl;
 }
-static inline void number_to_cerr(const float & value){
- std::cerr << value <<std::endl;
+static inline void number_to_cerr(const float & value)
+{
+    std::cerr << value <<std::endl;
 }
-static inline void number_to_cerr(const double & value){
- std::cerr << value <<std::endl;
+static inline void number_to_cerr(const double & value)
+{
+    std::cerr << value <<std::endl;
 }
 
-static inline void stringTocerr(const std::string & value){
- std::cerr << value <<std::endl;
+static inline void stringTocerr(const std::string & value)
+{
+    std::cerr << value <<std::endl;
 }
 
 static inline void debug_string(std::string input_string)
@@ -388,7 +447,7 @@ static inline void debug_string(std::string input_string)
             std::cerr << "Last character is tab " <<input_string <<std::endl;
     }
 }
- static inline std::string clean_WString(const std::string & input_string)
+static inline std::string clean_WString(const std::string & input_string)
 {
     size_t cr_idx;
     std::string return_string;
@@ -509,9 +568,9 @@ static inline float align_distance(const std::vector<float> p_A, const std::vect
     {
         std::ofstream quickstream("errorMat.txt");
         std::cerr << " result is Nan, here is your matrix.." <<std::endl;
-        for (i=0; i<n;i++)
+        for (i=0; i<n; i++)
         {
-            for (j=0; j<m;j++)
+            for (j=0; j<m; j++)
             {
                 quickstream<<d[i*n+j] << "\t";
             }
