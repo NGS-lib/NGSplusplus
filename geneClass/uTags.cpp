@@ -693,7 +693,9 @@ std::vector<float> uTagsChrom::getRegionSignal(int start, int end, bool overlap)
     int pos;
     //Need to mess around with this later, make sure tags at the same position are not being messed with.
     //We go one Kb earlier in our experiment, make sure we get all overlapping tags.
-    pos = this->findPrecedingSite((start-1000), 0 , this->count()-1);
+
+    //TODO fix this
+  //  pos = this->findPrecedingSite((start-1000), 0 , this->count()-1);
 
     //If no tag leftwise, we start at beginning
     if (pos==-1)

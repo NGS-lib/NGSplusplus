@@ -386,7 +386,7 @@ protected:
 
     unsigned long long sumSiteSize() const;
 
-    int findPrecedingSite(int position, int low, int high);
+  //  int findPrecedingSite(int position, int low, int high);
     // float CorPeaks(uChipSeq otherChip,int extend);
 
 

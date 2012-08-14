@@ -114,7 +114,7 @@ void uGenericNGS::trimSites(int trim)
  * \return bool : True if overlap.
  *
  */
-bool uGenericNGS::doesOverlap(uGenericNGS other, OverlapType type=OverlapType::OVERLAP_PARTIAL) const
+bool uGenericNGS::doesOverlap(uGenericNGS other, OverlapType type) const
 {
     bool returnb=false;
     if (getChr()==other.getChr())

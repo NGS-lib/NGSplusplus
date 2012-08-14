@@ -140,7 +140,7 @@ public:
     void trimSites(int trimLeft,int trimRight);
 
     /**< Should this be there? */
-    bool doesOverlap(uGenericNGS other,OverlapType type) const;
+    bool doesOverlap(uGenericNGS other,OverlapType type=OverlapType::OVERLAP_PARTIAL) const;
 
 
 

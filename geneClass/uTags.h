@@ -344,10 +344,12 @@ public:
     void outputBedFormat(std::ostream& out) const;
 
     std::vector<float> getRegionSignal(int start, int end, bool overlap);
-    int findPrecedingSite(int position, int low, int high)
-    {
-        return uGenericNGSChrom<uTags>::findPrecedingSite(position, low, high);
-    };
+
+    //TODO FIX THIS
+ //   int findPrecedingSite(int position, int low, int high)
+ //   {
+      //  return uGenericNGSChrom<uTags>::findPrecedingSite(position, low, high);
+ //   };
 
 };
 

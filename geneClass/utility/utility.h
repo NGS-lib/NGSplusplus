@@ -125,7 +125,7 @@ protected:
     std::string m_delimiters;
 };
 
-
+//TODO better error generation
 inline static void loadStream(const std::string & filepath,std::ifstream& file)
 {
     try
@@ -564,7 +564,7 @@ static inline float align_distance(const std::vector<float> p_A, const std::vect
 
     distance = 1.0-(d[std::min(p_A.size(),p_B.size())*(m+1)]/(float)std::max(p_A.size(),p_B.size()));
     //printf(">%f\n", distance);
-    if (isnan(distance))
+    if (std::isnan(distance))
     {
         std::ofstream quickstream("errorMat.txt");
         std::cerr << " result is Nan, here is your matrix.." <<std::endl;
