@@ -307,7 +307,7 @@ void uTags::writeCompletedPESamToOutput(std::ostream &out)
             debugElem();
           //  utility::pause_input();
         }
-        else //Do not write cigar for now
+        else /**< Do not write cigar for now */
         if (peLenght!=0)
         {
             out <<  getName() << "\t" << 0 << "\t" << getChr() << "\t" << getStart() << "\t" <<getMapQual()
@@ -319,6 +319,8 @@ void uTags::writeCompletedPESamToOutput(std::ostream &out)
             out <<endl;
         }
 }
+
+// TODO: Move this to output class
 /** \brief Write a tag in Sam specification, but trimming a certain size both left and right of it.
  *
  * \param out : Our output stream
@@ -326,11 +328,10 @@ void uTags::writeCompletedPESamToOutput(std::ostream &out)
  * \param right : Number of bp to trim from right ( 5' direction ) of tag.
  *
  */
-
 bool uTags::writeTrimmedSamToOutput(std::ostream &out, int left, int right)
 {
 
-    //  int ourflag;
+    // int ourflag;
     if ((left + right)>=this->getLenght())
     {
         return false;
@@ -343,7 +344,7 @@ bool uTags::writeTrimmedSamToOutput(std::ostream &out, int left, int right)
     else
     {
         trimSites(left,right);
-    }    //Do not write cigar for now
+    }    /**< Do not write cigar for now */
     out <<  getName() << "\t" << 0 << "\t" << getChr() << "\t" << getStart() << "\t" << getMapQual()
     << "\t" <<   getLenght()<<'M' << "\t" << '*' << "\t" << 0 << "\t" << 0;// << "\t" << '*' << "\t" << '*';
     out  << "\t";
@@ -356,19 +357,18 @@ bool uTags::writeTrimmedSamToOutput(std::ostream &out, int left, int right)
     return true;
 }
 
+// TODO: Move to parser?
 namespace factory
 {
 uTags makeTagfromSamString(std::string samString, bool minimal)
 {
-
-
     stringstream Infostream;
     int size,ourFlag;
     Infostream.str(samString);
     string ourChr, ourStart, ourEnd, ourName;
     string phre, cig, seq;
     string temp,tempname;
-    //Read name
+    /**< Read name */
 try {
     if (!minimal)
     {
@@ -382,7 +382,7 @@ try {
     else
         Infostream>>temp;
 
-    //Read flag
+    /**< Read flag */
     Infostream>>ourFlag;
     Infostream>>ourChr;
 
@@ -392,21 +392,21 @@ try {
 
     int mapScore;
     Infostream>>mapScore;
-    //Cigar
+    /**< Cigar */
     Infostream>>cig;
 
-    // Parse Cigar here
-    //Find first letter , read number before, repeat
-    //Easier with Regex,  but what the hell
+    /**<  Parse Cigar here */
+    /**< Find first letter , read number before, repeat */
+    /**< Easier with Regex,  but what the hell */
     int curPos=0;
     string substr;
     size=0;
     for (unsigned int i=0; i< cig.size(); i++)
     {
-        //If isAlpha then check previous numbers
+        /**< If isAlpha then check previous numbers */
         if (isalpha(cig.at(i)))
         {
-            //If a count value
+            /**< If a count value */
             char temp;
             temp = cig.at(i);
             if ((temp=='M')||(temp=='I')||(temp=='S')||(temp=='X')||(temp=='+'))
@@ -423,21 +423,21 @@ try {
     returnTag.setName(ourName);
     returnTag.setFlag(ourFlag);
     returnTag.setMapQual(mapScore);
-    //name of next mate
+    /**< name of next mate */
     Infostream>>temp;
-    //Pos of next mate
+    /**< Pos of next mate */
     Infostream>>temp;
-    //Template lenght for PE readas
+    /**< Template lenght for PE readas */
     int PELenght;
     Infostream>>PELenght;
     PELenght= abs(PELenght);
    // cerr << "PeLenght is" <<
-    //Sequence
+    /**< Sequence */
     Infostream>>seq;
-    //Pred score of every position.
+    /**< Pred score of every position. */
     Infostream>>phre;
-    //Sam flag
-    //StrongType this
+    /**< Sam flag */
+    /**< StrongType this */
      if (ourFlag&0x10)
          returnTag.setStrand('-');// ='-';
      else
@@ -447,8 +447,8 @@ try {
     else
         returnTag.setMapped(true);
 
-    //PE validation
-    //If PE and mate is aligned
+    /**< PE validation */
+    /**< If PE and mate is aligned */
     if ((ourFlag&0x1)&&(ourFlag&0x2))
     {
         returnTag.setPELenght(PELenght);
@@ -458,44 +458,43 @@ try {
         returnTag.setPELenght(0);
     }
 //    pMate = NULL;
-    //if we want to keep, we store, otherwise scope will erase our data
+    /**< if we want to keep, we store, otherwise scope will erase our data */
     if (!minimal)
     {
         returnTag.setPhred(phre) ;
 
         returnTag.setCigar(cig);
     }
-    //Move semantics
+    /**< Move semantics */
     return returnTag;
 
 }
-catch(elem_throw & e)
-{
-    string trace;
-    cerr << "catching in factory on elem_throw" <<endl;
-  if (std::string const * ste =boost::get_error_info<string_error>(e) )
-                trace=*ste;
+	catch(elem_throw & e)
+	{
+	    string trace;
+	    cerr << "catching in factory on elem_throw" <<endl;
+	  if (std::string const * ste =boost::get_error_info<string_error>(e) )
+			trace=*ste;
 
-   e << string_error(trace+"Failling in factory:makeTagfromSamString constructor,  on string \n"+samString);
-  throw e;
-}
-catch(...)
-{
-      cerr << "catching in factory on general throw" <<endl;
-    elem_throw e;
-    e << string_error("we threw in makeTagfromSamString trying the next string \n"+samString);
-    throw e;
-}
+	   e << string_error(trace+"Failling in factory:makeTagfromSamString constructor,  on string \n"+samString);
+	  throw e;
+	}
+	catch(...)
+	{
+	      cerr << "catching in factory on general throw" <<endl;
+	    elem_throw e;
+	    e << string_error("we threw in makeTagfromSamString trying the next string \n"+samString);
+	    throw e;
+	}
 
 }
-}
+} // End of namespace factory
 
 /** \brief Empty constructor for uTagsChrom
  *
  */
 uTagsChrom::uTagsChrom():uGenericNGSChrom<uTags>()
 {
-
 
 }
 
@@ -506,24 +505,17 @@ uTagsChrom::uTagsChrom():uGenericNGSChrom<uTags>()
 uTagsChrom::uTagsChrom(std::string ourChrom) : uGenericNGSChrom<uTags>(ourChrom)
 {
 
-
 }
 
+// TODO: is it complete?
 /** \brief Copy constructor ( well not really ). Not complete?
  *
  * \param copyCop : The object to instaciate  from.
- * \param
- * \return
- *
  */
 uTagsChrom::uTagsChrom(uGenericNGSChrom<uTags> copyCop)
 {
-
     VecSites=copyCop.returnVecData();
-
     chr= copyCop.getChr();
-
-
 }
 
 /** \brief Output the chrom to bed format
@@ -534,31 +526,26 @@ uTagsChrom::uTagsChrom(uGenericNGSChrom<uTags> copyCop)
  */
 void uTagsChrom::outputBedFormat(std::ostream& out) const
 {
-
    // std::vector<uTags>::iterator iterVec;
     for (auto iterVec = VecSites.begin(); iterVec != VecSites.end(); ++iterVec)
     {
         iterVec->writeBedToOuput(out);
     }
-
-
 }
+
 /** \brief Write all PE tags are complete bed regions
  *
  * \param out : Our output stream
  *
  */
-
 void uTagsChrom::writetoBedCompletePE(std::ostream& out)
 {
-
     std::vector<uTags>::iterator iterVec;
 
     for (iterVec = VecSites.begin(); iterVec != VecSites.end(); ++iterVec)
     {
         iterVec->writetoBedCompletePE(out);
     }
-
 }
 
 /** \brief Write every tag in Sam format, trimming the size of every tag
@@ -568,10 +555,8 @@ void uTagsChrom::writetoBedCompletePE(std::ostream& out)
  * \param right : Number of bp to trim from right ( 5' direction ) of tag.
  *
  */
-
 void uTagsChrom::writeTrimmedSamToOutput(std::ostream &out, int left, int right)
 {
-
     int errorcount=0;
     std::vector<uTags>::iterator iterVec;
    // if (VecSites.size())
@@ -619,8 +604,6 @@ void uTagsChrom::writeSamHeaderLine(std::ostream &out) const
         out << "@SQ	SN:" << getChr() << "\t"<<"LN:"<<getChromSize() <<endl;
 }
 
-
-
 //void writeSamToOutput(std::ostream &out);
 
 /** \brief Output our data into Sam formati with legal headers
@@ -640,12 +623,9 @@ void uTagsChrom::writeSamToOutput(std::ostream &out) const
 
 /** \brief For PE data, find the mate of ever tag and associate there pointers. Structure subject to change
  *
- *
  */
-
 void uTagsChrom::matchPE()
 {
-
     std::vector<uTags>::iterator iterVec;
     std::vector<uTags>::iterator innerVec;
 
@@ -661,7 +641,7 @@ void uTagsChrom::matchPE()
                 next = innerVec->getName();
                 if (iterVec->getName()==innerVec->getName() )
                 {
-                    //Assign pointer and complement
+                    /**< Assign pointer and complement */
                     iterVec->setMate(&(*innerVec));
 
                     innerVec->setMate(&(*iterVec));
@@ -671,6 +651,7 @@ void uTagsChrom::matchPE()
             }
     }
 }
+
 /** \brief For a given start and end on this Chromosome, return the it's continuous density signal
  * \doto Use our standard overlap function
  *
@@ -683,7 +664,6 @@ void uTagsChrom::matchPE()
  */
 std::vector<float> uTagsChrom::getRegionSignal(int start, int end, bool overlap)
 {
-
     vector<float> tempSignal;
     int signalStart, signalEnd, signalSize;
 
@@ -691,13 +671,13 @@ std::vector<float> uTagsChrom::getRegionSignal(int start, int end, bool overlap)
     std::vector<uTags>::iterator iterVec;
 
     int pos;
-    //Need to mess around with this later, make sure tags at the same position are not being messed with.
-    //We go one Kb earlier in our experiment, make sure we get all overlapping tags.
+    /**< Need to mess around with this later, make sure tags at the same position are not being messed with. */
+    /**< We go one Kb earlier in our experiment, make sure we get all overlapping tags. */
 
     //TODO fix this
   //  pos = this->findPrecedingSite((start-1000), 0 , this->count()-1);
 
-    //If no tag leftwise, we start at beginning
+    /**< If no tag leftwise, we start at beginning */
     if (pos==-1)
         pos=0;
 
@@ -705,17 +685,15 @@ std::vector<float> uTagsChrom::getRegionSignal(int start, int end, bool overlap)
 
     for (iterVec=(iterVec+pos) ; iterVec != VecSites.end(); ++iterVec)
     {
-        //If our start is passed our region  we stop. time saver.
+        /**< If our start is passed our region  we stop. time saver. */
         if (iterVec->getStart()> end)
             break;
 
-
         if (overlap==false)
         {
-
             if (utility::isRegionAInsideRegionB(iterVec->getStart(), iterVec->getEnd(), start, end))
             {
-                //Increase signal for every overlapping position of the tag.
+                /**< Increase signal for every overlapping position of the tag. */
                 signalStart= (iterVec->getStart()-start);
                 signalEnd= (iterVec->getEnd()-start);
                 signalSize=(signalEnd-signalStart  );
@@ -754,27 +732,25 @@ std::vector<float> uTagsChrom::getRegionSignal(int start, int end, bool overlap)
  *
  */
 void uTagsExperiment::loadFromSam(std::ifstream& curStream, bool minimal)
-
 {
-
     string lineString;
     int count=0;
     ourStream = &curStream;
     op_mode= DEFAULT;
-//Parse Header if header there is
+/**< Parse Header if header there is */
     parseSamHeader();
     try
     {
         while(!ourStream->eof())
         {
             getline(*ourStream, lineString);
-            //Make sure this is not a header
+            /**< Make sure this is not a header */
             if (ourStream->eof())
             {
                 cerr<< "Finished loading" << count << " tags" <<endl;
                 break;
             }
-            {
+            { //TODO: Why is there a bracket, missing else?
                 //  uTags tempTag;
                 //  tempTag.loadfromSamString(lineString, minimal);
                 //tempPeak.loadfromBedString(peakString);
@@ -808,7 +784,6 @@ void uTagsExperiment::loadFromSam(std::ifstream& curStream, bool minimal)
     {
         cerr << "caught an exception in loadfromSam"<<endl;
         throw;
-
     }
 }
 
@@ -819,13 +794,10 @@ void uTagsExperiment::loadFromSam(std::ifstream& curStream, bool minimal)
  */
 void uTagsExperiment::loadSamHeader(std::ifstream& curStream)
 {
-
     setFileStream(curStream);
-
     /**< Parse Header if header there is */
     parseSamHeader();
 }
-
 
 /** \brief Returns the tag parsed from the next line of our sam file. Abort if not in progressive mode
  *
@@ -860,18 +832,14 @@ uTags uTagsExperiment::nextSamLine(bool minimal)
 }
 
 
-//To be used when we want to read in gradual mode. Will read every header line and created the appropriate chromosome size
-//Objects
-
+/**< To be used when we want to read in gradual mode. Will read every header line and created the appropriate chromosome size */
+/**< Objects */
 /** \brief Parse the Sam header. Use for progressive loading, once our input stream is set.
- *
  *
  */
 void uTagsExperiment::parseSamHeader()
 {
-
     string lineString;
-
 
     /*   if (op_mode==DEFAULT)
        {
@@ -885,19 +853,19 @@ void uTagsExperiment::parseSamHeader()
         abort();
     }
 
-    //If header
+    /**< If header */
     while (ourStream->peek()=='@')
     {
         getline(*ourStream, lineString);
 
-        //Parse the line
+        /**< Parse the line */
         stringstream Infostream;
         string temp,chrom, size;
         int chromsize;
         Infostream.str(lineString);
-        //validate @SQ
+        /**< validate @SQ */
         Infostream >>temp;
-        //Chrom size line?
+        /**< Chrom size line? */
 
         if (temp.find("@SQ")!=string::npos)
         {
@@ -913,14 +881,12 @@ void uTagsExperiment::parseSamHeader()
                 if (data.find("AS:")!=string::npos){
                    // data.erase(0,3);
                   //  chrom=data;
-
                 }
                 if (data.find("LN:")!=string::npos){
                     data.erase(0,3);
                     chromsize=utility::stringToInt(data);
                    // cerr << " ChromSize is " << chromsize << endl;
                 }
-
 
                // cerr << data <<endl;
                                /* //Get Chrom
@@ -929,7 +895,6 @@ void uTagsExperiment::parseSamHeader()
                 chrom.erase(0,3);
 
     //TODO repair , not parsing correctly
-
                 Infostream>>size;
                 //Erase LN:
                 size.erase(0,3);
@@ -960,29 +925,23 @@ void uTagsExperiment::writeToBed(ostream& out) const
  * \param out : Our output stream
  *
  */
-
 void uTagsExperiment::writetoBedCompletePE(std::ostream& out)
 {
-
     std::map<std::string,uTagsChrom>::iterator iterMap;
 
     for (iterMap = ExpMap.begin(); iterMap != ExpMap.end(); ++iterMap)
     {
         iterMap->second.writetoBedCompletePE(out);
     }
-
 }
 
 /** \brief Write the entire dataset in completed PE Sam format
  *
  * \param out : Our output stream
- * \param
  *
  */
-
 void uTagsExperiment::writeCompletedPESamToOutput(std::ostream &out)
 {
-
     for (auto iterMap = ExpMap.begin(); iterMap != ExpMap.end(); ++iterMap)
     {
         iterMap->second.writeSamHeaderLine(out);
@@ -1001,7 +960,6 @@ void uTagsExperiment::writeCompletedPESamToOutput(std::ostream &out)
  */
 void  uTagsExperiment::writeSamToOutput(std::ostream &out) const
 {
-
    // std::map<std::string,uTagsChrom>::iterator iterMap;
     //ChipPeakVectorMap::iterator iterMap;
 
@@ -1014,10 +972,7 @@ void  uTagsExperiment::writeSamToOutput(std::ostream &out) const
     {
         iterMap->second.writeSamToOutput(out);
     }
-
 }
-
-
 
 /** \brief Set the lenght limit of a chromosome
  *
@@ -1028,8 +983,6 @@ void  uTagsExperiment::writeSamToOutput(std::ostream &out) const
  */
 void uTagsExperiment::setChromSize(string chrom, int size)
 {
-
-
     uTagsChrom* ptempChrom;
     ptempChrom=&(ExpMap[chrom]);
     ptempChrom->setChromSize(size);
@@ -1046,7 +999,6 @@ void uTagsExperiment::setChromSize(string chrom, int size)
  */
 std::vector<float> uTagsExperiment::getRegionSignal(std::string chrom, int start, int end, bool overlap)
 {
-
     vector<float> returnVec;
 
     std::map<std::string,uTagsChrom>::iterator iterMap;
@@ -1057,11 +1009,7 @@ std::vector<float> uTagsExperiment::getRegionSignal(std::string chrom, int start
     returnVec= ptempChrom->getRegionSignal(start, end, overlap);
 
     return returnVec;
-
 }
-
-
-
 
 /** \brief Write our exp to sam output, trimming both sides.
  *
@@ -1073,7 +1021,6 @@ std::vector<float> uTagsExperiment::getRegionSignal(std::string chrom, int start
  */
 void uTagsExperiment::writeTrimmedSamToOutput(std::ostream &out, int left, int right)
 {
-
     std::map<std::string,uTagsChrom>::iterator iterMap;
 
     for (iterMap = ExpMap.begin(); iterMap != ExpMap.end(); ++iterMap)
@@ -1086,5 +1033,3 @@ void uTagsExperiment::writeTrimmedSamToOutput(std::ostream &out, int left, int r
         iterMap->second.writeTrimmedSamToOutput(out, left, right);
     }
 }
-
-
