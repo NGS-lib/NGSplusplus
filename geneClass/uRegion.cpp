@@ -24,7 +24,6 @@ uRegion::uRegion(std::string ourchr, int ourstart, int ourend)
     setStartEnd(ourstart,ourend);
 }
 
-
 /** \brief Constructor from parent singular
  *
  * \param uGenericNGS
@@ -36,12 +35,17 @@ uRegion::uRegion(uGenericNGS otherNGS)
     setStartEnd(otherNGS.getStart(),otherNGS.getEnd());
 }
 
-
+/* \brief Destructor
+ */
 uRegion::~uRegion()
 {
     //dtor
 }
 
+/* \brief Set the score of a region
+ * \param float p_score: the score to set
+ * \param int p_Pos: the position where the score should be set
+ */
 void uRegion::setScore(float p_score, int p_Pos)
 {
     if (p_Pos>= ((int)score.size()))
@@ -49,13 +53,15 @@ void uRegion::setScore(float p_score, int p_Pos)
     score.at(p_Pos)=p_score;
 }
 
+/* \brief Fetch the score at a specific region
+ * \param int p_Pos: the position where the score should be fetched
+ */
 float uRegion::getScore(int p_Pos) const
 {
     if (p_Pos>= ((int)score.size()))
        return 0;
     return score.at(p_Pos);
 }
-
 
 /** \brief Set the signal value for our region at a specific position.
  *
@@ -69,7 +75,7 @@ void uRegion::setSignal(int i, float value)
     if (signal.size()==0)
         signal.resize(this->getLenght());
 
-//Sanity check
+/**< Sanity check */
 //TODO Explicit error message
     if (i < this->getLenght())
         signal.at(i)=value;
@@ -83,7 +89,7 @@ void uRegion::setSignal(int i, float value)
  */
 void uRegion::setSignal(std::vector<float> ourSignal)
 {
-    signal= ourSignal;
+    signal = ourSignal;
 }
 
 /** \brief Return ou signal vector for the region
@@ -93,7 +99,6 @@ void uRegion::setSignal(std::vector<float> ourSignal)
  */
 std::vector<float> uRegion::getSignal()
 {
-
     return signal;
 }
 
@@ -105,7 +110,6 @@ std::vector<float> uRegion::getSignal()
  */
 void uRegion::writeAll(std::ostream& out) const
 {
-
     std::vector<float>::iterator iterVec;
 
     out << getChr()<<"\t" << getStart() << "\t"<< getEnd() << "\t" << getCount();
@@ -118,7 +122,6 @@ void uRegion::writeAll(std::ostream& out) const
     //    out << *iterVec <<  " ";
     //    }
 }
-
 
 /** \brief Output our signal data with start/end
  *
@@ -148,7 +151,7 @@ void uRegion::writeRegion(std::ostream& out) const
 }
 
 
-//ToDO Once implement, this needs to use our Transform wrapper
+//TODO Once implement, this needs to use our Transform wrapper
 /** \brief Set the density scores for our exp versus another one
  *
  * \param uGenericNGSExperiment : The experiment we want to get our density comparison from
@@ -165,6 +168,11 @@ void uRegionExperiment::measureDensityOverlap(uGenericNGSExperiment<uGenericNGSC
     }
 }
 
+// TODO: Complete Doxygen comment here
+/* \brief 
+ * \param uTagsExperiment& expToComp:
+ * \param const OverlapType poverlap:
+ */
 void uRegionExperiment::measureDensityOverlap(uTagsExperiment& expToComp, const OverlapType poverlap)
 {
     for (auto it =ExpMap.begin(); it!=ExpMap.end(); it++ )
@@ -173,7 +181,6 @@ void uRegionExperiment::measureDensityOverlap(uTagsExperiment& expToComp, const 
         (it)->second.measureDensityOverlap(*chromToCompare,poverlap);
     }
 }
-
 
 /** \brief Output all signal data of Exp
  * \param out std::ostream& : Output stream
@@ -184,7 +191,6 @@ void uRegionExperiment::writeSignal(std::ostream& out)
 {
     applyOnSites(bind2nd(mem_fun_ref(&uRegion::writeSignal), out));
 }
-
 
 /** \brief  Set the density scores for our chrom versus another one
  *
@@ -201,6 +207,10 @@ void uRegionChrom::measureDensityOverlap(uGenericNGSChrom<uGenericNGS>& chromtoC
     }
 }
 
+/* \brief Set the density score for our chrom versus another one
+ * \param uTagsChrom& chromtoComp: other chromosome to compare our chrom with
+ * \param const OverlapType: Type of overlap we use
+ */
 void uRegionChrom::measureDensityOverlap(uTagsChrom& chromtoComp, const OverlapType pOverlap)
 {
     for (auto it =VecSites.begin(); it!=VecSites.end(); it++ )
@@ -208,8 +218,6 @@ void uRegionChrom::measureDensityOverlap(uTagsChrom& chromtoComp, const OverlapT
         it->setCount((chromtoComp.getSubsetCount(it->getStart(), it->getEnd(),pOverlap)));
     }
 }
-
-
 
 /** \brief  Set the density scores for our chrom versus another one
  *
@@ -225,8 +233,6 @@ void uRegionChrom::measureDensityOverlap(uGenericNGSExperiment< uGenericNGSChrom
     measureDensityOverlap(*chromToCompare, pOverlap);
 }
 
-
-
 /** \brief Get number of tags overlapping each position of each elements. note that we ignore tags over the reference.
  *
  * \param expToComp uTagsExperiment&
@@ -234,7 +240,6 @@ void uRegionChrom::measureDensityOverlap(uGenericNGSExperiment< uGenericNGSChrom
  *
  */
 void uRegionChrom::generateSignal(const uRegionExperiment & expToComp){
-
     const uRegionChrom *  pChrom;
     try {
         pChrom=expToComp.getpChrom(getChr());
@@ -346,7 +351,6 @@ try
 
 }
 
-
 /** \brief Get number of tags overlapping each position of each elements. note that we ignore tags over the reference.
  *
  * \param expToComp uTagsExperiment&
@@ -361,7 +365,6 @@ void uRegionChrom::generateSignal(uTagsExperiment& expToComp)
     string trace;
     try
     {
-
         auto pTag =expToComp.getpChrom(this->getChr());
         densityValues.resize(pTag->getChromSize());
 
@@ -451,6 +454,7 @@ void uRegionChrom::generateSignal(uTagsExperiment& expToComp)
                 << string_error("Throwing in uRegionChrom::generateSignal(uTagsExperiment& expToComp), from out_of_range error \n"+trace);
     }
 }
+
 /** \brief Get number of tags overlapping each position of each elements of each chrom
  *
  * \param out std::ostream&
@@ -529,18 +533,20 @@ for(auto& chrom : ExpMap)
 
  }
 
-
+/* \brief Write all chromosome data to a stream 
+ * \param std::ostream&: Output stream to use.
+ */
 void uRegionChrom::writeAll(std::ostream& out)
 {
     for(auto& it : VecSites)
     {
         it.writeAll(out);
     }
-
 }
 
-/**<  */
-
+/* \brief Write all the experiment to a stream
+ * \param std::ostream&: Output stream to use.
+ */
 void uRegionExperiment::writeAll(std::ostream& out)
 {
     for(auto& chrom : ExpMap)
@@ -549,10 +555,9 @@ void uRegionExperiment::writeAll(std::ostream& out)
     }
 }
 
-/** @brief writeDensityAsTab
-  *
-  * @todo: document this function
-  */
+/** \brief Write the experiment's density data as tab separated values
+ * \param std::ostream&: Output stream to use.
+ */
 void uRegionExperiment::writeDensityAsTab(std::ostream& out)
 {
     for(auto& chrom : ExpMap)
@@ -561,20 +566,19 @@ void uRegionExperiment::writeDensityAsTab(std::ostream& out)
     }
 }
 
-/** @brief writeDensityAsTab
-  *
-  * @todo: document this function
-  */
+/** \brief Write the experiment's density data as tab separated values
+ * \param std::ostream&: Output stream to use.
+ */
 void uRegionChrom::writeDensityAsTab(std::ostream& out)
 {
     for(auto& it : VecSites)
     {
         it.writeRegion(out);
     }
-
-
 }
+
 //TODO Test our loader for Wig
+//TODO Move to parser?
 /** \brief Load our density data from a wig file
  *
  * \param std::ifstream valid Input stream
@@ -731,5 +735,3 @@ wigType curWig = wigType::NONE;
     }
 
 }
-
-
