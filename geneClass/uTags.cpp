@@ -12,23 +12,25 @@ uTags::uTags():uGenericNGS(),name(nullptr),phredScore(nullptr),cigar(nullptr),st
 {
 }
 
+/** \brief Copy constructor, with init list
+ * \param otherItem: uGenericsNGS (or child class) object
+ */
 uTags::uTags(uGenericNGS otherItem):uGenericNGS(otherItem),name(nullptr),phredScore(nullptr),cigar(nullptr),strand(false)
 {
 }
 
-
+//TODO Add default parameter strand = '+' since begin/end must now be in correct order
 /** \brief Default constructor with init list, implicitly sets strand
  *
- * \param
- * \param
- * \return
- *
+ * \param chr: name of the chromosome
+ * \param start: beginning position of the tag
+ * \param end: ending position of the tag
  */
 uTags::uTags(std::string chr, int start, int end):name(nullptr),phredScore(nullptr),cigar(nullptr)
 {
     /**< We handle parent init, as we do not have the same sanity assumptions as the parent */
     /**< If start is after end, we assumed this is a negative tag */
-     //TODO Remove
+     //TODO Remove (start/end switch should be handled by parser)
    try {
     if (start>end)
     {
@@ -59,7 +61,9 @@ uTags::uTags(std::string chr, int start, int end):name(nullptr),phredScore(nullp
 //    PE=false;
 }
 
-uTags::~uTags()    // default destructor
+/** \brief Default destructor 
+ */
+uTags::~uTags()
 {
 
     if (name!=nullptr) {
@@ -79,9 +83,7 @@ uTags::~uTags()    // default destructor
 }
 
 /** \brief Copy Constructor for UTags, necessary due to our char*
- *
- * \param UTags& const
- *
+ * \param UTags& const copy_from: tag to copy
  */
 uTags::uTags(const uTags& copy_from):uGenericNGS(copy_from),name(nullptr),phredScore(nullptr),cigar(nullptr)
 {
@@ -115,11 +117,8 @@ uTags::uTags(const uTags& copy_from):uGenericNGS(copy_from),name(nullptr),phredS
 }
 
 /** \brief Overloaded assignement operator
- *
- * \param
- * \param
- * \return
- *
+ * \param uTags const& source
+ * \return uTags& destination
  */
 uTags& uTags::operator= (uTags const& assign_from)
 {
@@ -177,6 +176,7 @@ void uTags::setMate(uTags* pTag)
     pMate=pTag;
 }
 
+// TODO: Should this be in parser code?
 /** \brief Load a tag from a string formated in Sam format and enter in member data
  *
  * \param samString: String to load from
@@ -188,6 +188,7 @@ void uTags::loadfromSamString(std::string samString, bool minimal=false)
     *this=factory::makeTagfromSamString(samString,minimal);
 }
 
+// TODO: Move this to output class
 /** \brief Write our tag in bed format, using our Tag Name/ID as the misc 4th column
  *
  * \param out : Output stream to use.
@@ -211,6 +212,8 @@ void uTags::writeBedToOuput(std::ostream &out) const
     out <<"\n";
 }
 
+
+// TODO: Move this to output class
 /** \brief Write our tag in bed format, but only writing the + side of a paired end tag. Ignore others
  *
  * \param out : Output stream to use.
@@ -226,6 +229,7 @@ void uTags::writetoBedCompletePE( std::ostream &out)
 
 }
 
+// TODO: Move this to output class
 /** \brief Write our data in Sam format, with some minor details missing
  *
  * \param out : Output stream to use.
@@ -244,7 +248,7 @@ void uTags::writeSamToOutput(std::ostream &out) const
     phred= getPhred();
     if (phred.size()==0)
         phred="*";
-    //Since Picard tools poorly validates a sequence lenght, we must pad with = if we did not store sequences
+    /**< Since Picard tools poorly validates a sequence lenght, we must pad with = if we did not store sequences */
     if (sequence.size()==0)
     {
         for (int i=0; i<getLenght(); i++ )
@@ -254,7 +258,7 @@ void uTags::writeSamToOutput(std::ostream &out) const
     if (isPE())
     {
         peLenght= getPeLenght();
-        //We store lenght as positive, but in Sam format it can be negative
+        /**< We store lenght as positive, but in Sam format it can be negative */
         if (flag&0x10)
             peLenght = (-peLenght);
     }
@@ -266,10 +270,9 @@ void uTags::writeSamToOutput(std::ostream &out) const
 
     out << sequence  << "\t"<< phred;
     out <<endl;
-
-
 }
-
+/** \brief Function used for debugging
+ */
 void uTags::debugElem() const
 {
     using namespace utility;
@@ -280,17 +283,17 @@ void uTags::debugElem() const
     stringTocerr("PELenght " +numberToString((int)getPeLenght()));
     stringTocerr("Flag " +numberToString((int)getFlag()));
 }
-
+ 
+// TODO: Move this to output class
 /** \brief Write our PE tags as a sam tag that is the lenght of the fragment associated with our PE
  *   Does nothing if the tag is not PE
  *
  * \param out : Output stream to use.
  *
  */
-
-//Write function, do not trust for diverse use.
 void uTags::writeCompletedPESamToOutput(std::ostream &out)
 {
+/**< Write function, do not trust for diverse use. */
 
     int peLenght;
     peLenght= getPeLenght();
@@ -298,7 +301,7 @@ void uTags::writeCompletedPESamToOutput(std::ostream &out)
       if (flag&0x10)
             peLenght = (-peLenght);
 
-        //Todo, introducting try catch
+        //TODO, introducting try catch
         if ((flag&0x10)||(peLenght<0)){
            cerr << " negative Strand??"<<endl;
             debugElem();
