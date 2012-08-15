@@ -350,6 +350,12 @@ public:
 private :
      void removeSite(int position);
 
+
+
+    static bool comparePosStart(const _BASE_ &item, const int & value){
+         return item.getStart() < value;
+    }
+
     static bool compareStart(const _BASE_ &item1, const _BASE_ &item2)
     {
         return item1.getStart() < item2.getStart();
@@ -373,7 +379,8 @@ private :
     long int chromSize=0;
 
     template<class Compare>
-    const _BASE_ * findPrecedingSite(int position, Compare comp= compareStart);
+    VecGenConstIter findPrecedingSite(const int & position, Compare comp) const;
+    VecGenConstIter findPrecedingSite(const int & position) const;
 protected:
     std::vector<_BASE_> VecSites;
     std::string chr;
@@ -386,7 +393,7 @@ protected:
 
     unsigned long long sumSiteSize() const;
 
-  //  int findPrecedingSite(int position, int low, int high);
+   // int getPrecedingSitePos(int position, Compare comp= compareStart);
     // float CorPeaks(uChipSeq otherChip,int extend);
 
 
@@ -642,26 +649,22 @@ void uGenericNGSChrom<_BASE_>::printStats(std::ostream& out) const
 template <class _BASE_>
 int uGenericNGSChrom<_BASE_>::getSubsetCount(int start, int end, OverlapType overlap)
 {
-    int pos=0;
-    //Need to mess around with this later, make sure tags at the same position are not being messed with.
-
-    // pos = this->findPrecedingSite(start, 0 , this->count()-1);
+    auto pos = this->findPrecedingSite(start);
 
     //If no tag leftwise, we start at beginning
-    if (pos==-1)
-        pos=0;
+    if (pos==this->last())
+       pos=this->first();
 
-    typename std::vector<_BASE_>::iterator iterVec;
-    iterVec=VecSites.begin();
+   // typename std::vector<_BASE_>::iterator iterVec;
+   // iterVec=VecSites.begin();
 
     int tagcount=0;
-    for (iterVec =(iterVec+pos); iterVec != VecSites.end(); ++iterVec)
+    for (; pos != this->last(); pos++)
     {
-        if (iterVec->getStart()> end)
+        if (pos->getStart()> end)
             break;
 
-
-        if (utility::isOverlap(iterVec->getStart(), iterVec->getEnd(),start, end,overlap))
+        if (utility::isOverlap(pos->getStart(), pos->getEnd(),start, end,overlap))
             tagcount++;
     }
 
@@ -671,36 +674,25 @@ int uGenericNGSChrom<_BASE_>::getSubsetCount(int start, int end, OverlapType ove
 //Find the site ending previous to our region
 template <class _BASE_>
 template <class Compare>
-const _BASE_ *uGenericNGSChrom<_BASE_>::findPrecedingSite(int position, Compare comp)
+typename std::vector<_BASE_>::const_iterator uGenericNGSChrom<_BASE_>::findPrecedingSite(const int & position, Compare comp) const
 {
     //TODO add sort condition bool and validate appropriate sort
     //TODO make complimentary function
-
     auto lower = std::lower_bound(VecSites.begin(), VecSites.end(), position, comp);
 
+    //If no result, or result is our first item
     if (lower==VecSites.end()||(lower==VecSites.begin()))
-        return nullptr;
+        return VecSites.end();
 
+    //Return item precedes and as such is LESS then position
     return (lower--);
-
- /*   int  mid = (low + (high - low) / 2);
-    if ((high < low)||((mid+1)>high))
-        return -1; // not found
-
-
-    if (VecSites.at(mid).getEnd() > position)
-        return findPrecedingSite(position, low, mid-1);
-    else
-    {
-
-        if ((VecSites.at(mid).getEnd() < position)&&(VecSites.at(mid+1).getEnd()< position))
-            return findPrecedingSite(position, mid+1, high);
-        else
-        {
-            return mid;
-        }
-    } */
 }
+    template <class _BASE_>
+   typename std::vector<_BASE_>::const_iterator uGenericNGSChrom<_BASE_>:: findPrecedingSite(const int & position) const{
+
+    return findPrecedingSite(position,comparePosStart);
+   }
+
 
 
 template <class _BASE_>

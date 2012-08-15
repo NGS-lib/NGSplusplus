@@ -8,15 +8,12 @@ using namespace std;
 
 /** \brief Default constructor, not PE and positive strand
  */
-uTags::uTags():uGenericNGS(),name(nullptr),phredScore(nullptr),cigar(nullptr)
+uTags::uTags():uGenericNGS(),name(nullptr),phredScore(nullptr),cigar(nullptr),strand(false)
 {
-    strand='+';
-
 }
 
-uTags::uTags(uGenericNGS otherItem):uGenericNGS(otherItem),name(nullptr),phredScore(nullptr),cigar(nullptr)
+uTags::uTags(uGenericNGS otherItem):uGenericNGS(otherItem),name(nullptr),phredScore(nullptr),cigar(nullptr),strand(false)
 {
-    strand='+';
 }
 
 

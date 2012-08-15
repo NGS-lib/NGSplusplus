@@ -32,10 +32,10 @@ public:
                 setStart(pstart);
             }
         }
-        catch(...)
+        catch( std::exception &e)
         {
             std::cerr << "Error in uGenericNGS(std::string pchr, int pstart, int pend). data is"<< pchr<< " "<< pend<<" "<< pstart << " "<<std::endl;
-            throw;
+            throw e;
         }
     };
 
