@@ -1,12 +1,11 @@
 #ifndef UREGION_H
 #define UREGION_H
 
-//A region, is a fairly generic entity
-//General, we use this to measure statistics and overlaps on a given region..
+/**< A region, is a fairly generic entity */
+/**< General, we use this to measure statistics and overlaps on a given region.. */
 
 #include "uFormats.h"
 #include "uTags.h"
-
 
 class uRegion : public uGenericNGS
 {
@@ -19,7 +18,7 @@ class uRegion : public uGenericNGS
         std::string getIdent() const {return ident;};
 
         float getDensity() const {return density;};
-        void setCount(int ucount){count=ucount;};
+        void setCount(int ucount) {count=ucount;};
         int getCount()const {return count;};
         void setSignal(int i, float value);
         void setSignal(std::vector<float>);
@@ -29,7 +28,6 @@ class uRegion : public uGenericNGS
         float getScore() const {return getScore(0);};
         int getScoreCount() const { return score.size();};
 
-
         void setScore(float p_score, int p_Pos);
         void setScore(float ourscore) {setScore(ourscore,0);}
 
@@ -37,23 +35,23 @@ class uRegion : public uGenericNGS
         void writeRegion(std::ostream& out) const;
         void writeAll(std::ostream& out ) const;
 
-
         //TODO substract regions (with options)
 
     protected:
     private:
 
     std::vector<float> signal;
-    // User friendly name of our region.
+    /**<  User friendly name of our region. */
     std::string ident;
-    //Varies according to our needs.
+    /**< Varies according to our needs. */
     float density;
-    //Varies again
+    /**< Varies again */
     int count;
-    //And again
+    /**< And again */
     std::vector<float> score;
 };
 
+// TODO: Move read-write to parser and output class?
 class uRegionExperiment;
 class uRegionChrom :  public uGenericNGSChrom<uRegion>
 {
@@ -67,9 +65,7 @@ class uRegionChrom :  public uGenericNGSChrom<uRegion>
      void writeSignal(std::ostream& out);
      void generateSignal(const uRegionExperiment & expToComp);
      void generateSignal(const uRegionChrom & chromToComp);
-
 };
-
 
 class uRegionExperiment: public uGenericNGSExperiment<uRegionChrom, uRegion>{
      public:
@@ -81,10 +77,6 @@ class uRegionExperiment: public uGenericNGSExperiment<uRegionChrom, uRegion>{
     void writeAll(std::ostream& out);
     void writeSignal(std::ostream& out);
 
-
    void loadFromWig(std::ifstream & inputStream);
-
 };
-
-
 #endif
