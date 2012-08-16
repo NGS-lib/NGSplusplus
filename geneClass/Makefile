@@ -7,12 +7,12 @@ BOOST_DIR=./boost-include
 ###
 PROJECT = ../libs/libgeneClass.a
 OBJECTS = $(SRC_DIR)/uTags.o $(SRC_DIR)/uFormatBase.o $(SRC_DIR)/uFunctions.o $(SRC_DIR)/uRegion.o
-OBJECTS += $(SRC_DIR)/utility.o $(SRC_DIR)/uToken.o
+OBJECTS += $(SRC_DIR)/uToken.o
 UTILS = $(UTIL_DIR)/utility.o
 CFLAGS  = -O2 -std=c++11
 INCLUDES = -I$(UTIL_DIR) -I$(BOOST_DIR)
 
-all: $(PROJECT) $(UTILS)
+all: $(UTILS) $(PROJECT)
 
 .cpp.o:
 	/Users/charles/Documents/gcc/dist/bin/g++ -c $(CFLAGS) $(INCLUDES) $<
