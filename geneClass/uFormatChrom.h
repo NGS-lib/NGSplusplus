@@ -25,9 +25,15 @@ public:
     VecGenIter first(){return VecSites.begin();};
     VecGenIter last(){return VecSites.end();};
 
+    VecGenConstIter first()const{return VecSites.begin();};
+    VecGenConstIter last()const{return VecSites.end();};
+
+     //   VecGenConstIter first(){return VecSites.cbegin();};
+ //   VecGenConstIter last(){return VecSites.cend();};
+
+
     void inferChrSize();
     virtual ~uGenericNGSChrom<_BASE_> (){;}
-
 
     int count() const
     {
@@ -98,7 +104,7 @@ public:
     template <class T2>
     uGenericNGSChrom<_BASE_> getDistinct(uGenericNGSChrom<T2> &compareExp);
     bool addSite(const _BASE_ & newSite);
-    int getSubsetCount(int start, int end, OverlapType overlap=OverlapType::OVERLAP_PARTIAL);
+    int getSubsetCount(int start, int end, OverlapType overlap=OverlapType::OVERLAP_PARTIAL)const;
 
   /**<  Wrappers around the STL algorithms*/
     /** \brief Compute a value for all sites in the chromosome and return the resulting collection
@@ -223,10 +229,16 @@ public:
       * \param comp Compare : Binary comparison operation to perform on the sites collection
       * \return void
       */
-    template<class Compare>
-    void sortSites(Compare comp)
-    {
 
+    template<class Compare>
+    void sortSites(Compare comp,std::function<int(const _BASE_*)> getStart_funct=nullptr,std::function<int(const _BASE_*)> getEnd_funct=nullptr)
+    {
+      //  std::cerr << "Sorting on chrom" << this->getChr()<<std::endl;
+        m_isSorted=true;
+
+        sortGetStart=getStart_funct;
+        sortGetEnd= getEnd_funct;
+        m_comptFunc=comp;
         return std::sort(begin(VecSites), end(VecSites), comp);
     }
 
@@ -236,7 +248,8 @@ public:
       */
     void sortSites()
     {
-        return sortSites(compareStart);
+       // std::function<int(_BASE_*)> pass =;
+        return sortSites(compareStart,&_BASE_::getStart,&_BASE_::getEnd);
     }
 
     /** \brief Indicates if the sites collection is sorted according to a certain comparison
@@ -348,9 +361,9 @@ public:
 
      int countUnique() const;
 private :
-     void removeSite(int position);
-
-
+     void removeSite(const int & position);
+     void removeSite(const int & start,const int & end);
+     void removeSite(VecGenIter begin, VecGenIter end);
 
     static bool comparePosStart(const _BASE_ &item, const int & value){
          return item.getStart() < value;
@@ -373,13 +386,15 @@ private :
         else
             return item1.getEnd() < item2.getEnd();
     }
-
-
-
+    protected:
+    bool m_isSorted=false;
+    std::function<int(const _BASE_*)> sortGetStart ;
+    std::function<int(const _BASE_*)> sortGetEnd  ;
+    std::function<bool(const _BASE_ &item1, const _BASE_ &item2)> m_comptFunc;
     long int chromSize=0;
 
-    template<class Compare>
-    VecGenConstIter findPrecedingSite(const int & position, Compare comp) const;
+  //  template<class Compare>
+   // VecGenConstIter findPrecedingSite(const int & position, Compare comp) const;
     VecGenConstIter findPrecedingSite(const int & position) const;
 protected:
     std::vector<_BASE_> VecSites;
@@ -428,16 +443,40 @@ bool uGenericNGSChrom<_BASE_>::addSite(const _BASE_ & newSite)
 
 //Since we stock in a vector, this is fairly cost heavy
 template <class _BASE_>
-void uGenericNGSChrom<_BASE_>::removeSite(int position)
+void uGenericNGSChrom<_BASE_>::removeSite(const int & position)
 {
-    if (position>=this->count())
-    {
-        std::cerr << "Crashing in removeSite() " << position <<" out of range of " <<this->count() << std::endl;
-        abort();
-    }
-
+    try{
     VecSites.erase(VecSites.begin()+(position));
+    }
+    catch(...){
+        throw;
+    }
 }
+
+template <class _BASE_>
+void uGenericNGSChrom<_BASE_>::removeSite(const int & start, const int & end)
+{
+try {
+        VecSites.erase(VecSites.begin()+(start),VecSites.begin()+(end));
+    }
+    catch(...){
+        throw;
+    }
+}
+
+template <class _BASE_>
+void uGenericNGSChrom<_BASE_>::removeSite(VecGenIter start,VecGenIter end)
+{
+    try {
+    VecSites.erase(start,end);
+       }
+    catch(...){
+        throw;
+    }
+}
+
+
+
 template <class _BASE_>
 _BASE_ uGenericNGSChrom<_BASE_>::generateRandomSite
 (const int size, std::mt19937& engine, const int sigma, const std::string ID) const
@@ -644,56 +683,73 @@ void uGenericNGSChrom<_BASE_>::printStats(std::ostream& out) const
 
 }
 
+//Find the site ending previous to our region
+template <class _BASE_>
+//template <class Compare>   //(const int & position, Compare comp)
+typename std::vector<_BASE_>::const_iterator uGenericNGSChrom<_BASE_>::findPrecedingSite(const int & position) const
+{
+    //TODO add sort condition bool and validate appropriate sort
+    //TODO make complimentary function
+  try {
+      /**< If unsorted, fail */
+    if ((m_isSorted==false)||(sortGetStart==nullptr)||(sortGetEnd==nullptr))
+        throw ugene_exception_base();
+
+         auto comp = [&] (const _BASE_ &item1, const int &item2) {
+         return sortGetStart(&item1)< item2;
+         };
+
+    /**< Compare, sort Value */
+    auto lower = std::lower_bound(VecSites.begin(), VecSites.end(), position, comp);
+
+    /**< If no result, or result is our first item */
+    if (lower==VecSites.end()||(lower==VecSites.begin()))
+        return VecSites.end();
+
+    /**<Return item precedes and as such is LESS then position  */
+    return (lower--);
+    }
+    catch (std::exception & e)
+    {
+        std::cerr << "Calling findPrecedingSite on unsorted vector or you did not provide an approriate get function" <<std::endl;
+        std::cerr << "sorted status is" << m_isSorted <<std::endl;
+        std::cerr << "is Nullprt "<< (sortGetStart==nullptr) <<std::endl;
+        throw;
+    }
+
+
+}
+
+/**< Default version, comparing position to a start */
+/*template <class _BASE_>
+typename std::vector<_BASE_>::const_iterator uGenericNGSChrom<_BASE_>:: findPrecedingSite(const int & position) const{
+
+    return findPrecedingSite(position,comparePosStart);
+   } */
+
+
 
 //TODO, do we really need to keep this? User getSubset().count = same thing, but more memory usage.
 template <class _BASE_>
-int uGenericNGSChrom<_BASE_>::getSubsetCount(int start, int end, OverlapType overlap)
+int uGenericNGSChrom<_BASE_>::getSubsetCount(int start, int end, OverlapType overlap) const
 {
     auto pos = this->findPrecedingSite(start);
 
-    //If no tag leftwise, we start at beginning
+    /**<  If no tag leftwise, we start at beginning*/
     if (pos==this->last())
        pos=this->first();
-
-   // typename std::vector<_BASE_>::iterator iterVec;
-   // iterVec=VecSites.begin();
 
     int tagcount=0;
     for (; pos != this->last(); pos++)
     {
-        if (pos->getStart()> end)
+        if (sortGetStart(&(*pos))> end)
             break;
-
-        if (utility::isOverlap(pos->getStart(), pos->getEnd(),start, end,overlap))
+        if (utility::isOverlap(sortGetStart(&(*pos)), sortGetEnd(&(*pos)),start, end,overlap))
             tagcount++;
     }
 
     return tagcount;
 }
-
-//Find the site ending previous to our region
-template <class _BASE_>
-template <class Compare>
-typename std::vector<_BASE_>::const_iterator uGenericNGSChrom<_BASE_>::findPrecedingSite(const int & position, Compare comp) const
-{
-    //TODO add sort condition bool and validate appropriate sort
-    //TODO make complimentary function
-    auto lower = std::lower_bound(VecSites.begin(), VecSites.end(), position, comp);
-
-    //If no result, or result is our first item
-    if (lower==VecSites.end()||(lower==VecSites.begin()))
-        return VecSites.end();
-
-    //Return item precedes and as such is LESS then position
-    return (lower--);
-}
-    template <class _BASE_>
-   typename std::vector<_BASE_>::const_iterator uGenericNGSChrom<_BASE_>:: findPrecedingSite(const int & position) const{
-
-    return findPrecedingSite(position,comparePosStart);
-   }
-
-
 
 template <class _BASE_>
 uGenericNGSChrom<_BASE_> uGenericNGSChrom<_BASE_>::getSubset(int start, int end, OverlapType overlap) const
@@ -701,31 +757,36 @@ uGenericNGSChrom<_BASE_> uGenericNGSChrom<_BASE_>::getSubset(int start, int end,
     uGenericNGSChrom<_BASE_> returnChrom;
     returnChrom.setChr(this->getChr());
 
-    int pos=0;
-    //TODO : This need to be validated, something is buggy with our start or end cuttof.
-    //  pos = this->findPrecedingSite(start, 0 , this->count()-1);
+    auto pos = this->findPrecedingSite(start);
 
-    //If no tag leftwise, we start at beginning
-    if (pos==-1)
-        pos=0;
+    /**<  If no tag leftwise, we start at beginning*/
+    if (pos==this->last())
+       pos=this->first();
 
     typename std::vector<_BASE_>::const_iterator iterVec;
     iterVec=VecSites.begin();
 
-    for (iterVec =(iterVec+pos); iterVec != VecSites.end(); ++iterVec)
+    for (; pos != this->last(); pos++)
     {
-        if (iterVec->getStart() > end)
+        if (sortGetStart(&(*pos))> end)
             break;
         _BASE_ temp;
-
-        if (utility::isOverlap(iterVec->getStart(), iterVec->getEnd(),start, end,overlap))
-            returnChrom.addSite(*iterVec);
+        //TODO optimie using copy
+        if (utility::isOverlap(sortGetStart(&(*pos)), sortGetEnd(&(*pos)),start, end,overlap))
+            returnChrom.addSite(*pos);
     }
 
     return returnChrom;
 }
 
-/**< What does this do? */
+/** \brief return a subSet of elements and remove them from current object
+ *
+ * \param start int
+ * \param end int
+ * \param overlap OverlapType
+ * \return uGenericNGSChrom<_BASE_>
+ *
+ */
 template <class _BASE_>
 uGenericNGSChrom<_BASE_> uGenericNGSChrom<_BASE_>::removeSubset(int start, int end, OverlapType overlap)
 {
@@ -733,33 +794,29 @@ uGenericNGSChrom<_BASE_> uGenericNGSChrom<_BASE_>::removeSubset(int start, int e
     returnChrom.setChr(this->getChr());
     std::vector<int> erasePositions;
 
-    int pos=0;
-    //Need to mess around with this later, make sure tags at the same position are not being messed with.
-    //pos = this->findPrecedingSite(start, 0 , this->count()-1);
+   auto pos = this->findPrecedingSite(start);
 
-    //If no tag leftwise, we start at beginning
-    if (pos==-1)
-        pos=0;
+    /**<  If no tag leftwise, we start at beginning*/
+    if (pos==this->last())
+       pos=this->first();
 
     typename std::vector<_BASE_>::iterator iterVec;
     iterVec=VecSites.begin();
-    for (iterVec =(iterVec+pos); iterVec != VecSites.end(); ++iterVec)
+    for (; pos != this->last(); pos++)
     {
-
-        if (iterVec->getStart()> end)
+        if (sortGetStart(&(*pos))> end)
             break;
 
-
-        if (utility::isOverlap(iterVec->getStart(), iterVec->getEnd(),start, end,overlap))
+        if (utility::isOverlap(sortGetStart(&(*pos)), sortGetEnd(&(*pos)),start, end,overlap))
         {
-            returnChrom.addSite(*iterVec);
-            erasePositions.push_back(iterVec - VecSites.begin());
-            returnChrom.addSite(*iterVec);
+            returnChrom.addSite(*pos);
+            erasePositions.push_back(pos - VecSites.begin());
+            returnChrom.addSite(*pos);
         }
     }
-
     sort(erasePositions.begin(), erasePositions.end());
 
+    //TODO make this work
     for(int k=(erasePositions.size()-1); k>=0; k--)
     {
         this->removeSite(erasePositions.at(k));
@@ -864,7 +921,6 @@ void uGenericNGSChrom<_BASE_>::divideItemsIntoBinofSize(int N, SplitType type)
         for ( unsigned int i = 0; i < tempVector.size(); ++i ) {
             newVector.push_back(static_cast<_BASE_>( tempVector.at(i) ));
         }
-
        // newVector.insert( newVector.end(), tempVector.begin(), tempVector.end() );
     }
     VecSites=move(newVector);

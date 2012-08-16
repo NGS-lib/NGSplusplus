@@ -33,10 +33,10 @@ namespace utility
 /**< Validate if A derives from B */
 
 template<typename Child, typename Parent>
-class IsDerivedFrom
-{
-    static_assert(dynamic_cast<Parent*>(static_cast<Child*>(0)) == nullptr, "First class is not derived from the second");
-};
+//class IsDerivedFrom
+//{
+//    static_assert(dynamic_cast<Parent*>(static_cast<Child*>(0)) == nullptr, "First class is not derived from the second");
+//};
 /**< Some conversion functions */
 static std::string convertInt(int number);
 static int stringToInt(const std::string &ourStr);
