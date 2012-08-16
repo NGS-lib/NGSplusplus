@@ -3,6 +3,8 @@
 
 #include <map>
 #include <string>
+#include <stdexcept>
+#include "boost/exception/all.hpp"
 
 /**< List of param is hard coded as strongly typed enum for extra safety. */
 /**< This list has to be updated for every new param */
@@ -22,5 +24,11 @@ private:
 	void _validateParam(token_param::token_param& name, const std::string& value);
 
 } // End of class Token
+
+
+// uToken exceptions
+struct uToken_exception_base : virtual std::exception, virtual boost::exception {};
+struct value_throw : virtual uToken_exception_base{};
+typedef boost::error_info<struct invalid_param_info, std::string> invalid_value_error;
 
 #endif // UTOKEN_H_INCLUDED
