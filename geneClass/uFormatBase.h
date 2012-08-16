@@ -11,7 +11,6 @@
 
 enum class SplitType{STRICT, IGNORE, EXTEND, ADD};
 
-
 //TODO : Replace member init with initialiser lists. More optimal
 class uGenericNGS
 {

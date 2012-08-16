@@ -28,10 +28,6 @@ public:
     VecGenConstIter first()const{return VecSites.begin();};
     VecGenConstIter last()const{return VecSites.end();};
 
-     //   VecGenConstIter first(){return VecSites.cbegin();};
- //   VecGenConstIter last(){return VecSites.cend();};
-
-
     void inferChrSize();
     virtual ~uGenericNGSChrom<_BASE_> (){;}
 
@@ -79,9 +75,7 @@ public:
     };
 
 
-    //TODO verify this is working
-    uGenericNGSChrom<_BASE_> getSubset(int start, int end, OverlapType overlap=OverlapType::OVERLAP_PARTIAL) const;
-    uGenericNGSChrom<_BASE_> removeSubset(int start, int end, OverlapType overlap=OverlapType::OVERLAP_PARTIAL);
+
     std::vector<_BASE_> returnVecData()
     {
         return VecSites;
@@ -100,9 +94,18 @@ public:
     template <class T2>
     void addNRandomSite(const int size, const int n, std::mt19937& engine, const uGenericNGSChrom<T2> &exclList, const int sigma=0, const std::string ID="");
     void addNRandomSite(const int size, const int n, std::mt19937& engine, const int sigma=0, const std::string ID="");
-    uGenericNGSChrom<_BASE_> getOverlapping(uGenericNGSChrom &compareExp);
+
     template <class T2>
-    uGenericNGSChrom<_BASE_> getDistinct(uGenericNGSChrom<T2> &compareExp);
+    uGenericNGSChrom<_BASE_> getOverlapping(uGenericNGSChrom<T2> &compareExp,OverlapType overlap=OverlapType::OVERLAP_PARTIAL) const;
+    template <class T2>
+    uGenericNGSChrom<_BASE_> getNotOverlapping(uGenericNGSChrom<T2> &compareExp,OverlapType overlap=OverlapType::OVERLAP_PARTIAL) const;
+
+
+    uGenericNGSChrom<_BASE_> getSubset(int start, int end, OverlapType overlap=OverlapType::OVERLAP_PARTIAL) const;
+    uGenericNGSChrom<_BASE_> removeSubset(int start, int end, OverlapType overlap=OverlapType::OVERLAP_PARTIAL);
+
+
+
     bool addSite(const _BASE_ & newSite);
     int getSubsetCount(int start, int end, OverlapType overlap=OverlapType::OVERLAP_PARTIAL)const;
 
@@ -386,6 +389,9 @@ private :
         else
             return item1.getEnd() < item2.getEnd();
     }
+
+     VecGenConstIter findPrecedingSite(const int & position) const;
+     VecGenConstIter findNextSite(const int & position) const;
     protected:
     bool m_isSorted=false;
     std::function<int(const _BASE_*)> sortGetStart ;
@@ -393,10 +399,6 @@ private :
     std::function<bool(const _BASE_ &item1, const _BASE_ &item2)> m_comptFunc;
     long int chromSize=0;
 
-  //  template<class Compare>
-   // VecGenConstIter findPrecedingSite(const int & position, Compare comp) const;
-    VecGenConstIter findPrecedingSite(const int & position) const;
-protected:
     std::vector<_BASE_> VecSites;
     std::string chr;
 
@@ -683,12 +685,10 @@ void uGenericNGSChrom<_BASE_>::printStats(std::ostream& out) const
 
 }
 
-//Find the site ending previous to our region
+
 template <class _BASE_>
-//template <class Compare>   //(const int & position, Compare comp)
 typename std::vector<_BASE_>::const_iterator uGenericNGSChrom<_BASE_>::findPrecedingSite(const int & position) const
 {
-    //TODO add sort condition bool and validate appropriate sort
     //TODO make complimentary function
   try {
       /**< If unsorted, fail */
@@ -716,18 +716,37 @@ typename std::vector<_BASE_>::const_iterator uGenericNGSChrom<_BASE_>::findPrece
         std::cerr << "is Nullprt "<< (sortGetStart==nullptr) <<std::endl;
         throw;
     }
-
-
 }
 
-/**< Default version, comparing position to a start */
-/*template <class _BASE_>
-typename std::vector<_BASE_>::const_iterator uGenericNGSChrom<_BASE_>:: findPrecedingSite(const int & position) const{
+template <class _BASE_>
+typename std::vector<_BASE_>::const_iterator uGenericNGSChrom<_BASE_>::findNextSite(const int & position) const
+{
+    //TODO make complimentary function
+  try {
+      /**< If unsorted, fail */
+    if ((m_isSorted==false)||(sortGetStart==nullptr)||(sortGetEnd==nullptr))
+        throw ugene_exception_base();
 
-    return findPrecedingSite(position,comparePosStart);
-   } */
+         auto comp = [&] (const _BASE_ &item1, const int &item2) {
+         return sortGetStart(&item1)< item2;
+         };
 
+    /**< Compare, sort Value */
+    auto upper = std::upper_bound(VecSites.begin(), VecSites.end(), position, comp);
 
+    /**< If no result, or result is our first item */
+    if (upper==VecSites.end())
+        return VecSites.end();
+
+    /**<Return the item greater then value*/
+    return (upper);
+    }
+    catch (std::exception & e)
+    {
+        std::cerr << "Calling findNextSite on unsorted vector or you did not provide an approriate get function" <<std::endl;
+        throw;
+    }
+}
 
 //TODO, do we really need to keep this? User getSubset().count = same thing, but more memory usage.
 template <class _BASE_>
@@ -779,7 +798,7 @@ uGenericNGSChrom<_BASE_> uGenericNGSChrom<_BASE_>::getSubset(int start, int end,
     return returnChrom;
 }
 
-/** \brief return a subSet of elements and remove them from current object
+/** \brief return a subSet based on the current comparison value
  *
  * \param start int
  * \param end int
@@ -802,42 +821,36 @@ uGenericNGSChrom<_BASE_> uGenericNGSChrom<_BASE_>::removeSubset(int start, int e
 
     typename std::vector<_BASE_>::iterator iterVec;
     iterVec=VecSites.begin();
+
+
+    auto delPos=pos;
     for (; pos != this->last(); pos++)
     {
         if (sortGetStart(&(*pos))> end)
             break;
-
+        /**< When we find a valid element, go back one step and erase th element */
         if (utility::isOverlap(sortGetStart(&(*pos)), sortGetEnd(&(*pos)),start, end,overlap))
         {
             returnChrom.addSite(*pos);
-            erasePositions.push_back(pos - VecSites.begin());
-            returnChrom.addSite(*pos);
+            delPos=pos;
+            pos--;
+            this->removeSite(*delPos);
         }
-    }
-    sort(erasePositions.begin(), erasePositions.end());
-
-    //TODO make this work
-    for(int k=(erasePositions.size()-1); k>=0; k--)
-    {
-        this->removeSite(erasePositions.at(k));
     }
 
     return returnChrom;
 }
-
-//Return the parts of a Chromosome that overlap another given chrom
+/**< Return elements of A that overlap B */
 template <class _BASE_>
-uGenericNGSChrom<_BASE_> uGenericNGSChrom<_BASE_>::getOverlapping(uGenericNGSChrom &compareChr)
+template <class T2>
+uGenericNGSChrom<_BASE_> uGenericNGSChrom<_BASE_>::getOverlapping(uGenericNGSChrom<T2> &compareChr,OverlapType overlap) const
 {
-
-    //TODO, add overlap options and use previous getSubset
-
     uGenericNGSChrom<_BASE_> returnChr;
     for(auto it= VecSites.begin(); it!=VecSites.end(); it++)
     {
         for(auto compit= compareChr.first(); compit!=compareChr.last(); compit++)
         {
-            if (utility::isOverlap(it->getStart(), it->getEnd(),compit->getStart(),compit->getEnd()))
+            if (utility::isOverlap(it->getStart(), it->getEnd(),compit->getStart(),compit->getEnd(),overlap))
             {
                 returnChr.addSite(*it);
                 break;
@@ -847,17 +860,16 @@ uGenericNGSChrom<_BASE_> uGenericNGSChrom<_BASE_>::getOverlapping(uGenericNGSChr
     return returnChr;
 }
 
-//Return the parts of a Chromosome that overlap another given chrom
+/**< Return the elements of A that do not overlap B */
 template <class _BASE_>
 template <class T2>
-uGenericNGSChrom<_BASE_> uGenericNGSChrom<_BASE_>::getDistinct(uGenericNGSChrom<T2> &compareExp)
+uGenericNGSChrom<_BASE_> uGenericNGSChrom<_BASE_>::getNotOverlapping(uGenericNGSChrom<T2> &compareChr,OverlapType overlap)const
 {
     uGenericNGSChrom<_BASE_> returnChr;
     bool add=true;
-    std::vector<_BASE_> VecSitesOther = compareExp.returnVecData();
     for(auto it= VecSites.begin(); it!=VecSites.end(); it++)
     {
-        for(auto compit= VecSitesOther.begin(); compit!=VecSitesOther.end(); compit++)
+        for(auto compit= compareChr.first(); compit!=compareChr.last(); compit++)
         {
             if (utility::isOverlap(it->getStart(), it->getEnd(),compit->getStart(),compit->getEnd()))
             {
@@ -869,11 +881,8 @@ uGenericNGSChrom<_BASE_> uGenericNGSChrom<_BASE_>::getDistinct(uGenericNGSChrom<
             returnChr.addSite(*it);
         add =true;
     }
-
     return returnChr;
 }
-
-
 
 /** \brief Split each item into smaller equal size members and replace our vector of items with the new one.
  *
@@ -932,9 +941,7 @@ void uGenericNGSChrom<_BASE_>::divideItemsIntoBinofSize(int N, SplitType type)
 }
     template <class _BASE_>
     void uGenericNGSChrom<_BASE_>:: inferChrSize(){
-   // setChrSize( getMax)
-
-
+           this->maxSite(comparePos)->getEnd();
     }
 
 
