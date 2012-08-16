@@ -73,3 +73,61 @@ void uToken::_validateParam(token_param& name, const std::string& value) {
 		break;
 	}
 }
+
+/* \brief Test if chr is valid.
+ * \param const std::string& value: the value of the chr entry.
+ */
+bool uToken::_chrIsValid(const std::string& value) const {
+	std::stringstream ss;
+	/**< Check if value starts with "chr" */
+	ss << value;
+	std::string chr;
+	ss >> chr;
+	if (chr != "chr") {
+		return false;
+	}
+	/**< Check if next value is a positive int value */
+	int n = 0;
+	ss >> n;
+	if (n <= 0) {
+		return false;
+	}
+	/**< Check if there is garbage at the end of value */
+	if (ss.rdbuf()->in_avail() != 0) {
+		return false;
+	}
+	return true; 
+}
+
+bool uToken::_posIsValid(const std::string& value) const {
+	return true; 
+}
+
+bool uToken::_strandIsValid(const std::string& value) const {
+	return true; 
+}
+
+bool uToken::_mapScoreIsValid(const std::string& value) const {
+	return true; 
+}
+
+bool uToken::_phredScoreIsValid(const std::string& value) const {
+	return true; 
+}
+
+bool uToken::_sequenceIsValid(const std::string& value) const {
+	return true; 
+}
+
+bool uToken::_seqNameIsValid(const std::string& value) const {
+	return true; 
+}
+
+bool uToken::_seqFlagsIsValid(const std::string& value) const {
+	return true; 
+}
+
+bool uToken::_cigarIsValid(const std::string& value) const {
+	return true; 
+}
+
