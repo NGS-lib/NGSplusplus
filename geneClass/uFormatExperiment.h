@@ -396,7 +396,6 @@ template<typename _CHROM_, typename _BASE_>
     std::string tempString;
     while(!std::getline(stream, tempString).eof())
     {
-   //  auto haha =  static_cast<_BASE_>(factory::makeNGSfromTabString(tempString));
        addSite( static_cast<_BASE_>(factory::makeNGSfromTabString(tempString)));
     }
 }
@@ -464,7 +463,15 @@ int uGenericNGSExperiment<_CHROM_,_BASE_>::getSubsetCount(uGenericNGS subsetReg,
 template<typename _CHROM_, typename _BASE_>
 void uGenericNGSExperiment<_CHROM_, _BASE_>::sortData()
 {
-    applyOnAllChroms(std::mem_fun_ref(static_cast<void (_CHROM_::*)()>(&_CHROM_::sortSites)));
+    //TODO Why won't this work with applyOnAllChroms
+ for( auto it = this->first(); it!=this->last(); it++)
+            it->second.sortSites();;
+ //  std::function<void (_CHROM_&)> funct;//=
+ // funct=    (void(_CHROM_::*)()) &_CHROM_::sortSites;
+  // applyOnAllChroms(funct);
+
+
+  //  applyOnAllChroms(std::mem_fun_ref(static_cast<void (_CHROM_::*)()>(&_CHROM_::sortSites)));
 
 }
 

@@ -67,7 +67,8 @@ public:
             if (!((ourStart<=getEnd())&&(ourStart>=0)))
                throw 10;
             startPos=ourStart;
-            }
+
+        }
         catch(...)
         {
             std::cerr << "throwing in setStart" <<std::endl;
