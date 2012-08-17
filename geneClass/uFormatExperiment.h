@@ -460,6 +460,7 @@ int uGenericNGSExperiment<_CHROM_,_BASE_>::getSubsetCount(uGenericNGS subsetReg,
     return count;
 }
 
+
 template<typename _CHROM_, typename _BASE_>
 void uGenericNGSExperiment<_CHROM_, _BASE_>::sortData()
 {

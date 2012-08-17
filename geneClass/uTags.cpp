@@ -8,14 +8,14 @@ using namespace std;
 
 /** \brief Default constructor, not PE and positive strand
  */
-uTags::uTags():uGenericNGS(),name(nullptr),phredScore(nullptr),cigar(nullptr),strand(false)
+uTags::uTags():uGenericNGS(),name(nullptr),phredScore(nullptr),cigar(nullptr)
 {
 }
 
 /** \brief Copy constructor, with init list
  * \param otherItem: uGenericsNGS (or child class) object
  */
-uTags::uTags(uGenericNGS otherItem):uGenericNGS(otherItem),name(nullptr),phredScore(nullptr),cigar(nullptr),strand(false)
+uTags::uTags(uGenericNGS otherItem):uGenericNGS(otherItem),name(nullptr),phredScore(nullptr),cigar(nullptr)
 {
 }
 
@@ -61,7 +61,7 @@ uTags::uTags(std::string chr, int start, int end):name(nullptr),phredScore(nullp
 //    PE=false;
 }
 
-/** \brief Default destructor 
+/** \brief Default destructor
  */
 uTags::~uTags()
 {
@@ -283,7 +283,7 @@ void uTags::debugElem() const
     stringTocerr("PELenght " +numberToString((int)getPeLenght()));
     stringTocerr("Flag " +numberToString((int)getFlag()));
 }
- 
+
 // TODO: Move this to output class
 /** \brief Write our PE tags as a sam tag that is the lenght of the fragment associated with our PE
  *   Does nothing if the tag is not PE

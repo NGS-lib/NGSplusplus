@@ -14,7 +14,6 @@
  */
 void uGenericNGS::extendSite(int extendLeft, int extendRight)
 {
-
     try
     {
         if((extendLeft<0)||(extendRight<0))
@@ -26,7 +25,6 @@ void uGenericNGS::extendSite(int extendLeft, int extendRight)
 
         setStart(start);
         setEnd(getEnd()+extendRight);
-
     }
     catch(elem_throw & e )
     {
@@ -49,7 +47,6 @@ void uGenericNGS::extendSite(int extendLeft, int extendRight)
         e << generic_error(*this);
         throw(e);
     }
-
 }
 /** \brief Idem as above, but equal shift.
  *
@@ -86,15 +83,20 @@ void uGenericNGS::trimSites(int trimLeft, int trimRight)
     {
         if ((trimLeft<0)||(trimRight<0)||(trimLeft+trimRight>this->getLenght()))
             throw 20;
+
+        this->startPos=(this->startPos+trimLeft);
+        this->endPos=(this->endPos-trimRight);
     }
     catch (int err)
     {
-        std::cerr <<"Invalid parameters in trimSites(), nothing done, please validate"<<std::endl;
-        throw(err);
+        mem_param_throw e;
+        e << string_error("PARAMERROR, throwing from trimSites("+utility::numberToString(trimLeft)+","+utility::numberToString(trimRight)+"), param < 0 \n"  );
+        e << generic_error(*this);
+       // std::cerr <<"Invalid parameters in trimSites(), nothing done, please validate"<<std::endl;
+        throw(e);
     }
 
-    this->startPos=(this->startPos+trimLeft);
-    this->endPos=(this->endPos-trimRight);
+
 }
 
 /** \brief Diminish our element by an equal amount from both ends
@@ -105,7 +107,14 @@ void uGenericNGS::trimSites(int trimLeft, int trimRight)
  */
 void uGenericNGS::trimSites(int trim)
 {
-    this->trimSites(trim,trim);
+    try {
+        this->trimSites(trim,trim);
+    }
+    catch(std::exception & e)
+    {
+        throw e;
+    }
+
 }
 
 /** \brief Verify if two sites overlap by at least 1 bp
@@ -130,7 +139,7 @@ bool uGenericNGS::doesOverlap(uGenericNGS other, OverlapType type) const
  * \return void
  *
  */
-
+//TODO use parser
 void uGenericNGS::writeBedToOuput(std::ostream &out, bool endLine) const
 {
 
@@ -154,25 +163,21 @@ std::vector<uGenericNGS> uGenericNGS::divideIntoNBin(int N,SplitType ptype)
     int binSize= getLenght()/N;
     try
     {
-
-
-
+        /**< If NB bins is greater then BP */
         if (this->getLenght()<N)
-            throw(5);
+           throw mem_param_throw() << string_error("Asking for more bins then lenght of Elem /n");
 
         /**< If Strict and we cannot exactly fit our bins, fail */
         if ((ptype==SplitType::STRICT)&&(leftover!=0))
-            throw 10;
+            throw mem_param_throw()<< string_error( "STRICT parameter not respected /n");
 
         /**< Once we pass the check, generate our basic bin */
-
         int curStart=getStart();
         for (int i=0; i<(N); i++)
         {
             returnVec.push_back(  uGenericNGS(getChr(),curStart, (curStart+(binSize-1))  ));
             curStart+=binSize;
         }
-
         /**< Then we deal with any leftovers according to policy */
         /**< If IGNORE, we do nothing */
         if(leftover!=0)
@@ -195,26 +200,24 @@ std::vector<uGenericNGS> uGenericNGS::divideIntoNBin(int N,SplitType ptype)
             }
         }
     }
-    catch(int err)
+    catch(mem_param_throw &e)
     {
-        switch (err){
+       std::string ourtrace="Failed in divideIntoNBin()";
+        if(  std::string const * trace=boost::get_error_info<string_error>(e) )
+            ourtrace+=*trace;
 
-        case 5:
-             std::cerr <<"Failed on  more bins then possible"<<std::endl;
-            std::cerr <<"Lenght is =  "<< this->getLenght() << "Bins = " << N  << std::endl;
-                break;
-        case 10:
-             std::cerr <<"Failed on STRICT and leftover >0"<<std::endl;
-             std::cerr <<"Leftover =  "<< leftover << "Type = " << (int)ptype  << std::endl;
-                break;
-        }
-
-        std::cerr <<"Failed in divideIntoNBin()"<<std::endl;
-        throw;
+        #ifdef DEBUG
+                std::cerr <<"Failed in divideIntoNBin()"<<std::endl;
+        #endif
+        e << string_error(ourtrace);
+        e << generic_error(*this);
+        throw e;
     }
-    catch( ... ){
-        std::cerr <<"Failed in divideIntoNBin()"<<std::endl;
-        throw;
+    catch(std::exception &e ){
+        #ifdef DEBUG
+                std::cerr <<"Failed in divideIntoNBin()"<<std::endl;
+        #endif
+        throw e ;
     }
 
     return returnVec;
@@ -226,7 +229,7 @@ std::vector<uGenericNGS> uGenericNGS::divideIntoNBin(int N,SplitType ptype)
  * \return vector<uGenericNGS>
  *
  */
-std::vector<uGenericNGS> uGenericNGS::divideIntoBinofSize(int N, SplitType type)
+std::vector<uGenericNGS> uGenericNGS::divideIntoBinofSize(const int N, const SplitType type)
 {
     std::vector<uGenericNGS> returnVec;
     try
@@ -236,11 +239,11 @@ std::vector<uGenericNGS> uGenericNGS::divideIntoBinofSize(int N, SplitType type)
         int leftover = getLenght()%binSize;
 
         if (getLenght()<N)
-            throw(10);
+            throw mem_param_throw() << string_error("Asking for more bins then lenght of Elem /n");
 
         /**< If Strict and we cannot exactly fit our bins, fail */
         if ((type==SplitType::STRICT)&&(leftover!=0))
-            throw 10;
+            throw mem_param_throw()<< string_error( "STRICT parameter not respected /n");
 
         /**< Once we pass the check, generate our basic bin */
 
@@ -271,16 +274,31 @@ std::vector<uGenericNGS> uGenericNGS::divideIntoBinofSize(int N, SplitType type)
 
             }
     }
-    catch(...)
+    catch(mem_param_throw &e)
     {
-        std::cerr <<"Failed in divideIntoNBin()"<<std::endl;
-        throw;
+         std::string ourtrace="Failed in divideIntoNBin() /n";
+        if(  std::string const * trace=boost::get_error_info<string_error>(e) )
+            ourtrace+=*trace;
+
+        #ifdef DEBUG
+                std::cerr <<"Failed in divideIntoBinofSize()"<<std::endl;
+        #endif
+        e << string_error(ourtrace);
+        e << generic_error(*this);
+        throw e;
+    }
+    catch(std::exception & e)
+    {
+         #ifdef DEBUG
+                  std::cerr <<"Failed in divideIntoBinofSize()"<<std::endl;
+        #endif
+        throw e;
     }
 
     return returnVec;
 };
 
-
+//TODO USE PARSER
 namespace factory
 {
 /** @brief Create a basic format from a tab delimited formatted string

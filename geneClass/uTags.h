@@ -17,7 +17,7 @@ class uTags: public uGenericNGS
 
 private:
     //0 = FORWARD, 1 = REVERSE
-    bool strand;
+
     //Optional
     //Map score, quality of the alignement.
     int mapScore;
