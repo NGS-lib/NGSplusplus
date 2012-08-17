@@ -319,8 +319,6 @@ uTags makeTagfromSamString(std::string samString, bool minimal=false);
 }
 
 
-
-
 class uTagsChrom: public uGenericNGSChrom<uTags>
 {
 
@@ -353,9 +351,10 @@ public:
 
 };
 
-//Our complete tag experiment
-//Taga can be very very big....how do we deal with this.
-//For now we don't, but at some point we will have to.
+// TODO: Lot's of code that should move to parser?
+/**< Our complete tag experiment */
+/**< Taga can be very very big....how do we deal with this. */
+/**< For now we don't, but at some point we will have to. */
 class uTagsExperiment: public uGenericNGSExperiment<uTagsChrom, uTags>
 {
 
@@ -376,10 +375,5 @@ public:
     void writeTrimmedSamToOutput(std::ostream &out, int left, int right);
     uTags nextSamLine(bool minimal=false);
     std::vector<float> getRegionSignal(std::string chrom, int start, int end, bool overlap);
-
 };
-
-
-
-
 #endif // UTAGS_H_INCLUDED
