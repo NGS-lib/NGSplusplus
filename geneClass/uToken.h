@@ -23,8 +23,10 @@ public:
 private:
 	std::map<token_param, std::string> m_params;
 	void _setParam(token_param& name, std::string& value);
-	void _validateParam(token_param& name, const std::string& value);
-	bool _chrIsValid(const std::string& name) const;
+	bool _validateParam(token_param& name, const std::string& value) const;
+
+	/**< Single parameter validation functions */
+//	bool _chrIsValid(const std::string& name) const;
 	bool _posIsValid(const std::string& name) const;
 	bool _strandIsValid(const std::string& name) const;
 	bool _mapScoreIsValid(const std::string& name) const;
@@ -36,6 +38,15 @@ private:
 	bool _isStreamEmpty(const std::istream& stream) const;
 
 }; // End of class Token
+
+/**<  uToken exceptions */
+struct uToken_exception_base : virtual std::exception, virtual boost::exception {};
+
+struct invalid_token_param_throw : virtual uToken_exception_base{};
+typedef boost::error_info<struct invalid_param_token_info, std::string> invalid_token_param_error;
+
+struct invalid_value_throw : virtual uToken_exception_base{};
+typedef boost::error_info<struct invalid_value_info, std::string> invalid_value_error;
 
 /**< Overloading of stream operator for token_param */
 inline std::ostream & operator<<(std::ostream& Str, token_param name) {
@@ -67,12 +78,12 @@ inline std::istream& operator>>(std::istream &is, token_param& name) {
 	else if (token == "SEQUENCE") name = token_param::SEQUENCE;
 	else if (token == "SEQ_NAME") name = token_param::SEQ_NAME;
 	else if (token == "FLAGS") name = token_param::FLAGS;
+	else {
+		invalid_token_param_throw e;
+		e << invalid_value_error(token);
+		throw e;
+	}
 	return is;
 }
-
-/**<  uToken exceptions */
-struct uToken_exception_base : virtual std::exception, virtual boost::exception {};
-struct invalid_value_throw : virtual uToken_exception_base{};
-typedef boost::error_info<struct invalid_param_info, std::string> invalid_value_error;
 
 #endif // UTOKEN_H_INCLUDED
