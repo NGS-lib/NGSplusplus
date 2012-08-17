@@ -18,12 +18,18 @@ enum class token_param { CHR, START_POS, END_POS, STRAND, MAP_SCORE, PHRED_SCORE
 class uToken {
 public:
 	uToken(std::istream& paramList);
-	std::string getParam(token_param& name) const;
+	/* \brief Fetch a param. Throw param_not_found if the param does not exist.
+	 * \param token_param& name: the name of the param we wish to get.
+	 */
+	std::string getParam(token_param name) { return m_params[name]; }
+//	std::string getParam(token_param name) const { return "asdf"; }
 
 private:
 	std::map<token_param, std::string> m_params;
 	void _setParam(token_param& name, std::string& value);
 	bool _validateParam(token_param& name, const std::string& value) const;
+	bool _validateToken();
+	void _throwInvalidToken(const std::string& baseErrorMessage) const;
 
 	/**< Single parameter validation functions */
 //	bool _chrIsValid(const std::string& name) const;
@@ -35,12 +41,19 @@ private:
 //	bool _seqNameIsValid(const std::string& name) const;
 	bool _seqFlagsIsValid(const std::string& name) const;
 	bool _cigarIsValid(const std::string& name) const;
+
+	// TODO: replace with c version
+	bool _isDigit(char value) const { return (value >= '0' && value <= '9'); }
+	bool _cigarValueIsValid(char value) const;
 	bool _isStreamEmpty(const std::istream& stream) const;
 
 }; // End of class Token
 
 /**<  uToken exceptions */
 struct uToken_exception_base : virtual std::exception, virtual boost::exception {};
+
+struct invalid_uToken_throw : virtual uToken_exception_base{};
+typedef boost::error_info<struct invalid_uToken_info, std::string> invalid_uToken_error;
 
 struct invalid_token_param_throw : virtual uToken_exception_base{};
 typedef boost::error_info<struct invalid_param_token_info, std::string> invalid_token_param_error;

@@ -28,17 +28,18 @@ uToken::uToken(std::istream& paramList){
 			throw e;
 		}
 	}
-//	if (_validateToken() == false) {
-//
-//	}
+	/**< Check if uToken is in a valid state  */
+	try {
+		_validateToken();
+	}
+	catch (invalid_uToken_error& e) {
+		throw e;
+	}
 }
 
-/* \brief Fetch a param. Throw param_not_found if the param does not exist.
- * \param token_param& name: the name of the param we wish to get.
- */
-std::string uToken::getParam(token_param& name) const {
-	return "asdf";
-}
+//std::string uToken::getParam(token_param name) {
+//	return m_params[name];
+//}
 
 /* \brief Set a param only if it's format is valid
  * \param token_param& name: type of param
@@ -51,7 +52,8 @@ void uToken::_setParam(token_param& name, std::string& value) {
 		e << invalid_value_error(value);
 		throw e;
 	}
-	m_params.insert(make_pair(name, value));
+	m_params[name] = value;
+//	m_params.insert(make_pair(name, value));
 }
 
 /* \brief Validate the parameter. Some tests are general, other are specific for each parameter.
@@ -97,6 +99,76 @@ bool uToken::_validateParam(token_param& name, const std::string& value) const {
 	defaut: break;
 	}
 	return isValid;
+}
+
+bool uToken::_validateToken() {
+	/**< Validate start/end positions  */
+	std::string str_start = getParam(token_param::START_POS);
+	std::string str_end = getParam(token_param::END_POS);
+	int start = atoi(str_start.c_str());
+	int end = atoi(str_end.c_str());
+	if (start > end) {
+		std::string error = "Invalid START_POS/END_POS values. \n";
+		error += "START_POS:" + str_start + ". END_POS: " + str_end + ".";
+		_throwInvalidToken(error);
+	}
+	/**< Validate sequence/phred  */
+	std::string str_phred = getParam(token_param::PHRED_SCORE);
+	if (str_phred.size() != 0) {
+		std::string str_sequence = getParam(token_param::SEQUENCE);
+		if (str_sequence.size() != str_phred.size()) {
+			std::stringstream seq_size;
+			seq_size << str_sequence.size();
+			std::stringstream phred_size;
+			phred_size << str_phred.size();
+			std::string error = "Sequence and phred score length does not match.\n";
+			error += "Sequence size: " + seq_size.str() + ". Phred size: " + phred_size.str() + ".";
+			_throwInvalidToken(error);
+		}
+	}
+	/**< Validate sequence/cigar - Sum of lengths of the M/I/S/=/X operations shall equal the length of SEQ. (From SAM specifications) */
+	std::string str_cigar = getParam(token_param::CIGAR);
+	if (str_cigar.size() != 0) {
+		std::string str_sequence = getParam(token_param::SEQUENCE);
+		/**< Fetch all numerical values and sum them  */	
+		size_t cigar_size = 0;
+		std::stringstream ss;
+		for (size_t i = 0; i < str_cigar.size(); i++) {
+			if (_isDigit(str_cigar[i]) == true) {
+				ss << str_cigar[i];
+			}
+			else {
+				int value;
+				switch(str_cigar[i]) {
+				case 'M': 
+				case 'I':
+				case 'S':
+				case '=':
+				case 'X': ss >> value; break;
+				default: value = 0; break;
+				}
+				cigar_size += value;
+				ss.clear();
+			}
+		}
+		/**< Check if sequence length and cigar sum match  */	
+		if (str_sequence.size() != cigar_size) {
+			std::stringstream seq_size_stream;
+			seq_size_stream << str_sequence.size();
+			std::stringstream cigar_size_stream;
+			cigar_size_stream << cigar_size;
+			std::string error = "Sequence length and sum of cigar M/I/S/=/X values do not match.\n";
+			error += "Sequence length: " + seq_size_stream.str();
+			error += ". Sum of cigar values: " + cigar_size_stream.str() + ".";
+			_throwInvalidToken(error);
+		}
+	}
+}
+
+void uToken::_throwInvalidToken(const std::string& baseErrorMessage) const {
+	invalid_uToken_throw e;
+	e << invalid_uToken_error("Invalid token. " + baseErrorMessage);
+	throw e;
 }
 
 // TODO: So far, it does not seem important to validate the CHR format, remove the commented section after tests are completed.
@@ -258,35 +330,46 @@ bool uToken::_seqFlagsIsValid(const std::string& value) const {
  * \param const std::string& value: the value of the cigar entry.
  */
 bool uToken::_cigarIsValid(const std::string& value) const {
-	/**< Check if length of value is an even number */
-	if (value.size() % 2  != 0) {
-		return false;
-	}
 	/**< Check if the first value is '*' and the size is 1 */
 	if (value[0] == '*' && value.size() > 1) {
 		return false;
 	}
-	/**< Check if even positions in the value are numbers */
-	for (size_t i = 0; i < value.size(); i = i + 2) {
-		if (value[i] < '0' || value[i] > '9') {
+	/**< First item of value has to be a digit.  */
+	if (_isDigit(value[0]) != true) {
+		return false;
+	}
+	/**< Make sure there is not two alphabetical character in a row */
+	bool lastValue = true;
+	for (size_t i = 0; i < value.size(); i++) {
+		bool currentValue = _isDigit(value[i]);
+		if (lastValue == false && currentValue == false) {
 			return false;
 		}
+		lastValue = currentValue;
 	}
-	/**< Check if odd positions in the value are valid characters */
-	for (size_t i = 1; i < value.size(); i = i + 2) {
-		switch(value[i]) {
-		case 'M': break;
-		case 'I': break;
-		case 'D': break;
-		case 'N': break;
-		case 'S': break;
-		case 'H': break;
-		case 'P': break;
-		case 'X': break;
-		default: return false;
-		}
+	/**< Must end with alphabetical value */
+	if (_isDigit(value[value.size()-1]) == true) {
+		return false;
 	}
 	return true;
+}
+
+/* \brief Check if a value of a cigar score is a legal character.
+ * \param char value: The value to test.
+ */
+bool uToken::_cigarValueIsValid(char value) const {
+	switch(value) {
+	case 'M': return true;
+	case 'I': return true;
+	case 'D': return true;
+	case 'N': return true;
+	case 'S': return true;
+	case 'H': return true;
+	case 'P': return true;
+	case 'X': return true;
+	case '=': return true;
+	default: return false;
+	}
 }
 
 /* \brief Check if a istream is empty.
