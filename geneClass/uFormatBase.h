@@ -14,19 +14,29 @@ enum class SplitType{STRICT, IGNORE, EXTEND, ADD};
 //TODO : Replace member init with initialiser lists. More optimal
 class uGenericNGS
 {
+
+#define FORWARCHARD '+'
+#define REVERSECHAR '-'
+
+#define FORWARD 0
+#define REVERSE 1
+
+
 protected:
     std::string chr;
     long int startPos=0;
     long int endPos=0;
+    bool strand=0;
 
 public:
-    uGenericNGS(std::string pchr, int pstart, int pend)
+
+    /**< Constructor taking chromosome name, start and end */
+    uGenericNGS(std::string pchr, int pstart, int pend):chr(pchr)
     {
         try
         {
             /**< Implicitly, our startPosition must always be before our end position */
             {
-                setChr(pchr);
                 setEnd(pend);
                 setStart(pstart);
             }
@@ -39,18 +49,18 @@ public:
     };
 
     uGenericNGS()
-    {
-        startPos=0;
-        endPos=0;
-    };
+    { };
 
     virtual ~uGenericNGS(){};
 /**< End Constructor/Destructor */
 
+
+    /**< Write to Bed functions */
+    virtual void writeBedToOuput(std::ostream &out, bool endLine) const;
     virtual void writeBedToOuput(std::ostream &out) const {
         writeBedToOuput(out, true);
     };
-    virtual void writeBedToOuput(std::ostream &out, bool endLine) const;
+    /**< Get /Set */
     std::string getChr() const
     {
         return chr;
@@ -59,6 +69,7 @@ public:
     {
         chr=ourchr;
     };
+
     void setStart(int ourStart)
     {
         try
@@ -68,9 +79,11 @@ public:
             startPos=ourStart;
 
         }
-        catch(...)
+        catch(int &x)
         {
-            std::cerr << "throwing in setStart" <<std::endl;
+            #ifdef DEBUG
+                std::cerr << "throwing in setStart" <<std::endl;
+            #endif
             elem_throw e;
             e << string_error("Failed in setStart, ourStart is smalled then end or under 0, start is "+utility::numberToString(ourStart)+ " end is "+ utility::numberToString((int)getEnd()) +"\n");
             throw e;
@@ -85,13 +98,15 @@ public:
         }
         catch(...)
         {
-            std::cerr << "throwing in setEnd" <<std::endl;
+            #ifdef DEBUG
+                std::cerr << "throwing in setEnd" <<std::endl;
+            #endif
             elem_throw e;
             e << string_error("throwing in setEnd(), start at "+utility::numberToString((int)getStart())+ " end is "+ utility::numberToString(ourEnd) +"\n");
             throw e;
         }
     };
-
+    //TODO make sure this offer appropriate guarantee
     void setStartEnd(long int ourStart, long int ourEnd){
         try{
             setEnd(ourEnd);
@@ -119,7 +134,10 @@ public:
         return (endPos-startPos+1);
     };
 
+
+
     /**< Strictly for debugging */
+    #ifdef DEBUG
     virtual void debugElem() const
     {
         using namespace utility;
@@ -128,9 +146,11 @@ public:
         stringTocerr("Start "+numberToString((int)getStart()));
         stringTocerr("End " +numberToString((int)getEnd()));
     }
+    #endif
     /**<  Divide our region into a certain number of subregions */
-    std::vector<uGenericNGS> divideIntoBinofSize(int N, SplitType type=SplitType::STRICT);
-    std::vector<uGenericNGS> divideIntoNBin(int N,SplitType ptype=SplitType::STRICT);
+
+    std::vector<uGenericNGS> divideIntoBinofSize(const int N, const SplitType type=SplitType::STRICT);
+    std::vector<uGenericNGS> divideIntoNBin(const int N, const SplitType ptype=SplitType::STRICT);
 
     //If we want to Change the dimensions of our site
     void extendSite(int extend);
@@ -143,14 +163,7 @@ public:
     bool doesOverlap(uGenericNGS other,OverlapType type=OverlapType::OVERLAP_PARTIAL) const;
 
 
-
-    //TODO Substract region B
-    //TODO Merge
-
-
-
 };
-
 
 namespace factory{
   //  uTags makeTagfromSamString(std::string samString, bool minimal=false);

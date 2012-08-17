@@ -672,7 +672,9 @@ void uGenericNGSChrom<_BASE_>::printStats(std::ostream& out) const
 {
     typename std::vector<long long> quarts;
 
-    quarts = this->quartilesSize();
+  //  quarts = utility::quartilesofVector(Vec)
+
+     this->quartilesSize();
 
     out <<"Number of sites"<< "\t"<< this->count()<<"\n";
     out <<"Average sites size:"<< "\t"<< this->avgSiteSize()<<"\n";

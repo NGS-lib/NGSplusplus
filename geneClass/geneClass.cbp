@@ -16,9 +16,7 @@
 					<Add option="-std=c++11" />
 					<Add option="-Wall" />
 					<Add option="-g" />
-					<Add directory="utility" />
-					<Add directory="boost/boost" />
-					<Add directory="boost" />
+					<Add directory="boost-include" />
 				</Compiler>
 				<Linker>
 					<Add option="-static-libgcc" />
@@ -35,9 +33,7 @@
 				<Compiler>
 					<Add option="-O2" />
 					<Add option="-std=c++11" />
-					<Add directory="utility" />
-					<Add directory="boost/boost" />
-					<Add directory="boost" />
+					<Add directory="boost-include" />
 				</Compiler>
 				<Linker>
 					<Add option="-s" />

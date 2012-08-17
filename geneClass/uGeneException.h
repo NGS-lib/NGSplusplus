@@ -20,8 +20,6 @@ typedef boost::error_info<struct skip_tags,std::vector<uTags>> skipped_tags;
 typedef boost::error_info<struct skip_regions,std::vector<uRegion>> skipped_regions;
 
 
-
-
 struct ugene_exception_base : virtual std::exception, virtual boost::exception
 {};
 
@@ -29,5 +27,6 @@ struct ugene_exception_base : virtual std::exception, virtual boost::exception
 struct elem_throw : virtual ugene_exception_base{};
 struct skipped_elem_throw : virtual ugene_exception_base{};
 struct construct_elem_throw : virtual elem_throw{};
+struct mem_param_throw : virtual elem_throw{};
 struct format_parsing_error : virtual ugene_exception_base{};
 #endif // UGENEERROR_H
