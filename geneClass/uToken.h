@@ -22,13 +22,13 @@ public:
 	 * \param token_param& name: the name of the param we wish to get.
 	 */
 	std::string getParam(token_param name) { return m_params[name]; }
-//	std::string getParam(token_param name) const { return "asdf"; }
 
 private:
 	std::map<token_param, std::string> m_params;
 	void _setParam(token_param& name, std::string& value);
 	bool _validateParam(token_param& name, const std::string& value) const;
-	bool _validateToken();
+	//TODO: SEQUENCE/PHRED length must fit with END_POS - START_POS
+	void _validateToken();
 	void _throwInvalidToken(const std::string& baseErrorMessage) const;
 
 	/**< Single parameter validation functions */
@@ -36,13 +36,13 @@ private:
 	bool _posIsValid(const std::string& name) const;
 	bool _strandIsValid(const std::string& name) const;
 	bool _mapScoreIsValid(const std::string& name) const;
-	bool _phredScoreIsValid(const std::string& name) const;
+//	bool _phredScoreIsValid(const std::string& name) const;
 	bool _sequenceIsValid(const std::string& name) const;
 //	bool _seqNameIsValid(const std::string& name) const;
 	bool _seqFlagsIsValid(const std::string& name) const;
 	bool _cigarIsValid(const std::string& name) const;
 
-	// TODO: replace with c version
+	// TODO: replace with c version?
 	bool _isDigit(char value) const { return (value >= '0' && value <= '9'); }
 	bool _cigarValueIsValid(char value) const;
 	bool _isStreamEmpty(const std::istream& stream) const;

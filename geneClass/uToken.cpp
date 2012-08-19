@@ -68,9 +68,6 @@ bool uToken::_validateParam(token_param& name, const std::string& value) const {
 	}
 	/**< Then we do basic check for every type of parameters */
 	switch(name) {
-//	case token_param::CHR:
-//		isValid = _chrIsValid(value);
-//		break;
 	case token_param::START_POS:
 	case token_param::END_POS:
 		isValid = _posIsValid(value);
@@ -81,41 +78,52 @@ bool uToken::_validateParam(token_param& name, const std::string& value) const {
 	case token_param::MAP_SCORE:
 		isValid = _mapScoreIsValid(value);
 		break;
-	case token_param::PHRED_SCORE:
-		isValid = _phredScoreIsValid(value);
-		break;
+//	case token_param::PHRED_SCORE:
+//		isValid = _phredScoreIsValid(value);
+//		break;
 	case token_param::CIGAR:
 		isValid = _cigarIsValid(value);
 		break;
 	case token_param::SEQUENCE:
 		isValid = _sequenceIsValid(value);
 		break;
-//	case token_param::SEQ_NAME:
-//		isValid = _seqNameIsValid(value);
-//		break;
 	case token_param::FLAGS:
 		isValid = _seqFlagsIsValid(value);
 		break;
-	defaut: break;
+//	case token_param::CHR:
+//	case token_param::SEQ_NAME:
+	default: break;
 	}
 	return isValid;
 }
 
-bool uToken::_validateToken() {
+void uToken::_validateToken() {
+	std::string str_chr = getParam(token_param::CHR);
+	std::string str_start_pos = getParam(token_param::START_POS);
+	int int_start_pos = atoi(str_start_pos.c_str());
+	std::string str_end_pos = getParam(token_param::END_POS);
+	int int_end_pos = atoi(str_end_pos.c_str());
+	std::string str_sequence = getParam(token_param::SEQUENCE);
+	std::string str_phred = getParam(token_param::PHRED_SCORE);
+	std::string str_cigar = getParam(token_param::CIGAR);
+
+	// TODO: What should we do if when no STRAND value given in constructor?
+	/**< Mandatory values: CHR, START_POS and END_POS */
+	if (str_chr.size() == 0 || str_start_pos.size() == 0 || str_end_pos.size() == 0) {
+		std::string error = "CHR, START_POS and END_POS are mandatory.\n";
+		error += "CHR: " + str_chr + "\n";
+		error += "START_POS: " + str_end_pos + "\n";
+		error += "END_POS: " + str_start_pos + "\n";
+		_throwInvalidToken(error);
+	}
 	/**< Validate start/end positions  */
-	std::string str_start = getParam(token_param::START_POS);
-	std::string str_end = getParam(token_param::END_POS);
-	int start = atoi(str_start.c_str());
-	int end = atoi(str_end.c_str());
-	if (start > end) {
+	if (int_start_pos > int_end_pos) {
 		std::string error = "Invalid START_POS/END_POS values. \n";
-		error += "START_POS:" + str_start + ". END_POS: " + str_end + ".";
+		error += "START_POS:" + str_start_pos + ". END_POS: " + str_end_pos + ".";
 		_throwInvalidToken(error);
 	}
 	/**< Validate sequence/phred  */
-	std::string str_phred = getParam(token_param::PHRED_SCORE);
 	if (str_phred.size() != 0) {
-		std::string str_sequence = getParam(token_param::SEQUENCE);
 		if (str_sequence.size() != str_phred.size()) {
 			std::stringstream seq_size;
 			seq_size << str_sequence.size();
@@ -127,9 +135,7 @@ bool uToken::_validateToken() {
 		}
 	}
 	/**< Validate sequence/cigar - Sum of lengths of the M/I/S/=/X operations shall equal the length of SEQ. (From SAM specifications) */
-	std::string str_cigar = getParam(token_param::CIGAR);
 	if (str_cigar.size() != 0) {
-		std::string str_sequence = getParam(token_param::SEQUENCE);
 		/**< Fetch all numerical values and sum them  */	
 		size_t cigar_size = 0;
 		std::stringstream ss;
@@ -235,7 +241,7 @@ bool uToken::_strandIsValid(const std::string& value) const {
 		return false;
 	}
 	/**< Check if value is either '+' or '-' */
-	if (value != "+" || value != "-") {
+	if (value != "+" && value != "-") {
 		return false;
 	}
 	return true;
@@ -257,19 +263,20 @@ bool uToken::_mapScoreIsValid(const std::string& value) const {
 	return _isStreamEmpty(ss);
 }
 
+// TODO: Seems useless, since it is a list of char, and char values cannot be over 255...
 /* \brief Check phred score value is valid.
  * \param const std::string& value: the value of the phred score entry.
  */
-bool uToken::_phredScoreIsValid(const std::string& value) const {
-	/**< Check if value is a list of values (between 0 and 255 incl.). */
-	for (size_t i = 0; i < value.size(); i++) {
-//		const char* p = value[i].c_str();
-		char p = value[i];
-		if (p < 0 || p > 255) {
-			return false;
-		}
-	}
-}
+//bool uToken::_phredScoreIsValid(const std::string& value) const {
+//	/**< Check if value is a list of values (between 0 and 255 incl.). */
+//	for (size_t i = 0; i < value.size(); i++) {
+//		int p = value[i];
+//		if (p < 0 || p > 255) {
+//			return false;
+//		}
+//	}
+//	return true;
+//}
 
 /* \brief Check is sequence is valid.
  * \param const std::string& value: the value of the sequence entry.
@@ -296,6 +303,7 @@ bool uToken::_sequenceIsValid(const std::string& value) const {
 		default: return false;
 		}
 	}
+	return true;
 }
 
 // TODO: I don't think there is really anything worth checking for a sequence other once we know it's not empty
@@ -319,7 +327,7 @@ bool uToken::_seqFlagsIsValid(const std::string& value) const {
 	/**< Check if value is between 0 and 65235 incl. */
 	int flags = -1;
 	ss >> flags;
-	if (flags < 0 || flags > 65235) {
+	if (flags < 0 || flags > 65535) {
 		return false;
 	}
 	/**< Finally, check if there is garbage at the end of value */
