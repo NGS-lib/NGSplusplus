@@ -20,13 +20,79 @@ class uGenericNGSChrom
     typedef typename std::vector<_BASE_>::iterator VecGenIter;
     typedef typename std::vector<_BASE_>::const_iterator VecGenConstIter;
 
+protected:
+
+    std::vector<_BASE_> VecSites;
+    std::string chr;
+
+private :
+
+
+
+
+
+     void removeSite(int position);
+     void removeSite(int start,int end);
+     void removeSite(VecGenIter position);
+     void removeSite(VecGenIter start,VecGenIter end);
+
+
+    auto begin()->decltype(VecSites.begin()){return VecSites.begin();};
+    auto end()->decltype(VecSites.end()){return VecSites.end();};
+
+    template <class Container>
+    typename Container::iterator to_mutable_iterator(Container& c, typename Container::const_iterator it)
+    {
+        return c.begin() + (it - c.begin());
+    }
+
+
+
+    static bool comparePosStart(const _BASE_ &item, const int & value){
+         return item.getStart() < value;
+    }
+
+    static bool compareStart(const _BASE_ &item1, const _BASE_ &item2)
+    {
+        return item1.getStart() < item2.getStart();
+    }
+
+    static bool compareLenght(const _BASE_ &item1, const _BASE_ &item2)
+    {
+        return item1.getLenght() < item2.getLenght();
+    }
+
+    static bool comparePos(const _BASE_ &item1, const _BASE_ &item2)
+    {
+        if ((item1.getStart() != item2.getStart()))
+            return item1.getStart() < item2.getStart();
+        else
+            return item1.getEnd() < item2.getEnd();
+    }
+
+     VecGenConstIter findPrecedingSite(const int & position) const;
+     VecGenConstIter findNextSite(const int & position) const;
+    protected:
+    bool m_isSorted=false;
+    std::function<int(const _BASE_*)> sortGetStart;
+    std::function<int(const _BASE_*)> sortGetEnd ;
+    std::function<bool(const _BASE_ &item1, const _BASE_ &item2)> m_comptFunc;
+    long int chromSize=0;
+
+
+
+
+
+    std::vector<long long> returnSiteSizes() const;
+
+    unsigned long long avgSiteSize() const;
+    unsigned long long minSiteSize() const;
+    unsigned long long maxSiteSize() const;
+    unsigned long long sumSiteSize() const;
+
+    template<typename S, typename R> friend class uGenericNGSExperiment;
+
 public:
-
-    VecGenIter first(){return VecSites.begin();};
-    VecGenIter last(){return VecSites.end();};
-
-    VecGenConstIter first()const{return VecSites.begin();};
-    VecGenConstIter last()const{return VecSites.end();};
 
     void inferChrSize();
     virtual ~uGenericNGSChrom<_BASE_> (){;}
@@ -104,9 +170,7 @@ public:
     uGenericNGSChrom<_BASE_> getSubset(int start, int end, OverlapType overlap=OverlapType::OVERLAP_PARTIAL) const;
     uGenericNGSChrom<_BASE_> removeSubset(int start, int end, OverlapType overlap=OverlapType::OVERLAP_PARTIAL);
 
-
-
-    bool addSite(const _BASE_ & newSite);
+    bool addSite( _BASE_ newSite);
     int getSubsetCount(int start, int end, OverlapType overlap=OverlapType::OVERLAP_PARTIAL)const;
 
   /**<  Wrappers around the STL algorithms*/
@@ -149,7 +213,7 @@ public:
     {
         std::vector<decltype(unary_op(_BASE_()))> results;
         results.reserve(VecSites.size());
-        transform(begin(VecSites), end(VecSites), std::back_inserter(results), unary_op);
+        transform(std::begin(VecSites), std::end(VecSites), std::back_inserter(results), unary_op);
         return results;
     }
 
@@ -170,7 +234,7 @@ public:
     {
         std::vector<_BASE_> copyVec {};
         copyVec.reserve(VecSites.size());
-        copy_if(begin(VecSites), end(VecSites), std::back_inserter(copyVec), pred);
+        copy_if(std::begin(VecSites), std::end(VecSites), std::back_inserter(copyVec), pred);
         return copyVec;
     }
 
@@ -189,13 +253,13 @@ public:
     template<class UnaryOperation>
     UnaryOperation applyOnAllSites(UnaryOperation f)
     {
-        return for_each(begin(VecSites), end(VecSites), f);
+        return for_each(std::begin(VecSites), std::end(VecSites), f);
     }
 
     template<class UnaryOperation>
     UnaryOperation applyOnAllSites(const UnaryOperation f) const
     {
-        return for_each(begin(VecSites), end(VecSites), f);
+        return for_each(std::begin(VecSites), std::end(VecSites), f);
     }
 
     /** \brief Accumulate information by querying all sites
@@ -217,7 +281,7 @@ public:
         // Force using sequential version for accumulate as parallel version
         // doesn't work if actual data type of InitialValue and _BASE_ cannot be
         // converted back and forth.
-        return __gnu_parallel::accumulate(begin(VecSites), end(VecSites), init, binary_op, __gnu_parallel::sequential_tag());
+        return __gnu_parallel::accumulate(std::begin(VecSites), std::end(VecSites), init, binary_op, __gnu_parallel::sequential_tag());
     }
 /**< End STL wrappers */
     /** \brief Sort the sites vector by applying a certain comparison
@@ -242,7 +306,7 @@ public:
         sortGetStart=getStart_funct;
         sortGetEnd= getEnd_funct;
         m_comptFunc=comp;
-        return std::sort(begin(VecSites), end(VecSites), comp);
+        return std::sort(std::begin(VecSites), std::end(VecSites), comp);
     }
 
     /** \brief Default sort using the start position as a the comparison point
@@ -272,7 +336,7 @@ public:
     bool isSorted(Compare comp) const
     {
         //TODO use a bool and validate
-        return is_sorted(begin(VecSites), end(VecSites), comp);
+        return is_sorted(std::begin(VecSites), std::end(VecSites), comp);
     }
 
     /** \brief Indicates if the sites collection is sorted ascendingly according to
@@ -300,7 +364,7 @@ public:
     template<class Compare>
     VecGenConstIter minSite(Compare comp) const
     {
-        return min_element(begin(VecSites), end(VecSites), comp);
+        return min_element(std::begin(VecSites), std::end(VecSites), comp);
     }
 
     /** \brief Find the maximal site according to a certain comparison
@@ -318,7 +382,7 @@ public:
     template<class Compare>
     VecGenConstIter maxSite(Compare comp) const
     {
-        return max_element(begin(VecSites), end(VecSites), comp);
+        return max_element(std::begin(VecSites), std::end(VecSites), comp);
     }
 
     /** \brief Find the minimal and maximal sites according to a certain comparison
@@ -337,7 +401,7 @@ public:
     template<class Compare>
     std::pair<VecGenConstIter, VecGenConstIter> minAndMaxSites(Compare comp) const
     {
-        return minmax_element(begin(VecSites), end(VecSites), comp);
+        return minmax_element(std::begin(VecSites), std::end(VecSites), comp);
     }
 
     /** \brief Compute the number of sites for which a certain predicate is true
@@ -362,63 +426,10 @@ public:
     uGenericNGSChrom(std::string consString):chr(consString){};
     uGenericNGSChrom(std::string consString, long int size);
 
-     int countUnique() const;
-private :
-     void removeSite(const int & position);
-     void removeSite(const int & start,const int & end);
-     void removeSite(VecGenIter begin, VecGenIter end);
+    int countUnique() const;
 
-    static bool comparePosStart(const _BASE_ &item, const int & value){
-         return item.getStart() < value;
-    }
-
-    static bool compareStart(const _BASE_ &item1, const _BASE_ &item2)
-    {
-        return item1.getStart() < item2.getStart();
-    }
-
-    static bool compareLenght(const _BASE_ &item1, const _BASE_ &item2)
-    {
-        return item1.getLenght() < item2.getLenght();
-    }
-
-    static bool comparePos(const _BASE_ &item1, const _BASE_ &item2)
-    {
-        if ((item1.getStart() != item2.getStart()))
-            return item1.getStart() < item2.getStart();
-        else
-            return item1.getEnd() < item2.getEnd();
-    }
-
-     VecGenConstIter findPrecedingSite(const int & position) const;
-     VecGenConstIter findNextSite(const int & position) const;
-    protected:
-    bool m_isSorted=false;
-    std::function<int(const _BASE_*)> sortGetStart ;
-    std::function<int(const _BASE_*)> sortGetEnd  ;
-    std::function<bool(const _BASE_ &item1, const _BASE_ &item2)> m_comptFunc;
-    long int chromSize=0;
-
-    std::vector<_BASE_> VecSites;
-    std::string chr;
-
-    std::vector<long long> returnSiteSizes() const;
-
-    unsigned long long avgSiteSize() const;
-    unsigned long long minSiteSize() const;
-    unsigned long long maxSiteSize() const;
-
-    unsigned long long sumSiteSize() const;
-
-   // int getPrecedingSitePos(int position, Compare comp= compareStart);
-    // float CorPeaks(uChipSeq otherChip,int extend);
-
-
-    template<typename S, typename R> friend class uGenericNGSExperiment;
-
-private:
-      std::vector<long long> quartilesSize() const;
-
+    auto begin()const->decltype(VecSites.cbegin()){return VecSites.cbegin();};
+    auto end()const->decltype(VecSites.cend()){return VecSites.cend();};
     // friend class uGenericNGSExperiment;
 };
 
@@ -437,15 +448,15 @@ uGenericNGSChrom<_BASE_>::uGenericNGSChrom(std::string consString, long int size
 }
 
 template <class _BASE_>
-bool uGenericNGSChrom<_BASE_>::addSite(const _BASE_ & newSite)
+bool uGenericNGSChrom<_BASE_>::addSite(_BASE_ newSite)
 {
-    VecSites.push_back(newSite);
+    VecSites.push_back(std::move(newSite));
     return true;
 }
 
 //Since we stock in a vector, this is fairly cost heavy
 template <class _BASE_>
-void uGenericNGSChrom<_BASE_>::removeSite(const int & position)
+void uGenericNGSChrom<_BASE_>::removeSite(int position)
 {
     try{
     VecSites.erase(VecSites.begin()+(position));
@@ -456,7 +467,7 @@ void uGenericNGSChrom<_BASE_>::removeSite(const int & position)
 }
 
 template <class _BASE_>
-void uGenericNGSChrom<_BASE_>::removeSite(const int & start, const int & end)
+void uGenericNGSChrom<_BASE_>::removeSite(int start, int end)
 {
 try {
         VecSites.erase(VecSites.begin()+(start),VecSites.begin()+(end));
@@ -477,7 +488,16 @@ void uGenericNGSChrom<_BASE_>::removeSite(VecGenIter start,VecGenIter end)
     }
 }
 
-
+template <class _BASE_>
+void uGenericNGSChrom<_BASE_>::removeSite(VecGenIter position)
+{
+    try {
+    VecSites.erase(position,position);
+       }
+    catch(...){
+        throw;
+    }
+}
 
 template <class _BASE_>
 _BASE_ uGenericNGSChrom<_BASE_>::generateRandomSite
@@ -622,35 +642,6 @@ int uGenericNGSChrom<_BASE_>::countUnique() const
     return count;
 };
 
-//Return a vector containing 3 elements representing 1st, med and 3rd quartil.
-template <class _BASE_>
-//TODO remove this function and use utility::quartilesSize
-std::vector<long long> uGenericNGSChrom<_BASE_>::quartilesSize() const
-{
-    std::vector<long long> vectorSizes;
-    std::vector<long long> returnVector;
-    int q1, med, q3;
-    std::vector<int> quartiles;
-
-    typename std::vector<_BASE_>::iterator iterVec;
-    vectorSizes = this->returnSiteSizes();
-    //quartile positions.
-    q1=vectorSizes.size()*0.25;
-    med=vectorSizes.size()*0.5;
-    q3=vectorSizes.size()*0.75;
-
-    std::nth_element (vectorSizes.begin(), vectorSizes.begin()+q1, vectorSizes.end());
-    returnVector.push_back(vectorSizes.at(q1));
-
-    std::nth_element (vectorSizes.begin(), vectorSizes.begin()+med, vectorSizes.end());
-    returnVector.push_back(vectorSizes.at(med));
-
-    std::nth_element (vectorSizes.begin(), vectorSizes.begin()+q3, vectorSizes.end());
-    returnVector.push_back(vectorSizes.at(q3));
-
-    return returnVector;
-};
-
 //Return a vector containing the size of every
 template <class _BASE_>
 std::vector<long long> uGenericNGSChrom<_BASE_>::returnSiteSizes() const
@@ -667,14 +658,15 @@ void uGenericNGSChrom<_BASE_>::outputBedFormat(std::ostream& out)
     applyOnAllSites(bind2nd(mem_fun_ref(&_BASE_::writeBedToOuput), out));
 }
 
+
+
 template <class _BASE_>
 void uGenericNGSChrom<_BASE_>::printStats(std::ostream& out) const
 {
     typename std::vector<long long> quarts;
 
-  //  quarts = utility::quartilesofVector(Vec)
-
-     this->quartilesSize();
+    /**< Get a vector containing the lenght of every site */
+    quarts = utility::quartilesofVector(computeOnAllSites([] (_BASE_ elem) -> long long {return elem.getLenght();}));
 
     out <<"Number of sites"<< "\t"<< this->count()<<"\n";
     out <<"Average sites size:"<< "\t"<< this->avgSiteSize()<<"\n";
@@ -686,7 +678,6 @@ void uGenericNGSChrom<_BASE_>::printStats(std::ostream& out) const
     out <<"Max sites size:"<< "\t"<< minAndMax.second->getLenght() <<"\n";
 
 }
-
 
 template <class _BASE_>
 typename std::vector<_BASE_>::const_iterator uGenericNGSChrom<_BASE_>::findPrecedingSite(const int & position) const
@@ -757,11 +748,11 @@ int uGenericNGSChrom<_BASE_>::getSubsetCount(int start, int end, OverlapType ove
     auto pos = this->findPrecedingSite(start);
 
     /**<  If no tag leftwise, we start at beginning*/
-    if (pos==this->last())
-       pos=this->first();
+    if (pos==this->end())
+       pos=this->begin();
 
     int tagcount=0;
-    for (; pos != this->last(); pos++)
+    for (; pos != this->end(); pos++)
     {
         if (sortGetStart(&(*pos))> end)
             break;
@@ -781,13 +772,13 @@ uGenericNGSChrom<_BASE_> uGenericNGSChrom<_BASE_>::getSubset(int start, int end,
     auto pos = this->findPrecedingSite(start);
 
     /**<  If no tag leftwise, we start at beginning*/
-    if (pos==this->last())
-       pos=this->first();
+    if (pos==this->end())
+       pos=this->begin();
 
     typename std::vector<_BASE_>::const_iterator iterVec;
     iterVec=VecSites.begin();
 
-    for (; pos != this->last(); pos++)
+    for (; pos != this->end(); pos++)
     {
         if (sortGetStart(&(*pos))> end)
             break;
@@ -818,15 +809,15 @@ uGenericNGSChrom<_BASE_> uGenericNGSChrom<_BASE_>::removeSubset(int start, int e
    auto pos = this->findPrecedingSite(start);
 
     /**<  If no tag leftwise, we start at beginning*/
-    if (pos==this->last())
-       pos=this->first();
+    if (pos==this->end())
+       pos=this->begin();
 
     typename std::vector<_BASE_>::iterator iterVec;
     iterVec=VecSites.begin();
 
 
     auto delPos=pos;
-    for (; pos != this->last(); pos++)
+    for (; pos != this->end(); pos++)
     {
         if (sortGetStart(&(*pos))> end)
             break;
@@ -834,9 +825,9 @@ uGenericNGSChrom<_BASE_> uGenericNGSChrom<_BASE_>::removeSubset(int start, int e
         if (utility::isOverlap(sortGetStart(&(*pos)), sortGetEnd(&(*pos)),start, end,overlap))
         {
             returnChrom.addSite(*pos);
-            delPos=pos;
             pos--;
-            this->removeSite(*delPos);
+            delPos=pos;
+            this->removeSite( to_mutable_iterator(VecSites,delPos ));
         }
     }
 
@@ -850,7 +841,7 @@ uGenericNGSChrom<_BASE_> uGenericNGSChrom<_BASE_>::getOverlapping(uGenericNGSChr
     uGenericNGSChrom<_BASE_> returnChr;
     for(auto it= VecSites.begin(); it!=VecSites.end(); it++)
     {
-        for(auto compit= compareChr.first(); compit!=compareChr.last(); compit++)
+        for(auto compit= compareChr.begin(); compit!=compareChr.end(); compit++)
         {
             if (utility::isOverlap(it->getStart(), it->getEnd(),compit->getStart(),compit->getEnd(),overlap))
             {
@@ -871,7 +862,7 @@ uGenericNGSChrom<_BASE_> uGenericNGSChrom<_BASE_>::getNotOverlapping(uGenericNGS
     bool add=true;
     for(auto it= VecSites.begin(); it!=VecSites.end(); it++)
     {
-        for(auto compit= compareChr.first(); compit!=compareChr.last(); compit++)
+        for(auto compit= compareChr.begin(); compit!=compareChr.end(); compit++)
         {
             if (utility::isOverlap(it->getStart(), it->getEnd(),compit->getStart(),compit->getEnd()))
             {
