@@ -5,7 +5,6 @@
 
 using namespace std;
 
-//TODO, is start == end, is it valid?
 /*
  * Constructor tests:
  *		uToken(std::istream& paramList);	
@@ -260,4 +259,47 @@ TEST(uTokenConstructor, SEQUENCE_CIGAR_lengthDontMatch) {
 	ss << "CIGAR\t1M3I2X1=12X\n" << "SEQUENCE\tACGTN.acgtn.ACGTGTCN\n";
 	ss << "SEQ_NAME\tab00001\n" << "FLAGS\t256\n";
 	ASSERT_THROW(uToken Token(ss), invalid_uToken_throw);
+}
+
+/*
+ * Test for the function:
+ *		std::string getParam(token_param name);
+ *	Valid cases:
+ *		ArgumentExists
+ *		ArgumentDoesNotExist
+ */
+
+ TEST(uTokenGetParam, ArgumentExists) {
+	stringstream ss;
+	ss << "CHR\tchr1\n" << "START_POS\t1\n" << "END_POS\t21\n";
+	ss << "STRAND\t+\n" << "MAP_SCORE\t255\n" << "PHRED_SCORE\t####################\n";
+	ss << "CIGAR\t2M3I2X1=12X\n" << "SEQUENCE\tACGTN.acgtn.ACGTGTCN\n";
+	ss << "SEQ_NAME\tab00001\n" << "FLAGS\t256\n";
+	uToken Token(ss);
+	ASSERT_EQ(Token.getParam(token_param::CHR), "chr1");
+	ASSERT_EQ(Token.getParam(token_param::START_POS), "1");
+	ASSERT_EQ(Token.getParam(token_param::END_POS), "21");
+	ASSERT_EQ(Token.getParam(token_param::STRAND), "+");
+	ASSERT_EQ(Token.getParam(token_param::MAP_SCORE), "255");
+	ASSERT_EQ(Token.getParam(token_param::PHRED_SCORE), "####################");
+	ASSERT_EQ(Token.getParam(token_param::CIGAR), "2M3I2X1=12X");
+	ASSERT_EQ(Token.getParam(token_param::SEQUENCE), "ACGTN.acgtn.ACGTGTCN");
+	ASSERT_EQ(Token.getParam(token_param::SEQ_NAME), "ab00001");
+	ASSERT_EQ(Token.getParam(token_param::FLAGS), "256");
+}
+
+TEST(uTokenGetParam, ArgumentDoesNotExist) {
+	stringstream ss;
+	ss << "CHR\tchr1\n" << "START_POS\t1\n" << "END_POS\t21\n";
+	uToken Token(ss);
+	ASSERT_EQ(Token.getParam(token_param::CHR), "chr1");
+	ASSERT_EQ(Token.getParam(token_param::START_POS), "1");
+	ASSERT_EQ(Token.getParam(token_param::END_POS), "21");
+	ASSERT_EQ(Token.getParam(token_param::STRAND), "");
+	ASSERT_EQ(Token.getParam(token_param::MAP_SCORE), "");
+	ASSERT_EQ(Token.getParam(token_param::PHRED_SCORE), "");
+	ASSERT_EQ(Token.getParam(token_param::CIGAR), "");
+	ASSERT_EQ(Token.getParam(token_param::SEQUENCE), "");
+	ASSERT_EQ(Token.getParam(token_param::SEQ_NAME), "");
+	ASSERT_EQ(Token.getParam(token_param::FLAGS), "");
 }
