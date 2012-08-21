@@ -37,6 +37,11 @@ uToken::uToken(std::istream& paramList){
 	}
 }
 
+uToken& uToken::operator=(uToken const& assign_from)
+{
+	if (this == &assign_from) return *this;
+	m_params = assign_from.m_params;
+}
 //std::string uToken::getParam(token_param name) {
 //	return m_params[name];
 //}

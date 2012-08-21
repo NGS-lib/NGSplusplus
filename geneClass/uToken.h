@@ -22,6 +22,7 @@ public:
 	 * \param token_param& name: the name of the param we wish to get.
 	 */
 	std::string getParam(token_param name) { return m_params[name]; }
+	uToken& operator=(uToken const& assign_from);
 
 private:
 	std::map<token_param, std::string> m_params;
