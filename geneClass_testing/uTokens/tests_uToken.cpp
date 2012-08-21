@@ -303,3 +303,57 @@ TEST(uTokenGetParam, ArgumentDoesNotExist) {
 	ASSERT_EQ(Token.getParam(token_param::SEQ_NAME), "");
 	ASSERT_EQ(Token.getParam(token_param::FLAGS), "");
 }
+
+/*
+ * Test for the equality operator overloading:
+ *		uToken& operator=(uToken const& assign_from);
+ *	Valid cases:
+ *		UsedAfterDeclaration
+ *		UsedDuringDeclaration
+ */
+
+TEST(uTokenEqualityOperatorOverloading, UsedAfterDeclaration) {
+	stringstream ss;
+	ss << "CHR\tchr1\n" << "START_POS\t1\n" << "END_POS\t21\n";
+	ss << "STRAND\t+\n" << "MAP_SCORE\t255\n" << "PHRED_SCORE\t####################\n";
+	ss << "CIGAR\t2M3I2X1=12X\n" << "SEQUENCE\tACGTN.acgtn.ACGTGTCN\n";
+	ss << "SEQ_NAME\tab00001\n" << "FLAGS\t256\n";
+	uToken Token(ss);
+	ss.clear();
+	ss << "CHR\tchr2\n" << "START_POS\t11\n" << "END_POS\t31\n";
+	uToken Token2(ss);
+	ASSERT_EQ(Token2.getParam(token_param::CHR), "chr2");
+	ASSERT_EQ(Token2.getParam(token_param::START_POS), "11");
+	ASSERT_EQ(Token2.getParam(token_param::END_POS), "31");
+	Token2 = Token;
+	ASSERT_EQ(Token2.getParam(token_param::CHR), "chr1");
+	ASSERT_EQ(Token2.getParam(token_param::START_POS), "1");
+	ASSERT_EQ(Token2.getParam(token_param::END_POS), "21");
+	ASSERT_EQ(Token2.getParam(token_param::STRAND), "+");
+	ASSERT_EQ(Token2.getParam(token_param::MAP_SCORE), "255");
+	ASSERT_EQ(Token2.getParam(token_param::PHRED_SCORE), "####################");
+	ASSERT_EQ(Token2.getParam(token_param::CIGAR), "2M3I2X1=12X");
+	ASSERT_EQ(Token2.getParam(token_param::SEQUENCE), "ACGTN.acgtn.ACGTGTCN");
+	ASSERT_EQ(Token2.getParam(token_param::SEQ_NAME), "ab00001");
+	ASSERT_EQ(Token2.getParam(token_param::FLAGS), "256");
+}
+
+TEST(uTokenEqualityOperatorOverloading, UsedDuringDeclaration) {
+	stringstream ss;
+	ss << "CHR\tchr1\n" << "START_POS\t1\n" << "END_POS\t21\n";
+	ss << "STRAND\t+\n" << "MAP_SCORE\t255\n" << "PHRED_SCORE\t####################\n";
+	ss << "CIGAR\t2M3I2X1=12X\n" << "SEQUENCE\tACGTN.acgtn.ACGTGTCN\n";
+	ss << "SEQ_NAME\tab00001\n" << "FLAGS\t256\n";
+	uToken Token(ss);
+	uToken Token2 = Token;
+	ASSERT_EQ(Token2.getParam(token_param::CHR), "chr1");
+	ASSERT_EQ(Token2.getParam(token_param::START_POS), "1");
+	ASSERT_EQ(Token2.getParam(token_param::END_POS), "21");
+	ASSERT_EQ(Token2.getParam(token_param::STRAND), "+");
+	ASSERT_EQ(Token2.getParam(token_param::MAP_SCORE), "255");
+	ASSERT_EQ(Token2.getParam(token_param::PHRED_SCORE), "####################");
+	ASSERT_EQ(Token2.getParam(token_param::CIGAR), "2M3I2X1=12X");
+	ASSERT_EQ(Token2.getParam(token_param::SEQUENCE), "ACGTN.acgtn.ACGTGTCN");
+	ASSERT_EQ(Token2.getParam(token_param::SEQ_NAME), "ab00001");
+	ASSERT_EQ(Token2.getParam(token_param::FLAGS), "256");
+}
