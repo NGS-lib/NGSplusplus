@@ -51,8 +51,6 @@ uToken uParser::getNextEntry() {
 			// TODO: What do we do with eof? return ptr instead? smart ptr?
 			throw e;
 		}
-		catch(...) {
-		}
 		break;
 	default: break;
 	}
@@ -89,6 +87,9 @@ uToken uParser::_getNextEntryBed() {
 		}
 		catch(invalid_uToken_error& e) {
 			// TODO: What to do with error?
+			throw e;
+		}
+		catch(invalid_uToken_throw& e) {
 			throw e;
 		}
 	}
