@@ -60,9 +60,9 @@ uToken uParser::getNextEntry() {
  * \return uToken: If all the parameters in the entry are valid a uToken object is returned.
  */
 uToken uParser::_getNextEntryBed() {
-	if (!m_pIstream->eof()) {
-		char line[4096];
-		m_pIstream->getline(line, 4096);
+	char line[4096];
+//	if (!m_pIstream->eof()) {
+	if (m_pIstream->getline(line, 4096)) {
 		std::stringstream ss;
 		ss << line;
 		std::string chr;
