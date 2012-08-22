@@ -15,7 +15,7 @@ uToken::uToken(std::istream& paramList){
 		try {
 			ss >> name;
 		}
-		catch (invalid_token_param_error& e) {
+		catch (invalid_token_param_throw& e) {
 			std::string trace;
 			if (std::string const * ste =boost::get_error_info<invalid_token_param_error>(e))
 				trace = *ste;
@@ -29,7 +29,7 @@ uToken::uToken(std::istream& paramList){
 		try {
 			_setParam(name, value);
 		}
-		catch (invalid_value_error& e) {
+		catch (invalid_value_throw& e) {
 			std::string trace;
 			if (std::string const * ste =boost::get_error_info<invalid_value_error>(e))
 				trace = *ste;
@@ -77,7 +77,7 @@ void uToken::_setParam(token_param& name, std::string& value) {
  * \param const std::string& value: the value of the parameter
  */
 bool uToken::_validateParam(token_param& name, const std::string& value) const {
-	bool isValid = true;
+	bool isValid = false;;
 	/**< In every case, an empty string is an invalid value */
 	if (value.size() == 0) {
 		return false;
@@ -94,9 +94,9 @@ bool uToken::_validateParam(token_param& name, const std::string& value) const {
 	case token_param::MAP_SCORE:
 		isValid = _mapScoreIsValid(value);
 		break;
-//	case token_param::PHRED_SCORE:
-//		isValid = _phredScoreIsValid(value);
-//		break;
+	case token_param::PHRED_SCORE:
+		isValid = true;
+		break;
 	case token_param::CIGAR:
 		isValid = _cigarIsValid(value);
 		break;
@@ -106,8 +106,12 @@ bool uToken::_validateParam(token_param& name, const std::string& value) const {
 	case token_param::FLAGS:
 		isValid = _seqFlagsIsValid(value);
 		break;
-//	case token_param::CHR:
-//	case token_param::SEQ_NAME:
+	case token_param::CHR:
+		isValid = true;
+		break;
+	case token_param::SEQ_NAME:
+		isValid = true;
+		break;
 	default: break;
 	}
 	return isValid;
