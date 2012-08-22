@@ -51,6 +51,8 @@ uToken uParser::getNextEntry() {
 			// TODO: What do we do with eof? return ptr instead? smart ptr?
 			throw e;
 		}
+		catch(...) {
+		}
 		break;
 	default: break;
 	}
@@ -69,18 +71,21 @@ uToken uParser::_getNextEntryBed() {
 		std::string start_pos;
 		std::string end_pos;
 		std::string score;
+		std::string seq_name;
 		std::string strand;
 		std::stringstream token_infos;
-		ss >> chr >> start_pos >> end_pos >> score >> strand;
+		ss >> chr >> start_pos >> end_pos >> seq_name >> score >> strand;
 		token_infos << "CHR\t" << chr << "\n";
 		token_infos << "START_POS\t" << start_pos << "\n";
-		token_infos << "END_POS\t" << end_pos;
+		token_infos << "END_POS\t" << end_pos << "\n";
+		token_infos << "SEQ_NAME\t" << seq_name << "\n";
 		/**< If there was no strand info, we don't add an empty string */
 		if (strand.size() != 0) {
 			token_infos << "STRAND\t" << strand << "\n";
 		}
 		try {
 			uToken token(token_infos);
+			return token;
 		}
 		catch(invalid_uToken_error& e) {
 			// TODO: What to do with error?
