@@ -16,6 +16,13 @@ uParser::uParser(const std::string& filename, file_type type) {
 	m_fileType = type;
 }
 
+/* \brief uParser destructor
+ */
+uParser::~uParser() {
+	delete m_pIstream;
+	m_pIstream = NULL;
+}
+
 /* \brief Generic function to fetch an entry from file, will adapt itself to file_type given in constructor
  */
 uToken uParser::getNextEntry() {

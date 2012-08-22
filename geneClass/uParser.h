@@ -12,6 +12,7 @@ class uParser {
 public:
 	// TODO: Add constructor with istream
 	uParser(const std::string& filename, file_type type);
+	~uParser();
 	bool eof() { return m_pIstream->eof(); }
 	uToken getNextEntry();
 
