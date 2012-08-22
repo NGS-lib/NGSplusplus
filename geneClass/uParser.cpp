@@ -5,10 +5,13 @@
  * \param file_type type: Currently supported formats: BED
  */
 uParser::uParser(const std::string& filename, file_type type) {
-	std::ifstream m_ifstream(filename, std::ifstream::in );
-	if (!m_ifstream.is_open()) {
+	std::ifstream* ifs = new std::ifstream(filename.c_str(), std::ifstream::in);
+	if (!ifs->is_open()) {
 		std::string error = "Error opening file: " + filename;
 		throw std::runtime_error(error.c_str());
+	}
+	else {
+		m_pIstream = ifs;
 	}
 	m_fileType = type;
 }
@@ -39,9 +42,9 @@ uToken uParser::getNextEntry() {
  * \return uToken: If all the parameters in the entry are valid a uToken object is returned.
  */
 uToken uParser::_getNextEntryBed() {
-	if (!m_ifstream.eof()) {
+	if (!m_pIstream->eof()) {
 		char line[4096];
-		m_ifstream.getline(line, 4096);
+		m_pIstream->getline(line, 4096);
 		std::stringstream ss;
 		ss << line;
 		std::string chr;
