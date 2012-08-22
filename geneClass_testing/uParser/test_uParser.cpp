@@ -27,3 +27,69 @@ TEST(uParserConstructor, InvalidFileName) {
 		ASSERT_STREQ(e.what(), "Error opening file: test2.bed");
 	}
 }
+
+/* 
+ * Test for the function:
+ *		uToken getNextEntry();
+ *	Valid cases:
+ *		CorrectlyFormatedBED6
+ *		CorrectlyFormatedBED4
+ *		
+ *	Invalid cases:
+ *		IncorrectlyFormatedBED
+ *		ReachedEOF
+ */
+
+TEST(uParserGetNextEntry, CorrectlyFormatedBED6) {
+	uParser Parser("test.bed", file_type::BED);
+	uToken Token = Parser.getNextEntry();
+	ASSERT_EQ(Token.getParam(token_param::CHR), "chr1");
+	ASSERT_EQ(Token.getParam(token_param::START_POS), "21");
+	ASSERT_EQ(Token.getParam(token_param::END_POS), "31");
+	ASSERT_EQ(Token.getParam(token_param::SEQ_NAME), "test001");
+	ASSERT_EQ(Token.getParam(token_param::STRAND), "+");
+
+	Token = Parser.getNextEntry();
+	ASSERT_EQ(Token.getParam(token_param::CHR), "chr2");
+	ASSERT_EQ(Token.getParam(token_param::START_POS), "1221");
+	ASSERT_EQ(Token.getParam(token_param::END_POS), "1231");
+	ASSERT_EQ(Token.getParam(token_param::SEQ_NAME), "test002");
+	ASSERT_EQ(Token.getParam(token_param::STRAND), "+");
+}
+
+TEST(uParserGetNextEntry, CorrectlyFormatedBED4) {
+	uParser Parser("test.bed", file_type::BED);
+	uToken Token = Parser.getNextEntry();
+	ASSERT_EQ(Token.getParam(token_param::CHR), "chr1");
+	ASSERT_EQ(Token.getParam(token_param::START_POS), "21");
+	ASSERT_EQ(Token.getParam(token_param::END_POS), "31");
+	ASSERT_EQ(Token.getParam(token_param::SEQ_NAME), "test001");
+
+	Token = Parser.getNextEntry();
+	ASSERT_EQ(Token.getParam(token_param::CHR), "chr2");
+	ASSERT_EQ(Token.getParam(token_param::START_POS), "1221");
+	ASSERT_EQ(Token.getParam(token_param::END_POS), "1231");
+	ASSERT_EQ(Token.getParam(token_param::SEQ_NAME), "test002");
+}
+
+TEST(uParserGetNextEntry, IncorrectlyFormatedBED) {
+	uParser Parser("incorrect.bed", file_type::BED);
+	ASSERT_THROW(Parser.getNextEntry(), invalid_uToken_throw);
+
+	uToken Token = Parser.getNextEntry();
+	ASSERT_EQ(Token.getParam(token_param::CHR), "chr2");
+	ASSERT_EQ(Token.getParam(token_param::START_POS), "1221");
+	ASSERT_EQ(Token.getParam(token_param::END_POS), "1231");
+	ASSERT_EQ(Token.getParam(token_param::SEQ_NAME), "test002");
+	ASSERT_EQ(Token.getParam(token_param::STRAND), "+");
+}
+
+TEST(uParserGetNextEntry, ReachedEOF) {
+	uParser Parser("test.bed", file_type::BED);
+	uToken Token = Parser.getNextEntry();
+	Token = Parser.getNextEntry();
+	Token = Parser.getNextEntry();
+	Token = Parser.getNextEntry();
+	// TODO: should not be invalid_uToken_throw, try to find why...
+	ASSERT_THROW(Token = Parser.getNextEntry(), invalid_uToken_throw);
+}
