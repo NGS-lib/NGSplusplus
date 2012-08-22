@@ -16,7 +16,12 @@ uToken::uToken(std::istream& paramList){
 			ss >> name;
 		}
 		catch (invalid_token_param_error& e) {
-			throw e;
+			std::string trace;
+			if (std::string const * ste =boost::get_error_info<invalid_token_param_error>(e))
+				trace = *ste;
+			invalid_uToken_throw err;
+			err << invalid_uToken_error(trace);
+			throw err;
 		}
 		/**< Fetch value */
 		std::string value;
@@ -25,7 +30,12 @@ uToken::uToken(std::istream& paramList){
 			_setParam(name, value);
 		}
 		catch (invalid_value_error& e) {
-			throw e;
+			std::string trace;
+			if (std::string const * ste =boost::get_error_info<invalid_value_error>(e))
+				trace = *ste;
+			invalid_uToken_throw err;
+			err << invalid_uToken_error(trace);
+			throw err;
 		}
 	}
 	/**< Check if uToken is in a valid state  */
@@ -41,6 +51,7 @@ uToken& uToken::operator=(uToken const& assign_from)
 {
 	if (this == &assign_from) return *this;
 	m_params = assign_from.m_params;
+	return *this;
 }
 //std::string uToken::getParam(token_param name) {
 //	return m_params[name];
