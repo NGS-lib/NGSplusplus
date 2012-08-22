@@ -90,6 +90,5 @@ TEST(uParserGetNextEntry, ReachedEOF) {
 	Token = Parser.getNextEntry();
 	Token = Parser.getNextEntry();
 	Token = Parser.getNextEntry();
-	// TODO: should not be invalid_uToken_throw, try to find why...
-	ASSERT_THROW(Token = Parser.getNextEntry(), invalid_uToken_throw);
+	ASSERT_THROW(Token = Parser.getNextEntry(), end_of_file_throw);
 }
