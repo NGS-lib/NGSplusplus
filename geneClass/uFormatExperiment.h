@@ -19,11 +19,17 @@ class uGenericNGSExperiment
 
 protected:
     //Used for gradual mode
+
+
+
     int op_mode;
     std::ifstream* ourStream;
     std::map<std::string,_CHROM_>  ExpMap;
     void removeSite(std::string chr,int position);
     void inferChrSize();
+    auto begin()->decltype(ExpMap.begin()){return ExpMap.begin();};
+    auto end()->decltype(ExpMap.end()){return ExpMap.end();};
+
 
 public:
 
@@ -43,12 +49,11 @@ public:
         return (refer);
     };
 
+    auto begin()const->decltype(ExpMap.cbegin()){return ExpMap.cbegin();};
+    auto end()const->decltype(ExpMap.cend()){return ExpMap.cend();};
 
-    //TODO make const
-    auto first()->decltype(ExpMap.begin()){return ExpMap.begin();};
-    auto last()->decltype(ExpMap.end()){return ExpMap.end();};
-    // auto adding_func(const Lhs &lhs, const Rhs &rhs) -> decltype(lhs+rhs)
-  //  auto func_name(int x, int y) -> int;
+
+
 
     void combine(const _CHROM_ &);
     bool addSite(const _BASE_ & newSite);
@@ -141,7 +146,7 @@ public:
         // Force using sequential version for accumulate as parallel version
         // doesn't work if actual data type of InitialValue and _CHROM_ cannot be
         // converted back and forth.
-        return __gnu_parallel::accumulate(begin(ExpMap), end(ExpMap), init,
+        return __gnu_parallel::accumulate(std::begin(ExpMap), std::end(ExpMap), init,
                                           [&binary_op, &init] (decltype(init) partial, NGSExpPair element)
                                           -> decltype(binary_op(partial, element.second))
         {
@@ -165,7 +170,7 @@ public:
     auto computeOnAllChroms(UnaryOperation unary_op) const -> std::map<std::string, decltype(unary_op(_CHROM_()))>
     {
         std::map<std::string, decltype(unary_op(_CHROM_()))> results;
-        transform(begin(ExpMap), end(ExpMap), std::inserter(results, begin(results)), [&unary_op](NGSExpPair element)
+        transform(std::begin(ExpMap), std::end(ExpMap), std::inserter(results, begin(results)), [&unary_op](NGSExpPair element)
         {
             return make_pair(element.first, unary_op(element.second));
         });
@@ -188,7 +193,7 @@ public:
     NGSExpMap getSpecificChroms(UnaryPredicate pred) const
     {
         NGSExpMap copyColl;
-        copy_if(begin(ExpMap), end(ExpMap), std::inserter(copyColl, begin(copyColl)), [&pred](const NGSExpPair& element)
+        copy_if(std::begin(ExpMap), std::end(ExpMap), std::inserter(copyColl, std::begin(copyColl)), [&pred](const NGSExpPair& element)
         {
             return pred(element.second);
         });
@@ -210,7 +215,7 @@ public:
     template<class UnaryFunction>
     UnaryFunction applyOnAllChroms(UnaryFunction f)
     {
-        for_each(begin(ExpMap), end(ExpMap), [&f](NGSExpPair element)
+        for_each(std::begin(ExpMap), std::end(ExpMap), [&f](NGSExpPair element)
         {
             f(element.second);
         });
@@ -220,7 +225,7 @@ public:
     template<class UnaryFunction>
     UnaryFunction applyOnSites(UnaryFunction f)
     {
-        for_each(begin(ExpMap), end(ExpMap), [&f](NGSExpPair& element)
+        for_each(std::begin(ExpMap), std::end(ExpMap), [&f](NGSExpPair& element)
         {
             element.second.applyOnAllSites(f);
             //f(element.second);
@@ -245,7 +250,7 @@ public:
     typename std::iterator_traits<NGSExpIter>::difference_type
     countChromsWithProperty(UnaryPredicate pred) const
     {
-        return count_if(begin(ExpMap), end(ExpMap), [&pred](const NGSExpPair& element)
+        return count_if(std::begin(ExpMap), std::end(ExpMap), [&pred](const NGSExpPair& element)
         {
             return pred(element.second);
         });
@@ -270,7 +275,7 @@ public:
     template<class Compare>
     NGSExpConstIter maxChrom(Compare comp) const
     {
-        return max_element(begin(ExpMap), end(ExpMap),
+        return max_element(std::begin(ExpMap), std::end(ExpMap),
                            [&comp](const NGSExpPair& element1, const NGSExpPair& element2) -> bool
         {
             return comp(element1.second, element2.second);
@@ -292,7 +297,7 @@ public:
     template<class Compare>
     NGSExpConstIter minChrom(Compare comp) const
     {
-        return min_element(begin(ExpMap), end(ExpMap),
+        return min_element(std::begin(ExpMap), std::end(ExpMap),
                            [&comp](const NGSExpPair& element1, const NGSExpPair& element2) -> bool
         {
             return comp(element1.second, element2.second);
@@ -315,7 +320,7 @@ public:
     template<class Compare>
     std::pair<NGSExpConstIter, NGSExpConstIter> minAndMaxChroms(Compare comp) const
     {
-        return minmax_element(begin(ExpMap), end(ExpMap),
+        return minmax_element(std::begin(ExpMap), std::end(ExpMap),
                               [&comp](const NGSExpPair& element1, const NGSExpPair& element2) -> bool
         {
             return comp(element1.second, element2.second);
@@ -465,7 +470,7 @@ template<typename _CHROM_, typename _BASE_>
 void uGenericNGSExperiment<_CHROM_, _BASE_>::sortData()
 {
     //TODO Why won't this work with applyOnAllChroms
- for( auto it = this->first(); it!=this->last(); it++)
+ for( auto it = this->begin(); it!=this->end(); it++)
             it->second.sortSites();;
  //  std::function<void (_CHROM_&)> funct;//=
  // funct=    (void(_CHROM_::*)()) &_CHROM_::sortSites;
@@ -557,7 +562,7 @@ void uGenericNGSExperiment<_CHROM_,_BASE_>::combine(const _CHROM_ & inputChrom)
 
     currentChrom=&(ExpMap[inputChrom.getChr()]);
 
-    for(auto itChrom =inputChrom.first(); itChrom!= inputChrom.last(); itChrom++){
+    for(auto itChrom =inputChrom.begin(); itChrom!= inputChrom.end(); itChrom++){
         currentChrom->addSite(*itChrom);
     }
     /*
