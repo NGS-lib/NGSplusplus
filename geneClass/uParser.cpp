@@ -4,8 +4,8 @@
  * \param std::string filename: Name of the file to load
  * \param file_type type: Currently supported formats: BED
  */
-uParser::uParser(std::string filename, file_type type = BED) {
-	std::ifstream m_ifstream(filename, ifstream::in );
+uParser::uParser(const std::string& filename, file_type type) {
+	std::ifstream m_ifstream(filename, std::ifstream::in );
 	if (!m_ifstream.is_open()) {
 		std::string error = "Error opening file: " + filename;
 		throw std::runtime_error(error.c_str());
@@ -17,7 +17,7 @@ uParser::uParser(std::string filename, file_type type = BED) {
  */
 uToken uParser::getNextEntry() {
 	switch(m_fileType) {
-	case BED: 
+	case file_type::BED: 
 		try {
 			uToken token = _getNextEntryBed(); return token;
 		}
@@ -26,6 +26,11 @@ uToken uParser::getNextEntry() {
 			// TODO: cerr warning?
 			throw e;
 		}
+		catch(end_of_file_error& e) {
+			// TODO: What do we do with eof? return ptr instead? smart ptr?
+			throw e;
+		}
+		break;
 	default: break;
 	}
 }
@@ -63,7 +68,9 @@ uToken uParser::_getNextEntryBed() {
 	}
 	else {
 		// TODO: What do we do when it is end of file?
-		return NULL;
+		end_of_file_throw e;
+		e << end_of_file_error("Reached end of file.");
+		throw e;
 	}
 }
 
