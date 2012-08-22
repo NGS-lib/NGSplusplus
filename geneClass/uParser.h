@@ -10,8 +10,8 @@ enum class file_type{ BED, SAM };
 
 class uParser {
 public:
-	// TODO: Add constructor with istream
 	uParser(const std::string& filename, file_type type);
+	uParser(std::istream* stream, file_type type);
 	~uParser();
 	bool eof() { return m_pIstream->eof(); }
 	uToken getNextEntry();
@@ -22,6 +22,8 @@ private:
 	std::istream* m_pIstream;
 	file_type m_fileType;
 	uToken _getNextEntryBed();
+	//TODO: To avoid using delete on m_pIstream if ifstream constructor was used. Is there a better way?
+	bool m_dynamicStream;
 };
 
 /**<  uParser exceptions */

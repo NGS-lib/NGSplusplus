@@ -1,6 +1,6 @@
 #include "uParser.h"
 
-/* \brief uParser constructor
+/* \brief uParser constructor with filename
  * \param std::string filename: Name of the file to load
  * \param file_type type: Currently supported formats: BED
  */
@@ -14,12 +14,23 @@ uParser::uParser(const std::string& filename, file_type type) {
 		m_pIstream = ifs;
 	}
 	m_fileType = type;
+	m_dynamicStream = true;
+}
+
+/* \brief uParser constructor with istream
+ */
+uParser::uParser(std::istream* stream, file_type type) {
+	m_pIstream = stream;
+	m_fileType = type;
+	m_dynamicStream = false;
 }
 
 /* \brief uParser destructor
  */
 uParser::~uParser() {
-	delete m_pIstream;
+	if (m_dynamicStream == true) {
+		delete m_pIstream;
+	}
 	m_pIstream = NULL;
 }
 
