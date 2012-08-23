@@ -13,7 +13,7 @@ public:
 	uParser(const std::string& filename, file_type type);
 	uParser(std::istream* stream, file_type type);
 	~uParser();
-	bool eof() { return m_pIstream->eof(); }
+	bool eof() const { return m_pIstream->peek() == EOF; }
 	uToken getNextEntry();
 
 private:
