@@ -47,7 +47,10 @@ uTags::uTags(std::string chr, int start, int end):name(nullptr),phredScore(nullp
     }
     catch(elem_throw & e)
     {
-        cerr << "Throwing in uTags constructor" <<endl;
+                #ifdef DEBUG
+               cerr << "Throwing in uTags constructor" <<endl;
+        #endif
+
         string trace;
         if (std::string const * ste =boost::get_error_info<string_error>(e) )
                 trace=*ste;
@@ -112,7 +115,11 @@ uTags::uTags(const uTags& copy_from):uGenericNGS(copy_from),name(nullptr),phredS
     Unmapped= copy_from.Unmapped;
     }
     catch(...){
-         cerr << " Failling in copy constructor, uTags(uTags&) " <<endl;
+        #ifdef DEBUG
+              cerr << " Failling in copy constructor, uTags(uTags&) " <<endl;
+        #endif
+
+
     }
 }
 
@@ -294,7 +301,7 @@ void uTags::debugElem() const
 void uTags::writeCompletedPESamToOutput(std::ostream &out)
 {
 /**< Write function, do not trust for diverse use. */
-
+try {
     int peLenght;
     peLenght= getPeLenght();
 
@@ -303,7 +310,10 @@ void uTags::writeCompletedPESamToOutput(std::ostream &out)
 
         //TODO, introducting try catch
         if ((flag&0x10)||(peLenght<0)){
-           cerr << " negative Strand??"<<endl;
+           #ifdef DEBUG
+               cerr << " negative Strand??"<<endl;
+            #endif
+
             debugElem();
           //  utility::pause_input();
         }
@@ -318,6 +328,14 @@ void uTags::writeCompletedPESamToOutput(std::ostream &out)
 
             out <<endl;
         }
+}
+catch(std::exception & e ){
+        #ifdef DEBUG
+            cerr << " Catching in writeCompletedPESamToOutput"<<endl;
+        #endif
+    throw e;
+}
+
 }
 
 // TODO: Move this to output class
@@ -472,7 +490,10 @@ try {
 	catch(elem_throw & e)
 	{
 	    string trace;
-	    cerr << "catching in factory on elem_throw" <<endl;
+	     #ifdef DEBUG
+                 cerr << "catching in factory on elem_throw" <<endl;
+        #endif
+
 	  if (std::string const * ste =boost::get_error_info<string_error>(e) )
 			trace=*ste;
 
@@ -481,7 +502,10 @@ try {
 	}
 	catch(...)
 	{
-	      cerr << "catching in factory on general throw" <<endl;
+                #ifdef DEBUG
+                     cerr << "catching in factory on general throw" <<endl;
+        #endif
+
 	    elem_throw e;
 	    e << string_error("we threw in makeTagfromSamString trying the next string \n"+samString);
 	    throw e;
@@ -566,9 +590,11 @@ void uTagsChrom::writeTrimmedSamToOutput(std::ostream &out, int left, int right)
         if (iterVec->writeTrimmedSamToOutput(out, left, right)==false)
             errorcount++;
     }
-
+    #ifdef DEBUG
     if (errorcount)
         cerr << "Skipped " << errorcount << " tags as trim would reduce them to 0. On Chrom " << this->getChr();
+    #endif
+
 }
 
 /** \brief Write our PE tags as a sam file and complete
@@ -758,8 +784,12 @@ void uTagsExperiment::loadFromSam(std::ifstream& curStream, bool minimal)
                 if (lineString.size()>5)
                     addSite(move(factory::makeTagfromSamString(lineString,minimal) ));
                 else{
+                #ifdef DEBUG
                     cerr <<"Skipping the following line as it does not satisfy minimal sam string size" <<endl;
                     cerr << lineString <<endl;
+                #endif
+
+
                 }
                 count++;
                 if (count%2000000==0)
@@ -769,20 +799,26 @@ void uTagsExperiment::loadFromSam(std::ifstream& curStream, bool minimal)
     }
     catch(elem_throw & e)
      {
-         cerr << "caught an exception in loadfromSam"<<endl;
+                        #ifdef DEBUG
+ cerr << "caught an exception in loadfromSam"<<endl;
+                #endif
          string trace;
 
         if (std::string const * ste =boost::get_error_info<string_error>(e) )
                 trace=*ste;
 
         e <<string_error(trace+"\n"+"falling from loadFromSam(stream, bool) while loading tag number"+utility::numberToString(count) );
+            #ifdef DEBUG
+                    cerr << "Throwing elem_throw" <<endl;
+                #endif
 
-        cerr << "Throwing elem_throw" <<endl;
         throw e;
      }
     catch(std::exception our_exception)
     {
-        cerr << "caught an exception in loadfromSam"<<endl;
+          #ifdef DEBUG
+                   cerr << "caught an exception in loadfromSam"<<endl;
+                #endif
         throw;
     }
 }
@@ -811,17 +847,26 @@ uTags uTagsExperiment::nextSamLine(bool minimal)
 
     if (op_mode==DEFAULT)
     {
-        cerr << "Stream not in progressive mode" <<endl;
+
+        #ifdef DEBUG
+            cerr << "Stream not in progressive mode" <<endl;
+        #endif
+
+
         abort();
     }
     if (ourStream==NULL)
     {
-        cerr << "Error, trying to load tag from empty stream"<<endl;
+         #ifdef DEBUG
+             cerr << "Error, trying to load tag from empty stream"<<endl;
+        #endif
         abort();
     }
     if (ourStream->peek()=='@')
     {
-        cerr << "Error, header line found. Did you parse the headers?"<<endl;
+        #ifdef DEBUG
+              cerr << "Error, header line found. Did you parse the headers?"<<endl;
+        #endif
         abort();
     }
     getline(*ourStream, lineString);
@@ -849,7 +894,12 @@ void uTagsExperiment::parseSamHeader()
     */
     if (ourStream==NULL)
     {
-        cerr << "Error, trying to load tag from empty stream, aborting from parseSamHeader()"<<endl;
+
+        #ifdef DEBUG
+              cerr << "Error, trying to load tag from empty stream, aborting from parseSamHeader()"<<endl;
+        #endif
+
+
         abort();
     }
 
@@ -876,30 +926,16 @@ void uTagsExperiment::parseSamHeader()
                 if (data.find("SN:")!=string::npos){
                     data.erase(0,3);
                     chrom=data;
-                  //  cerr << " Chrom is " << chrom << endl;
                 }
                 if (data.find("AS:")!=string::npos){
-                   // data.erase(0,3);
-                  //  chrom=data;
+                    /**< Skip */
                 }
                 if (data.find("LN:")!=string::npos){
                     data.erase(0,3);
                     chromsize=utility::stringToInt(data);
-                   // cerr << " ChromSize is " << chromsize << endl;
+
                 }
 
-               // cerr << data <<endl;
-                               /* //Get Chrom
-                Infostream >>chrom;
-                //Erase SN:
-                chrom.erase(0,3);
-
-    //TODO repair , not parsing correctly
-                Infostream>>size;
-                //Erase LN:
-                size.erase(0,3);
-                chromsize=utility::stringToInt(size);
-                 */
             }
              this->setChromSize(chrom, chromsize);
         }
@@ -985,6 +1021,7 @@ void uTagsExperiment::setChromSize(string chrom, int size)
 {
     uTagsChrom* ptempChrom;
     ptempChrom=&(ExpMap[chrom]);
+    ptempChrom->setChr(chrom);
     ptempChrom->setChromSize(size);
 }
 

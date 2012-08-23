@@ -24,25 +24,24 @@
 				<Option output="bin/Release/GeneClassTesting" prefix_auto="1" extension_auto="1" />
 				<Option object_output="obj/Release/" />
 				<Option type="1" />
-				<Option compiler="gcc47" />
+				<Option compiler="gcc" />
 				<Compiler>
 					<Add option="-O2" />
 					<Add option="-std=c++11" />
 					<Add option="-fopenmp" />
 					<Add option="-lpthread" />
-					<Add directory="../../geneClass" />
-					<Add directory="../../myUtilityFiles" />
-					<Add directory="../../gtest/include" />
-					<Add directory="../../gtest/include/gtest" />
-					<Add directory="../../gtest/include/gtest/internal" />
-					<Add directory="../geneClass/boost" />
-					<Add directory="../geneClass/boost/boost" />
+					<Add directory="../geneClass" />
+					<Add directory="../../geneTools/include/gtest" />
+					<Add directory="../../geneTools/include/gtest/include" />
+					<Add directory="../../geneTools/include/gtest/include/gtest/internal" />
+					<Add directory="../geneClass/boost-include" />
+					<Add directory="../../geneTools/include/gtest/include/gtest" />
+					<Add directory="../../geneTools/include/gnuplot-cpp" />
 				</Compiler>
 				<Linker>
 					<Add option="-s" />
 					<Add option="-lpthread" />
 					<Add library="../../libs/release/libgeneClass.a" />
-					<Add library="../../libs/release/libmyUtilityFiles.a" />
 					<Add library="../../libs/release/libgtest.a" />
 				</Linker>
 			</Target>

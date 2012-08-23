@@ -10,8 +10,6 @@
 //Very weak class as there are many differences in the functionality of derived classes.
 
 enum class SplitType{STRICT, IGNORE, EXTEND, ADD};
-
-//TODO : Replace member init with initialiser lists. More optimal
 class uGenericNGS
 {
 
@@ -43,7 +41,9 @@ public:
         }
         catch( std::exception &e)
         {
+            #ifdef DEBUG
             std::cerr << "Error in uGenericNGS(std::string pchr, int pstart, int pend). data is"<< pchr<< " "<< pend<<" "<< pstart << " "<<std::endl;
+            #endif
             throw e;
         }
     };

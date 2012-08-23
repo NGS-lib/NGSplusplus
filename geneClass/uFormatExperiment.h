@@ -1,6 +1,7 @@
 #ifndef UFORMATEXPERIMENT_H_INCLUDED
 #define UFORMATEXPERIMENT_H_INCLUDED
 #include <fstream>
+//#include "uParser.h"
 //_BASE_ is our Tags, _CHROM_ our Chrom structure.
 template<typename _CHROM_, typename _BASE_>
 class uGenericNGSExperiment
@@ -27,8 +28,6 @@ protected:
     std::map<std::string,_CHROM_>  ExpMap;
     void removeSite(std::string chr,int position);
     void inferChrSize();
-    auto begin()->decltype(ExpMap.begin()){return ExpMap.begin();};
-    auto end()->decltype(ExpMap.end()){return ExpMap.end();};
 
 
 public:
@@ -51,12 +50,13 @@ public:
 
     auto begin()const->decltype(ExpMap.cbegin()){return ExpMap.cbegin();};
     auto end()const->decltype(ExpMap.cend()){return ExpMap.cend();};
-
+    auto begin()->decltype(ExpMap.begin()){return ExpMap.begin();};
+    auto end()->decltype(ExpMap.end()){return ExpMap.end();};
 
 
 
     void combine(const _CHROM_ &);
-    bool addSite(const _BASE_ & newSite);
+    void addSite(const _BASE_ & newSite);
     long long count() const;
 
   //  int avgExpSiteSize();
@@ -234,6 +234,9 @@ public:
     }
 
 
+
+
+
     /** \brief Count the chromosomes for which a certain predicate is true
       *
       * This function take a pointer to a predicate function; this function
@@ -341,16 +344,22 @@ public:
 
 //Start uGenericNGSExperiment
 template<typename _CHROM_, typename _BASE_>
-bool uGenericNGSExperiment<_CHROM_, _BASE_>::addSite(const _BASE_ & newSite)
+void uGenericNGSExperiment<_CHROM_, _BASE_>::addSite(const _BASE_ & newSite)
 {
+
+    try {
     _CHROM_* ptempChrom;
 
     ptempChrom=&(ExpMap[newSite.getChr()]);
-
-    if ( ptempChrom->addSite(newSite))
-        return true;
-
-    return false;
+    ptempChrom->addSite(newSite);
+    }
+    catch(std::exception & e)
+    {
+          #ifdef DEBUG
+          cerr << "Catching and re-throwing in uFormatExp::addSite()"
+          #endif
+        throw e;
+    }
 }
 
 template<typename _CHROM_, typename _BASE_>
@@ -405,6 +414,31 @@ template<typename _CHROM_, typename _BASE_>
     }
 }
 
+/** \brief load basic data from file,
+ *
+ * \param stream std::ifstream& file to load from
+ * \return void
+ *
+ *//*
+template<typename _CHROM_, typename _BASE_>
+ void uGenericNGSExperiment<_CHROM_, _BASE_>::loadFromFile(std::ifstream& stream, file_type p_fType ) */
+//{
+
+   /* uParser ourParse(streamm,p_fType);
+  //  std::string tempString;
+   // while(!std::getline(stream, tempString).eof())
+  //  {
+        while(!ourParse.eof())
+        {
+           addSite(Parser.getNextEntry());
+
+        }
+
+       addSite( static_cast<_BASE_>(factory::makeNGSfromTabString(tempString)));
+
+
+   // }
+} */
 
 /** \brief Write our data as a legal bed file, filling only the first three columns
  *
