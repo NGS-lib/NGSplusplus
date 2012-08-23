@@ -28,8 +28,31 @@ TEST(uParserConstructor, InvalidFileName) {
 	}
 }
 
+/* Tests for the function:
+ * 		bool eof() const 
+ *	Valid cases:
+ *		NotEndOfFile
+ *		EndOfFile
+ */
+
+TEST(uParserEof, NotEndOfFile) {
+	uParser Parser("test.bed", file_type::BED);
+	ASSERT_FALSE(Parser.eof());
+	uToken Token = Parser.getNextEntry();
+	ASSERT_FALSE(Parser.eof());
+}
+
+TEST(uParserEof, EndOfFile) {
+	uParser Parser("test.bed", file_type::BED);
+	uToken Token = Parser.getNextEntry();
+	Token = Parser.getNextEntry();
+	Token = Parser.getNextEntry();
+	Token = Parser.getNextEntry();
+	ASSERT_TRUE(Parser.eof());
+}
+
 /* 
- * Test for the function:
+ * Tests for the function:
  *		uToken getNextEntry();
  *	Valid cases:
  *		CorrectlyFormatedBED6
