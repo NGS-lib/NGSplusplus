@@ -12,7 +12,7 @@
 #include <thread>
 #include <random>
 #include <string.h>
-#include "utility.h"
+#include "utility/utility.h"
 #include <time.h>
 #include "gtest.h"
 

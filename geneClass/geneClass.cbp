@@ -57,6 +57,8 @@
 		</Unit>
 		<Unit filename="uFunctions.h" />
 		<Unit filename="uGeneException.h" />
+		<Unit filename="uParser.cpp" />
+		<Unit filename="uParser.h" />
 		<Unit filename="uRegion.cpp" />
 		<Unit filename="uRegion.h" />
 		<Unit filename="uTags.cpp">
@@ -65,6 +67,8 @@
 		<Unit filename="uTags.h">
 			<Option target="&lt;{~None~}&gt;" />
 		</Unit>
+		<Unit filename="uToken.cpp" />
+		<Unit filename="uToken.h" />
 		<Unit filename="utility/utility.cpp" />
 		<Unit filename="utility/utility.h" />
 		<Extensions>

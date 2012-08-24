@@ -38,7 +38,7 @@ uParser::~uParser() {
  */
 uToken uParser::getNextEntry() {
 	switch(m_fileType) {
-	case file_type::BED: 
+	case file_type::BED:
 		try {
 			uToken token = _getNextEntryBed(); return token;
 		}

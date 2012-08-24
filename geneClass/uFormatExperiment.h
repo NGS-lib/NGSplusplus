@@ -1,28 +1,31 @@
 #ifndef UFORMATEXPERIMENT_H_INCLUDED
 #define UFORMATEXPERIMENT_H_INCLUDED
 #include <fstream>
+//#include "uParser.h"
 //_BASE_ is our Tags, _CHROM_ our Chrom structure.
+enum class ReadMode{ DEFAULT, GRADUAL };
 template<typename _CHROM_, typename _BASE_>
 class uGenericNGSExperiment
 {
+    /**< Can be used to make sure EXP, chrom both use appropriate base */
     static_assert(
         std::is_convertible<_CHROM_, uGenericNGSChrom<_BASE_>>::value,
         "Both types do not use the same underlying data structures"
     );
 
-    //We trust our template here is derived from uGenericNGSChrom
+    /**< Iterator typedef */
     typedef std::map<std::string,_CHROM_>      NGSExpMap;
     typedef typename NGSExpMap::iterator       NGSExpIter;
     typedef typename NGSExpMap::const_iterator NGSExpConstIter;
     typedef typename NGSExpMap::value_type     NGSExpPair;
 
-
+    //TODO, const iterators public
 protected:
-    //Used for gradual mode
 
 
+    /**< Are we loading gradually? */
+    ReadMode op_mode;
 
-    int op_mode;
     std::ifstream* ourStream;
     std::map<std::string,_CHROM_>  ExpMap;
     void removeSite(std::string chr,int position);
@@ -35,14 +38,13 @@ public:
 
     virtual ~uGenericNGSExperiment(){};
 
-    enum { DEFAULT = 0, GRADUAL = 1 };
 
     _CHROM_ getSubset(std::string chr, int start, int end, OverlapType options=OverlapType::OVERLAP_PARTIAL);
     _CHROM_ getDistinct(std::string chr, int start, int end, OverlapType options=OverlapType::OVERLAP_PARTIAL);
 
     //Should we be publicy allowing the turn of a pointer to our internal structure? I would assume not..
 
-
+    /**< Should we allow this? */
     const _CHROM_* getpChrom(const std::string & chrom) const
     {
         auto refer=&(ExpMap.find(chrom)->second);
@@ -56,12 +58,8 @@ public:
 
 
     void combine(const _CHROM_ &);
-    bool addSite(const _BASE_ & newSite);
+    void addSite(const _BASE_ & newSite);
     long long count() const;
-
-  //  int avgExpSiteSize();
-  //  int minExpSiteSize();
-  //  int maxExpSiteSize();
 
     int countExpUnique();
 
@@ -69,31 +67,36 @@ public:
     //void cutDuplicates();
 
 
-    //TODO MAKE WORK
+    //Replace with parser
     bool isEndfile()
     {
         return ourStream->eof();
     };
-
+    /**< For graduel loading */
     void setFileStream( std::ifstream& stream)
     {
         ourStream = &stream;
-        op_mode = GRADUAL;
+        op_mode = ReadMode::GRADUAL;
     };
 
     bool isModeGradual()
     {
-        return op_mode == GRADUAL;
+        return op_mode == ReadMode::GRADUAL;
     };
 
-    _BASE_ getSite(std::string chr, int position);
-    int findPrecedingSite(std::string chr, int position, int low, int high);
-    int getRegionCount(std::string chr, int start, int end, OverlapType overlap=OverlapType::OVERLAP_PARTIAL);
-    void sortData();
+    _BASE_ getSite(std::string chr, int position)const;
+    _BASE_ getSite(typename std::vector<_BASE_>::const_iterator posItr)const;
+
+
+     void sortData();
+
+
+    typename std::vector<_BASE_>::const_iterator findPrecedingSite(std::string chr, int position)const;
+    typename std::vector<_BASE_>::const_iterator findNextSite(std::string chr, int position)const;
+
 
 
     virtual void loadFromTabFile(std::ifstream& stream);
-
     void writeAsBedFile(std::ostream& out);
 
     //TODO, code this whole part apparently? THIS IS WHAT HAPPENS WHEN WE DON'T TEST!
@@ -234,6 +237,9 @@ public:
     }
 
 
+
+
+
     /** \brief Count the chromosomes for which a certain predicate is true
       *
       * This function take a pointer to a predicate function; this function
@@ -328,7 +334,7 @@ public:
     }
     /**< End STL wrappers */
 
-  uGenericNGSExperiment():op_mode(DEFAULT) {};
+  uGenericNGSExperiment():op_mode(ReadMode::DEFAULT) {};
 
     //TODO FIX THIS' MAKE EVERYTHIGN WITH IT PROTECTED
     _CHROM_* getpChrom(const std::string & chrom)
@@ -341,16 +347,22 @@ public:
 
 //Start uGenericNGSExperiment
 template<typename _CHROM_, typename _BASE_>
-bool uGenericNGSExperiment<_CHROM_, _BASE_>::addSite(const _BASE_ & newSite)
+void uGenericNGSExperiment<_CHROM_, _BASE_>::addSite(const _BASE_ & newSite)
 {
+
+    try {
     _CHROM_* ptempChrom;
 
     ptempChrom=&(ExpMap[newSite.getChr()]);
-
-    if ( ptempChrom->addSite(newSite))
-        return true;
-
-    return false;
+    ptempChrom->addSite(newSite);
+    }
+    catch(std::exception & e)
+    {
+          #ifdef DEBUG
+          cerr << "Catching and re-throwing in uFormatExp::addSite()"
+          #endif
+        throw e;
+    }
 }
 
 template<typename _CHROM_, typename _BASE_>
@@ -405,6 +417,31 @@ template<typename _CHROM_, typename _BASE_>
     }
 }
 
+/** \brief load basic data from file,
+ *
+ * \param stream std::ifstream& file to load from
+ * \return void
+ *
+ *//*
+template<typename _CHROM_, typename _BASE_>
+ void uGenericNGSExperiment<_CHROM_, _BASE_>::loadFromFile(std::ifstream& stream, file_type p_fType ) */
+//{
+
+   /* uParser ourParse(streamm,p_fType);
+  //  std::string tempString;
+   // while(!std::getline(stream, tempString).eof())
+  //  {
+        while(!ourParse.eof())
+        {
+           addSite(Parser.getNextEntry());
+
+        }
+
+       addSite( static_cast<_BASE_>(factory::makeNGSfromTabString(tempString)));
+
+
+   // }
+} */
 
 /** \brief Write our data as a legal bed file, filling only the first three columns
  *
@@ -475,30 +512,31 @@ void uGenericNGSExperiment<_CHROM_, _BASE_>::sortData()
  //  std::function<void (_CHROM_&)> funct;//=
  // funct=    (void(_CHROM_::*)()) &_CHROM_::sortSites;
   // applyOnAllChroms(funct);
-
-
   //  applyOnAllChroms(std::mem_fun_ref(static_cast<void (_CHROM_::*)()>(&_CHROM_::sortSites)));
 
 }
 
-
-
-
-
-
 template<typename _CHROM_, typename _BASE_>
-int uGenericNGSExperiment<_CHROM_,_BASE_>::findPrecedingSite(std::string chr, int position, int low, int high)
+typename std::vector<_BASE_>::const_iterator uGenericNGSExperiment<_CHROM_,_BASE_>::findPrecedingSite(std::string chr, int position)const
 {
     typename NGSExpMap::iterator iterMap;
     _CHROM_* tempChrom;
-
     tempChrom=&(ExpMap[chr]);
-
-    return tempChrom->findPrecedingSite(position, low,high);
+    return tempChrom->findPrecedingSite(position);
 }
 
 template<typename _CHROM_, typename _BASE_>
-_BASE_ uGenericNGSExperiment<_CHROM_,_BASE_>::getSite(std::string chr, int position)
+typename std::vector<_BASE_>::const_iterator uGenericNGSExperiment<_CHROM_,_BASE_>::findNextSite(std::string chr, int position)const
+{
+    typename NGSExpMap::iterator iterMap;
+    _CHROM_* tempChrom;
+    tempChrom=&(ExpMap[chr]);
+    return tempChrom->findPrecedingSite(position);
+}
+
+
+template<typename _CHROM_, typename _BASE_>
+_BASE_ uGenericNGSExperiment<_CHROM_,_BASE_>::getSite(std::string chr, int position)const
 {
     typename NGSExpMap::iterator iterMap;
     _CHROM_* tempChrom;
@@ -507,7 +545,16 @@ _BASE_ uGenericNGSExperiment<_CHROM_,_BASE_>::getSite(std::string chr, int posit
 
     return tempChrom->getSite( chr,position);
 }
+template<typename _CHROM_, typename _BASE_>
+_BASE_ uGenericNGSExperiment<_CHROM_,_BASE_>::getSite(typename std::vector<_BASE_>::const_iterator posItr)const
+{
+    typename NGSExpMap::iterator iterMap;
+    _CHROM_* tempChrom;
 
+    tempChrom=&(ExpMap[posItr->second.getChr()]);
+
+    return tempChrom->getSite( posItr);
+}
 
 //TODO make removeSubset and make a version that takes and reveices an NGSExp
 template<typename _CHROM_, typename _BASE_>
@@ -525,7 +572,7 @@ _CHROM_ uGenericNGSExperiment<_CHROM_,_BASE_>::getSubset(std::string chr, int st
 
     return returnChrom;
 }
-
+//TODO this won't work anymore
 template<typename _CHROM_, typename _BASE_>
 uGenericNGSExperiment<_CHROM_,_BASE_> uGenericNGSExperiment<_CHROM_,_BASE_>::getDistinct(uGenericNGSExperiment &compareExp)
 {

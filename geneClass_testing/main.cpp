@@ -9,7 +9,7 @@
 #include <thread>
 #include <random>
 #include <string.h>
-#include "utility.h"
+#include "utility/utility.h"
 #include <time.h>
 #include "gtest.h"
 
@@ -57,7 +57,7 @@ TEST(uGenericNGSTest, GETSET){
     {
         uGenericNGS uTest("chr1", 150, 200);
 
-    std::cerr << "Newline" <<endl;
+  //  std::cerr << "Newline" <<endl;
     /**< Illegal end */
     EXPECT_ANY_THROW(uTest.setEnd(-10));
     EXPECT_ANY_THROW(uTest.setEnd(50));
@@ -70,7 +70,7 @@ TEST(uGenericNGSTest, GETSET){
     EXPECT_EQ(225,uTest.getEnd());
 
 
-     std::cerr << "Chrom" <<endl;
+ //    std::cerr << "Chrom" <<endl;
     /**< Chrom setss */
     EXPECT_EQ("chr1",uTest.getChr());
     uTest.setChr("");
@@ -400,7 +400,10 @@ TEST(writeTest, uGenecExpTest){
 }
 
 
+
+
 int main(int argc, char **argv) {
+
 
   ::testing::InitGoogleTest(&argc, argv);
   return RUN_ALL_TESTS();

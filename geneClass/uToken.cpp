@@ -6,7 +6,7 @@
  * \param istream& paramList: a stream containing all the parameters in the format: <token_param>\t<value>\n<token_param>\t<value>\n...
  */
 uToken::uToken(std::istream& paramList){
-	char line[1024];	
+	char line[1024];
 	while (paramList.getline(line, 1024)) {
 		std::stringstream ss;
 		ss << line;
@@ -156,7 +156,7 @@ void uToken::_validateToken() {
 	}
 	/**< Validate sequence/cigar - Sum of lengths of the M/I/S/=/X operations shall equal the length of SEQ. (From SAM specifications) */
 	if (str_cigar.size() != 0) {
-		/**< Fetch all numerical values and sum them  */	
+		/**< Fetch all numerical values and sum them  */
 		size_t cigar_size = 0;
 		std::stringstream ss;
 		for (size_t i = 0; i < str_cigar.size(); i++) {
@@ -166,7 +166,7 @@ void uToken::_validateToken() {
 			else {
 				int value;
 				switch(str_cigar[i]) {
-				case 'M': 
+				case 'M':
 				case 'I':
 				case 'S':
 				case '=':
@@ -177,7 +177,7 @@ void uToken::_validateToken() {
 				ss.clear();
 			}
 		}
-		/**< Check if sequence length and cigar sum match  */	
+		/**< Check if sequence length and cigar sum match  */
 		if (str_sequence.size() != cigar_size) {
 			std::stringstream seq_size_stream;
 			seq_size_stream << str_sequence.size();
@@ -236,7 +236,7 @@ void uToken::_throwInvalidToken(const std::string& baseErrorMessage) const {
 //	return _isStreamEmpty(ss);
 //}
 
-/* \brief check if START_POS or END_POS is valid. 
+/* \brief check if START_POS or END_POS is valid.
  * \param const std::string& value: the value of the pos entry.
  */
 bool uToken::_posIsValid(const std::string& value) const {
