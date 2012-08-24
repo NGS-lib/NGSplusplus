@@ -762,7 +762,7 @@ void uTagsExperiment::loadFromSam(std::ifstream& curStream, bool minimal)
     string lineString;
     int count=0;
     ourStream = &curStream;
-    op_mode= DEFAULT;
+    op_mode= ReadMode::DEFAULT;
 /**< Parse Header if header there is */
     parseSamHeader();
     try
@@ -835,6 +835,7 @@ void uTagsExperiment::loadSamHeader(std::ifstream& curStream)
     parseSamHeader();
 }
 
+//TODO use parser
 /** \brief Returns the tag parsed from the next line of our sam file. Abort if not in progressive mode
  *
  * \param minimal : If yes, we will not load everything from the line
@@ -845,7 +846,7 @@ uTags uTagsExperiment::nextSamLine(bool minimal)
     string lineString;
     uTags tempTag;
 
-    if (op_mode==DEFAULT)
+    if (op_mode==ReadMode::DEFAULT)
     {
 
         #ifdef DEBUG

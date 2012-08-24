@@ -62,14 +62,15 @@
 			<Add option="-static-libstdc++" />
 		</Linker>
 		<Unit filename="errorTest.cpp">
-			<Option compile="0" />
 			<Option link="0" />
 			<Option target="&lt;{~None~}&gt;" />
 		</Unit>
 		<Unit filename="main.cpp" />
+		<Unit filename="uParser/test_uParser.cpp" />
 		<Unit filename="uTagTests.cpp">
 			<Option compilerVar="CC" />
 		</Unit>
+		<Unit filename="uTokens/tests_uToken.cpp" />
 		<Unit filename="utilityTest.cpp" />
 		<Extensions>
 			<code_completion />
