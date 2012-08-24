@@ -28,7 +28,6 @@ private:
 	std::map<token_param, std::string> m_params;
 	void _setParam(token_param& name, std::string& value);
 	bool _validateParam(token_param& name, const std::string& value) const;
-	//TODO: SEQUENCE/PHRED length must fit with END_POS - START_POS
 	void _validateToken();
 	void _throwInvalidToken(const std::string& baseErrorMessage) const;
 
