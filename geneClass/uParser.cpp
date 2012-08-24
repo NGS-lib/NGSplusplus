@@ -85,10 +85,6 @@ uToken uParser::_getNextEntryBed() {
 			uToken token(token_infos);
 			return token;
 		}
-		catch(invalid_uToken_error& e) {
-			// TODO: What to do with error?
-			throw e;
-		}
 		catch(invalid_uToken_throw& e) {
 			throw e;
 		}
