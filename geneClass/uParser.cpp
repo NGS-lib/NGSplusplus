@@ -43,12 +43,15 @@ uToken uParser::getNextEntry() {
 			uToken token = _getNextEntryBed(); return token;
 		}
 		catch(invalid_uToken_error& e) {
-			// TODO: what should we do in case of error?
-			// TODO: cerr warning?
+			#ifdef DEBUG
+			std::string trace;
+			if (std::string const * ste =boost::get_error_info<invalid_uToken_error>(e))
+				trace = *ste;
+			std::cerr << "Invalid uToken: " << trace << std::endl;
+			#endif
 			throw e;
 		}
 		catch(end_of_file_error& e) {
-			// TODO: What do we do with eof? return ptr instead? smart ptr?
 			throw e;
 		}
 		break;
@@ -90,7 +93,9 @@ uToken uParser::_getNextEntryBed() {
 		}
 	}
 	else {
-		// TODO: What do we do when it is end of file?
+		#ifdef DEBUG
+		std::cerr << "Reached end of file." << std::endl;
+		#endif
 		end_of_file_throw e;
 		e << end_of_file_error("Reached end of file.");
 		throw e;
