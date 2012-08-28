@@ -127,7 +127,6 @@ void uToken::_validateToken() {
 	std::string str_phred = getParam(token_param::PHRED_SCORE);
 	std::string str_cigar = getParam(token_param::CIGAR);
 
-	// TODO: What should we do if when no STRAND value given in constructor?
 	/**< Mandatory values: CHR, START_POS and END_POS */
 	if (str_chr.size() == 0 || str_start_pos.size() == 0 || str_end_pos.size() == 0) {
 		std::string error = "CHR, START_POS and END_POS are mandatory.\n";
@@ -197,45 +196,6 @@ void uToken::_throwInvalidToken(const std::string& baseErrorMessage) const {
 	throw e;
 }
 
-// TODO: So far, it does not seem important to validate the CHR format, remove the commented section after tests are completed.
-/* \brief Test if chr is valid.
- * \param const std::string& value: the value of the chr entry.
- */
-//bool uToken::_chrIsValid(const std::string& value) const {
-//	/**< Check if value starts with "chr" */
-//	if (value[0] != 'c' && value[1] != 'h' && value[2] != 'r') {
-//		return false;
-//	}
-//	/**< Check if next value is a positive int value */
-//	std::stringstream ss;
-//	ss << value.substr(3);
-//	int n = 0;
-//	ss >> n;
-//	if (n <= 0) {
-//		return false;
-//	}
-//	/**< Finally, check if there is garbage at the end of value */
-//	return _isStreamEmpty(ss);
-//}
-// TODO: Old version, remove after testing is done
-//	std::stringstream ss;
-//	ss << value;
-//	/**< Check if value starts with "chr" */
-//	std::string chr;
-//	ss >> chr;
-//	if (chr != "chr") {
-//		return false;
-//	}
-//	/**< Check if next value is a positive int value */
-//	int n = 0;
-//	ss >> n;
-//	if (n <= 0) {
-//		return false;
-//	}
-//	/**< Finally, check if there is garbage at the end of value */
-//	return _isStreamEmpty(ss);
-//}
-
 /* \brief check if START_POS or END_POS is valid.
  * \param const std::string& value: the value of the pos entry.
  */
@@ -266,7 +226,6 @@ bool uToken::_strandIsValid(const std::string& value) const {
 	}
 	return true;
 }
-// TODO: Doc below this point may be copypasta, check to make sure it was updated correctly
 /* \brief Check if map score value is valid (between 0 and 255 incl.).
  * \param const std::string& value: the value of the map score entry.
  */
@@ -282,21 +241,6 @@ bool uToken::_mapScoreIsValid(const std::string& value) const {
 	/**< Finally, check if there is garbage at the end of value */
 	return _isStreamEmpty(ss);
 }
-
-// TODO: Seems useless, since it is a list of char, and char values cannot be over 255...
-/* \brief Check phred score value is valid.
- * \param const std::string& value: the value of the phred score entry.
- */
-//bool uToken::_phredScoreIsValid(const std::string& value) const {
-//	/**< Check if value is a list of values (between 0 and 255 incl.). */
-//	for (size_t i = 0; i < value.size(); i++) {
-//		int p = value[i];
-//		if (p < 0 || p > 255) {
-//			return false;
-//		}
-//	}
-//	return true;
-//}
 
 /* \brief Check is sequence is valid.
  * \param const std::string& value: the value of the sequence entry.
@@ -325,18 +269,6 @@ bool uToken::_sequenceIsValid(const std::string& value) const {
 	}
 	return true;
 }
-
-// TODO: I don't think there is really anything worth checking for a sequence other once we know it's not empty
-/* \brief Check if sequence name value is valid.
- * \param const std::string& value: the value of the sequence name entry.
- */
-//bool uToken::_seqNameIsValid(const std::string& value) const {
-//	std::stringstream ss;
-//	ss << value;
-//	/**< Check if value is either '+' or '-' */
-//	/**< Finally, check if there is garbage at the end of value */
-//	return _isStreamEmpty(ss);
-//}
 
 /* \brief Check if flag value is valid (between 0 and 65235 incl.).
  * \param const std::string& value: the value of the flag entry.
