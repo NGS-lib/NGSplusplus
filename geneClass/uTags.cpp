@@ -26,28 +26,23 @@ uTags::uTags(uGenericNGS otherItem):uGenericNGS(otherItem),name(nullptr),phredSc
  * \param start: beginning position of the tag
  * \param end: ending position of the tag
  */
-uTags::uTags(std::string chr, int start, int end):name(nullptr),phredScore(nullptr),cigar(nullptr)
+uTags::uTags(std::string pchr, int start, int end, StrandDir pstrand):name(nullptr),phredScore(nullptr),cigar(nullptr)
 {
     /**< We handle parent init, as we do not have the same sanity assumptions as the parent */
     /**< If start is after end, we assumed this is a negative tag */
      //TODO Remove (start/end switch should be handled by parser)
    try {
-    if (start>end)
+    if (end>start)
     {
-        setStartEnd(end,start);
-        setStrand('-');
+       throw elem_throw();
     }
-    else
-    {
-        setStartEnd(start,end);
-        setStrand('+');
-    }
-    setChr(chr);
-
+     setStartEnd(start,end);
+     setChr(pchr);
+     setStrand(pstrand);
     }
     catch(elem_throw & e)
     {
-                #ifdef DEBUG
+        #ifdef DEBUG
                cerr << "Throwing in uTags constructor" <<endl;
         #endif
 
@@ -55,7 +50,7 @@ uTags::uTags(std::string chr, int start, int end):name(nullptr),phredScore(nullp
         if (std::string const * ste =boost::get_error_info<string_error>(e) )
                 trace=*ste;
 
-        e << string_error(trace+"Failling in uTags constructor, parameters are"+chr+" "+utility::numberToString(start)+" "+utility::numberToString(end)+"\n");
+        e << string_error(trace+"Failling in uTags constructor, parameters are"+pchr+" "+utility::numberToString(start)+" "+utility::numberToString(end)+"\n");
 
         throw e;
 
@@ -214,7 +209,10 @@ void uTags::writeBedToOuput(std::ostream &out) const
 
     /**< Strand is implicit, always write it */
     //if ((getStrand()=='+')||(getStrand()=='-'))
-    out << "\t" << getStrand();
+    char strand='+';
+    if (isReverse())
+        strand='-';
+    out << "\t" << strand;
 
     out <<"\n";
 }
@@ -229,7 +227,7 @@ void uTags::writeBedToOuput(std::ostream &out) const
 void uTags::writetoBedCompletePE( std::ostream &out)
 {
 
-    if ((this->isPE())&&(this->getStrand()=='+'))
+    if ((this->isPE())&&(this->getStrand()==StrandDir::FORWARD))
     {
         out << getChr() << "\t" << this->getStart() << "\t" << ( this->getStart()+this->getPeLenght()) <<endl;;
     }
@@ -355,7 +353,7 @@ bool uTags::writeTrimmedSamToOutput(std::ostream &out, int left, int right)
         return false;
     }
     // ourflag=ourflag&
-    if (getStrand()=='-')
+    if (getStrand()==StrandDir::REVERSE)
     {
         trimSites(right, left);
     }
@@ -612,7 +610,7 @@ void uTagsChrom::writeCompletedPESamToOutput(std::ostream &out)
 
     for (iterVec = VecSites.begin(); iterVec != VecSites.end(); ++iterVec)
     {
-        if ((iterVec->isPE())&&(iterVec->getStrand()=='+')&&(iterVec->isMapped()))
+        if ((iterVec->isPE())&&(iterVec->getStrand()==StrandDir::FORWARD)&&(iterVec->isMapped()))
             iterVec->writeCompletedPESamToOutput(out);
     }
 

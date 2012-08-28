@@ -20,14 +20,24 @@ class uGenericNGSExperiment
     typedef typename NGSExpMap::value_type     NGSExpPair;
 
     //TODO, const iterators public
-protected:
 
+protected:
 
     /**< Are we loading gradually? */
     ReadMode op_mode;
 
     std::ifstream* ourStream;
     std::map<std::string,_CHROM_>  ExpMap;
+
+public:
+
+
+    auto begin()const->decltype(ExpMap.cbegin()){return ExpMap.cbegin();};
+    auto end()const->decltype(ExpMap.cend()){return ExpMap.cend();};
+
+protected:
+
+
     void removeSite(std::string chr,int position);
     void inferChrSize();
     auto begin()->decltype(ExpMap.begin()){return ExpMap.begin();};
@@ -51,8 +61,6 @@ public:
         return (refer);
     };
 
-    auto begin()const->decltype(ExpMap.cbegin()){return ExpMap.cbegin();};
-    auto end()const->decltype(ExpMap.cend()){return ExpMap.cend();};
 
 
 
@@ -94,8 +102,6 @@ public:
     typename std::vector<_BASE_>::const_iterator findPrecedingSite(std::string chr, int position)const;
     typename std::vector<_BASE_>::const_iterator findNextSite(std::string chr, int position)const;
 
-
-
     virtual void loadFromTabFile(std::ifstream& stream);
     void writeAsBedFile(std::ostream& out);
 
@@ -118,12 +124,6 @@ public:
     {
         return (ExpMap[chr].getChromSize());
     };
-
-
-
-
-
-
 
     int getSubsetCount(std::string chr, int start, int end, OverlapType overlap=OverlapType::OVERLAP_PARTIAL);
     int getSubsetCount(uGenericNGS subsetReg, OverlapType overlap=OverlapType::OVERLAP_PARTIAL);
@@ -261,10 +261,6 @@ public:
             return pred(element.second);
         });
     }
-
-
-
-
 
     /** \brief Find the maximal chromosome according to a certain comparison
       *
@@ -621,6 +617,13 @@ void uGenericNGSExperiment<_CHROM_,_BASE_>::combine(const _CHROM_ & inputChrom)
     } */
 }
 
+/** \brief Return every element of THIS overlapping with parameter.
+ *
+ * \param uGenericNGSExperiment compareExp : Experiment to check for overlaps
+ * \param type OverlapType What overlap to check
+ * \return uGenericNGSExperiment<_CHROM_,_BASE_> Experiment containing all elements from THIS that overlap with parameter.
+ *
+ */
 template<typename _CHROM_, typename _BASE_>
 template<typename _CHROMPAR_, typename _BASEPAR_>
 uGenericNGSExperiment<_CHROM_,_BASE_> uGenericNGSExperiment<_CHROM_,_BASE_>::getOverlapping(uGenericNGSExperiment<_CHROMPAR_,_BASEPAR_> &compareExp, OverlapType type)
@@ -638,26 +641,42 @@ uGenericNGSExperiment<_CHROM_,_BASE_> uGenericNGSExperiment<_CHROM_,_BASE_>::get
 
 template<typename _CHROM_, typename _BASE_>
 template<typename _BASEPAR_>
-uGenericNGSExperiment<_CHROM_,_BASE_> uGenericNGSExperiment<_CHROM_,_BASE_>::getOverlapping(uGenericNGSChrom<_BASEPAR_> &compareChrom, OverlapType type)
+/** \brief Same as above, but compare a chrom rather then EXP
+ *
+ * \param uGenericNGSExperiment compareChrom : Experiment to check for overlaps
+ * \param type OverlapType What overlap to check
+ * \return uGenericNGSExperiment<_CHROM_,_BASE_> Experiment containing all elements from THIS that overlap with parameter.
+ *
+ */
+ uGenericNGSExperiment<_CHROM_,_BASE_> uGenericNGSExperiment<_CHROM_,_BASE_>::getOverlapping(uGenericNGSChrom<_BASEPAR_> &compareChrom, OverlapType type)
 {
+    try{
     uGenericNGSExperiment<_CHROM_,_BASE_> tempExp;
 
     tempExp.combine(compareChrom);
     return getOverlapping(tempExp,type);
-
+    }
+    catch(std::exception & e)
+    {
+        throw e;
+    }
 }
-
+/**< See above, but using fixed positions */
 template<typename _CHROM_, typename _BASE_>
 uGenericNGSExperiment<_CHROM_,_BASE_> uGenericNGSExperiment<_CHROM_,_BASE_>::getOverlapping(std::string chr, int start, int end, OverlapType type)
 {
+    try {
     uGenericNGSChrom<_BASE_> tempChrom;
 
     auto item= uGenericNGS(chr,start,end);
     auto castItem= static_cast<_BASE_>(item);
     tempChrom.addSite(castItem);
     return getOverlapping(tempChrom, type);
+    }
+    catch(std::exception & e){
+        throw e;
+    }
 }
-
 
 
 
@@ -712,15 +731,11 @@ void uGenericNGSExperiment<_CHROM_,_BASE_>::divideItemsIntoBinofSize(int N, Spli
 
 
 
+//namespace uGeneric{
+//
+//    #define uGenericExp uGenericNGSExperiment<uGenericNGSChrom<uGenericNGS>,uGenericNGS>
 
-
-namespace uGeneric{
-
-
-    #define uGenericExp uGenericNGSExperiment<uGenericNGSChrom<uGenericNGS>,uGenericNGS>
-
-
-}
+//}
 
 
 

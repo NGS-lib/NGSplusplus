@@ -8,7 +8,7 @@
 #include "uGeneException.h"
 //Our basic Site for NGS format
 //Very weak class as there are many differences in the functionality of derived classes.
-
+enum class StrandDir{FORWARD,REVERSE};
 enum class SplitType{STRICT, IGNORE, EXTEND, ADD};
 class uGenericNGS
 {
@@ -16,15 +16,12 @@ class uGenericNGS
 #define FORWARCHARD '+'
 #define REVERSECHAR '-'
 
-#define FORWARD 0
-#define REVERSE 1
-
 
 protected:
     std::string chr;
     long int startPos=0;
     long int endPos=0;
-    bool strand=0;
+    StrandDir strand=StrandDir::FORWARD;
 
 public:
 
@@ -69,6 +66,27 @@ public:
     {
         chr=ourchr;
     };
+
+   /* char getStrand () const
+    {
+        if (strand==StrandDir::REVERSE)
+            return '-';
+        else
+            return '+';
+    }; */
+
+    StrandDir getStrand() const
+    {
+        return strand;
+    };
+
+    bool isReverse() const
+    {
+        if (strand==StrandDir::REVERSE)
+            return true;
+        else
+            return false;
+    }
 
     void setStart(int ourStart)
     {

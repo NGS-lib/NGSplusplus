@@ -12,9 +12,6 @@ class uTags: public uGenericNGS
 #define FORWARCHARD '+'
 #define REVERSECHAR '-'
 
-#define FORWARD 0
-#define REVERSE 1
-
 private:
     //0 = FORWARD, 1 = REVERSE
 
@@ -43,7 +40,7 @@ public:
 
     uTags();
     uTags(uGenericNGS otherItem);
-    uTags(std::string chr, int start, int end);
+    uTags(std::string pchr, int start, int end, StrandDir pstrand=StrandDir::FORWARD);
     uTags(const uTags& copy_from);
     uTags& operator=  (uTags const& assign_from);
     ~uTags();
@@ -54,9 +51,9 @@ public:
         try
         {
             if (pStrand==REVERSECHAR)
-                strand=REVERSE;
+                strand=StrandDir::REVERSE;
             else if (pStrand==FORWARCHARD)
-                strand=FORWARD;
+                strand=StrandDir::FORWARD;
                 else
                    throw 20;
             }
@@ -68,7 +65,7 @@ public:
             throw e;
         }
     };
-    void setStrand(bool pStrand)
+    void setStrand(StrandDir pStrand)
     {
         strand=pStrand;
     };
@@ -139,18 +136,6 @@ public:
     {
         return flag;
     };
-    char getStrand() const
-    {
-        if (strand)
-            return '-';
-        else
-            return '+';
-    };
-    bool isReverse() const
-    {
-        return strand;
-    }
-
     void setSequence(std::string pSeq)
     {
         sequence=pSeq;
