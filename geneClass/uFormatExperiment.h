@@ -29,15 +29,6 @@ protected:
     std::ifstream* ourStream;
     std::map<std::string,_CHROM_>  ExpMap;
 
-public:
-
-
-    auto begin()const->decltype(ExpMap.cbegin()){return ExpMap.cbegin();};
-    auto end()const->decltype(ExpMap.cend()){return ExpMap.cend();};
-
-protected:
-
-
     void removeSite(std::string chr,int position);
     void inferChrSize();
     auto begin()->decltype(ExpMap.begin()){return ExpMap.begin();};
@@ -47,7 +38,12 @@ protected:
 public:
 
     virtual ~uGenericNGSExperiment(){};
+    uGenericNGSExperiment& operator=(const uGenericNGSExperiment& copFrom)=delete;
+    uGenericNGSExperiment(const uGenericNGSExperiment&) = delete;
 
+
+    auto begin()const->decltype(ExpMap.cbegin()){return ExpMap.cbegin();};
+    auto end()const->decltype(ExpMap.cend()){return ExpMap.cend();};
 
     _CHROM_ getSubset(std::string chr, int start, int end, OverlapType options=OverlapType::OVERLAP_PARTIAL);
     _CHROM_ getDistinct(std::string chr, int start, int end, OverlapType options=OverlapType::OVERLAP_PARTIAL);

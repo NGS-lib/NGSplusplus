@@ -695,7 +695,7 @@ std::vector<float> uTagsChrom::getRegionSignal(int start, int end, bool overlap)
     tempSignal.resize((end-start)+1);
     std::vector<uTags>::iterator iterVec;
 
-    int pos;
+    int pos=0;
     /**< Need to mess around with this later, make sure tags at the same position are not being messed with. */
     /**< We go one Kb earlier in our experiment, make sure we get all overlapping tags. */
 

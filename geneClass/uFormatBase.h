@@ -18,7 +18,7 @@ class uGenericNGS
 
 
 protected:
-    std::string chr;
+    std::string chr="";
     long int startPos=0;
     long int endPos=0;
     StrandDir strand=StrandDir::FORWARD;

@@ -17,11 +17,11 @@ private:
 
     //Optional
     //Map score, quality of the alignement.
-    int mapScore;
+    short int mapScore=255;
 
     //TODO this is some heavy overhead considering we are very unlikely to user Phred, cigar and name.. store in a different configuration?
     //The actual sequence
-    std::string sequence;
+    std::string sequence="";
     char* name;
     char* phredScore;
     char* cigar;
@@ -29,11 +29,11 @@ private:
     //Paired End
     // bool PE;
     //Unmapped
-    bool Unmapped;
+    bool Unmapped=true;
     //Using Samtools definition here. Replace above variables by this when possible.
-    int flag;
+    int flag=0;
     //Pointer to next element of the template, not sure we really want to use this?.
-    uTags * pMate;
+    uTags * pMate=nullptr;
     int PELenght=0;
 
 public:

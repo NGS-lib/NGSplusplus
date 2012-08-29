@@ -21,8 +21,8 @@ class uGenericNGSChrom
 
 protected:
 
-    std::vector<_BASE_> VecSites;
-    std::string chr;
+    std::vector<_BASE_> VecSites{};
+    std::string chr="";
 
 private :
     /**< removeSites overloads */
@@ -77,9 +77,9 @@ protected:
 
     /**< Pointers to our functions and determines if sorted */
     bool m_isSorted=false;
-    std::function<int(const _BASE_*)> sortGetStart;
-    std::function<int(const _BASE_*)> sortGetEnd ;
-    std::function<bool(const _BASE_ &item1, const _BASE_ &item2)> m_comptFunc;
+    std::function<int(const _BASE_*)> sortGetStart=nullptr;
+    std::function<int(const _BASE_*)> sortGetEnd=nullptr ;
+    std::function<bool(const _BASE_ &item1, const _BASE_ &item2)> m_comptFunc=nullptr;
     long int chromSize=0;
 
 
@@ -912,7 +912,6 @@ public:
         catch (std::exception & e)
         {
             //TODO throw correctly
-
 #ifdef DEBUG
             std::cerr << "Calling findPrecedingSite on unsorted vector or you did not provide an approriate get function" <<std::endl;
             std::cerr << "sorted status is" << m_isSorted <<std::endl;

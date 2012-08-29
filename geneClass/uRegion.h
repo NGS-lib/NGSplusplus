@@ -6,7 +6,7 @@
 
 #include "uFormats.h"
 #include "uTags.h"
-
+#include <limits>
 class uRegion : public uGenericNGS
 {
     public:
@@ -40,15 +40,15 @@ class uRegion : public uGenericNGS
     protected:
     private:
 
-    std::vector<float> signal;
+    std::vector<float> signal={};
     /**<  User friendly name of our region. */
-    std::string ident;
+    std::string ident="";
     /**< Varies according to our needs. */
-    float density;
+    float density=std::numeric_limits<float>::infinity();
     /**< Varies again */
-    int count;
+    int count=0;
     /**< And again */
-    std::vector<float> score;
+    std::vector<float> score={};
 };
 
 // TODO: Move read-write to parser and output class?

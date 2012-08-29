@@ -1,7 +1,7 @@
 #include "uFormats.h"
 #include "uRegion.h"
 #include "uTags.h"
-
+#include <limits>
 using namespace std;
 
 /** \brief Default constructor
@@ -18,48 +18,69 @@ uRegion::uRegion()
  * \param ourend int          : End position
  *
  */
-uRegion::uRegion(std::string ourchr, int ourstart, int ourend)
+uRegion::uRegion(std::string ourchr, int ourstart, int ourend) try : uGenericNGS(ourchr, ourstart,ourend)
 {
-    setChr(ourchr);
-    setStartEnd(ourstart,ourend);
+
 }
+catch(construct_elem_throw &e)
+{
+   std::string * trace;
+     if ((trace=boost::get_error_info<string_error>(e)))
+        e << string_error("Throwing in uRegion(string,int int) \n");
+    else
+         e << string_error("Throwing in uRegion(string,int int) \n");
+
+    e << region_error(*this);
+    throw e;
+
+}
+catch(std::exception &e){throw e;}
 
 /** \brief Constructor from parent singular
  *
  * \param uGenericNGS
  *
  */
-uRegion::uRegion(uGenericNGS otherNGS)
+uRegion::uRegion(uGenericNGS otherNGS)try :uGenericNGS(otherNGS.getChr(),otherNGS.getStart(),otherNGS.getEnd())
 {
-    setChr(otherNGS.getChr());
-    setStartEnd(otherNGS.getStart(),otherNGS.getEnd());
 }
+catch(construct_elem_throw &e)
+{
+   std::string * trace;
+     if ((trace=boost::get_error_info<string_error>(e)))
+        e << string_error("Throwing in uRegion(uGenericNGS) \n");
+    else
+         e << string_error("Throwing in uRegion(uGenericNGS) \n");
 
+        e << region_error(*this);
+    throw e;
+}
 /** \brief Destructor
  */
 uRegion::~uRegion()
-{
-    //dtor
-}
+{}
 
-/** \brief Set the score of a region
+/** \brief Set the score of a region. Note that this involves resizing the vector, so settting arbitrarily large score counts can bust your memory
  * \param float p_score: the score to set
- * \param int p_Pos: the position where the score should be set
+ * \param int p_Pos: the count of the score to set
  */
 void uRegion::setScore(float p_score, int p_Pos)
 {
+    try {
     if (p_Pos>= ((int)score.size()))
         score.resize(p_Pos+1);
     score.at(p_Pos)=p_score;
+    }
+    catch(std::exception &e){throw e;}
 }
 
-/** \brief Fetch the score at a specific region
+/** \brief Fetch the score at a specific region, return infinity if not set
  * \param int p_Pos: the position where the score should be fetched
  */
 float uRegion::getScore(int p_Pos) const
 {
     if (p_Pos>= ((int)score.size()))
-       return 0;
+       return numeric_limits<float>::infinity();
     return score.at(p_Pos);
 }
 

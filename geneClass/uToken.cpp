@@ -175,6 +175,7 @@ void uToken::_validateToken() {
 				cigar_size += value;
 				ss.clear();
 			}
+
 		}
 		/**< Check if sequence length and cigar sum match  */
 		if (str_sequence.size() != cigar_size) {
@@ -285,7 +286,7 @@ bool uToken::_seqFlagsIsValid(const std::string& value) const {
 	/**< Finally, check if there is garbage at the end of value */
 	return _isStreamEmpty(ss);
 }
-
+//TODO extra validation
 /** \brief Check if cigar value is valid.
  * \param const std::string& value: the value of the cigar entry.
  */

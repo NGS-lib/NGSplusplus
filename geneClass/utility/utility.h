@@ -121,7 +121,7 @@ public:
 protected:
     size_t m_offset;
     const std::string m_string;
-    std::string m_token;
+    std::string m_token="";
     std::string m_delimiters;
 };
 

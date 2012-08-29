@@ -31,9 +31,9 @@ void uGenericNGS::extendSite(int extendLeft, int extendRight)
         elem_throw e;
         std::string * trace;
 
-    if(uGenericNGS const * errorTagPoint=boost::get_error_info<generic_error>(e) )
+    if(boost::get_error_info<generic_error>(e) ==NULL)
         e << generic_error(*this);
-     if (trace=(boost::get_error_info<string_error>(e)))
+     if ( (trace=(boost::get_error_info<string_error>(e))) )
         e << string_error(*trace+"Catching and re-throwing from extendSite("+utility::numberToString(extendLeft)+","+utility::numberToString(extendRight)+")\n");
      else
          e << string_error("Catching and re-throwing from extendSite("+utility::numberToString(extendLeft)+","+utility::numberToString(extendRight)+")\n");
@@ -196,6 +196,15 @@ std::vector<uGenericNGS> uGenericNGS::divideIntoNBin(int N,SplitType ptype)
                 returnVec.push_back(  uGenericNGS(getChr(),curStart, (curStart+(leftover-1))  ));
                 break;
             }
+            case SplitType::IGNORE:
+            {
+            break;
+            }
+            case SplitType::STRICT:
+            {
+                throw mem_param_throw()<<string_error("Invalid trace in divideIntoNBin, STRICT should have been validated earlier");
+            break;
+            }
 
             }
         }
@@ -271,7 +280,15 @@ std::vector<uGenericNGS> uGenericNGS::divideIntoBinofSize(const int N, const Spl
                 returnVec.push_back(  uGenericNGS(getChr(),curStart, (curStart+(leftover-1))  ));
                 break;
             }
-
+             case SplitType::IGNORE:
+            {
+            break;
+            }
+            case SplitType::STRICT:
+            {
+                throw mem_param_throw()<<string_error("Invalid trace in divideIntoNBin, STRICT should have been validated earlier");
+            break;
+            }
             }
     }
     catch(mem_param_throw &e)

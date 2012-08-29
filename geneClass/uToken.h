@@ -25,7 +25,7 @@ public:
 	uToken& operator=(uToken const& assign_from);
 
 private:
-	std::map<token_param, std::string> m_params;
+	std::map<token_param, std::string> m_params={};
 	void _setParam(token_param& name, std::string& value);
 	bool _validateParam(token_param& name, const std::string& value) const;
 	void _validateToken();
