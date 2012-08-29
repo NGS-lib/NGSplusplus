@@ -18,7 +18,7 @@ enum class token_param { CHR, START_POS, END_POS, STRAND, MAP_SCORE, PHRED_SCORE
 class uToken {
 public:
 	uToken(std::istream& paramList);
-	/* \brief Fetch a param. Throw param_not_found if the param does not exist.
+	/** \brief Fetch a param. Throw param_not_found if the param does not exist.
 	 * \param token_param& name: the name of the param we wish to get.
 	 */
 	std::string getParam(token_param name) { return m_params[name]; }

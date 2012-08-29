@@ -35,14 +35,14 @@ uRegion::uRegion(uGenericNGS otherNGS)
     setStartEnd(otherNGS.getStart(),otherNGS.getEnd());
 }
 
-/* \brief Destructor
+/** \brief Destructor
  */
 uRegion::~uRegion()
 {
     //dtor
 }
 
-/* \brief Set the score of a region
+/** \brief Set the score of a region
  * \param float p_score: the score to set
  * \param int p_Pos: the position where the score should be set
  */
@@ -53,7 +53,7 @@ void uRegion::setScore(float p_score, int p_Pos)
     score.at(p_Pos)=p_score;
 }
 
-/* \brief Fetch the score at a specific region
+/** \brief Fetch the score at a specific region
  * \param int p_Pos: the position where the score should be fetched
  */
 float uRegion::getScore(int p_Pos) const
@@ -65,7 +65,7 @@ float uRegion::getScore(int p_Pos) const
 
 /** \brief Set the signal value for our region at a specific position.
  *
- * \param i int : Position du signal à changer
+ * \param i int : Position du signal Ã  changer
  * \param value float : Signal value
  * \return void
  *
@@ -169,7 +169,7 @@ void uRegionExperiment::measureDensityOverlap(uGenericNGSExperiment<uGenericNGSC
 }
 
 // TODO: Complete Doxygen comment here
-/* \brief 
+/** \brief
  * \param uTagsExperiment& expToComp:
  * \param const OverlapType poverlap:
  */
@@ -207,7 +207,7 @@ void uRegionChrom::measureDensityOverlap(uGenericNGSChrom<uGenericNGS>& chromtoC
     }
 }
 
-/* \brief Set the density score for our chrom versus another one
+/** \brief Set the density score for our chrom versus another one
  * \param uTagsChrom& chromtoComp: other chromosome to compare our chrom with
  * \param const OverlapType: Type of overlap we use
  */
@@ -533,7 +533,7 @@ for(auto& chrom : ExpMap)
 
  }
 
-/* \brief Write all chromosome data to a stream 
+/** \brief Write all chromosome data to a stream
  * \param std::ostream&: Output stream to use.
  */
 void uRegionChrom::writeAll(std::ostream& out)
@@ -544,7 +544,7 @@ void uRegionChrom::writeAll(std::ostream& out)
     }
 }
 
-/* \brief Write all the experiment to a stream
+/** \brief Write all the experiment to a stream
  * \param std::ostream&: Output stream to use.
  */
 void uRegionExperiment::writeAll(std::ostream& out)

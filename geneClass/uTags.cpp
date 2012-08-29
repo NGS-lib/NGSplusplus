@@ -19,7 +19,6 @@ uTags::uTags(uGenericNGS otherItem):uGenericNGS(otherItem),name(nullptr),phredSc
 {
 }
 
-//TODO Add default parameter strand = '+' since begin/end must now be in correct order
 /** \brief Default constructor with init list, implicitly sets strand
  *
  * \param chr: name of the chromosome
@@ -28,14 +27,8 @@ uTags::uTags(uGenericNGS otherItem):uGenericNGS(otherItem),name(nullptr),phredSc
  */
 uTags::uTags(std::string pchr, int start, int end, StrandDir pstrand):name(nullptr),phredScore(nullptr),cigar(nullptr)
 {
-    /**< We handle parent init, as we do not have the same sanity assumptions as the parent */
-    /**< If start is after end, we assumed this is a negative tag */
-     //TODO Remove (start/end switch should be handled by parser)
    try {
-    if (end>start)
-    {
-       throw elem_throw();
-    }
+
      setStartEnd(start,end);
      setChr(pchr);
      setStrand(pstrand);
@@ -80,6 +73,7 @@ uTags::~uTags()
     }
 }
 
+//TODO TEST THIS
 /** \brief Copy Constructor for UTags, necessary due to our char*
  * \param UTags& const copy_from: tag to copy
  */
@@ -103,19 +97,25 @@ uTags::uTags(const uTags& copy_from):uGenericNGS(copy_from),name(nullptr),phredS
         phredScore = new char[(strlen(copy_from.phredScore)+1)];
         strcpy(phredScore,copy_from.phredScore);
     }
-     strand=copy_from.strand;
+    strand=copy_from.strand;
     PELenght=copy_from.PELenght;
     sequence=copy_from.sequence;
     mapScore=copy_from.mapScore;
     Unmapped= copy_from.Unmapped;
     }
-    catch(...){
+    catch(elem_throw & e){
         #ifdef DEBUG
               cerr << " Failling in copy constructor, uTags(uTags&) " <<endl;
         #endif
-
-
+        string trace;
+        if (std::string const * ste =boost::get_error_info<string_error>(e) )
+                trace=*ste;
+        e << string_error(trace+"Failling in copy constructor, uTags(uTags&) \n");
+        e<< tag_error(copy_from);
+        throw e;
     }
+    catch(std::exception &e)
+    {throw e;};
 }
 
 /** \brief Overloaded assignement operator
@@ -648,6 +648,7 @@ void uTagsChrom::writeSamToOutput(std::ostream &out) const
 /** \brief For PE data, find the mate of ever tag and associate there pointers. Structure subject to change
  *
  */
+ //TODO remove this?
 void uTagsChrom::matchPE()
 {
     std::vector<uTags>::iterator iterVec;
@@ -675,7 +676,7 @@ void uTagsChrom::matchPE()
             }
     }
 }
-
+//TODO Re-write this
 /** \brief For a given start and end on this Chromosome, return the it's continuous density signal
  * \doto Use our standard overlap function
  *
@@ -797,8 +798,8 @@ void uTagsExperiment::loadFromSam(std::ifstream& curStream, bool minimal)
     }
     catch(elem_throw & e)
      {
-                        #ifdef DEBUG
- cerr << "caught an exception in loadfromSam"<<endl;
+            #ifdef DEBUG
+            cerr << "caught an exception in loadfromSam"<<endl;
                 #endif
          string trace;
 
@@ -1023,7 +1024,7 @@ void uTagsExperiment::setChromSize(string chrom, int size)
     ptempChrom->setChr(chrom);
     ptempChrom->setChromSize(size);
 }
-
+//TODO set where this should go?
 /** \brief Generate our density signal for a given region and chrom
  *
  * \param chrom std::string : The specified chrom

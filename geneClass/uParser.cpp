@@ -1,6 +1,6 @@
 #include "uParser.h"
 
-/* \brief uParser constructor with filename
+/** \brief uParser constructor with filename
  * \param std::string filename: Name of the file to load
  * \param file_type type: Currently supported formats: BED
  */
@@ -17,7 +17,7 @@ uParser::uParser(const std::string& filename, file_type type) {
 	m_dynamicStream = true;
 }
 
-/* \brief uParser constructor with istream
+/** \brief uParser constructor with istream
  */
 uParser::uParser(std::istream* stream, file_type type) {
 	m_pIstream = stream;
@@ -25,7 +25,7 @@ uParser::uParser(std::istream* stream, file_type type) {
 	m_dynamicStream = false;
 }
 
-/* \brief uParser destructor
+/** \brief uParser destructor
  */
 uParser::~uParser() {
 	if (m_dynamicStream == true) {
@@ -34,7 +34,7 @@ uParser::~uParser() {
 	m_pIstream = NULL;
 }
 
-/* \brief Generic function to fetch an entry from file, will adapt itself to file_type given in constructor
+/** \brief Generic function to fetch an entry from file, will adapt itself to file_type given in constructor
  */
 uToken uParser::getNextEntry() {
 	switch(m_fileType) {
@@ -59,7 +59,7 @@ uToken uParser::getNextEntry() {
 	}
 }
 
-/* \brief Specific loader for BED file (See genome.ucsc.edu/FAQ/FAQformat.html#format1 for bed description)
+/** \brief Specific loader for BED file (See genome.ucsc.edu/FAQ/FAQformat.html#format1 for bed description)
  * \return uToken: If all the parameters in the entry are valid a uToken object is returned.
  */
 uToken uParser::_getNextEntryBed() {
