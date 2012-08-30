@@ -1,5 +1,5 @@
 #include "uToken.h"
-
+#include "utility/utility.h"
 //enum class token_param { CHR, START_POS, END_POS, STRAND, MAP_SCORE, PHRED_SCORE, CIGAR, SEQUENCE, SEQ_NAME, FLAGS };
 
 /** \brief uToken constructor.
@@ -61,22 +61,62 @@ uToken& uToken::operator=(uToken const& assign_from)
  * \param token_param& name: type of param
  * \param const std::string& value: the value of the parameter
  */
-void uToken::_setParam(token_param& name, std::string& value) {
+void uToken::_setParam(const token_param& name, const std::string& value) {
 	// TODO: What should we do in case the name is already setted? Overwrite silently, warning or error?
+	try{
 	if (_validateParam(name, value) == false) {
 		invalid_value_throw e;
 		e << invalid_value_error(value);
 		throw e;
 	}
+
+    _postProcessParam(name, value);
 	m_params[name] = value;
+    }
+    catch(uToken_exception_base &e){throw e;}
 //	m_params.insert(make_pair(name, value));
+}
+
+/** \brief Operate any necessary post_processing on our values. Note this may include setting values to the token
+ *
+ * \param name token_param& Type of parameter
+ * \param value const std::string& Value of parameter
+ * \return void
+ *
+ */
+void uToken::_postProcessParam(const token_param& name, const std::string& value) {
+
+	switch(name) {
+	case token_param::START_POS:
+	case token_param::END_POS:
+		break;
+	case token_param::STRAND:
+		break;
+	case token_param::MAP_SCORE:
+		break;
+	case token_param::PHRED_SCORE:
+		break;
+	case token_param::CIGAR:
+		 _postProcCigar(value);
+		break;
+	case token_param::SEQUENCE:
+		break;
+	case token_param::FLAGS:
+		 _postProcFlag(value);
+		break;
+	case token_param::CHR:
+		break;
+	case token_param::SEQ_NAME:
+		break;
+	default: break;
+	}
 }
 
 /** \brief Validate the parameter. Some tests are general, other are specific for each parameter.
  * \param token_param& name: type of param
  * \param const std::string& value: the value of the parameter
  */
-bool uToken::_validateParam(token_param& name, const std::string& value) const {
+bool uToken::_validateParam(const token_param& name, const std::string& value) const {
 	bool isValid = false;;
 	/**< In every case, an empty string is an invalid value */
 	if (value.size() == 0) {
@@ -342,3 +382,49 @@ bool uToken::_isStreamEmpty(const std::istream& stream) const {
 	}
 	return true;
 }
+
+/**< Post processing methods */
+
+/** \brief Sam Flag can contain multiple settings
+ *
+ * \param value
+ * \return void
+ *
+ */
+void uToken::_postProcFlag(const std::string& flag)
+{
+
+}
+void uToken::_postProcCigar(const std::string& cig)
+{
+    try{
+    int curPos=0;
+    std::string substr;
+    int size=0;
+    for (unsigned int i=0; i< cig.size(); i++)
+    {
+        /**< If isAlpha then check previous numbers */
+        if (isalpha(cig.at(i)))
+        {
+            /**< If a count value */
+            char temp;
+            temp = cig.at(i);
+            if ((temp=='M')||(temp=='I')||(temp=='S')||(temp=='X')||(temp=='+'))
+            {
+                substr= cig.substr(curPos, (i-curPos));
+                size+= atoi(substr.c_str());
+            }
+            curPos=(i+1);
+        }
+    }
+     auto start_pos=utility::stringToInt(getParam(token_param::START_POS));
+    _setParam(token_param::END_POS, utility::numberToString(start_pos+(size-1) ));
+    }
+    catch(uToken_exception_base &e)
+    {
+        addStringError(e, "Throwing, in _postProccIgar, unable to set EndPOS as START_POS not set");
+        throw e;
+    }
+
+}
+

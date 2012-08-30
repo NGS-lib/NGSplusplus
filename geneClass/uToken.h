@@ -6,6 +6,8 @@
 #include <string>
 #include <sstream>
 #include <stdexcept>
+#include <cctype>
+#include "uGeneException.h"
 #include "boost/exception/all.hpp"
 
 /**< List of param is hard coded as strongly typed enum for extra safety. */
@@ -21,13 +23,16 @@ public:
 	/** \brief Fetch a param. Throw param_not_found if the param does not exist.
 	 * \param token_param& name: the name of the param we wish to get.
 	 */
+	 //TODO Does this throw correctly?
 	std::string getParam(token_param name) { return m_params[name]; }
 	uToken& operator=(uToken const& assign_from);
 
 private:
 	std::map<token_param, std::string> m_params={};
-	void _setParam(token_param& name, std::string& value);
-	bool _validateParam(token_param& name, const std::string& value) const;
+	void _setParam(const token_param& name, const std::string& value);
+
+    void _postProcessParam(const token_param& name, const std::string& value);
+	bool _validateParam(const token_param& name, const std::string& value) const;
 	void _validateToken();
 	void _throwInvalidToken(const std::string& baseErrorMessage) const;
 
@@ -42,15 +47,17 @@ private:
 	bool _seqFlagsIsValid(const std::string& name) const;
 	bool _cigarIsValid(const std::string& name) const;
 
-	// TODO: replace with c version?
-	bool _isDigit(char value) const { return (value >= '0' && value <= '9'); }
+	bool _isDigit(char value) const { return std::isdigit(value);}//(value >= '0' && value <= '9'); }
 	bool _cigarValueIsValid(char value) const;
 	bool _isStreamEmpty(const std::istream& stream) const;
+
+    void _postProcFlag(const std::string& flag);
+    void _postProcCigar(const std::string& cig);
 
 }; // End of class Token
 
 /**<  uToken exceptions */
-struct uToken_exception_base : virtual std::exception, virtual boost::exception {};
+struct uToken_exception_base : virtual ugene_exception_base{};
 
 struct invalid_uToken_throw : virtual uToken_exception_base{};
 typedef boost::error_info<struct invalid_uToken_info, std::string> invalid_uToken_error;

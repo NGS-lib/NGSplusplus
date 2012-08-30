@@ -65,7 +65,7 @@ static float getMean(const std::vector<float> & ourVec);
 static void debug_string(std::string input_string);
 
 
-static inline bool querySamFlag(const int & flag, SamQuery toQuery)
+static inline bool querySamFlag(const int flag, const SamQuery toQuery)
 {
 bool query_result;
     switch(toQuery)
