@@ -93,17 +93,17 @@ public:
         try
         {
             if (!((ourStart<=getEnd())&&(ourStart>=0)))
-               throw 10;
+               throw elem_throw()<<string_error("Failed in setStart, ourStart is smalled then end or under 0, start is "+utility::numberToString(ourStart)+ " end is "+ utility::numberToString((int)getEnd()) +"\n");
             startPos=ourStart;
 
         }
-        catch(int &x)
+        catch(elem_throw &e)
         {
             #ifdef DEBUG
                 std::cerr << "throwing in setStart" <<std::endl;
             #endif
-            elem_throw e;
-            e << string_error("Failed in setStart, ourStart is smalled then end or under 0, start is "+utility::numberToString(ourStart)+ " end is "+ utility::numberToString((int)getEnd()) +"\n");
+           // elem_throw e;
+            e << generic_error(*this);
             throw e;
         }
     };
@@ -111,16 +111,15 @@ public:
     {
         try{
             if (!((ourEnd>=getStart())&&(ourEnd>=0)))
-                throw 10;
+                throw elem_throw()<<string_error("throwing in setEnd(), start at "+utility::numberToString((int)getStart())+ " end is "+ utility::numberToString(ourEnd) +"\n");
             endPos=ourEnd;
         }
-        catch(...)
+        catch(elem_throw & e)
         {
             #ifdef DEBUG
                 std::cerr << "throwing in setEnd" <<std::endl;
             #endif
-            elem_throw e;
-            e << string_error("throwing in setEnd(), start at "+utility::numberToString((int)getStart())+ " end is "+ utility::numberToString(ourEnd) +"\n");
+            e << generic_error(*this);
             throw e;
         }
     };
@@ -130,10 +129,12 @@ public:
             setEnd(ourEnd);
             setStart(ourStart);
         }
-        catch(...)
+        catch(ugene_exception_base &e)
         {
+            #ifdef DEBUG
             std::cerr << "throwing in setStartEnd" <<std::endl;
-            throw;
+            #endif
+            throw e;
         }
     };
 

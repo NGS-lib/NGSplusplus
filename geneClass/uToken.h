@@ -25,6 +25,7 @@ public:
 	 */
 	 //TODO Does this throw correctly?
 	std::string getParam(token_param name) { return m_params[name]; }
+	bool  isParamSet(const token_param& name)const;
 	uToken& operator=(uToken const& assign_from);
 
 private:

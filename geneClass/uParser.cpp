@@ -42,13 +42,15 @@ uToken uParser::getNextEntry() {
 	switch(m_fileType) {
 	case file_type::BED:
 		try {
+
 			uToken token = _getNextEntryBed(); return token;
 		}
 		catch(invalid_uToken_error& e) {
-			#ifdef DEBUG
+
 			std::string trace;
 			if (std::string const * ste =boost::get_error_info<invalid_uToken_error>(e))
 				trace = *ste;
+			#ifdef DEBUG
 			std::cerr << "Invalid uToken: " << trace << std::endl;
 			#endif
 			throw e;
@@ -56,27 +58,29 @@ uToken uParser::getNextEntry() {
 		catch(end_of_file_error& e) {
 			throw e;
 		}
+		break;
     case file_type::SAM:
         try {
             uToken token = _getNextEntrySam(); return token;
         }
         catch(invalid_uToken_error& e) {
-			#ifdef DEBUG
+
 			std::string trace;
 			if (std::string const * ste =boost::get_error_info<invalid_uToken_error>(e))
 				trace = *ste;
+			#ifdef DEBUG
 			std::cerr << "Invalid uToken: " << trace << std::endl;
 			#endif
 			throw e;
 		}
 		break;
 	default:
+
         throw uParser_exception_base()<< string_error("Invalid fileType in getNextEntry case");
 	     break;
 	}
 	}
-
-catch(std::exception &e){throw e;}
+catch(invalid_uToken_error &e){throw e;}
 }
 
 /** \brief Specific loader for BED file (See genome.ucsc.edu/FAQ/FAQformat.html#format1 for bed description)

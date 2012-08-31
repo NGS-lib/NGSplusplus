@@ -46,10 +46,7 @@ uTags::uTags(std::string pchr, int start, int end, StrandDir pstrand):name(nullp
         e << string_error(trace+"Failling in uTags constructor, parameters are"+pchr+" "+utility::numberToString(start)+" "+utility::numberToString(end)+"\n");
 
         throw e;
-
     }
-
-//    PE=false;
 }
 
 /** \brief Default destructor

@@ -73,8 +73,12 @@ void uToken::_setParam(const token_param& name, const std::string& value) {
     _postProcessParam(name, value);
 	m_params[name] = value;
     }
-    catch(uToken_exception_base &e){throw e;}
+    catch(invalid_value_throw &e){throw e;}
 //	m_params.insert(make_pair(name, value));
+}
+
+bool uToken::isParamSet(const token_param& name)const{
+ return m_params.count(name);
 }
 
 /** \brief Operate any necessary post_processing on our values. Note this may include setting values to the token
@@ -158,6 +162,7 @@ bool uToken::_validateParam(const token_param& name, const std::string& value) c
 }
 
 void uToken::_validateToken() {
+try {
 	std::string str_chr = getParam(token_param::CHR);
 	std::string str_start_pos = getParam(token_param::START_POS);
 	int int_start_pos = atoi(str_start_pos.c_str());
@@ -229,6 +234,8 @@ void uToken::_validateToken() {
 			_throwInvalidToken(error);
 		}
 	}
+}
+catch(invalid_uToken_throw &e){throw e;}
 }
 
 void uToken::_throwInvalidToken(const std::string& baseErrorMessage) const {
@@ -417,8 +424,11 @@ void uToken::_postProcCigar(const std::string& cig)
             curPos=(i+1);
         }
     }
-     auto start_pos=utility::stringToInt(getParam(token_param::START_POS));
-    _setParam(token_param::END_POS, utility::numberToString(start_pos+(size-1) ));
+    /**< If END_POS is not set, set it */
+    if (!(isParamSet(token_param::END_POS))){
+         auto start_pos=utility::stringToInt(getParam(token_param::START_POS));
+        _setParam(token_param::END_POS, utility::numberToString(start_pos+(size-1) ));
+        }
     }
     catch(uToken_exception_base &e)
     {
