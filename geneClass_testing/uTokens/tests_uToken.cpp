@@ -7,7 +7,7 @@ using namespace std;
 
 /*
  * Constructor tests:
- *		uToken(std::istream& paramList);	
+ *		uToken(std::istream& paramList);
  * 	Valid cases:
  *		MandatoryArgumentsOnly
  *		STRAND_IsValid
@@ -21,6 +21,7 @@ using namespace std;
  *		AllArgumentsAreValids
  *	Invalid cases:
  * 		EmptyArgument
+ *		Invalid_param_token
  *		Invalid_param_token
  *		MissingMandatoryArgument_CHR
  *		MissingMandatoryArgument_START_POS
@@ -295,15 +296,34 @@ TEST(uTokenGetParam, ArgumentDoesNotExist) {
 	ASSERT_EQ(Token.getParam(token_param::CHR), "chr1");
 	ASSERT_EQ(Token.getParam(token_param::START_POS), "1");
 	ASSERT_EQ(Token.getParam(token_param::END_POS), "21");
-	ASSERT_EQ(Token.getParam(token_param::STRAND), "");
-	ASSERT_EQ(Token.getParam(token_param::MAP_SCORE), "");
-	ASSERT_EQ(Token.getParam(token_param::PHRED_SCORE), "");
-	ASSERT_EQ(Token.getParam(token_param::CIGAR), "");
-	ASSERT_EQ(Token.getParam(token_param::SEQUENCE), "");
-	ASSERT_EQ(Token.getParam(token_param::SEQ_NAME), "");
-	ASSERT_EQ(Token.getParam(token_param::FLAGS), "");
+	ASSERT_THROW(Token.getParam(token_param::STRAND),param_not_found);
+	ASSERT_THROW(Token.getParam(token_param::MAP_SCORE), param_not_found);
+	ASSERT_THROW(Token.getParam(token_param::PHRED_SCORE), param_not_found);
+	ASSERT_THROW(Token.getParam(token_param::CIGAR), param_not_found);
+	ASSERT_THROW(Token.getParam(token_param::SEQUENCE),param_not_found);
+	ASSERT_THROW(Token.getParam(token_param::SEQ_NAME), param_not_found);
+	ASSERT_THROW(Token.getParam(token_param::FLAGS), param_not_found);
 }
+/*
+ * Test for the checking if param is Set:
+ *		bool uToken::_isParamSet;
+ */
 
+TEST(uTokenGetParam, ArgumentIsSet) {
+	stringstream ss;
+	ss << "CHR\tchr1\n" << "START_POS\t1\n" << "END_POS\t21\n";
+	uToken Token(ss);
+	ASSERT_TRUE(Token.isParamSet(token_param::CHR));
+	ASSERT_TRUE(Token.isParamSet(token_param::START_POS));
+	ASSERT_TRUE(Token.isParamSet(token_param::END_POS));
+}
+TEST(uTokenGetParam, ArgumentisNotSet) {
+	stringstream ss;
+	ss << "CHR\tchr1\n" << "START_POS\t1\n" << "END_POS\t21\n";
+	uToken Token(ss);
+	ASSERT_FALSE(Token.isParamSet(token_param::CIGAR));
+	ASSERT_FALSE(Token.isParamSet(token_param::SEQUENCE));
+}
 /*
  * Test for the equality operator overloading:
  *		uToken& operator=(uToken const& assign_from);

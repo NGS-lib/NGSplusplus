@@ -1,7 +1,6 @@
 
 
 #include "uFormats.h"
-
 #include "uTags.h"
 #include "uRegion.h"
 #include <iostream>
@@ -19,7 +18,7 @@
 /**< Testing our unitary Tag */
 TEST(uTagsTest, DefaultCTR){
     uTags uTest;
-    EXPECT_EQ('+',uTest.getStrand());
+    EXPECT_EQ(StrandDir::FORWARD,uTest.getStrand());
     EXPECT_FALSE(uTest.isPE());
     EXPECT_EQ(0,uTest.getStart());
     EXPECT_EQ(0,uTest.getEnd());
@@ -28,23 +27,23 @@ TEST(uTagsTest, DefaultCTR){
 TEST(uTagsTest, 3ParCTR){
     uTags Utest("chr1", 100, 200);
     EXPECT_EQ("chr1",Utest.getChr());
-    EXPECT_EQ('+',Utest.getStrand());
+    EXPECT_EQ(StrandDir::FORWARD,Utest.getStrand());
     EXPECT_FALSE(Utest.isPE());
     EXPECT_EQ(100,Utest.getStart());
     EXPECT_EQ(200,Utest.getEnd());
 }
 
 TEST(uTagsTest, 3ParCTRMinus){
-    uTags Utest("chr1", 200, 100);
-    EXPECT_EQ("chr1",Utest.getChr());
-    EXPECT_EQ('-',Utest.getStrand());
-    EXPECT_FALSE(Utest.isPE());
-    EXPECT_EQ(100,Utest.getStart());
-    EXPECT_EQ(200,Utest.getEnd());
+   EXPECT_ANY_THROW(uTags Utest("chr1", 200, 100));
+  //  EXPECT_EQ("chr1",Utest.getChr());
+  //  EXPECT_EQ(StrandDir::REVERSE,Utest.getStrand());
+  //  EXPECT_FALSE(Utest.isPE());
+  //  EXPECT_EQ(100,Utest.getStart());
+  //  EXPECT_EQ(200,Utest.getEnd());
 }
 
 TEST(uTagsTest, SetGet){
-    uTags Utest("chr1", 200, 100);
+    uTags Utest("chr1", 100, 200);
     uTags copyTag;
 
     Utest.setName("My Name is");
@@ -118,12 +117,12 @@ TEST(factoryTest, uTagsTest){
     EXPECT_EQ(ourTest.getLenght(),40);
     EXPECT_EQ(ourTest.getStart(),9719905);
     EXPECT_EQ(ourTest.getEnd(),9719944);
-    EXPECT_EQ(ourTest.getStrand(),'+');
+    EXPECT_EQ(ourTest.getStrand(),StrandDir::FORWARD);
 
     uTags minusStrand;
     minusStrand=factory::makeTagfromSamString("HWI-ST333_0111_FC:6:2202:20769:154221#TAGTCG/3	83	chr21	9719905	15	40M	=	9719985	120	AGCAATTATCTTCACATAAAAACTACACAGAAACTTTCTG	aaacceeegggggiiiiiiiiiihiihihiiiiiiiiiih	X0:i:2	X1:i:57	MD:Z:2G2A27T6	XG:i:0	AM:i:0	NM:i:3	SM:i:0	XM:i:3	XO:i:0	XT:A:R");
 
-    EXPECT_EQ(minusStrand.getStrand(),'-');
+    EXPECT_EQ(minusStrand.getStrand(),StrandDir::REVERSE);
 
 
 }
