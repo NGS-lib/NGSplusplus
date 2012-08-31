@@ -24,7 +24,7 @@ public:
 	 * \param token_param& name: the name of the param we wish to get.
 	 */
 	 //TODO Does this throw correctly?
-	std::string getParam(token_param name) { return m_params[name]; }
+	std::string getParam(token_param name) const;
 	bool  isParamSet(const token_param& name)const;
 	uToken& operator=(uToken const& assign_from);
 
@@ -69,6 +69,9 @@ typedef boost::error_info<struct invalid_param_token_info, std::string> invalid_
 struct invalid_value_throw : virtual uToken_exception_base{};
 typedef boost::error_info<struct invalid_value_info, std::string> invalid_value_error;
 
+struct param_not_found : virtual invalid_uToken_throw{};
+typedef boost::error_info<struct token_param_error, token_param> token_param_type_error;
+
 /**< Overloading of stream operator for token_param */
 inline std::ostream & operator<<(std::ostream& Str, token_param name) {
 	switch (name) {
@@ -106,5 +109,4 @@ inline std::istream& operator>>(std::istream &is, token_param& name) {
 	}
 	return is;
 }
-
 #endif // UTOKEN_H_INCLUDED
