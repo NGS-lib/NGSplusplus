@@ -25,9 +25,9 @@ struct ugene_exception_base : virtual std::exception, virtual boost::exception
 
 
 struct elem_throw : virtual ugene_exception_base{};
-struct skipped_elem_throw : virtual ugene_exception_base{};
+struct skipped_elem_throw : virtual elem_throw{};
 struct construct_elem_throw : virtual elem_throw{};
-struct mem_param_throw : virtual elem_throw{};
+struct param_throw : virtual elem_throw{};
 struct format_parsing_error : virtual ugene_exception_base{};
 
 

@@ -89,7 +89,7 @@ void uGenericNGS::trimSites(int trimLeft, int trimRight)
     }
     catch (int err)
     {
-        mem_param_throw e;
+        param_throw e;
         e << string_error("PARAMERROR, throwing from trimSites("+utility::numberToString(trimLeft)+","+utility::numberToString(trimRight)+"), param < 0 \n"  );
         e << generic_error(*this);
        // std::cerr <<"Invalid parameters in trimSites(), nothing done, please validate"<<std::endl;
@@ -165,11 +165,11 @@ std::vector<uGenericNGS> uGenericNGS::divideIntoNBin(int N,SplitType ptype)
     {
         /**< If NB bins is greater then BP */
         if (this->getLenght()<N)
-           throw mem_param_throw() << string_error("Asking for more bins then lenght of Elem /n");
+           throw param_throw() << string_error("Asking for more bins then lenght of Elem /n");
 
         /**< If Strict and we cannot exactly fit our bins, fail */
         if ((ptype==SplitType::STRICT)&&(leftover!=0))
-            throw mem_param_throw()<< string_error( "STRICT parameter not respected /n");
+            throw param_throw()<< string_error( "STRICT parameter not respected /n");
 
         /**< Once we pass the check, generate our basic bin */
         int curStart=getStart();
@@ -202,14 +202,14 @@ std::vector<uGenericNGS> uGenericNGS::divideIntoNBin(int N,SplitType ptype)
             }
             case SplitType::STRICT:
             {
-                throw mem_param_throw()<<string_error("Invalid trace in divideIntoNBin, STRICT should have been validated earlier");
+                throw param_throw()<<string_error("Invalid trace in divideIntoNBin, STRICT should have been validated earlier");
             break;
             }
 
             }
         }
     }
-    catch(mem_param_throw &e)
+    catch(param_throw &e)
     {
        std::string ourtrace="Failed in divideIntoNBin()";
         if(  std::string const * trace=boost::get_error_info<string_error>(e) )
@@ -248,11 +248,11 @@ std::vector<uGenericNGS> uGenericNGS::divideIntoBinofSize(const int N, const Spl
         int leftover = getLenght()%binSize;
 
         if (getLenght()<N)
-            throw mem_param_throw() << string_error("Asking for more bins then lenght of Elem /n");
+            throw param_throw() << string_error("Asking for more bins then lenght of Elem /n");
 
         /**< If Strict and we cannot exactly fit our bins, fail */
         if ((type==SplitType::STRICT)&&(leftover!=0))
-            throw mem_param_throw()<< string_error( "STRICT parameter not respected /n");
+            throw param_throw()<< string_error( "STRICT parameter not respected /n");
 
         /**< Once we pass the check, generate our basic bin */
 
@@ -286,12 +286,12 @@ std::vector<uGenericNGS> uGenericNGS::divideIntoBinofSize(const int N, const Spl
             }
             case SplitType::STRICT:
             {
-                throw mem_param_throw()<<string_error("Invalid trace in divideIntoNBin, STRICT should have been validated earlier");
+                throw param_throw()<<string_error("Invalid trace in divideIntoNBin, STRICT should have been validated earlier");
             break;
             }
             }
     }
-    catch(mem_param_throw &e)
+    catch(param_throw &e)
     {
          std::string ourtrace="Failed in divideIntoNBin() /n";
         if(  std::string const * trace=boost::get_error_info<string_error>(e) )

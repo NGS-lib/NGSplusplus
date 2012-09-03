@@ -155,7 +155,7 @@ public:
         try
         {
             if (chromS<0)
-                throw mem_param_throw()<<string_error("failling in setChromSize, value "+utility::numberToString((int)chromS)+" is below 0\n");
+                throw param_throw()<<string_error("failling in setChromSize, value "+utility::numberToString((int)chromS)+" is below 0\n");
             chromSize= chromS;
         }
         catch(std::exception e)

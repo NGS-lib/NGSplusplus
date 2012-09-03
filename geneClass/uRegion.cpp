@@ -41,7 +41,7 @@ catch(std::exception &e){throw e;}
  * \param uGenericNGS
  *
  */
-uRegion::uRegion(uGenericNGS otherNGS)try :uGenericNGS(otherNGS.getChr(),otherNGS.getStart(),otherNGS.getEnd())
+uRegion::uRegion(uGenericNGS otherNGS)try :uGenericNGS(otherNGS.getChr(),otherNGS.getStart(),otherNGS.getEnd(), otherNGS.getStrand())
 {
 }
 catch(construct_elem_throw &e)
@@ -93,6 +93,7 @@ float uRegion::getScore(int p_Pos) const
  */
 void uRegion::setSignal(int i, float value)
 {
+ try{
     if (signal.size()==0)
         signal.resize(this->getLenght());
 
@@ -100,9 +101,20 @@ void uRegion::setSignal(int i, float value)
 //TODO Explicit error message
     if (i < this->getLenght())
         signal.at(i)=value;
+    else
+        throw param_throw()<<string_error("Failling in setSignal, trying to set signal outside of region boundary at position "+utility::numberToString(i)+"\n");
+    }
+    catch(param_throw &e){
+        #ifdef DEBUG
+               cerr << "Throwing in uTags setSignal" <<endl;
+        #endif
+        e << region_error(*this);
+        throw e;
+    }
 }
 
-/** \brief Set the signal of an entire region
+
+/** \brief Set the signal of an entire region, must be appropriate size
  *
  * \param ourSignal std::vector<float>
  * \return void
@@ -110,10 +122,23 @@ void uRegion::setSignal(int i, float value)
  */
 void uRegion::setSignal(std::vector<float> ourSignal)
 {
+    try {
+    if (ourSignal.size()<getLenght())
+        throw param_throw();
     signal = ourSignal;
+    }
+    catch(param_throw & e)
+    {
+        #ifdef DEBUG
+               cerr << "Failling in uRegion setSignal(vector), received a vector of size greater then elem lenght of "+std::to_string(getLenght())+"\n" <<endl;
+        #endif
+        e<<string_error("Failling in uRegion setSignal(vector), received a vector of size greater then elem lenght of "+std::to_string(getLenght())+"\n");
+        e<<region_error(*this);
+        throw e;
+    }
 }
 
-/** \brief Return ou signal vector for the region
+/** \brief Return ou signal vector for the region, may be empty
  *
  * \return std::vector<float> :: Signal returned
  *

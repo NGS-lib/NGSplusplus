@@ -16,7 +16,6 @@ class uGenericNGS
 #define FORWARCHARD '+'
 #define REVERSECHAR '-'
 
-
 protected:
     std::string chr="";
     long int startPos=0;
@@ -26,7 +25,7 @@ protected:
 public:
 
     /**< Constructor taking chromosome name, start and end */
-    uGenericNGS(std::string pchr, int pstart, int pend):chr(pchr)
+    uGenericNGS(std::string pchr, int pstart, int pend, StrandDir pstrand=StrandDir::FORWARD ):chr(pchr),strand(pstrand)
     {
         try
         {

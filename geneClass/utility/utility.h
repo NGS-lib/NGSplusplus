@@ -42,10 +42,10 @@ static std::string convertInt(int number);
 static int stringToInt(const std::string &ourStr);
 static float stringToNumber( const std::string &ourStr );
 /**< Template this */
-static inline  std::string clean_WString(const std::string & input_string);
-static inline std::string numberToString(const int & number);
-static inline std::string numberToString(const float & number);
-static inline std::string numberToString(const double & number);
+//static inline  std::string clean_WString(const std::string & input_string);
+//static inline std::string numberToString(const int number);
+//static inline std::string numberToString(const float number);
+//static inline std::string numberToString(const double number);
 
 
 /**< Debugging functions */
@@ -177,21 +177,21 @@ inline static std::string convertInt(int number)
 }
 
 //Utility function courtesy of the internet.
-inline static std::string numberToString(const int & number)
+inline static std::string numberToString(const int number)
 {
     std::stringstream ss (std::stringstream::in | std::stringstream::out);
     ss << number;
     return ss.str();
 }
 
-inline static std::string numberToString(const float & number)
+inline static std::string numberToString(const float number)
 {
     std::stringstream ss (std::stringstream::in | std::stringstream::out);
     ss << number;
     return ss.str();
 }
 
-inline static std::string numberToString(const double & number)
+inline static std::string numberToString(const double number)
 {
     std::stringstream ss (std::stringstream::in | std::stringstream::out);
     ss << number;

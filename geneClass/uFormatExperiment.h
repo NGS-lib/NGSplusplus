@@ -351,7 +351,7 @@ void uGenericNGSExperiment<_CHROM_, _BASE_>::addSite(const _BASE_ & newSite)
     catch(std::exception & e)
     {
           #ifdef DEBUG
-          cerr << "Catching and re-throwing in uFormatExp::addSite()"
+          std::cerr << "Catching and re-throwing in uFormatExp::addSite()" <<std::endl;
           #endif
         throw e;
     }
