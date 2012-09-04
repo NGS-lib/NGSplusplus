@@ -30,13 +30,31 @@ struct construct_elem_throw : virtual elem_throw{};
 struct param_throw : virtual elem_throw{};
 struct format_parsing_error : virtual ugene_exception_base{};
 
+// uToken Exceptions
+struct uToken_exception_base : virtual ugene_exception_base{};
+struct invalid_uToken_throw : virtual uToken_exception_base{};
+struct invalid_token_param_throw : virtual uToken_exception_base{};
+struct invalid_value_throw : virtual uToken_exception_base{};
+struct param_not_found : virtual invalid_uToken_throw{};
 
- static inline void addStringError(ugene_exception_base & e, const std::string  & err){
-        std::string trace;
-	  if (std::string const * ste =boost::get_error_info<string_error>(e) )
-			trace=*ste;
+// uParser Exceptions
+struct uParser_exception_base : virtual std::exception, virtual boost::exception {};
+struct end_of_file_throw : virtual uParser_exception_base{};
+struct customParser_missing_mandatory_values : virtual uParser_exception_base{};
 
-	   e << string_error(trace+err+"\n");
- }
+// Util functions
+static inline void addStringError(ugene_exception_base & e, const std::string & err){
+	std::string trace;
+	if (std::string const * ste =boost::get_error_info<string_error>(e) )
+	trace=*ste;
+	e << string_error(trace+err+"\n");
+}
+
+static inline std::string fetchStringError(ugene_exception_base& e) {
+	std::string trace;
+	if (std::string const * ste =boost::get_error_info<string_error>(e))
+		trace = *ste;
+	return trace;
+}
 
 #endif // UGENEERROR_H
