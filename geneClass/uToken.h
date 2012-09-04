@@ -36,6 +36,10 @@ private:
 	void _postProcessParam(const token_param& name, const std::string& value);
 	bool _validateParam(const token_param& name, const std::string& value) const;
 	void _validateToken();
+	void _checkMandatoryValues() const;
+	void _validateStartEnd() const;
+	void _validateSequenceCigar() const;
+	void _validateSequencePhred() const;
 	void _throwInvalidToken(const std::string& baseErrorMessage) const;
 
 	/**< Single parameter validation functions */

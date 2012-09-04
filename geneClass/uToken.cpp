@@ -156,49 +156,47 @@ bool uToken::_validateParam(const token_param& name, const std::string& value) c
 
 void uToken::_validateToken()
 {
+	//TODO: Should no longer a long ass function, make subfunctions!
 	try {
+		_checkMandatoryValues();
+		_validateStartEnd();
+		_validateSequenceCigar();
+		_validateSequencePhred();
+	}
+	catch(invalid_uToken_throw &e) {
+		throw e;
+	}
+}
+
+void uToken::_checkMandatoryValues() const {
+	std::string str_chr = getParam(token_param::CHR);
+	std::string str_start_pos = getParam(token_param::START_POS);
+	std::string str_end_pos = getParam(token_param::END_POS);
+	if (str_chr.size() == 0 || str_start_pos.size() == 0 || str_end_pos.size() == 0) {
+		std::string error = "CHR, START_POS and END_POS are mandatory.\n";
+		error += "CHR: " + str_chr + "\n";
+		error += "START_POS: " + str_end_pos + "\n";
+		error += "END_POS: " + str_start_pos + "\n";
+		_throwInvalidToken(error);
+	}
+}
+
+void uToken::_validateStartEnd() const {
+	std::string str_start_pos = getParam(token_param::START_POS);
+	int int_start_pos = atoi(str_start_pos.c_str());
+	std::string str_end_pos = getParam(token_param::END_POS);
+	int int_end_pos = atoi(str_end_pos.c_str());
+	if (int_start_pos > int_end_pos) {
+		std::string error = "Invalid START_POS/END_POS values. \n";
+		error += "START_POS:" + str_start_pos + ". END_POS: " + str_end_pos + ".";
+		_throwInvalidToken(error);
+	}
+}
+
+void uToken::_validateSequenceCigar() const {
+	if (isParamSet(token_param::SEQUENCE)) {
 		std::string str_sequence;
-		std::string str_chr = getParam(token_param::CHR);
-		std::string str_start_pos = getParam(token_param::START_POS);
-		int int_start_pos = atoi(str_start_pos.c_str());
-		std::string str_end_pos = getParam(token_param::END_POS);
-		int int_end_pos = atoi(str_end_pos.c_str());
-
-		if (isParamSet(token_param::SEQUENCE)) {
-			str_sequence = getParam(token_param::SEQUENCE);
-		}
-
-		/**< Mandatory values: CHR, START_POS and END_POS */
-		if (str_chr.size() == 0 || str_start_pos.size() == 0 || str_end_pos.size() == 0) {
-			std::string error = "CHR, START_POS and END_POS are mandatory.\n";
-			error += "CHR: " + str_chr + "\n";
-			error += "START_POS: " + str_end_pos + "\n";
-			error += "END_POS: " + str_start_pos + "\n";
-			_throwInvalidToken(error);
-		}
-		/**< Validate start/end positions  */
-		if (int_start_pos > int_end_pos) {
-			std::string error = "Invalid START_POS/END_POS values. \n";
-			error += "START_POS:" + str_start_pos + ". END_POS: " + str_end_pos + ".";
-			_throwInvalidToken(error);
-		}
-		/**< Validate sequence/phred  */
-		if (isParamSet(token_param::PHRED_SCORE)) {
-			std::string str_phred = getParam(token_param::PHRED_SCORE);
-			if (str_phred.size() != 0) {
-				if (str_sequence.size() != str_phred.size()) {
-					std::stringstream seq_size;
-					seq_size << str_sequence.size();
-					std::stringstream phred_size;
-					phred_size << str_phred.size();
-					std::string error = "Sequence and phred score length does not match.\n";
-					error += "Sequence size: " + seq_size.str() + ". Phred size: " + phred_size.str() + ".";
-					_throwInvalidToken(error);
-				}
-			}
-		}
-		/**< Validate sequence/cigar - Sum of lengths of the M/I/S/=/X operations shall equal the length of SEQ. (From SAM specifications) */
-
+		str_sequence = getParam(token_param::SEQUENCE);
 		if (isParamSet(token_param::CIGAR)) {
 			std::string str_cigar = getParam(token_param::CIGAR);
 			/**< Fetch all numerical values and sum them  */
@@ -239,8 +237,26 @@ void uToken::_validateToken()
 			}
 		}
 	}
-	catch(invalid_uToken_throw &e) {
-		throw e;
+}
+
+void uToken::_validateSequencePhred() const {
+	if (isParamSet(token_param::SEQUENCE)) {
+		std::string str_sequence;
+		str_sequence = getParam(token_param::SEQUENCE);
+		if (isParamSet(token_param::PHRED_SCORE)) {
+			std::string str_phred = getParam(token_param::PHRED_SCORE);
+			if (str_phred.size() != 0) {
+				if (str_sequence.size() != str_phred.size()) {
+					std::stringstream seq_size;
+					seq_size << str_sequence.size();
+					std::stringstream phred_size;
+					phred_size << str_phred.size();
+					std::string error = "Sequence and phred score length does not match.\n";
+					error += "Sequence size: " + seq_size.str() + ". Phred size: " + phred_size.str() + ".";
+					_throwInvalidToken(error);
+				}
+			}
+		}
 	}
 }
 
