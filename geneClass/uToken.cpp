@@ -124,7 +124,6 @@ void uToken::_postProcessParam(const token_param& name, const std::string& value
  * \param const std::string& value: the value of the parameter
  */
 bool uToken::_validateParam(const token_param& name, const std::string& value) const {
-	bool isValid = false;;
 	/**< In every case, an empty string is an invalid value */
 	if (value.size() == 0) {
 		return false;
@@ -133,36 +132,26 @@ bool uToken::_validateParam(const token_param& name, const std::string& value) c
 	switch(name) {
 	case token_param::START_POS:
 	case token_param::END_POS:
-		isValid = _posIsValid(value);
-		break;
+		return _posIsValid(value);
 	case token_param::STRAND:
-		isValid = _strandIsValid(value);
-		break;
+		return _strandIsValid(value);
 	case token_param::MAP_SCORE:
-		isValid = _mapScoreIsValid(value);
-		break;
+		return _mapScoreIsValid(value);
 	case token_param::PHRED_SCORE:
-		isValid = true;
-		break;
+		return true;
 	case token_param::CIGAR:
-		isValid = _cigarIsValid(value);
-		break;
+		return _cigarIsValid(value);
 	case token_param::SEQUENCE:
-		isValid = _sequenceIsValid(value);
-		break;
+		return _sequenceIsValid(value);
 	case token_param::FLAGS:
-		isValid = _seqFlagsIsValid(value);
-		break;
+		return _seqFlagsIsValid(value);
 	case token_param::CHR:
-		isValid = true;
-		break;
+		return true;
 	case token_param::SEQ_NAME:
-		isValid = true;
-		break;
+		return true;
 	default:
-		break;
+		return false;
 	}
-	return isValid;
 }
 
 void uToken::_validateToken()
