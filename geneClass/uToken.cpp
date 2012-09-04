@@ -461,17 +461,7 @@ void uToken::_postProcCigar(const std::string& cig) {
 }
 
 std::string uToken::_convertTokenParamToString(const token_param& token) const {
-	switch(token) {
-	case token_param::CHR: return "CHR";
-	case token_param::START_POS: return "START_POS";
-	case token_param::END_POS: return "END_POS";
-	case token_param::STRAND: return "STRAND";
-	case token_param::MAP_SCORE: return "MAP_SCORE";
-	case token_param::PHRED_SCORE: return "PHRED_SCORE";
-	case token_param::CIGAR: return "CIGAR";
-	case token_param::SEQUENCE: return "SEQUENCE";
-	case token_param::SEQ_NAME: return "SEQ_NAME";
-	case token_param::FLAGS : return "FLAGS ";
-	default: return "";
-	};
+	std::stringstream ss;
+	ss << token;
+	return ss.str();
 }
