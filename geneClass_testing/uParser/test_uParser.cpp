@@ -97,7 +97,7 @@ TEST(uParserGetNextEntry, CorrectlyFormatedBED4) {
 
 TEST(uParserGetNextEntry, IncorrectlyFormatedBED) {
 	uParser Parser("incorrect.bed", file_type::BED);
-	ASSERT_THROW(Parser.getNextEntry(), invalid_uToken_throw);
+	ASSERT_THROW(Parser.getNextEntry(), invalid_value_throw);
 
 	uToken Token = Parser.getNextEntry();
 	ASSERT_EQ(Token.getParam(token_param::CHR), "chr2");
