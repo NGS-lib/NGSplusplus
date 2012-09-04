@@ -37,50 +37,45 @@ uParser::~uParser() {
 /** \brief Generic function to fetch an entry from file, will adapt itself to file_type given in constructor
  */
 uToken uParser::getNextEntry() {
-
 	try {
-	switch(m_fileType) {
-	case file_type::BED:
-		try {
+		switch(m_fileType) {
+		case file_type::BED:
+			try {
+				uToken token = _getNextEntryBed(); return token;
+			}
+			catch(invalid_uToken_throw& e) {
+				std::string trace = fetchStringError(e);
+				#ifdef DEBUG
+				std::cerr << "Invalid uToken: " << trace << std::endl;
+				#endif
+				throw e;
+			}
+			catch(end_of_file_throw& e) {
+				throw e;
+			}
+			break;
+				
+		case file_type::SAM:
+			try {
+				uToken token = _getNextEntrySam(); return token;
+			}
+			catch(invalid_uToken_throw& e) {
+				std::string trace = fetchStringError(e);
+				#ifdef DEBUG
+				std::cerr << "Invalid uToken: " << trace << std::endl;
+				#endif
+				throw e;
+			}
+			break;
 
-			uToken token = _getNextEntryBed(); return token;
+		default:
+			throw uParser_exception_base()<< string_error("Invalid fileType in getNextEntry case");
+			break;
 		}
-		catch(invalid_uToken_error& e) {
-
-			std::string trace;
-			if (std::string const * ste =boost::get_error_info<invalid_uToken_error>(e))
-				trace = *ste;
-			#ifdef DEBUG
-			std::cerr << "Invalid uToken: " << trace << std::endl;
-			#endif
-			throw e;
-		}
-		catch(end_of_file_error& e) {
-			throw e;
-		}
-		break;
-    case file_type::SAM:
-        try {
-            uToken token = _getNextEntrySam(); return token;
-        }
-        catch(invalid_uToken_error& e) {
-
-			std::string trace;
-			if (std::string const * ste =boost::get_error_info<invalid_uToken_error>(e))
-				trace = *ste;
-			#ifdef DEBUG
-			std::cerr << "Invalid uToken: " << trace << std::endl;
-			#endif
-			throw e;
-		}
-		break;
-	default:
-
-        throw uParser_exception_base()<< string_error("Invalid fileType in getNextEntry case");
-	     break;
 	}
+	catch(invalid_uToken_throw &e){
+		throw e;
 	}
-catch(invalid_uToken_error &e){throw e;}
 }
 
 /** \brief Specific loader for BED file (See genome.ucsc.edu/FAQ/FAQformat.html#format1 for bed description)
@@ -88,7 +83,6 @@ catch(invalid_uToken_error &e){throw e;}
  */
 uToken uParser::_getNextEntryBed() {
 	char line[4096];
-//	if (!m_pIstream->eof()) {
 	if (m_pIstream->getline(line, 4096)) {
 		std::stringstream ss;
 		ss << line;
@@ -104,6 +98,7 @@ uToken uParser::_getNextEntryBed() {
 		token_infos << "START_POS\t" << start_pos << "\n";
 		token_infos << "END_POS\t" << end_pos << "\n";
 		token_infos << "SEQ_NAME\t" << seq_name << "\n";
+
 		/**< If there was no strand info, we don't add an empty string */
 		if (strand.size() != 0) {
 			token_infos << "STRAND\t" << strand << "\n";
@@ -121,7 +116,7 @@ uToken uParser::_getNextEntryBed() {
 		std::cerr << "Reached end of file." << std::endl;
 		#endif
 		end_of_file_throw e;
-		e << end_of_file_error("Reached end of file.");
+		e << string_error("Reached end of file.");
 		throw e;
 	}
 }
@@ -131,63 +126,55 @@ uToken uParser::_getNextEntryBed() {
  * \return uToken: If all the parameters in the entry are valid a uToken object is returned.
  */
 uToken uParser::_getNextEntrySam() {
-	try{
-	char line[4096];
-//	if (!m_pIstream->eof()) {
-	if (m_pIstream->getline(line, 4096)) {
-		std::stringstream ss;
-		ss << line;
+	try {
+		char line[4096];
+		if (m_pIstream->getline(line, 4096)) {
+			std::stringstream ss;
+			ss << line;
 
-		//String to test for int
-        std::string flag;
-        std::string start_pos;
-        std::string MAPQual;
-        std::string pNext;
-        std::string Tlen;
+			//String to test for int
+			std::string flag;
+			std::string start_pos;
+			std::string MAPQual;
+			std::string pNext;
+			std::string Tlen;
 
+			std::string chr;
 
-		std::string chr;
+			std::string end_pos;
+			std::string score;
+			std::string seq_name;
+			std::string qual;
+			std::string seq;
+			std::string cigar;
+			std::string RNext;
+			std::stringstream token_infos;
 
-		std::string end_pos;
-		std::string score;
-		std::string seq_name;
-		std::string qual;
-		std::string seq;
-		std::string cigar;
-		std::string RNext;
-		std::stringstream token_infos;
+			ss >> seq_name >> flag >> chr >> start_pos >> MAPQual >> cigar>>RNext>>pNext>>Tlen>>seq>>qual;
 
-		ss >> seq_name >> flag >> chr >> start_pos >> MAPQual >> cigar>>RNext>>pNext>>Tlen>>seq>>qual;
-
-		token_infos << "CHR\t" << chr << "\n";
-		token_infos << "START_POS\t" << start_pos << "\n";
-		//token_infos << "END_POS\t" << end_pos << "\n";
-        token_infos << "FLAG\t" << flag << "\n";
-		token_infos << "SEQ_NAME\t" << seq_name << "\n";
-		token_infos << "MAP_SCORE\t" << MAPQual << "\n";
-		token_infos << "SEQUENCE\t" << seq << "\n";
-        token_infos << "CIGAR\t" << cigar << "\n";
-        token_infos << "PHRED_SCORE\t" << qual << "\n";
-
-		/**< If there was no strand info, we don't add an empty string */
-		//if (strand.size() != 0) {
-		//	token_infos << "STRAND\t" << strand << "\n";
-		//}
+			token_infos << "CHR\t" << chr << "\n";
+			token_infos << "START_POS\t" << start_pos << "\n";
+			//token_infos << "END_POS\t" << end_pos << "\n";
+			token_infos << "FLAG\t" << flag << "\n";
+			token_infos << "SEQ_NAME\t" << seq_name << "\n";
+			token_infos << "MAP_SCORE\t" << MAPQual << "\n";
+			token_infos << "SEQUENCE\t" << seq << "\n";
+			token_infos << "CIGAR\t" << cigar << "\n";
+			token_infos << "PHRED_SCORE\t" << qual << "\n";
 
 			uToken token(token_infos);
 			return token;
-
-	}
-	else {
-		#ifdef DEBUG
-		std::cerr << "Reached end of file." << std::endl;
-		#endif
-		end_of_file_throw e;
-		e << end_of_file_error("Reached end of file.");
-		throw e;
-	}
-    }
-    catch(invalid_uToken_throw& e) {
+		}
+		else {
+			#ifdef DEBUG
+			std::cerr << "Reached end of file." << std::endl;
+			#endif
+			end_of_file_throw e;
+			e << string_error("Reached end of file.");
 			throw e;
 		}
+	}
+	catch(invalid_uToken_throw& e) {
+		throw e;
+	}
 }

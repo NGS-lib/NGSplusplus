@@ -8,7 +8,8 @@
 #include <stdexcept>
 #include <cctype>
 #include "uGeneException.h"
-#include "boost/exception/all.hpp"
+//#include "boost/exception/all.hpp"
+#include "uGeneException.h"
 
 /**< List of param is hard coded as strongly typed enum for extra safety. */
 /**< This list has to be updated for every new param */
@@ -32,7 +33,7 @@ private:
 	std::map<token_param, std::string> m_params={};
 	void _setParam(const token_param& name, const std::string& value);
 
-    void _postProcessParam(const token_param& name, const std::string& value);
+	void _postProcessParam(const token_param& name, const std::string& value);
 	bool _validateParam(const token_param& name, const std::string& value) const;
 	void _validateToken();
 	void _throwInvalidToken(const std::string& baseErrorMessage) const;
@@ -52,25 +53,11 @@ private:
 	bool _cigarValueIsValid(char value) const;
 	bool _isStreamEmpty(const std::istream& stream) const;
 
-    void _postProcFlag(const std::string& flag);
-    void _postProcCigar(const std::string& cig);
+	void _postProcFlag(const std::string& flag);
+	void _postProcCigar(const std::string& cig);
 
+	std::string _convertTokenParamToString(const token_param& token) const;
 }; // End of class Token
-
-/**<  uToken exceptions */
-struct uToken_exception_base : virtual ugene_exception_base{};
-
-struct invalid_uToken_throw : virtual uToken_exception_base{};
-typedef boost::error_info<struct invalid_uToken_info, std::string> invalid_uToken_error;
-
-struct invalid_token_param_throw : virtual uToken_exception_base{};
-typedef boost::error_info<struct invalid_param_token_info, std::string> invalid_token_param_error;
-
-struct invalid_value_throw : virtual uToken_exception_base{};
-typedef boost::error_info<struct invalid_value_info, std::string> invalid_value_error;
-
-struct param_not_found : virtual invalid_uToken_throw{};
-typedef boost::error_info<struct token_param_error, token_param> token_param_type_error;
 
 /**< Overloading of stream operator for token_param */
 inline std::ostream & operator<<(std::ostream& Str, token_param name) {
@@ -104,7 +91,7 @@ inline std::istream& operator>>(std::istream &is, token_param& name) {
 	else if (token == "FLAGS") name = token_param::FLAGS;
 	else {
 		invalid_token_param_throw e;
-		e << invalid_value_error(token);
+		e << string_error(token);
 		throw e;
 	}
 	return is;

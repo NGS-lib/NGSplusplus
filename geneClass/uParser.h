@@ -5,6 +5,7 @@
 #include <iostream>
 #include <fstream>
 #include "uToken.h"
+#include "uGeneException.h"
 
 enum class file_type{ AUTO, BED, SAM };
 
@@ -20,8 +21,6 @@ public:
 	uToken getNextEntry();
 
 private:
-//	std::istream m_istream;
-//	std::istream* m_ifstream;
 	std::istream* m_pIstream=nullptr;
 	file_type m_fileType=file_type::AUTO;
 	uToken _getNextEntryBed();
@@ -30,9 +29,4 @@ private:
 	bool m_dynamicStream=false;
 };
 
-/**<  uParser exceptions */
-struct uParser_exception_base : virtual std::exception, virtual boost::exception {};
-
-struct end_of_file_throw : virtual uToken_exception_base{};
-typedef boost::error_info<struct end_of_file_info, std::string> end_of_file_error;
 #endif // UPARSER_H_INCLUDED
