@@ -28,6 +28,23 @@ public:
 	std::string getParam(token_param name) const;
 	bool  isParamSet(const token_param& name)const;
 	uToken& operator=(uToken const& assign_from);
+	
+	/** \brief Check if a string has a corresponding token_param value
+	 * \param const std::string& param: The param to check.
+	 * \return True if there is a matching token_param value, otherwise false.
+	 */
+	static inline bool checkParam(const std::string& param) {
+		return (param == "CHR" 
+		     || param == "START_POS" 
+		     || param == "END_POS"
+		     || param == "STRAND" 
+		     || param == "MAP_SCORE" 
+		     || param == "PHRED_SCORE"
+		     || param == "CIGAR"
+		     || param == "SEQUENCE" 
+		     || param == "SEQ_NAME" 
+		     || param == "FLAGS");
+	}
 
 private:
 	std::map<token_param, std::string> m_params={};
