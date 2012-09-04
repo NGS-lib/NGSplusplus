@@ -15,7 +15,8 @@ class uParser {
 public:
 	uParser(const std::string& filename, file_type type);
 	uParser(std::istream* stream, file_type type);
-	uParser(const std::vector<std::string>& columnNames, char delimiter = '\t');
+	uParser(const std::string& filename, const std::vector<std::string>& fieldsNames, char delimiter = '\t');
+	uParser(std::istream* stream, const std::vector<std::string>& fieldsNames, char delimiter = '\t');
 	~uParser();
 	uParser& operator=(const uParser& copyFrom) = delete;
 	uParser(const uParser&) = delete;

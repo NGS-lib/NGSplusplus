@@ -31,15 +31,44 @@ uParser::uParser(std::istream* stream, file_type type) {
  * \param const std::vector<string> columnNames: The name of every field in the custom format, in the SAME ORDER as they appear in the file. Must be of the string version of token_param (see uToken.h). Mandatory fields are: CHR, START_POS and END_POS.
  * \param char delimiter: The delimiter between each field.
  */
-uParser::uParser(const std::vector<std::string>& fieldsNames, char delimiter) {
+uParser::uParser(const std::string& filename, const std::vector<std::string>& fieldsNames, char delimiter) {
+	/**< Check if filename is valid, then open it */
+	std::ifstream* ifs = new std::ifstream(filename.c_str(), std::ifstream::in);
+	if (!ifs->is_open()) {
+		std::string error = "Error opening file: " + filename;
+		throw std::runtime_error(error.c_str());
+	}
+	else {
+		m_pIstream = ifs;
+	}
+	/**< Check if fields are in a valid format */
 	try {
 		_customParserValidateFields(fieldsNames);
-//		_customParserCopyFields(fieldsNames);
+		_customParserCopyFields(fieldsNames);
 	}
 	catch(customParser_missing_mandatory_values& e){ 
 		throw e;
 	}
+	/**< Set other parameters */
+	m_fileType = file_type::CUSTOM;
 	m_delimiter = delimiter;
+	m_dynamicStream = true;
+}
+
+uParser::uParser(std::istream* stream, const std::vector<std::string>& fieldsNames, char delimiter) {
+	/**< Check if fields are in a valid format */
+	try {
+		_customParserValidateFields(fieldsNames);
+		_customParserCopyFields(fieldsNames);
+	}
+	catch(customParser_missing_mandatory_values& e){ 
+		throw e;
+	}
+	/**< Set other parameters */
+	m_pIstream = stream;
+	m_fileType = file_type::CUSTOM;
+	m_delimiter = delimiter;
+	m_dynamicStream = false;
 }
 
 /** \brief uParser destructor
