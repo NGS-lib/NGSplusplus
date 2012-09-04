@@ -5,6 +5,7 @@
 
 using namespace std;
 
+// TODO: test CIGAR containing only a '*'
 /*
  * Constructor tests:
  *		uToken(std::istream& paramList);
@@ -118,13 +119,13 @@ TEST(uTokenConstructor, AllArgumentsAreValids) {
 TEST(uTokenConstructor, EmptyArgument) {
 	stringstream ss;
 	ss << "CHR\t\n" << "START_POS\t1\n" << "END_POS\t21\n";
-	ASSERT_THROW(uToken Token(ss), invalid_uToken_throw);
+	ASSERT_THROW(uToken Token(ss), invalid_value_throw);
 }
 
 TEST(uTokenConstructor, Invalid_param_token) {
 	stringstream ss;
 	ss << "CH\tchr1\n" << "START_POS\t1\n" << "END_POS\t21\n";
-	ASSERT_THROW(uToken Token(ss), invalid_uToken_throw);
+	ASSERT_THROW(uToken Token(ss), invalid_token_param_throw);
 }
 
 TEST(uTokenConstructor, MissingMandatoryArgument_CHR) {
@@ -151,7 +152,7 @@ TEST(uTokenConstructor, Invalid_START_POS) {
 	ss << "STRAND\t+\n" << "MAP_SCORE\t255\n" << "PHRED_SCORE\t####################\n";
 	ss << "CIGAR\t2M3I2X1=12X\n" << "SEQUENCE\tACGTN.acgtn.ACGTGTCN\n";
 	ss << "SEQ_NAME\tab00001\n" << "FLAGS\t256\n";
-	ASSERT_THROW(uToken Token(ss), invalid_uToken_throw);
+	ASSERT_THROW(uToken Token(ss), invalid_value_throw);
 }
 
 TEST(uTokenConstructor, Invalid_END_POS) {
@@ -160,7 +161,7 @@ TEST(uTokenConstructor, Invalid_END_POS) {
 	ss << "STRAND\t+\n" << "MAP_SCORE\t255\n" << "PHRED_SCORE\t####################\n";
 	ss << "CIGAR\t2M3I2X1=12X\n" << "SEQUENCE\tACGTN.acgtn.ACGTGTCN\n";
 	ss << "SEQ_NAME\tab00001\n" << "FLAGS\t256\n";
-	ASSERT_THROW(uToken Token(ss), invalid_uToken_throw);
+	ASSERT_THROW(uToken Token(ss), invalid_value_throw);
 }
 
 TEST(uTokenConstructor, Invalid_STRAND) {
@@ -169,7 +170,7 @@ TEST(uTokenConstructor, Invalid_STRAND) {
 	ss << "STRAND\t=\n" << "MAP_SCORE\t255\n" << "PHRED_SCORE\t####################\n";
 	ss << "CIGAR\t2M3I2X1=12X\n" << "SEQUENCE\tACGTN.acgtn.ACGTGTCN\n";
 	ss << "SEQ_NAME\tab00001\n" << "FLAGS\t256\n";
-	ASSERT_THROW(uToken Token(ss), invalid_uToken_throw);
+	ASSERT_THROW(uToken Token(ss), invalid_value_throw);
 }
 
 TEST(uTokenConstructor, Invalid_MAP_SCORE_lowerBound) {
@@ -178,7 +179,7 @@ TEST(uTokenConstructor, Invalid_MAP_SCORE_lowerBound) {
 	ss << "STRAND\t+\n" << "MAP_SCORE\t-1\n" << "PHRED_SCORE\t####################\n";
 	ss << "CIGAR\t2M3I2X1=12X\n" << "SEQUENCE\tACGTN.acgtn.ACGTGTCN\n";
 	ss << "SEQ_NAME\tab00001\n" << "FLAGS\t256\n";
-	ASSERT_THROW(uToken Token(ss), invalid_uToken_throw);
+	ASSERT_THROW(uToken Token(ss), invalid_value_throw);
 }
 
 TEST(uTokenConstructor, Invalid_MAP_SCORE_higherBound) {
@@ -187,7 +188,7 @@ TEST(uTokenConstructor, Invalid_MAP_SCORE_higherBound) {
 	ss << "STRAND\t+\n" << "MAP_SCORE\t256\n" << "PHRED_SCORE\t####################\n";
 	ss << "CIGAR\t2M3I2X1=12X\n" << "SEQUENCE\tACGTN.acgtn.ACGTGTCN\n";
 	ss << "SEQ_NAME\tab00001\n" << "FLAGS\t256\n";
-	ASSERT_THROW(uToken Token(ss), invalid_uToken_throw);
+	ASSERT_THROW(uToken Token(ss), invalid_value_throw);
 }
 
 TEST(uTokenConstructor, Invalid_FLAGS_lowerBound) {
@@ -196,7 +197,7 @@ TEST(uTokenConstructor, Invalid_FLAGS_lowerBound) {
 	ss << "STRAND\t+\n" << "MAP_SCORE\t255\n" << "PHRED_SCORE\t####################\n";
 	ss << "CIGAR\t2M3I2X1=12X\n" << "SEQUENCE\tACGTN.acgtn.ACGTGTCN\n";
 	ss << "SEQ_NAME\tab00001\n" << "FLAGS\t-1\n";
-	ASSERT_THROW(uToken Token(ss), invalid_uToken_throw);
+	ASSERT_THROW(uToken Token(ss), invalid_value_throw);
 }
 
 TEST(uTokenConstructor, Invalid_FLAGS_higherBound) {
@@ -205,7 +206,7 @@ TEST(uTokenConstructor, Invalid_FLAGS_higherBound) {
 	ss << "STRAND\t+\n" << "MAP_SCORE\t255\n" << "PHRED_SCORE\t####################\n";
 	ss << "CIGAR\t2M3I2X1=12X\n" << "SEQUENCE\tACGTN.acgtn.ACGTGTCN\n";
 	ss << "SEQ_NAME\tab00001\n" << "FLAGS\t65536\n";
-	ASSERT_THROW(uToken Token(ss), invalid_uToken_throw);
+	ASSERT_THROW(uToken Token(ss), invalid_value_throw);
 }
 
 TEST(uTokenConstructor, Invalid_SEQUENCE) {
@@ -214,7 +215,7 @@ TEST(uTokenConstructor, Invalid_SEQUENCE) {
 	ss << "STRAND\t+\n" << "MAP_SCORE\t255\n" << "PHRED_SCORE\t####################\n";
 	ss << "CIGAR\t2M3I2X1=12X\n" << "SEQUENCE\tACGTN.acgtn.ACGTGTCx\n";
 	ss << "SEQ_NAME\tab00001\n" << "FLAGS\t256\n";
-	ASSERT_THROW(uToken Token(ss), invalid_uToken_throw);
+	ASSERT_THROW(uToken Token(ss), invalid_value_throw);
 }
 
 TEST(uTokenConstructor, Invalid_CIGAR_2alphabeticCharInARow) {
@@ -223,7 +224,7 @@ TEST(uTokenConstructor, Invalid_CIGAR_2alphabeticCharInARow) {
 	ss << "STRAND\t+\n" << "MAP_SCORE\t255\n" << "PHRED_SCORE\t####################\n";
 	ss << "CIGAR\t2M3I2X1=1XX\n" << "SEQUENCE\tACGTN.acgtn.ACGTGTCN\n";
 	ss << "SEQ_NAME\tab00001\n" << "FLAGS\t256\n";
-	ASSERT_THROW(uToken Token(ss), invalid_uToken_throw);
+	ASSERT_THROW(uToken Token(ss), invalid_value_throw);
 }
 
 TEST(uTokenConstructor, Invalid_CIGAR_EndWithNumber) {
@@ -232,7 +233,7 @@ TEST(uTokenConstructor, Invalid_CIGAR_EndWithNumber) {
 	ss << "STRAND\t+\n" << "MAP_SCORE\t255\n" << "PHRED_SCORE\t####################\n";
 	ss << "CIGAR\t2M3I2X1=123\n" << "SEQUENCE\tACGTN.acgtn.ACGTGTCN\n";
 	ss << "SEQ_NAME\tab00001\n" << "FLAGS\t256\n";
-	ASSERT_THROW(uToken Token(ss), invalid_uToken_throw);
+	ASSERT_THROW(uToken Token(ss), invalid_value_throw);
 }
 
 TEST(uTokenConstructor, Invalid_START_END_Combination) {
