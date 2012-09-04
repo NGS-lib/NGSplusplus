@@ -5,6 +5,11 @@
 
 using namespace std;
 
+/* Dummy test */
+TEST(test, testing) {
+	ASSERT_TRUE(true);
+}
+
 // TODO: test CIGAR containing only a '*'
 /*
  * Constructor tests:
@@ -41,10 +46,6 @@ using namespace std;
  *		SEQUENCE_PHRED_lengthDontMatch
  *		SEQUENCE_CIGAR_lengthDontMatch
  */
-
-TEST(test, testing) {
-	ASSERT_TRUE(true);
-}
 
 TEST(uTokenConstructor, MandatoryArgumentsOnly) {
 	stringstream ss;
