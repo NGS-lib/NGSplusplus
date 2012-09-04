@@ -2,7 +2,7 @@
 #include "uGeneException.h"
 /** \brief uParser constructor with filename
  * \param std::string filename: Name of the file to load
- * \param file_type type: Currently supported formats: BED
+ * \param file_type type: Currently supported formats: BED, SAM
  */
 uParser::uParser(const std::string& filename, file_type type) {
 	std::ifstream* ifs = new std::ifstream(filename.c_str(), std::ifstream::in);
@@ -18,11 +18,28 @@ uParser::uParser(const std::string& filename, file_type type) {
 }
 
 /** \brief uParser constructor with istream
+ * \param std::istream* stream: stream to load the data from
+ * \param file_type type: Currently supported formats: BED, SAM
  */
 uParser::uParser(std::istream* stream, file_type type) {
 	m_pIstream = stream;
 	m_fileType = type;
 	m_dynamicStream = false;
+}
+
+/** \brief uParser constructor with custom file type
+ * \param const std::vector<string> columnNames: The name of every field in the custom format, in the SAME ORDER as they appear in the file. Must be of the string version of token_param (see uToken.h). Mandatory fields are: CHR, START_POS and END_POS.
+ * \param char delimiter: The delimiter between each field.
+ */
+uParser::uParser(const std::vector<std::string>& fieldsNames, char delimiter) {
+	try {
+		_customParserValidateFields(fieldsNames);
+//		_customParserCopyFields(fieldsNames);
+	}
+	catch(customParser_missing_mandatory_values& e){ 
+		throw e;
+	}
+	m_delimiter = delimiter;
 }
 
 /** \brief uParser destructor
@@ -176,5 +193,41 @@ uToken uParser::_getNextEntrySam() {
 	}
 	catch(invalid_uToken_throw& e) {
 		throw e;
+	}
+}
+
+void uParser::_customParserValidateFields(const std::vector<std::string>& fieldsNames) {
+	/**< Must have at least 2 fields */
+	if (fieldsNames.size() < 2) {
+		customParser_missing_mandatory_values e;
+		e << string_error("Custom file fields description is too short, must have at least 2 values: CHR and START_POS.\n");
+		throw e;
+	}
+
+	/**< Check if mandatory fields are present */
+	std::vector<std::string>::const_iterator it;
+	it = find(fieldsNames.begin(), fieldsNames.end(), "CHR");
+	if (it == fieldsNames.end()) {
+		customParser_missing_mandatory_values e;
+		e << string_error("Mandatory field is missing: CHR\n");
+		throw e;
+	}
+	it = find(fieldsNames.begin(), fieldsNames.end(), "START_POS");
+	if (it == fieldsNames.end()) {
+		customParser_missing_mandatory_values e;
+		e << string_error("Mandatory field is missing: START_POS\n");
+		throw e;
+	}
+}
+
+void uParser::_customParserCopyFields(const std::vector<std::string>& fieldsNames) {
+	/**< Only copy fields that have a matching token_param value, otherwise add NA */
+	for(size_t i = 0; i < fieldsNames.size(); i++) {
+		if (uToken::checkParam(fieldsNames[i]) == true) {
+			m_customFieldNames.push_back(fieldsNames[i]);
+		}
+		else {
+			m_customFieldNames.push_back("NA");
+		}
 	}
 }
