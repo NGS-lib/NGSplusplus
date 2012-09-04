@@ -65,7 +65,7 @@ std::string uToken::getParam(token_param name) const {
  */
 void uToken::_setParam(const token_param& name, const std::string& value)
 {
-	// TODO: What should we do in case the name is already setted? Overwrite silently, warning or error? return "the ";
+	// TODO: What should we do in case the name is already setted? Overwrite silently, warning or error? 
 	try {
 		if (_validateParam(name, value) == false) {
 			invalid_value_throw e;
@@ -397,25 +397,15 @@ bool uToken::_cigarIsValid(const std::string& value) const {
 bool uToken::_cigarValueIsValid(char value) const {
 	switch(value) {
 	case 'M':
-		return true;
 	case 'I':
-		return true;
 	case 'D':
-		return true;
 	case 'N':
-		return true;
 	case 'S':
-		return true;
 	case 'H':
-		return true;
 	case 'P':
-		return true;
 	case 'X':
-		return true;
-	case '=':
-		return true;
-	default:
-		return false;
+	case '=': return true;
+	default: return false;
 	}
 }
 
@@ -441,34 +431,33 @@ void uToken::_postProcFlag(const std::string& flag) {
 
 }
 void uToken::_postProcCigar(const std::string& cig) {
-	try {
-		int curPos=0;
-		std::string substr;
-		int size=0;
-		for (unsigned int i=0; i< cig.size(); i++) {
-			/**< If isAlpha then check previous numbers */
-			if (isalpha(cig.at(i))) {
-				/**< If a count value */
-				char temp;
-				temp = cig.at(i);
-				if ((temp=='M')||(temp=='I')||(temp=='S')||(temp=='X')||(temp=='+')) {
-					substr= cig.substr(curPos, (i-curPos));
-					size+= atoi(substr.c_str());
+	/**< If END_POS is not set, calculate it's value from cigar score and set it */
+	if (!(isParamSet(token_param::END_POS))) {
+		try {
+			int curPos=0;
+			std::string substr;
+			int size=0;
+			for (unsigned int i=0; i< cig.size(); i++) {
+				/**< If isAlpha then check previous numbers */
+				if (isalpha(cig.at(i))) {
+					/**< If a count value */
+					char temp;
+					temp = cig.at(i);
+					if ((temp=='M')||(temp=='I')||(temp=='S')||(temp=='X')||(temp=='+')) {
+						substr= cig.substr(curPos, (i-curPos));
+						size+= atoi(substr.c_str());
+					}
+					curPos=(i+1);
 				}
-				curPos=(i+1);
 			}
-		}
-		/**< If END_POS is not set, set it */
-		if (!(isParamSet(token_param::END_POS))) {
 			auto start_pos=utility::stringToInt(getParam(token_param::START_POS));
 			_setParam(token_param::END_POS, utility::numberToString(start_pos+(size-1) ));
 		}
+		catch(uToken_exception_base &e) {
+			addStringError(e, "Throwing, in _postProcCigar, unable to set END_POS as START_POS not set");
+			throw e;
+		}
 	}
-	catch(uToken_exception_base &e) {
-		addStringError(e, "Throwing, in _postProccIgar, unable to set EndPOS as START_POS not set");
-		throw e;
-	}
-
 }
 
 std::string uToken::_convertTokenParamToString(const token_param& token) const {
