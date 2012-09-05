@@ -6,6 +6,7 @@
 #include <vector>
 #include "utility/utility.h"
 #include "uGeneException.h"
+#include "uToken.h"
 //Our basic Site for NGS format
 //Very weak class as there are many differences in the functionality of derived classes.
 enum class StrandDir{FORWARD,REVERSE};
@@ -29,23 +30,45 @@ public:
     {
         try
         {
-            /**< Implicitly, our startPosition must always be before our end position */
             {
                 setEnd(pend);
                 setStart(pstart);
             }
         }
-        catch( std::exception &e)
+        catch( ugene_exception_base &e)
         {
             #ifdef DEBUG
             std::cerr << "Error in uGenericNGS(std::string pchr, int pstart, int pend). data is"<< pchr<< " "<< pend<<" "<< pstart << " "<<std::endl;
             #endif
+           e<<generic_error(*this);
             throw e;
         }
     };
 
     uGenericNGS()
     { };
+
+    uGenericNGS(const uToken & pToken):chr(pToken.getParam(token_param::CHR))
+    {
+    try
+        {
+            {
+                setEnd(std::stoi(pToken.getParam(token_param::END_POS)));
+                setStart( std::stoi(pToken.getParam(token_param::START_POS)));
+           /**< Default forward */
+                setStrand(pToken.getParam(token_param::STRAND).at(0));
+            }
+        }
+        catch(ugene_exception_base &e)
+        {
+            #ifdef DEBUG
+            std::cerr << "Error in uGenericNGS(uToken)." <<std::endl;
+            #endif
+            e<<generic_error(*this);
+            throw e;
+        }
+
+    };
 
     virtual ~uGenericNGS(){};
 /**< End Constructor/Destructor */
@@ -77,6 +100,30 @@ public:
     StrandDir getStrand() const
     {
         return strand;
+    };
+
+ /**< Private, strand should -always- be implicit. In fact, it might not be necessary to store it */
+    void setStrand(char pStrand)
+    {
+        try
+        {
+            if (pStrand==REVERSECHAR)
+                strand=StrandDir::REVERSE;
+            else if (pStrand==FORWARCHARD)
+                strand=StrandDir::FORWARD;
+                else
+                   throw param_throw()<<string_error("Failling in setStrand(char), invalid character");
+            }
+        catch(param_throw &e)
+        {
+            //elem_throw e;
+            e << generic_error(*this);
+            throw e;
+        }
+    };
+    void setStrand(StrandDir pStrand)
+    {
+        strand=pStrand;
     };
 
     bool isReverse() const
@@ -155,7 +202,6 @@ public:
 
 
     /**< Strictly for debugging */
-    #ifdef DEBUG
     virtual void debugElem() const
     {
         using namespace utility;
@@ -164,7 +210,6 @@ public:
         stringTocerr("Start "+numberToString((int)getStart()));
         stringTocerr("End " +numberToString((int)getEnd()));
     }
-    #endif
     /**<  Divide our region into a certain number of subregions */
 
     std::vector<uGenericNGS> divideIntoBinofSize(const int N, const SplitType type=SplitType::STRICT);

@@ -40,35 +40,13 @@ public:
 
     uTags();
     uTags(uGenericNGS otherItem);
+    uTags(uToken pToken);
     uTags(std::string pchr, int start, int end, StrandDir pstrand=StrandDir::FORWARD);
     uTags(const uTags& copy_from);
     uTags& operator=  (uTags const& assign_from);
     ~uTags();
 
-    /**< Private, strand should -always- be implicit. In fact, it might not be necessary to store it */
-    void setStrand(char pStrand)
-    {
-        try
-        {
-            if (pStrand==REVERSECHAR)
-                strand=StrandDir::REVERSE;
-            else if (pStrand==FORWARCHARD)
-                strand=StrandDir::FORWARD;
-                else
-                   throw 20;
-            }
-        catch(...)
-        {
-            elem_throw e;
-            e << string_error("Failed in setStrand(char), value is neither + or -\n");
-            e << generic_error(*this);
-            throw e;
-        }
-    };
-    void setStrand(StrandDir pStrand)
-    {
-        strand=pStrand;
-    };
+
 
     void writeBedToOuput(std::ostream &out) const;
     void writetoBedCompletePE( std::ostream &out);
@@ -128,6 +106,14 @@ public:
             returnStr=cigar;
         return returnStr;
     };
+
+
+    /** \brief Parse your flag and set the necessary values to stay coherent.
+     *
+     * \param pflag int
+     * \return void
+     *
+     */
     void setFlag(int pflag)
     {
         flag=pflag;

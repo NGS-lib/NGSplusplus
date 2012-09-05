@@ -7,12 +7,18 @@
 #include "uFormats.h"
 #include "uTags.h"
 #include <limits>
+
+class uToken;
+class uParser;
 class uRegion : public uGenericNGS
 {
     public:
         uRegion();
         uRegion(std::string chr, int start, int end);
         uRegion(uGenericNGS);
+
+        uRegion(uToken);
+
         virtual ~uRegion();
 
         std::string getIdent() const {return ident;};
@@ -69,6 +75,12 @@ class uRegionChrom :  public uGenericNGSChrom<uRegion>
 
 class uRegionExperiment: public uGenericNGSExperiment<uRegionChrom, uRegion>{
      public:
+
+
+    uRegionExperiment& operator=(const uRegionExperiment& copFrom)=default;
+    uRegionExperiment(const uRegionExperiment&) = default;
+    uRegionExperiment()=default;
+
     void measureDensityOverlap(uGenericNGSExperiment<uGenericNGSChrom<uGenericNGS>, uGenericNGS>& expToComp, const OverlapType=OverlapType::OVERLAP_PARTIAL);
     void measureDensityOverlap(uTagsExperiment& expToComp, const OverlapType poverlap=OverlapType::OVERLAP_PARTIAL);
     void generateSignal(uTagsExperiment& expToComp);

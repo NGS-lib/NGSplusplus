@@ -1,7 +1,7 @@
 #ifndef UFORMATEXPERIMENT_H_INCLUDED
 #define UFORMATEXPERIMENT_H_INCLUDED
 #include <fstream>
-//#include "uParser.h"
+#include "uParser.h"
 //_BASE_ is our Tags, _CHROM_ our Chrom structure.
 enum class ReadMode{ DEFAULT, GRADUAL };
 template<typename _CHROM_, typename _BASE_>
@@ -25,14 +25,13 @@ protected:
 
     /**< Are we loading gradually? */
     ReadMode op_mode;
+//    uParser m_parser;
 
     std::ifstream* ourStream;
     std::map<std::string,_CHROM_>  ExpMap;
 
     void removeSite(std::string chr,int position);
     void inferChrSize();
-    auto begin()->decltype(ExpMap.begin()){return ExpMap.begin();};
-    auto end()->decltype(ExpMap.end()){return ExpMap.end();};
 
 
 public:
@@ -41,6 +40,8 @@ public:
     uGenericNGSExperiment& operator=(const uGenericNGSExperiment& copFrom)=delete;
     uGenericNGSExperiment(const uGenericNGSExperiment&) = delete;
 
+    auto begin()->decltype(ExpMap.begin()){return ExpMap.begin();};
+    auto end()->decltype(ExpMap.end()){return ExpMap.end();};
 
     auto begin()const->decltype(ExpMap.cbegin()){return ExpMap.cbegin();};
     auto end()const->decltype(ExpMap.cend()){return ExpMap.cend();};
@@ -56,10 +57,6 @@ public:
         auto refer=&(ExpMap.find(chrom)->second);
         return (refer);
     };
-
-
-
-
 
     void combine(const _CHROM_ &);
     void addSite(const _BASE_ & newSite);
@@ -99,7 +96,10 @@ public:
     typename std::vector<_BASE_>::const_iterator findNextSite(std::string chr, int position)const;
 
     virtual void loadFromTabFile(std::ifstream& stream);
-    void writeAsBedFile(std::ostream& out);
+    virtual void loadFile(std::ifstream& stream, file_type pType);
+
+
+    void writeAsBedFile(std::ostream& out)const;
 
     //TODO, code this whole part apparently? THIS IS WHAT HAPPENS WHEN WE DON'T TEST!
     template<typename _CHROMPAR_, typename _BASEPAR_>
@@ -222,6 +222,17 @@ public:
     }
 
     template<class UnaryFunction>
+    UnaryFunction applyOnAllChroms(const UnaryFunction f)const
+    {
+        for_each(std::begin(ExpMap), std::end(ExpMap), [&f](NGSExpPair element)
+        {
+            f(element.second);
+        });
+        return f;
+    }
+
+
+    template<class UnaryFunction>
     UnaryFunction applyOnSites(UnaryFunction f)
     {
         for_each(std::begin(ExpMap), std::end(ExpMap), [&f](NGSExpPair& element)
@@ -232,7 +243,16 @@ public:
         return f;
     }
 
-
+    template<class UnaryFunction>
+    UnaryFunction applyOnSites(const UnaryFunction f)const
+    {
+        for_each(std::begin(ExpMap), std::end(ExpMap), [&f](NGSExpPair& element)
+        {
+            element.second.applyOnAllSites(f);
+            //f(element.second);
+        });
+        return f;
+    }
 
 
 
@@ -409,31 +429,23 @@ template<typename _CHROM_, typename _BASE_>
     }
 }
 
-/** \brief load basic data from file,
+/** \brief load basic data from a tab delimited file, throw away the result.
  *
  * \param stream std::ifstream& file to load from
  * \return void
  *
- *//*
+ */
 template<typename _CHROM_, typename _BASE_>
- void uGenericNGSExperiment<_CHROM_, _BASE_>::loadFromFile(std::ifstream& stream, file_type p_fType ) */
-//{
-
-   /* uParser ourParse(streamm,p_fType);
-  //  std::string tempString;
-   // while(!std::getline(stream, tempString).eof())
-  //  {
-        while(!ourParse.eof())
-        {
-           addSite(Parser.getNextEntry());
-
-        }
-
-       addSite( static_cast<_BASE_>(factory::makeNGSfromTabString(tempString)));
+ void uGenericNGSExperiment<_CHROM_, _BASE_>::loadFile(std::ifstream& stream, file_type pType)
+{
+    std::istream& refStream = stream;
+    uParser Curparser(&refStream, pType);
+    while(!Curparser.eof()){
+        addSite(Curparser.getNextEntry());
+    }
+}
 
 
-   // }
-} */
 
 /** \brief Write our data as a legal bed file, filling only the first three columns
  *
@@ -442,7 +454,7 @@ template<typename _CHROM_, typename _BASE_>
  *
  */
 template<typename _CHROM_, typename _BASE_>
-void uGenericNGSExperiment<_CHROM_, _BASE_>::writeAsBedFile(std::ostream& out)
+void uGenericNGSExperiment<_CHROM_, _BASE_>::writeAsBedFile(std::ostream& out) const
 {
     applyOnAllChroms(bind2nd(mem_fun_ref(&_CHROM_::outputBedFormat), out));
 }

@@ -31,19 +31,8 @@ private :
     void removeSite(VecGenIter position);
     void removeSite(VecGenIter start,VecGenIter end);
 
-    /**< Private iterators */
-    auto begin()->decltype(VecSites.begin())
-    {
-        return VecSites.begin();
-    };
-    auto end()->decltype(VecSites.end())
-    {
-        return VecSites.end();
-    };
 
-    //TODO make public
-    VecGenConstIter findPrecedingSite(const int & position) const;
-    VecGenConstIter findNextSite(const int & position) const;
+
 
     /**< Should not be necesary in C++ 11? */
     template <class Container>
@@ -110,6 +99,10 @@ public:
     void divideItemsIntoNBins(int N, SplitType type=SplitType::STRICT);
     void divideItemsIntoBinofSize(int N, SplitType type=SplitType::STRICT);
 
+
+    /**< Find according to sort value */
+    VecGenConstIter findPrecedingSite(const int & position) const;
+    VecGenConstIter findNextSite(const int & position) const;
     /**< Functions to create and add items to our chrom */
     template <class T2>
     _BASE_ generateRandomSite(const int size, std::mt19937& engine, const uGenericNGSChrom<T2> &exclList, const int sigma=0, const std::string ID="") const;
@@ -268,9 +261,37 @@ public:
         }
         catch(std::exception & e)
         {
+            #ifdef DEBUG
+               std::cerr << "Throwing in getSpecificSites()" <<std::endl;
+            #endif
             throw e;
         }
     }
+
+        template<class UnaryPredicate>
+
+
+    /** \brief Remove sites for which the predicate is true.
+     *
+     * \param pred UnaryPredicate Predicate to test, follows standard pattern
+     * \return void
+     *
+     */
+    void removeSpecificSites(UnaryPredicate pred) const
+    {
+        try
+        {
+            VecSites.erase(std::remove_if(VecSites.begin(), VecSites.end(), pred), VecSites.end());
+        }
+        catch(std::exception & e)
+        {
+            #ifdef DEBUG
+               std::cerr << "Throwing in removeSpecificSites()" <<std::endl;
+            #endif
+            throw e;
+        }
+    }
+
 
     /** \brief Transform the sites collection by applying a certain function to all sites
       *
@@ -536,6 +557,17 @@ public:
         {
             return VecSites.cend();
         };
+
+          /**< Private iterators */
+            auto begin()->decltype(VecSites.begin())
+            {
+                return VecSites.begin();
+            };
+            auto end()->decltype(VecSites.end())
+            {
+                return VecSites.end();
+            };
+
     };
 
 
