@@ -74,6 +74,7 @@ private:
 	bool _cigarValueIsValid(char value) const;
 	bool _isStreamEmpty(const std::istream& stream) const;
 
+	void _postProcSequence(const std::string& sequence);
 	void _postProcFlag(const std::string& flag);
 	void _postProcCigar(const std::string& cig);
 

@@ -426,6 +426,16 @@ bool uToken::_isStreamEmpty(const std::istream& stream) const {
 
 /**< Post processing methods */
 
+/** \brief Sequence length can be used to infer END_POS
+ * \param sequence: The nucleotidic sequence of the entry.
+ */
+void uToken::_postProcSequence(const std::string& sequence) {
+	if (!(isParamSet(token_param::END_POS))) {
+	auto start_pos = std::stoi(getParam(token_param::START_POS));
+	_setParam(token_param::END_POS, std::to_string(sequence.size()));
+	}
+}
+
 /** \brief Sam Flag can contain multiple settings
  *
  * \param value
@@ -433,7 +443,6 @@ bool uToken::_isStreamEmpty(const std::istream& stream) const {
  *
  */
 void uToken::_postProcFlag(const std::string& flag) {
-
 }
 void uToken::_postProcCigar(const std::string& cig) {
 	/**< If END_POS is not set, calculate it's value from cigar score and set it */
