@@ -1,6 +1,8 @@
 #include "uFormats.h"
 #include "uRegion.h"
 #include "uTags.h"
+#include "uParser.h"
+#include "uToken.h"
 #include <limits>
 using namespace std;
 
@@ -19,17 +21,10 @@ uRegion::uRegion()
  *
  */
 uRegion::uRegion(std::string ourchr, int ourstart, int ourend) try : uGenericNGS(ourchr, ourstart,ourend)
-{
-
-}
+{}
 catch(construct_elem_throw &e)
 {
-   std::string * trace;
-     if ((trace=boost::get_error_info<string_error>(e)))
-        e << string_error("Throwing in uRegion(string,int int) \n");
-    else
-         e << string_error("Throwing in uRegion(string,int int) \n");
-
+    addStringError(e,"Throwing in uRegion(string,int int)");
     e << region_error(*this);
     throw e;
 
@@ -42,19 +37,32 @@ catch(std::exception &e){throw e;}
  *
  */
 uRegion::uRegion(uGenericNGS otherNGS)try :uGenericNGS(otherNGS.getChr(),otherNGS.getStart(),otherNGS.getEnd(), otherNGS.getStrand())
-{
-}
+{}
 catch(construct_elem_throw &e)
 {
-   std::string * trace;
-     if ((trace=boost::get_error_info<string_error>(e)))
-        e << string_error("Throwing in uRegion(uGenericNGS) \n");
-    else
-         e << string_error("Throwing in uRegion(uGenericNGS) \n");
-
-        e << region_error(*this);
+    addStringError(e,"Throwing in uRegion(uGenericNGS)");
+    e << region_error(*this);
     throw e;
 }
+
+
+  /** \brief Constructor from parser Token
+   *
+   * \param uToken Valid Token with data. We assumed the token is valid, so skip some checks here to avoid duplication
+   *
+   */
+  uRegion::uRegion(uToken pToken)try :uGenericNGS(pToken){
+
+
+  }
+catch(construct_elem_throw &e)
+{
+    addStringError(e,"Throwing in uRegion(uToken)");
+    e << region_error(*this);
+    throw e;
+}
+
+
 /** \brief Destructor
  */
 uRegion::~uRegion()
@@ -98,7 +106,6 @@ void uRegion::setSignal(int i, float value)
         signal.resize(this->getLenght());
 
 /**< Sanity check */
-//TODO Explicit error message
     if (i < this->getLenght())
         signal.at(i)=value;
     else
@@ -154,6 +161,7 @@ std::vector<float> uRegion::getSignal()
  * \return void
  *
  */
+ //TODO use parser for all write functions
 void uRegion::writeAll(std::ostream& out) const
 {
     std::vector<float>::iterator iterVec;
@@ -164,9 +172,6 @@ void uRegion::writeAll(std::ostream& out) const
         out <<  "\t" << getScore(i);
 
     out << std::endl;
-    //for (iterVec = signal.begin() ;iterVec!= signal.end(); iterVec++){
-    //    out << *iterVec <<  " ";
-    //    }
 }
 
 /** \brief Output our signal data with start/end
@@ -305,7 +310,7 @@ void uRegionChrom::generateSignal(const uRegionExperiment & expToComp){
   */
  void uRegionChrom::generateSignal(const uRegionChrom & chromToComp)
 {
-     vector<long int> densityValues;
+    vector<long int> densityValues;
     string trace;
 try
     {

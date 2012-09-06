@@ -5,12 +5,34 @@
 
 
 using namespace std;
-
 /** \brief Default constructor, not PE and positive strand
  */
 uTags::uTags():uGenericNGS(),name(nullptr),phredScore(nullptr),cigar(nullptr)
 {
 }
+
+uTags::uTags(uToken pToken)try:uGenericNGS(pToken){
+
+if (pToken.isParamSet(token_param::CIGAR))
+    setCigar(pToken.getParam(token_param::CIGAR));
+ if (pToken.isParamSet(token_param::MAP_SCORE))
+        setMapQual(std::stoi(pToken.getParam(token_param::MAP_SCORE)));
+ if (pToken.isParamSet(token_param::PHRED_SCORE))
+        setPhred(pToken.getParam(token_param::PHRED_SCORE));
+ if (pToken.isParamSet(token_param::SEQUENCE))
+        setSequence(pToken.getParam(token_param::SEQUENCE));
+ if (pToken.isParamSet(token_param::FLAGS))
+        setFlag(std::stoi(pToken.getParam(token_param::FLAGS)));
+}
+catch(ugene_exception_base &e)
+{
+        #ifdef DEBUG
+        std::cerr << "Error in uGenericNGS(uToken)." <<std::endl;
+        #endif
+        e<<generic_error(*this);
+        throw e;
+}
+
 
 /** \brief Copy constructor, with init list
  * \param otherItem: uGenericsNGS (or child class) object
@@ -452,9 +474,9 @@ try {
     /**< Sam flag */
     /**< StrongType this */
      if (ourFlag&0x10)
-         returnTag.setStrand('-');// ='-';
+         returnTag.setStrand(StrandDir::REVERSE);// ='-';
      else
-         returnTag.setStrand('+');// ='+'; */
+         returnTag.setStrand(StrandDir::FORWARD);// ='+'; */
     if (ourFlag&0x4)
         returnTag.setMapped(false);
     else
