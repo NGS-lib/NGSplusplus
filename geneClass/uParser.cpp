@@ -4,7 +4,7 @@
  * \param std::string filename: Name of the file to load
  * \param file_type type: Currently supported formats: BED, SAM
  */
-uParser::uParser(const std::string& filename, file_type type) {
+uParser::uParser(const std::string& filename, file_type type, bool header) {
 	std::ifstream* ifs = new std::ifstream(filename.c_str(), std::ifstream::in);
 	if (!ifs->is_open()) {
 		std::string error = "Error opening file: " + filename;
@@ -14,6 +14,10 @@ uParser::uParser(const std::string& filename, file_type type) {
 		m_pIstream = ifs;
 	}
 	m_fileType = type;
+	m_header = header;
+	if (m_header == false) {
+		m_firstToken = false;
+	}
 	m_dynamicStream = true;
 }
 
@@ -21,9 +25,13 @@ uParser::uParser(const std::string& filename, file_type type) {
  * \param std::istream* stream: stream to load the data from
  * \param file_type type: Currently supported formats: BED, SAM
  */
-uParser::uParser(std::istream* stream, file_type type) {
+uParser::uParser(std::istream* stream, file_type type, bool header) {
 	m_pIstream = stream;
 	m_fileType = type;
+	m_header = header;
+	if (m_header == false) {
+		m_firstToken = false;
+	}
 	m_dynamicStream = false;
 }
 
@@ -31,7 +39,7 @@ uParser::uParser(std::istream* stream, file_type type) {
  * \param const std::vector<string> columnNames: The name of every field in the custom format, in the SAME ORDER as they appear in the file. Must be of the string version of token_param (see uToken.h). Mandatory fields are: CHR, START_POS and END_POS.
  * \param char delimiter: The delimiter between each field.
  */
-uParser::uParser(const std::string& filename, const std::vector<std::string>& fieldsNames, char delimiter) {
+uParser::uParser(const std::string& filename, const std::vector<std::string>& fieldsNames, bool header, char delimiter) {
 	/**< Check if filename is valid, then open it */
 	std::ifstream* ifs = new std::ifstream(filename.c_str(), std::ifstream::in);
 	if (!ifs->is_open()) {
@@ -46,16 +54,20 @@ uParser::uParser(const std::string& filename, const std::vector<std::string>& fi
 		_customParserValidateFields(fieldsNames);
 		_customParserCopyFields(fieldsNames);
 	}
-	catch(customParser_missing_mandatory_values& e){ 
+	catch(customParser_missing_mandatory_values& e) { 
 		throw e;
 	}
 	/**< Set other parameters */
 	m_fileType = file_type::CUSTOM;
 	m_delimiter = delimiter;
+	m_header = header;
+	if (m_header == false) {
+		m_firstToken = false;
+	}
 	m_dynamicStream = true;
 }
 
-uParser::uParser(std::istream* stream, const std::vector<std::string>& fieldsNames, char delimiter) {
+uParser::uParser(std::istream* stream, const std::vector<std::string>& fieldsNames, bool header, char delimiter) {
 	/**< Check if fields are in a valid format */
 	try {
 		_customParserValidateFields(fieldsNames);
@@ -68,6 +80,10 @@ uParser::uParser(std::istream* stream, const std::vector<std::string>& fieldsNam
 	m_pIstream = stream;
 	m_fileType = file_type::CUSTOM;
 	m_delimiter = delimiter;
+	m_header = header;
+	if (m_header == false) {
+		m_firstToken = false;
+	}
 	m_dynamicStream = false;
 }
 
@@ -136,49 +152,76 @@ uToken uParser::getNextEntry() {
 	}
 }
 
+// TODO: class uHeader to return from this function. Derived from uToken?
+/** \brief Fetch header differently based on file type 
+ */
+void uParser::_fetchHeader() {
+	/**< When header is set as true for BED and CUSTOM, we do nothing here. */
+	/**< Instead, the code won't throw error for bad token until first valid token. */
+	switch(m_fileType) {
+	case file_type::BED:
+	case file_type::CUSTOM: break;
+	// TODO: Write header parser for SAM format
+	case file_type::SAM: break;
+	default: break;
+	}
+}
+
 /** \brief Specific loader for BED file (See genome.ucsc.edu/FAQ/FAQformat.html#format1 for bed description)
  * \return uToken: If all the parameters in the entry are valid a uToken object is returned.
  */
 uToken uParser::_getNextEntryBed() {
-	char line[4096];
-	if (m_pIstream->getline(line, 4096)) {
-		std::stringstream ss;
-		ss << line;
-		std::string chr;
-		std::string start_pos;
-		std::string end_pos;
-		std::string score;
-		std::string seq_name;
-		std::string strand;
-		std::stringstream token_infos;
-		ss >> chr >> start_pos >> end_pos >> seq_name >> score >> strand;
-		token_infos << "CHR\t" << chr << "\n";
-		token_infos << "START_POS\t" << start_pos << "\n";
-		token_infos << "END_POS\t" << end_pos << "\n";
-		token_infos << "SEQ_NAME\t" << seq_name << "\n";
+	do {
+		char line[4096];
+		if (m_pIstream->getline(line, 4096)) {
+			/**< We start by fetching the infos from the line */
+			std::stringstream ss;
+			ss << line;
+			std::string chr;
+			std::string start_pos;
+			std::string end_pos;
+			std::string score;
+			std::string seq_name;
+			std::string strand;
+			std::stringstream token_infos;
+			ss >> chr >> start_pos >> end_pos >> seq_name >> score >> strand;
+			token_infos << "CHR\t" << chr << "\n";
+			token_infos << "START_POS\t" << start_pos << "\n";
+			token_infos << "END_POS\t" << end_pos << "\n";
+			token_infos << "SEQ_NAME\t" << seq_name << "\n";
 
-		/**< If there was no strand info, we don't add an empty string */
-		if (strand.size() != 0) {
-			token_infos << "STRAND\t" << strand << "\n";
+			/**< If there was no strand info, we don't add an empty string */
+			if (strand.size() != 0) {
+				token_infos << "STRAND\t" << strand << "\n";
+			}
+			/**< We try to create a token with the infos that were fetched from the line */
+			/**< If it doesn't work andit's the first token, we don't throw an error. Instead, we try again with another line */
+			try {
+				uToken token(token_infos);
+				m_firstToken = false;
+				return token;
+			}
+			catch(invalid_uToken_throw& e) {
+				if (m_firstToken != true) {
+					throw e;
+				}
+			}
+			catch(invalid_value_throw& e) {
+				if (m_firstToken != true) {
+					throw e;
+				}
+			}
 		}
-		try {
-			uToken token(token_infos);
-			return token;
-		}
-		catch(invalid_uToken_throw& e) {
+		else {
+			#ifdef DEBUG
+			std::cerr << "Reached end of file." << std::endl;
+			#endif
+			end_of_file_throw e;
+			e << string_error("Reached end of file.");
 			throw e;
 		}
-	}
-	else {
-		#ifdef DEBUG
-		std::cerr << "Reached end of file." << std::endl;
-		#endif
-		end_of_file_throw e;
-		e << string_error("Reached end of file.");
-		throw e;
-	}
+	} while (m_firstToken == true);
 }
-//enum class token_param { CHR, START_POS, END_POS, STRAND, MAP_SCORE, PHRED_SCORE, CIGAR, SEQUENCE, SEQ_NAME, FLAGS };
 
 /** \brief Specific loader for SAM file (See samtools.sourceforge.net for SAM description)
  * \return uToken: If all the parameters in the entry are valid a uToken object is returned.
@@ -238,9 +281,10 @@ uToken uParser::_getNextEntrySam() {
 }
 
 uToken uParser::_getNextEntryCustom() {
-	try {
+	do {
 		char line[4096];
 		if (m_pIstream->getline(line, 4096)) {
+			/**< We start by fetching the infos in the line */
 			std::stringstream token_infos;
 			char* current;
 			current = strtok(line, &m_delimiter);
@@ -250,8 +294,23 @@ uToken uParser::_getNextEntryCustom() {
 				}
 				current = strtok(NULL, &m_delimiter);
 			}
-			uToken token(token_infos);
-			return token;
+			/**< Then we try to create a token with that info */
+			/**< If it doesn't work andit's the first token, we don't throw an error. Instead, we try again with another line */
+			try {
+				uToken token(token_infos);
+				m_firstToken = false;
+				return token;
+			}
+			catch(invalid_uToken_throw& e) {
+				if (m_firstToken != true) {
+					throw e;
+				}
+			}
+			catch(invalid_value_throw& e) {
+				if (m_firstToken != true) {
+					throw e;
+				}
+			}
 		}
 		else {
 			#ifdef DEBUG
@@ -261,10 +320,7 @@ uToken uParser::_getNextEntryCustom() {
 			e << string_error("Reached end of file.");
 			throw e;
 		}
-	}
-	catch(invalid_uToken_throw& e) {
-		throw e;
-	}
+	} while(m_firstToken == true);
 }
 
 void uParser::_customParserValidateFields(const std::vector<std::string>& fieldsNames) {
