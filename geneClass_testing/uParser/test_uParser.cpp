@@ -13,11 +13,21 @@ using namespace std;
  *		uParser(std::string filename, file_type type = BED);
  * 	Valid cases:
  *		ValidFileName
+ *		CorrectlyFormatedHeader
  *	Invalid cases:
  *		InvalidFileName
+ *		IncorrectlyFormatedHeader //TODO: Only sam format should throw error on constructor if header is incorrect.
  */
 TEST(uParserConstructorFilename, ValidFileName) {
 	ASSERT_NO_THROW(uParser Parser("test.bed", file_type::BED));
+	ASSERT_NO_THROW(uParser Parser("test.bed", file_type::SAM));
+	ASSERT_NO_THROW(uParser Parser("test.bed", file_type::CUSTOM));
+}
+
+//TODO: Add SAM when it is available. There is no check for header until getNextEntry for BED and CUSTOM file type
+TEST(uParserConstructorFilename, CorrectlyFormatedHeader) {
+	ASSERT_NO_THROW(uParser Parser("test.bed", file_type::BED, true));
+	ASSERT_NO_THROW(uParser Parser("test.bed", file_type::CUSTOM, true));
 }
 
 TEST(uParserConstructorFilename, InvalidFileName) {
@@ -36,16 +46,26 @@ TEST(uParserConstructorFilename, InvalidFileName) {
  *		uParser(std::string filename, file_type type = BED);
  * 	Valid cases:
  *		ValidStream
+ *		CorrectlyFormatedHeader
  *		EmptyStream
+ *	Invalid case:
+ *		IncorrectlyFormatedHeader //TODO: Only sam format should throw error on constructor if header is incorrect.
  */
 
 TEST(uParserConstructorStream, ValidStream) {
 	stringstream ss;
 	ss << "chr1\t21\t31\ttest001\t.\t+\n";
 	ss << "chr2\t1221\t1231\ttest002\t.\t+\n";
-	ss << "chr3\t34521\t34531\ttest003\t.\t-\n";
-	ss << "chr4\t456721\t456731\ttest004\t.\t-\n";
 	ASSERT_NO_THROW(uParser Parser(&ss, file_type::BED));
+}
+
+//TODO: Add SAM when it is available. There is no check for header until getNextEntry for BED file type
+TEST(uParserConstructorStream, CorrectlyFormatedHeader) {
+	stringstream ss;
+	ss << "browser position chr7:127471196-127495720\n";
+	ss << "chr1\t21\t31\ttest001\t.\t+\n";
+	ss << "chr2\t1221\t1231\ttest002\t.\t+\n";
+	ASSERT_NO_THROW(uParser Parser(&ss, file_type::BED, true));
 }
 
 TEST(uParserConstructorStream, EmptyStream) {
@@ -66,14 +86,6 @@ TEST(uParserConstructorStream, EmptyStream) {
  * 		CannotInferEND_POS
  */
 
-//class uParser_test : public uParser {
-//public:
-//	uParser_test(const string& filename, const vector<string>& fieldsNames, char delimiter = '\t')
-//		: uParser(filename, fieldsNames, delimiter) { }
-//	uParser_test(istream* stream, const vector<string>& fieldsNames, char delimiter = '\t')
-//		: uParser(stream, fieldsNames, delimiter) { }
-//	vector<string> getFields() { return m_customFieldNames; }
-//};
 class CustomConstructorTests_ValidList: public ::testing::Test {
 public:
 	CustomConstructorTests_ValidList() {
@@ -245,12 +257,18 @@ TEST(uParserEof, NoTokenInStream) {
  *	Valid cases:
  *		CorrectlyFormatedBED6
  *		CorrectlyFormatedBED4
+ *		CorrectlyFormatedHeaderBED
  *		CorrectlyFormatedCustom
+ *		CorrectlyFormatedHeaderCUSTOM
  *		CorrectlyFormatedCustomAlternateDelimiter
  *		
  *	Invalid cases:
  *		IncorrectlyFormatedBED
+ * 		IncorrectlyFormatedHeaderBED
+ *		CorrectlyFormatedHeaderButNotSpecifiedBED
  *		IncorrectlyFormatedCustom
+ * 		IncorrectlyFormatedHeaderCUSTOM
+ *		CorrectlyFormatedHeaderButNotSpecifiedCUSTOM
  *		ReachedEOF
  */
 
@@ -286,6 +304,21 @@ TEST(uParserGetNextEntry, CorrectlyFormatedBED4) {
 	ASSERT_EQ(Token.getParam(token_param::SEQ_NAME), "test002");
 }
 
+TEST(uParserGetNextEntry, CorrectlyFormatedHeaderBED) {
+	uParser Parser("header.bed", file_type::BED, true);
+	uToken Token = Parser.getNextEntry();
+	ASSERT_EQ(Token.getParam(token_param::CHR), "chr1");
+	ASSERT_EQ(Token.getParam(token_param::START_POS), "21");
+	ASSERT_EQ(Token.getParam(token_param::END_POS), "31");
+	ASSERT_EQ(Token.getParam(token_param::SEQ_NAME), "test001");
+
+	Token = Parser.getNextEntry();
+	ASSERT_EQ(Token.getParam(token_param::CHR), "chr2");
+	ASSERT_EQ(Token.getParam(token_param::START_POS), "1221");
+	ASSERT_EQ(Token.getParam(token_param::END_POS), "1231");
+	ASSERT_EQ(Token.getParam(token_param::SEQ_NAME), "test002");
+}
+
 TEST_F(CustomConstructorTests_ValidList, getNextEntry_CorrectlyFormatedCustom) {
 	uParser Parser("test.custom", m_fieldsList);
 	uToken Token = Parser.getNextEntry();
@@ -301,8 +334,23 @@ TEST_F(CustomConstructorTests_ValidList, getNextEntry_CorrectlyFormatedCustom) {
 	ASSERT_EQ(Token.getParam(token_param::STRAND), "+");
 }
 
+TEST_F(CustomConstructorTests_ValidList, getNextEntry_CorrectlyFormatedHeaderCustom) {
+	uParser Parser("header.custom", m_fieldsList, true);
+	uToken Token = Parser.getNextEntry();
+	ASSERT_EQ(Token.getParam(token_param::CHR), "chr1");
+	ASSERT_EQ(Token.getParam(token_param::START_POS), "21");
+	ASSERT_EQ(Token.getParam(token_param::END_POS), "31");
+	ASSERT_EQ(Token.getParam(token_param::STRAND), "+");
+
+	Token = Parser.getNextEntry();
+	ASSERT_EQ(Token.getParam(token_param::CHR), "chr2");
+	ASSERT_EQ(Token.getParam(token_param::START_POS), "1221");
+	ASSERT_EQ(Token.getParam(token_param::END_POS), "1231");
+	ASSERT_EQ(Token.getParam(token_param::STRAND), "+");
+}
+
 TEST_F(CustomConstructorTests_ValidList, getNextEntry_CorrectlyFormatedCustomAlternateDelimiter) {
-	uParser Parser("test.csv", m_fieldsList, ',');
+	uParser Parser("test.csv", m_fieldsList, false, ',');
 	uToken Token = Parser.getNextEntry();
 	ASSERT_EQ(Token.getParam(token_param::CHR), "chr1");
 	ASSERT_EQ(Token.getParam(token_param::START_POS), "21");
@@ -317,7 +365,7 @@ TEST_F(CustomConstructorTests_ValidList, getNextEntry_CorrectlyFormatedCustomAlt
 }
 
 TEST(uParserGetNextEntry, IncorrectlyFormatedBED) {
-	uParser Parser("incorrect.bed", file_type::BED);
+	uParser Parser("incorrect.bed", file_type::BED, false);
 	ASSERT_THROW(Parser.getNextEntry(), invalid_value_throw);
 
 	uToken Token = Parser.getNextEntry();
@@ -328,8 +376,31 @@ TEST(uParserGetNextEntry, IncorrectlyFormatedBED) {
 	ASSERT_EQ(Token.getParam(token_param::STRAND), "+");
 }
 
+TEST(uParserGetNextEntry, IncorrectlyFormatedHeaderBED) {
+	uParser Parser("incorrect_header.bed", file_type::BED, true);
+	uToken Token = Parser.getNextEntry();
+	ASSERT_EQ(Token.getParam(token_param::CHR), "chr1");
+	ASSERT_EQ(Token.getParam(token_param::START_POS), "21");
+	ASSERT_EQ(Token.getParam(token_param::END_POS), "31");
+	ASSERT_EQ(Token.getParam(token_param::STRAND), "+");
+	ASSERT_THROW(Parser.getNextEntry(), uToken_exception_base);
+}
+
+TEST(uParserGetNextEntry, CorrectlyFormatedHeaderButNotSpecifiedBED) {
+	uParser Parser("header.bed", file_type::BED);
+	ASSERT_THROW(Parser.getNextEntry(), uToken_exception_base);
+	ASSERT_THROW(Parser.getNextEntry(), uToken_exception_base);
+	ASSERT_THROW(Parser.getNextEntry(), uToken_exception_base);
+	ASSERT_THROW(Parser.getNextEntry(), uToken_exception_base);
+	uToken Token = Parser.getNextEntry();
+	ASSERT_EQ(Token.getParam(token_param::CHR), "chr1");
+	ASSERT_EQ(Token.getParam(token_param::START_POS), "21");
+	ASSERT_EQ(Token.getParam(token_param::END_POS), "31");
+	ASSERT_EQ(Token.getParam(token_param::STRAND), "+");
+}
+
 TEST_F(CustomConstructorTests_ValidList, getNextEntry_IncorrectlyFormatedCustom) {
-	uParser Parser("incorrect.custom", m_fieldsList);
+	uParser Parser("incorrect.custom", m_fieldsList, false);
 	ASSERT_THROW(Parser.getNextEntry(), invalid_value_throw);
 	ASSERT_THROW(Parser.getNextEntry(), invalid_uToken_throw);
 	uToken Token = Parser.getNextEntry();
@@ -337,6 +408,29 @@ TEST_F(CustomConstructorTests_ValidList, getNextEntry_IncorrectlyFormatedCustom)
 	ASSERT_EQ(Token.getParam(token_param::START_POS), "34521");
 	ASSERT_EQ(Token.getParam(token_param::END_POS), "34531");
 	ASSERT_EQ(Token.getParam(token_param::STRAND), "-");
+}
+
+TEST_F(CustomConstructorTests_ValidList, getNextEntry_IncorrectlyFormatedHeaderCUSTOM) {
+	uParser Parser("incorrect_header.custom", m_fieldsList, true);
+	uToken Token = Parser.getNextEntry();
+	ASSERT_EQ(Token.getParam(token_param::CHR), "chr1");
+	ASSERT_EQ(Token.getParam(token_param::START_POS), "21");
+	ASSERT_EQ(Token.getParam(token_param::END_POS), "31");
+	ASSERT_EQ(Token.getParam(token_param::STRAND), "+");
+	ASSERT_THROW(Parser.getNextEntry(), uToken_exception_base);
+}
+
+TEST_F(CustomConstructorTests_ValidList, getNextEntry_CorrectlyFormatedHeaderButNotSpecifiedBED) {
+	uParser Parser("header.custom", m_fieldsList);
+	ASSERT_THROW(Parser.getNextEntry(), uToken_exception_base);
+	ASSERT_THROW(Parser.getNextEntry(), uToken_exception_base);
+	ASSERT_THROW(Parser.getNextEntry(), uToken_exception_base);
+	ASSERT_THROW(Parser.getNextEntry(), uToken_exception_base);
+	uToken Token = Parser.getNextEntry();
+	ASSERT_EQ(Token.getParam(token_param::CHR), "chr1");
+	ASSERT_EQ(Token.getParam(token_param::START_POS), "21");
+	ASSERT_EQ(Token.getParam(token_param::END_POS), "31");
+	ASSERT_EQ(Token.getParam(token_param::STRAND), "+");
 }
 
 TEST(uParserGetNextEntry, ReachedEOF) {
