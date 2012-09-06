@@ -209,15 +209,6 @@ TEST_F(CustomConstructorTests_InvalidListEND_POS, ValidStream) {
 	ASSERT_THROW(uParser Parser(&ss, m_fieldsList), customParser_missing_mandatory_values);
 }
 
-/*
- * Custom Constructor tests, stream:
- *		uParser(std::string filename, file_type type = BED);
- * 	Valid cases:
- *		ValidStream
- *		EmptyStream
- */
-
-
 /* Tests for the function:
  * 		bool eof() const 
  *	Valid cases:
@@ -254,9 +245,12 @@ TEST(uParserEof, NoTokenInStream) {
  *	Valid cases:
  *		CorrectlyFormatedBED6
  *		CorrectlyFormatedBED4
+ *		CorrectlyFormatedCustom
+ *		CorrectlyFormatedCustomAlternateDelimiter
  *		
  *	Invalid cases:
  *		IncorrectlyFormatedBED
+ *		IncorrectlyFormatedCustom
  *		ReachedEOF
  */
 
@@ -292,6 +286,36 @@ TEST(uParserGetNextEntry, CorrectlyFormatedBED4) {
 	ASSERT_EQ(Token.getParam(token_param::SEQ_NAME), "test002");
 }
 
+TEST_F(CustomConstructorTests_ValidList, getNextEntry_CorrectlyFormatedCustom) {
+	uParser Parser("test.custom", m_fieldsList);
+	uToken Token = Parser.getNextEntry();
+	ASSERT_EQ(Token.getParam(token_param::CHR), "chr1");
+	ASSERT_EQ(Token.getParam(token_param::START_POS), "21");
+	ASSERT_EQ(Token.getParam(token_param::END_POS), "31");
+	ASSERT_EQ(Token.getParam(token_param::STRAND), "+");
+
+	Token = Parser.getNextEntry();
+	ASSERT_EQ(Token.getParam(token_param::CHR), "chr2");
+	ASSERT_EQ(Token.getParam(token_param::START_POS), "1221");
+	ASSERT_EQ(Token.getParam(token_param::END_POS), "1231");
+	ASSERT_EQ(Token.getParam(token_param::STRAND), "+");
+}
+
+TEST_F(CustomConstructorTests_ValidList, getNextEntry_CorrectlyFormatedCustomAlternateDelimiter) {
+	uParser Parser("test.csv", m_fieldsList, ',');
+	uToken Token = Parser.getNextEntry();
+	ASSERT_EQ(Token.getParam(token_param::CHR), "chr1");
+	ASSERT_EQ(Token.getParam(token_param::START_POS), "21");
+	ASSERT_EQ(Token.getParam(token_param::END_POS), "31");
+	ASSERT_EQ(Token.getParam(token_param::STRAND), "+");
+
+	Token = Parser.getNextEntry();
+	ASSERT_EQ(Token.getParam(token_param::CHR), "chr2");
+	ASSERT_EQ(Token.getParam(token_param::START_POS), "1221");
+	ASSERT_EQ(Token.getParam(token_param::END_POS), "1231");
+	ASSERT_EQ(Token.getParam(token_param::STRAND), "+");
+}
+
 TEST(uParserGetNextEntry, IncorrectlyFormatedBED) {
 	uParser Parser("incorrect.bed", file_type::BED);
 	ASSERT_THROW(Parser.getNextEntry(), invalid_value_throw);
@@ -302,6 +326,17 @@ TEST(uParserGetNextEntry, IncorrectlyFormatedBED) {
 	ASSERT_EQ(Token.getParam(token_param::END_POS), "1231");
 	ASSERT_EQ(Token.getParam(token_param::SEQ_NAME), "test002");
 	ASSERT_EQ(Token.getParam(token_param::STRAND), "+");
+}
+
+TEST_F(CustomConstructorTests_ValidList, getNextEntry_IncorrectlyFormatedCustom) {
+	uParser Parser("incorrect.custom", m_fieldsList);
+	ASSERT_THROW(Parser.getNextEntry(), invalid_value_throw);
+	ASSERT_THROW(Parser.getNextEntry(), invalid_uToken_throw);
+	uToken Token = Parser.getNextEntry();
+	ASSERT_EQ(Token.getParam(token_param::CHR), "chr3");
+	ASSERT_EQ(Token.getParam(token_param::START_POS), "34521");
+	ASSERT_EQ(Token.getParam(token_param::END_POS), "34531");
+	ASSERT_EQ(Token.getParam(token_param::STRAND), "-");
 }
 
 TEST(uParserGetNextEntry, ReachedEOF) {
