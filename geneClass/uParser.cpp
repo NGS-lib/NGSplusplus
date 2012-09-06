@@ -90,8 +90,8 @@ uToken uParser::getNextEntry() {
 				uToken token = _getNextEntryBed(); return token;
 			}
 			catch(invalid_uToken_throw& e) {
-				std::string trace = fetchStringError(e);
 				#ifdef DEBUG
+				std::string trace = fetchStringError(e);
 				std::cerr << "Invalid uToken: " << trace << std::endl;
 				#endif
 				throw e;
@@ -106,13 +106,25 @@ uToken uParser::getNextEntry() {
 				uToken token = _getNextEntrySam(); return token;
 			}
 			catch(invalid_uToken_throw& e) {
-				std::string trace = fetchStringError(e);
 				#ifdef DEBUG
+				std::string trace = fetchStringError(e);
 				std::cerr << "Invalid uToken: " << trace << std::endl;
 				#endif
 				throw e;
 			}
 			break;
+
+		case file_type::CUSTOM:
+			try {
+				uToken token = _getNextEntryCustom(); return token;
+			}
+			catch(invalid_uToken_throw& e) {
+				#ifdef DEBUG
+				std::string trace = fetchStringError(e);
+				std::cerr << "Invalid uToken: " << trace << std::endl;
+				#endif
+				throw e;
+			}
 
 		default:
 			throw uParser_exception_base()<< string_error("Invalid fileType in getNextEntry case");
@@ -225,28 +237,71 @@ uToken uParser::_getNextEntrySam() {
 	}
 }
 
+uToken uParser::_getNextEntryCustom() {
+	try {
+		char line[4096];
+		if (m_pIstream->getline(line, 4096)) {
+			std::stringstream token_infos;
+			char* current;
+			current = strtok(line, &m_delimiter);
+			for(size_t i = 0; i < m_customFieldNames.size(); i++) {
+				if (m_customFieldNames[i] != "NA") {
+					token_infos << m_customFieldNames[i] << "\t" << current << "\n";
+				}
+				current = strtok(NULL, &m_delimiter);
+			}
+			uToken token(token_infos);
+			return token;
+		}
+		else {
+			#ifdef DEBUG
+			std::cerr << "Reached end of file." << std::endl;
+			#endif
+			end_of_file_throw e;
+			e << string_error("Reached end of file.");
+			throw e;
+		}
+	}
+	catch(invalid_uToken_throw& e) {
+		throw e;
+	}
+}
+
 void uParser::_customParserValidateFields(const std::vector<std::string>& fieldsNames) {
 	/**< Must have at least 2 fields */
-	if (fieldsNames.size() < 2) {
+	if (fieldsNames.size() < 3) {
 		customParser_missing_mandatory_values e;
-		e << string_error("Custom file fields description is too short, must have at least 2 values: CHR and START_POS.\n");
+		e << string_error("Custom file fields description is too short, must have at least 3 values: CHR and START_POS and a way to infer END_POS.\n");
 		throw e;
 	}
 
 	/**< Check if mandatory fields are present */
-	std::vector<std::string>::const_iterator it;
-	it = find(fieldsNames.begin(), fieldsNames.end(), "CHR");
-	if (it == fieldsNames.end()) {
+	if (!_paramExists("CHR", fieldsNames)) {
 		customParser_missing_mandatory_values e;
 		e << string_error("Mandatory field is missing: CHR\n");
 		throw e;
 	}
-	it = find(fieldsNames.begin(), fieldsNames.end(), "START_POS");
-	if (it == fieldsNames.end()) {
+	if (!_paramExists("START_POS", fieldsNames)) {
 		customParser_missing_mandatory_values e;
 		e << string_error("Mandatory field is missing: START_POS\n");
 		throw e;
 	}
+
+	/**< We need to be able to infer END_POS either directly or indirectly (with a sequence or cigar score) */
+	if (!_paramExists("END_POS", fieldsNames) && !_paramExists("SEQUENCE", fieldsNames) && !_paramExists("CIGAR", fieldsNames)) {
+		customParser_missing_mandatory_values e;
+		e << string_error("We must be able to infer END_POS directly or indirectly (with SEQUENCE or CIGAR)\n");
+		throw e;
+	}
+}
+
+bool uParser::_paramExists(const std::string& name, const std::vector<std::string>& list) const {
+	std::vector<std::string>::const_iterator it;
+	it = find(list.begin(), list.end(), name);
+	if (it == list.end()) {
+		return false;
+	}
+	return true;
 }
 
 void uParser::_customParserCopyFields(const std::vector<std::string>& fieldsNames) {

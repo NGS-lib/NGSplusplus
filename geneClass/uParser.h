@@ -33,6 +33,8 @@ private:
 	
 	uToken _getNextEntryBed();
 	uToken _getNextEntrySam();
+	uToken _getNextEntryCustom();
+	bool _paramExists(const std::string& name, const std::vector<std::string>& list) const;
 	void _customParserValidateFields(const std::vector<std::string>& fieldNames);
 	void _customParserCopyFields(const std::vector<std::string>& fieldsNames);
 };
