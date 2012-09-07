@@ -22,9 +22,9 @@ private:
     //TODO this is some heavy overhead considering we are very unlikely to user Phred, cigar and name.. store in a different configuration?
     //The actual sequence
     std::string sequence="";
-    char* name;
-    char* phredScore;
-    char* cigar;
+    char* name=nullptr;
+    char* phredScore=nullptr;
+    char* cigar=nullptr;
 
     //Paired End
     // bool PE;

@@ -101,7 +101,6 @@ public:
 
     void writeAsBedFile(std::ostream& out)const;
 
-    //TODO, code this whole part apparently? THIS IS WHAT HAPPENS WHEN WE DON'T TEST!
     template<typename _CHROMPAR_, typename _BASEPAR_>
     uGenericNGSExperiment getOverlapping(uGenericNGSExperiment<_CHROMPAR_,_BASEPAR_> &compareExp, OverlapType type=OverlapType::OVERLAP_COMPLETE);
     template<typename _BASEPAR_>

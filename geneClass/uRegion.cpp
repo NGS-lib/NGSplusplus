@@ -130,7 +130,7 @@ void uRegion::setSignal(int i, float value)
 void uRegion::setSignal(std::vector<float> ourSignal)
 {
     try {
-    if (ourSignal.size()<getLenght())
+    if ((int)ourSignal.size()<getLenght())
         throw param_throw();
     signal = ourSignal;
     }
@@ -219,7 +219,6 @@ void uRegionExperiment::measureDensityOverlap(uGenericNGSExperiment<uGenericNGSC
     }
 }
 
-// TODO: Complete Doxygen comment here
 /** \brief
  * \param uTagsExperiment& expToComp:
  * \param const OverlapType poverlap:

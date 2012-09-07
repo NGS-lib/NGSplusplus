@@ -248,7 +248,7 @@ public:
       * \param p UnaryPredicate : Unary predicate to evaluate on all sites
       * \return A collection containing all the sites for which the predicate is true
       */
-    //TODO return chrom, make a remove specificSites
+    //TODO return chrom,
     template<class UnaryPredicate>
     std::vector<_BASE_> getSpecificSites(UnaryPredicate pred) const
     {
@@ -269,8 +269,6 @@ public:
     }
 
         template<class UnaryPredicate>
-
-
     /** \brief Remove sites for which the predicate is true.
      *
      * \param pred UnaryPredicate Predicate to test, follows standard pattern
@@ -420,7 +418,6 @@ public:
         template<class Compare>
         bool isSorted(Compare comp) const
         {
-            //TODO use a bool and validate, should not be doing this each time
             return is_sorted(std::begin(VecSites), std::end(VecSites), comp);
         }
 
@@ -545,7 +542,7 @@ public:
 
         uGenericNGSChrom(std::vector<_BASE_>);
 
-        //TODO implement?
+
         long int countUnique() const;
 
         /**< Public iterators */
@@ -924,7 +921,7 @@ public:
         {
             /**< If unsorted, fail */
             if ((m_isSorted==false)||(sortGetStart==nullptr)||(sortGetEnd==nullptr))
-                throw ugene_exception_base();
+                throw ugene_exception_base() <<string_error("findPrecedingSite called on unsorted vector \n") ;
 
             auto comp = [&] (const _BASE_ &item1, const int &item2)
             {
@@ -941,9 +938,9 @@ public:
             /**<Return item precedes and as such is LESS then position  */
             return (lower--);
         }
-        catch (std::exception & e)
+        catch (ugene_exception_base & e)
         {
-            //TODO throw correctly
+
 #ifdef DEBUG
             std::cerr << "Calling findPrecedingSite on unsorted vector or you did not provide an approriate get function" <<std::endl;
             std::cerr << "sorted status is" << m_isSorted <<std::endl;

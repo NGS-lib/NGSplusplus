@@ -794,10 +794,7 @@ void uTagsExperiment::loadFromSam(std::ifstream& curStream, bool minimal)
                 cerr<< "Finished loading" << count << " tags" <<endl;
                 break;
             }
-            { //TODO: Why is there a bracket, missing else?
-                //  uTags tempTag;
-                //  tempTag.loadfromSamString(lineString, minimal);
-                //tempPeak.loadfromBedString(peakString);
+            {
 
                 if (lineString.size()>5)
                     addSite(move(factory::makeTagfromSamString(lineString,minimal) ));
