@@ -15,6 +15,7 @@
 					<Add option="-std=c++11" />
 					<Add option="-g" />
 					<Add option="-lpthread" />
+					<Add option="-DDEBUG" />
 					<Add directory="../geneClass" />
 					<Add directory="../../geneTools/include/gtest" />
 					<Add directory="../../geneTools/include/gtest/include" />
@@ -52,6 +53,7 @@
 					<Add option="-lpthread" />
 					<Add library="../../libs/release/libgeneClass.a" />
 					<Add library="../../libs/release/libgtest.a" />
+					<Add library="gomp" />
 				</Linker>
 			</Target>
 		</Build>
