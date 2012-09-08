@@ -109,7 +109,7 @@ void uRegion::setSignal(int i, float value)
     if (i < this->getLenght())
         signal.at(i)=value;
     else
-        throw param_throw()<<string_error("Failling in setSignal, trying to set signal outside of region boundary at position "+utility::numberToString(i)+"\n");
+        throw param_throw()<<string_error("Failling in setSignal, trying to set signal outside of region boundary at position "+std::to_string(i)+"\n");
     }
     catch(param_throw &e){
         #ifdef DEBUG
@@ -387,8 +387,7 @@ try
     }
     catch(elem_throw & e)
     {
-        e << string_error("Throwing in uRegionChrom::generateSignal(uTagsExperiment& expToComp), from elem_throw error \n Reference is size at "+
-                         (utility::numberToString((int)densityValues.size()))+
+        e << string_error("Throwing in uRegionChrom::generateSignal(uTagsExperiment& expToComp), from elem_throw error \n Reference is size at "+(std::to_string(densityValues.size()))+
                           "\n"+
                           trace);
         throw e;
@@ -493,7 +492,7 @@ void uRegionChrom::generateSignal(uTagsExperiment& expToComp)
     catch(elem_throw & e)
     {
         e << string_error("Throwing in uRegionChrom::generateSignal(uTagsExperiment& expToComp), from elem_throw error \n Reference is size at "+
-                         (utility::numberToString((int)densityValues.size()))+
+                         (std::to_string((int)densityValues.size()))+
                           "\n"+
                           trace);
         throw e;

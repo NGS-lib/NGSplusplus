@@ -31,9 +31,6 @@ private :
     void removeSite(VecGenIter position);
     void removeSite(VecGenIter start,VecGenIter end);
 
-
-
-
     /**< Should not be necesary in C++ 11? */
     template <class Container>
     typename Container::iterator to_mutable_iterator(Container& c, typename Container::const_iterator it)
@@ -87,9 +84,7 @@ public:
 
     void inferChrSize();
     virtual ~uGenericNGSChrom<_BASE_> ()
-    {
-        ;
-    }
+    {;}
 
     /**< Write functions */
     void outputBedFormat(std::ostream& out);
@@ -148,7 +143,7 @@ public:
         try
         {
             if (chromS<0)
-                throw param_throw()<<string_error("failling in setChromSize, value "+utility::numberToString((int)chromS)+" is below 0\n");
+                throw param_throw()<<string_error("failling in setChromSize, value "+std::to_string(chromS)+" is below 0\n");
             chromSize= chromS;
         }
         catch(std::exception e)
@@ -598,6 +593,7 @@ public:
     {
         try
         {
+            m_isSorted=false;
             VecSites.push_back(std::move(newSite));
         }
         catch(std::exception & e)
@@ -617,6 +613,7 @@ public:
     {
         try
         {
+              m_isSorted=false;
             VecSites.erase(VecSites.begin()+(position));
         }
         catch(std::exception & e)
@@ -630,6 +627,7 @@ public:
     {
         try
         {
+              m_isSorted=false;
             VecSites.erase(VecSites.begin()+(start),VecSites.begin()+(end));
         }
         catch(std::exception & e)
@@ -642,6 +640,7 @@ public:
     {
         try
         {
+            m_isSorted=false;
             VecSites.erase(start,end);
         }
         catch(std::exception &e )
@@ -654,6 +653,7 @@ public:
     {
         try
         {
+              m_isSorted=false;
             VecSites.erase(position,position);
         }
         catch(std::exception &e)
@@ -931,12 +931,15 @@ public:
             /**< Compare, sort Value */
             auto lower = std::lower_bound(VecSites.begin(), VecSites.end(), position, comp);
 
+
+
             /**< If no result, or result is our first item */
             if (lower==VecSites.end()||(lower==VecSites.begin()))
                 return VecSites.end();
 
             /**<Return item precedes and as such is LESS then position  */
-            return (lower--);
+            lower--;
+            return (lower);
         }
         catch (ugene_exception_base & e)
         {
@@ -946,7 +949,7 @@ public:
             std::cerr << "sorted status is" << m_isSorted <<std::endl;
             std::cerr << "is Nullprt "<< (sortGetStart==nullptr) <<std::endl;
 #endif
-            throw;
+            throw e;
         }
     }
 //TODO test this and complimentary
@@ -958,10 +961,10 @@ public:
             /**< If unsorted, fail */
             if ((m_isSorted==false)||(sortGetStart==nullptr)||(sortGetEnd==nullptr))
                 throw ugene_exception_base();
-
-            auto comp = [&] (const _BASE_ &item1, const int &item2)
+            /**< Return true comparitor if item1 smaller then item 2 */
+            auto comp = [&] (const int &item1, const _BASE_ &item2)
             {
-                return sortGetStart(&item1)< item2;
+                return item1< sortGetStart(&item2);
             };
 
             /**< Compare, sort Value */

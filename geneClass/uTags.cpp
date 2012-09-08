@@ -7,7 +7,7 @@
 using namespace std;
 /** \brief Default constructor, not PE and positive strand
  */
-uTags::uTags():uGenericNGS(),name(nullptr),phredScore(nullptr),cigar(nullptr)
+uTags::uTags():uGenericNGS()
 {
 }
 
@@ -50,7 +50,6 @@ uTags::uTags(uGenericNGS otherItem):uGenericNGS(otherItem),name(nullptr),phredSc
 uTags::uTags(std::string pchr, int start, int end, StrandDir pstrand):name(nullptr),phredScore(nullptr),cigar(nullptr)
 {
    try {
-
      setStartEnd(start,end);
      setChr(pchr);
      setStrand(pstrand);
@@ -65,7 +64,7 @@ uTags::uTags(std::string pchr, int start, int end, StrandDir pstrand):name(nullp
         if (std::string const * ste =boost::get_error_info<string_error>(e) )
                 trace=*ste;
 
-        e << string_error(trace+"Failling in uTags constructor, parameters are"+pchr+" "+utility::numberToString(start)+" "+utility::numberToString(end)+"\n");
+        e << string_error(trace+"Failling in uTags constructor, parameters are"+pchr+" "+std::to_string(start)+" "+std::to_string(end)+"\n");
 
         throw e;
     }
@@ -302,10 +301,10 @@ void uTags::debugElem() const
     using namespace utility;
     stringTocerr("Outputting elemn data");
     stringTocerr("Chrom "+getChr());
-    stringTocerr("Start "+numberToString((int)getStart()));
-    stringTocerr("End " +numberToString((int)getEnd()));
-    stringTocerr("PELenght " +numberToString((int)getPeLenght()));
-    stringTocerr("Flag " +numberToString((int)getFlag()));
+    stringTocerr("Start "+std::to_string(getStart()));
+    stringTocerr("End " +std::to_string(getEnd()));
+    stringTocerr("PELenght " +std::to_string(getPeLenght()));
+    stringTocerr("Flag " +std::to_string(getFlag()));
 }
 
 // TODO: Move this to output class
@@ -822,7 +821,7 @@ void uTagsExperiment::loadFromSam(std::ifstream& curStream, bool minimal)
         if (std::string const * ste =boost::get_error_info<string_error>(e) )
                 trace=*ste;
 
-        e <<string_error(trace+"\n"+"falling from loadFromSam(stream, bool) while loading tag number"+utility::numberToString(count) );
+        e <<string_error(trace+"\n"+"falling from loadFromSam(stream, bool) while loading tag number"+std::to_string(count) );
             #ifdef DEBUG
                     cerr << "Throwing elem_throw" <<endl;
                 #endif

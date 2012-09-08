@@ -54,7 +54,7 @@ uParser::uParser(const std::string& filename, const std::vector<std::string>& fi
 		_customParserValidateFields(fieldsNames);
 		_customParserCopyFields(fieldsNames);
 	}
-	catch(customParser_missing_mandatory_values& e) { 
+	catch(customParser_missing_mandatory_values& e) {
 		throw e;
 	}
 	/**< Set other parameters */
@@ -73,7 +73,7 @@ uParser::uParser(std::istream* stream, const std::vector<std::string>& fieldsNam
 		_customParserValidateFields(fieldsNames);
 		_customParserCopyFields(fieldsNames);
 	}
-	catch(customParser_missing_mandatory_values& e){ 
+	catch(customParser_missing_mandatory_values& e){
 		throw e;
 	}
 	/**< Set other parameters */
@@ -116,7 +116,7 @@ uToken uParser::getNextEntry() {
 				throw e;
 			}
 			break;
-				
+
 		case file_type::SAM:
 			try {
 				uToken token = _getNextEntrySam(); return token;
@@ -153,7 +153,7 @@ uToken uParser::getNextEntry() {
 }
 
 // TODO: class uHeader to return from this function. Derived from uToken?
-/** \brief Fetch header differently based on file type 
+/** \brief Fetch header differently based on file type
  */
 void uParser::_fetchHeader() {
 	/**< When header is set as true for BED and CUSTOM, we do nothing here. */
@@ -220,7 +220,10 @@ uToken uParser::_getNextEntryBed() {
 			e << string_error("Reached end of file.");
 			throw e;
 		}
-	} while (m_firstToken == true);
+	}while (m_firstToken == true);
+
+std::cerr <<"Fatal error in _getNextEntryCustom(), should not reach here" <<std::endl;
+abort();
 }
 
 /** \brief Specific loader for SAM file (See samtools.sourceforge.net for SAM description)
@@ -321,6 +324,9 @@ uToken uParser::_getNextEntryCustom() {
 			throw e;
 		}
 	} while(m_firstToken == true);
+
+std::cerr <<"Fatal error in _getNextEntryCustom(), should not reach here" <<std::endl;
+abort();
 }
 
 void uParser::_customParserValidateFields(const std::vector<std::string>& fieldsNames) {

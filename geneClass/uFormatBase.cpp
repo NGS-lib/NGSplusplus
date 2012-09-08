@@ -17,7 +17,7 @@ void uGenericNGS::extendSite(int extendLeft, int extendRight)
     try
     {
         if((extendLeft<0)||(extendRight<0))
-            throw 20;
+            throw param_throw()<< string_error("INIT throwing from extendSite("+std::to_string(extendLeft)+","+std::to_string(extendRight)+"), param < 0 \n"  );;
 
         int start=(getStart()-extendLeft);
         if (start < 0)
@@ -26,7 +26,7 @@ void uGenericNGS::extendSite(int extendLeft, int extendRight)
         setStart(start);
         setEnd(getEnd()+extendRight);
     }
-    catch(elem_throw & e )
+    catch(param_throw & e )
     {
         elem_throw e;
         std::string * trace;
@@ -34,18 +34,11 @@ void uGenericNGS::extendSite(int extendLeft, int extendRight)
     if(boost::get_error_info<generic_error>(e) ==NULL)
         e << generic_error(*this);
      if ( (trace=(boost::get_error_info<string_error>(e))) )
-        e << string_error(*trace+"Catching and re-throwing from extendSite("+utility::numberToString(extendLeft)+","+utility::numberToString(extendRight)+")\n");
+        e << string_error(*trace+"Catching and re-throwing from extendSite("+std::to_string(extendLeft)+","+std::to_string(extendRight)+")\n");
      else
-         e << string_error("Catching and re-throwing from extendSite("+utility::numberToString(extendLeft)+","+utility::numberToString(extendRight)+")\n");
+         e << string_error("Catching and re-throwing from extendSite("+std::to_string(extendLeft)+","+std::to_string(extendRight)+")\n");
         throw(e);
         return;
-    }
-    catch(int & err)
-    {
-        elem_throw e;
-        e << string_error("INIT throwing from extendSite("+utility::numberToString(extendLeft)+","+utility::numberToString(extendRight)+"), param < 0 \n"  );
-        e << generic_error(*this);
-        throw(e);
     }
 }
 /** \brief Idem as above, but equal shift.
@@ -60,9 +53,9 @@ void uGenericNGS::extendSite(int extend)
     {
         this->extendSite(extend,extend);
     }
-    catch(...)
+    catch(param_throw & e)
     {
-        throw;
+        throw e;
     }
 
 }
@@ -82,18 +75,18 @@ void uGenericNGS::trimSites(int trimLeft, int trimRight)
     try
     {
         if ((trimLeft<0)||(trimRight<0)||(trimLeft+trimRight>this->getLenght()))
-            throw 20;
+            throw param_throw()<< string_error("PARAMERROR, throwing from trimSites("+std::to_string(trimLeft)+","+std::to_string(trimRight)+"), param < 0 \n"  );
 
         this->startPos=(this->startPos+trimLeft);
         this->endPos=(this->endPos-trimRight);
     }
-    catch (int err)
+    catch (param_throw & err)
     {
-        param_throw e;
-        e << string_error("PARAMERROR, throwing from trimSites("+utility::numberToString(trimLeft)+","+utility::numberToString(trimRight)+"), param < 0 \n"  );
-        e << generic_error(*this);
-       // std::cerr <<"Invalid parameters in trimSites(), nothing done, please validate"<<std::endl;
-        throw(e);
+        err << generic_error(*this);
+        #ifdef DEBUG
+           cerr << "Throwing in trimSites(int, int)"<<endl;
+        #endif
+        throw(err);
     }
 
 

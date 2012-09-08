@@ -41,11 +41,9 @@ template<typename Child, typename Parent>
 static std::string convertInt(int number);
 static int stringToInt(const std::string &ourStr);
 static float stringToNumber( const std::string &ourStr );
-/**< Template this */
+
 //static inline  std::string clean_WString(const std::string & input_string);
-//static inline std::string numberToString(const int number);
-//static inline std::string numberToString(const float number);
-//static inline std::string numberToString(const double number);
+
 
 
 /**< Debugging functions */
@@ -175,29 +173,6 @@ inline static std::string convertInt(int number)
         returnvalue+=temp[temp.length()-i-1];
     return returnvalue;
 }
-
-//Utility function courtesy of the internet.
-inline static std::string numberToString(const int number)
-{
-    std::stringstream ss (std::stringstream::in | std::stringstream::out);
-    ss << number;
-    return ss.str();
-}
-
-inline static std::string numberToString(const float number)
-{
-    std::stringstream ss (std::stringstream::in | std::stringstream::out);
-    ss << number;
-    return ss.str();
-}
-
-inline static std::string numberToString(const double number)
-{
-    std::stringstream ss (std::stringstream::in | std::stringstream::out);
-    ss << number;
-    return ss.str();
-}
-
 
 //We return a vector with element 0 is Q1, element 1 is median and element 2 is q3
 inline static std::vector<float> quartilesofVector(std::vector<float> inputVector)
@@ -361,15 +336,14 @@ inline static std::string concatStringInt(std::string ourstring, int ourInt, boo
 }
 
 
-
-
-
 inline static int stringToInt( const std::string &ourStr )
 {
-
-    std::stringstream ss(ourStr);
-    int result;
-    return ss >> result ? result : 0;
+    try {
+    return std::stoi( ourStr );
+    }
+    catch(std::exception &e){
+        throw e;
+    }
 }
 
 inline static float stringToNumber( const std::string &ourStr )

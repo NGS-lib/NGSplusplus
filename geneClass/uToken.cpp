@@ -65,7 +65,7 @@ std::string uToken::getParam(token_param name) const {
  */
 void uToken::_setParam(const token_param& name, const std::string& value)
 {
-	// TODO: What should we do in case the name is already setted? Overwrite silently, warning or error? 
+	// TODO: What should we do in case the name is already setted? Overwrite silently, warning or error?
 	try {
 		if (_validateParam(name, value) == false) {
 			invalid_value_throw e;
@@ -432,7 +432,7 @@ bool uToken::_isStreamEmpty(const std::istream& stream) const {
 void uToken::_postProcSequence(const std::string& sequence) {
 	if (!(isParamSet(token_param::END_POS))) {
 	auto start_pos = std::stoi(getParam(token_param::START_POS));
-	_setParam(token_param::END_POS, std::to_string(sequence.size()));
+	_setParam(token_param::END_POS, std::to_string(sequence.size()+start_pos));
 	}
 }
 
@@ -465,7 +465,7 @@ void uToken::_postProcCigar(const std::string& cig) {
 				}
 			}
 			auto start_pos=utility::stringToInt(getParam(token_param::START_POS));
-			_setParam(token_param::END_POS, utility::numberToString(start_pos+(size-1) ));
+			_setParam(token_param::END_POS, std::to_string(start_pos+(size-1) ));
 		}
 		catch(uToken_exception_base &e) {
 			addStringError(e, "Throwing, in _postProcCigar, unable to set END_POS as START_POS not set");

@@ -9,8 +9,14 @@
 #include "uToken.h"
 //Our basic Site for NGS format
 //Very weak class as there are many differences in the functionality of derived classes.
-enum class StrandDir{FORWARD,REVERSE};
-enum class SplitType{STRICT, IGNORE, EXTEND, ADD};
+enum class StrandDir
+{
+    FORWARD,REVERSE
+};
+enum class SplitType
+{
+    STRICT, IGNORE, EXTEND, ADD
+};
 class uGenericNGS
 {
 
@@ -37,10 +43,10 @@ public:
         }
         catch( ugene_exception_base &e)
         {
-            #ifdef DEBUG
+#ifdef DEBUG
             std::cerr << "Error in uGenericNGS(std::string pchr, int pstart, int pend). data is"<< pchr<< " "<< pend<<" "<< pstart << " "<<std::endl;
-            #endif
-           e<<generic_error(*this);
+#endif
+            e<<generic_error(*this);
             throw e;
         }
     };
@@ -50,33 +56,34 @@ public:
 
     uGenericNGS(const uToken & pToken):chr(pToken.getParam(token_param::CHR))
     {
-    try
+        try
         {
             {
                 setEnd(std::stoi(pToken.getParam(token_param::END_POS)));
                 setStart( std::stoi(pToken.getParam(token_param::START_POS)));
-           /**< Default forward */
+                /**< Default forward */
                 setStrand(pToken.getParam(token_param::STRAND).at(0));
             }
         }
         catch(ugene_exception_base &e)
         {
-            #ifdef DEBUG
+#ifdef DEBUG
             std::cerr << "Error in uGenericNGS(uToken)." <<std::endl;
-            #endif
+#endif
             e<<generic_error(*this);
             throw e;
         }
 
     };
 
-    virtual ~uGenericNGS(){};
-/**< End Constructor/Destructor */
+    virtual ~uGenericNGS() {};
+    /**< End Constructor/Destructor */
 
 
     /**< Write to Bed functions */
     virtual void writeBedToOuput(std::ostream &out, bool endLine) const;
-    virtual void writeBedToOuput(std::ostream &out) const {
+    virtual void writeBedToOuput(std::ostream &out) const
+    {
         writeBedToOuput(out, true);
     };
     /**< Get /Set */
@@ -86,23 +93,24 @@ public:
     };
     void setChr(std::string ourchr)
     {
+        if (ourchr.size()==0)
+            throw param_throw() << string_error("Throwing in setChr, ID must be of size > 0");
         chr=ourchr;
     };
 
-   /* char getStrand () const
-    {
-        if (strand==StrandDir::REVERSE)
-            return '-';
-        else
-            return '+';
-    }; */
+    /* char getStrand () const
+     {
+         if (strand==StrandDir::REVERSE)
+             return '-';
+         else
+             return '+';
+     }; */
 
     StrandDir getStrand() const
     {
         return strand;
     };
 
- /**< Private, strand should -always- be implicit. In fact, it might not be necessary to store it */
     void setStrand(char pStrand)
     {
         try
@@ -111,9 +119,9 @@ public:
                 strand=StrandDir::REVERSE;
             else if (pStrand==FORWARCHARD)
                 strand=StrandDir::FORWARD;
-                else
-                   throw param_throw()<<string_error("Failling in setStrand(char), invalid character");
-            }
+            else
+                throw param_throw()<<string_error("Failling in setStrand(char), invalid character");
+        }
         catch(param_throw &e)
         {
             //elem_throw e;
@@ -139,51 +147,60 @@ public:
         try
         {
             if (!((ourStart<=getEnd())&&(ourStart>=0)))
-               throw elem_throw()<<string_error("Failed in setStart, ourStart is smalled then end or under 0, start is "+utility::numberToString(ourStart)+ " end is "+ utility::numberToString((int)getEnd()) +"\n");
+                throw param_throw()<<string_error("Failed in setStart, ourStart is smalled then end or under 0, start is "+std::to_string(ourStart)+ " end is "+ std::to_string(getEnd()) +"\n");
             startPos=ourStart;
 
         }
-        catch(elem_throw &e)
+        catch(param_throw &e)
         {
-            #ifdef DEBUG
-                std::cerr << "throwing in setStart" <<std::endl;
-            #endif
-           // elem_throw e;
+#ifdef DEBUG
+            std::cerr << "throwing in setStart" <<std::endl;
+#endif
+
             e << generic_error(*this);
             throw e;
         }
     };
     void setEnd(int ourEnd)
     {
-        try{
+        try
+        {
             if (!((ourEnd>=getStart())&&(ourEnd>=0)))
-                throw elem_throw()<<string_error("throwing in setEnd(), start at "+utility::numberToString((int)getStart())+ " end is "+ utility::numberToString(ourEnd) +"\n");
+                throw param_throw()<<string_error("throwing in setEnd(), start at "+std::to_string((int)getStart())+ " end is "+ std::to_string(ourEnd) +"\n");
             endPos=ourEnd;
         }
-        catch(elem_throw & e)
+        catch(param_throw & e)
         {
-            #ifdef DEBUG
-                std::cerr << "throwing in setEnd" <<std::endl;
-            #endif
+#ifdef DEBUG
+            std::cerr << "throwing in setEnd" <<std::endl;
+#endif
             e << generic_error(*this);
             throw e;
         }
     };
-    //TODO make sure this offer appropriate guarantee
-    void setStartEnd(long int ourStart, long int ourEnd){
-        try{
-            setEnd(ourEnd);
-            setStart(ourStart);
-        }
-        catch(ugene_exception_base &e)
+
+    void setStartEnd(long int ourStart, long int ourEnd)
+    {
+        try
         {
-            #ifdef DEBUG
+        if ((ourStart>0) && (ourStart<=ourEnd))
+            {
+            startPos=ourStart;
+            endPos=ourEnd;
+            }
+        else
+            {
+            throw param_throw() <<string_error("Throwing in set StartEnd,  ourStart="+std::to_string(ourStart)+" ourEnd="+std::to_string(ourEnd)+"\n" );
+            }
+        }
+        catch(param_throw &e)
+        {
+#ifdef DEBUG
             std::cerr << "throwing in setStartEnd" <<std::endl;
-            #endif
+#endif
             throw e;
         }
     };
-
 
     long int getStart() const
     {
@@ -207,8 +224,8 @@ public:
         using namespace utility;
         stringTocerr("Outputting elemn data");
         stringTocerr("Chrom "+getChr());
-        stringTocerr("Start "+numberToString((int)getStart()));
-        stringTocerr("End " +numberToString((int)getEnd()));
+        stringTocerr("Start "+std::to_string((int)getStart()));
+        stringTocerr("End " +std::to_string((int)getEnd()));
     }
     /**<  Divide our region into a certain number of subregions */
 
@@ -228,9 +245,10 @@ public:
 
 };
 
-namespace factory{
-  //  uTags makeTagfromSamString(std::string samString, bool minimal=false);
-    uGenericNGS makeNGSfromTabString(std::string tabString);
+namespace factory
+{
+//  uTags makeTagfromSamString(std::string samString, bool minimal=false);
+uGenericNGS makeNGSfromTabString(std::string tabString);
 }
 
 
