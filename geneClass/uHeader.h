@@ -12,8 +12,8 @@
 
 /**< List of param is hard coded as strongly typed enum for extra safety. */
 /**< This list has to be updated for every new param */
-// TODO: Add param as they are needed
-//enum class header_param { };
+// TODO: Add param as they are needed. Remove TMP when there is one valid param, it's there to avoid compiling error.
+enum class header_param { TMP };
 
 /**< uHeader class, to keep track of information in header, formated or not */
 // TODO: Data validation?
@@ -21,14 +21,20 @@
 /**< All the data is saved in a map in string format */
 class uHeader {
 public:
+	/** \brief Default constructor.
+	  */
 	uHeader() {};
 	void setUnformatedHeader(const std::string& unformatedHeader) { m_unformatedHeader = unformatedHeader; };
 	/** \brief Fetch a param. Throw param_not_found if the param does not exist.
 	 * \param header_param& name: the name of the param we wish to get.
 	 */
-	 //TODO Does this throw correctly?
 	std::string getParam(header_param name) const;
+
+	/** \brief Return the exact same header that was in the input data.
+	  */
 	std::string getUnformatedHeader() const { return m_unformatedHeader;};
+	/** \brief Check if there is a value associated with a given param.
+	  */
 	bool isParamSet(const header_param& name) const { return m_params.count(name); };
 	uHeader& operator=(uHeader const& assign_from);
 	
