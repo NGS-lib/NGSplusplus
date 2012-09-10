@@ -15,10 +15,9 @@ uParser::uParser(const std::string& filename, file_type type, bool header):m_fil
 	}
 
 	m_info=_makeTypeInfo(type);
-
-	if (m_header == false) {
+	m_header = header;
+	if (m_header == true) {
 		_fetchHeader();
-
 	}
 	m_dynamicStream = true;
 }
@@ -30,8 +29,9 @@ uParser::uParser(const std::string& filename, file_type type, bool header):m_fil
  */
 uParser::uParser(std::iostream* stream, file_type type, bool header):m_fileType(type),m_header(header)  {
 	m_pIostream = stream;
-    m_info=_makeTypeInfo(type);
-	if (m_header == false) {
+	m_info=_makeTypeInfo(type);
+	m_header = header;
+	if (m_header == true) {
 		_fetchHeader();
 	}
 	m_dynamicStream = false;
