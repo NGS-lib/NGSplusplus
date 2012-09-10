@@ -75,7 +75,7 @@ private:
     std::unique_ptr<typeInformation> _makeTypeInfo(file_type type);
 
 
-    void _processWigDeclaration(std::stringstream & curSStream);
+    void _processWigDeclaration(std::stringstream & curSStream, std::unique_ptr<wigInformation>);
 
 
 	void _fetchHeader();

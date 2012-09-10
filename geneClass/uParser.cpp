@@ -404,8 +404,13 @@ void uParser::_convertLineToTokenInfosCustom(char* line, std::stringstream& toke
 
 
 
-void uParser::_processWigDeclaration(std::stringstream & curSStream)
+void uParser::_processWigDeclaration(std::stringstream & curSStream,std::unique_ptr<wigInformation> pWigInfo)
 {
+
+
+
+
+
 
 }
 
@@ -437,7 +442,7 @@ try {
                 else
                    pWigInfo->setStep(wigInformation::stepType::FIXED);
 
-                _processWigDeclaration(ss);
+                _processWigDeclaration(ss, pWigInfo);
                 //Declaration step, pârse datra
 
 
