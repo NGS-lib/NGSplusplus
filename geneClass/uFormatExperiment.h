@@ -437,11 +437,11 @@ template<typename _CHROM_, typename _BASE_>
 template<typename _CHROM_, typename _BASE_>
  void uGenericNGSExperiment<_CHROM_, _BASE_>::loadFile(std::ifstream& stream, file_type pType)
 {
-    std::istream& refStream = stream;
-    uParser Curparser(&refStream, pType);
-    while(!Curparser.eof()){
-        addSite(Curparser.getNextEntry());
-    }
+  //  auto refStream = dynamic_cast<std::iostream&>(stream);
+  //  uParser Curparser(&refStream, pType);
+  //  while(!Curparser.eof()){
+  //      addSite(Curparser.getNextEntry());
+  //  }
 }
 
 

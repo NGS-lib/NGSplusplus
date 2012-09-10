@@ -28,8 +28,8 @@ uParser::uParser(const std::string& filename, file_type type, bool header):m_fil
  * \param std::istream* stream: stream to load the data from
  * \param file_type type: Currently supported formats: BED, SAM
  */
-uParser::uParser(std::istream* stream, file_type type, bool header):m_fileType(type),m_header(header)  {
-	m_pIstream = stream;
+uParser::uParser(std::iostream* stream, file_type type, bool header):m_fileType(type),m_header(header)  {
+	m_pIostream = stream;
     m_info=_makeTypeInfo(type);
 	if (m_header == false) {
 		_fetchHeader();
@@ -69,7 +69,7 @@ uParser::uParser(const std::string& filename, const std::vector<std::string>& fi
 	m_dynamicStream = true;
 }
 
-uParser::uParser(std::istream* stream, const std::vector<std::string>& fieldsNames, bool header, char delimiter):m_fileType(file_type::CUSTOM) {
+uParser::uParser(std::iostream* stream, const std::vector<std::string>& fieldsNames, bool header, char delimiter):m_fileType(file_type::CUSTOM) {
 
 	/**< Check if fields are in a valid format */
 	try {
@@ -80,7 +80,7 @@ uParser::uParser(std::istream* stream, const std::vector<std::string>& fieldsNam
 		throw e;
 	}
 	/**< Set other parameters */
-	m_pIstream = stream;	m_delimiter = delimiter;
+	m_pIostream = stream;	m_delimiter = delimiter;
 	m_header = header;
 	if (m_header == true) {
 		_fetchHeader();
@@ -168,9 +168,6 @@ void uParser::_fetchHeader() {
 	}
 }
 
-<<<<<<< HEAD
-
-
 /** \brief return the appropriate typeInformation to store when parsing a filetype
  * \return unique_ptr object, holding pointer to appropriate object
  */
@@ -193,12 +190,9 @@ throw uParser_exception_base()<<string_error("Throwing in _makeTypeInfo, reached
 }
 
 
-/** \brief Specific loader for BED file (See genome.ucsc.edu/FAQ/FAQformat.html#format1 for bed description)
- * \return uToken: If all the parameters in the entry are valid a uToken object is returned.
-=======
+
 // TODO: When header class is available, add unformated string containing header
-/* \brief Simply fetch header without parsing it
->>>>>>> origin/master
+/** \brief Simply fetch header without parsing it
  */
 void uParser::_fetchUnspecifiedHeader() {
 	bool headerFetched = false;
@@ -431,7 +425,7 @@ uToken uParser::_getNextEntryWig() {
 
 try {
 		char line[4096];
-		if (m_pIstream->getline(line, 4096)) {
+		if (m_pIostream->getline(line, 4096)) {
 			std::stringstream ss;
 			ss << line;
 

@@ -62,7 +62,7 @@ public:
 	uToken getNextEntry();
 
 private:
-	std::istream* m_pIstream = nullptr;
+	std::istream* m_pIostream = nullptr;
 	file_type m_fileType;
 
 	char m_delimiter = '\t';
