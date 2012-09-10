@@ -52,23 +52,24 @@ class customInformation : public typeInformation{
 class uParser {
 public:
 	uParser(const std::string& filename, file_type type, bool header = false);
-	uParser(std::istream* stream, file_type type, bool header = false);
+	uParser(std::iostream* stream, file_type type, bool header = false);
 	uParser(const std::string& filename, const std::vector<std::string>& fieldsNames, bool header = false, char delimiter = '\t');
-	uParser(std::istream* stream, const std::vector<std::string>& fieldsNames, bool header = false, char delimiter = '\t');
+	uParser(std::iostream* stream, const std::vector<std::string>& fieldsNames, bool header = false, char delimiter = '\t');
 	~uParser();
 	uParser& operator=(const uParser& copyFrom) = delete;
 	uParser(const uParser&) = delete;
-	bool eof() const { return m_pIstream->peek() == EOF; }
+	bool eof() const { return m_pIostream->peek() == EOF; }
 	uToken getNextEntry();
 
 private:
 	std::istream* m_pIstream = nullptr;
 	file_type m_fileType;
+
 	char m_delimiter = '\t';
 	bool m_header = false;
-	bool m_firstToken = true;
+//	bool m_firstToken = true;
 	std::vector<std::string> m_customFieldNames{};
-	//TODO: To avoid using delete on m_pIstream if ifstream constructor was used. Is there a better way?
+	//TODO: To avoid using delete on m_pIostream if ifstream constructor was used. Is there a better way?
 	bool m_dynamicStream = false;
 
     std::unique_ptr<typeInformation> m_info=nullptr;
@@ -79,10 +80,15 @@ private:
 
 
 	void _fetchHeader();
+	void _fetchUnspecifiedHeader();
+	void _pushBackLine(char* line);
 	uToken _getNextEntryBed();
+	void _convertLineToTokenInfosBed(char* line, std::stringstream& token_infos);
 	uToken _getNextEntrySam();
 	uToken _getNextEntryCustom();
     uToken _getNextEntryWig();
+	void _convertLineToTokenInfosCustom(char* line, std::stringstream& token_infos);
+
 	bool _paramExists(const std::string& name, const std::vector<std::string>& list) const;
 	void _customParserValidateFields(const std::vector<std::string>& fieldNames);
 	void _customParserCopyFields(const std::vector<std::string>& fieldsNames);
