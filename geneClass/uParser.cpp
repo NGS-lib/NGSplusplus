@@ -200,7 +200,6 @@ void uParser::_fetchUnspecifiedHeader() {
 	do {
 		char line[4096];
 		if (m_pIostream->getline(line, 4096)) {
-			std::cout << "_fetchUnspecifiedHeader: line: " << line << std::endl; // Debug
 			std::stringstream token_infos;
 			if (m_fileType == file_type::BED) {
 				_convertLineToTokenInfosBed(line, token_infos);
@@ -240,7 +239,6 @@ void uParser::_pushBackLine(char* line) {
 	for (int i = (int)(str_line.size()) - 1; i >= 0; i--) {
 		m_pIostream->putback(line[i]);
 	}
-	std::cout << "putback" << std::endl; // Debug
 
 }
 
@@ -288,7 +286,6 @@ void uParser::_convertLineToTokenInfosBed(char* line, std::stringstream& token_i
 		std::string score;
 		std::string seq_name;
 		std::string strand;
-//		std::stringstream token_infos;
 		ss >> chr >> start_pos >> end_pos >> seq_name >> score >> strand;
 		token_infos << "CHR\t" << chr << "\n";
 		token_infos << "START_POS\t" << start_pos << "\n";
@@ -298,8 +295,6 @@ void uParser::_convertLineToTokenInfosBed(char* line, std::stringstream& token_i
 		if (strand.size() != 0) {
 			token_infos << "STRAND\t" << strand << "\n";
 		}
-//		std::string toReturn(token_infos.str());
-//		return toReturn;
 }
 
 /** \brief Specific loader for SAM file (See samtools.sourceforge.net for SAM description)
@@ -361,21 +356,10 @@ uToken uParser::_getNextEntrySam() {
 
 uToken uParser::_getNextEntryCustom() {
 	char line[4096];
-	std::cout << "aa" << std::endl; // Debug
 	if (m_pIostream->getline(line, 4096)) {
 		/**< We start by fetching the infos in the line */
-		std::cout << "asdf" << std::endl; // Debug
-		std::cout << "line: " << line << std::endl; // Debug
 		std::stringstream token_infos;
 		_convertLineToTokenInfosCustom(line, token_infos);
-//			char* current;
-//			current = strtok(line, &m_delimiter);
-//			for(size_t i = 0; i < m_customFieldNames.size(); i++) {
-//				if (m_customFieldNames[i] != "NA") {
-//					token_infos << m_customFieldNames[i] << "\t" << current << "\n";
-//				}
-//				current = strtok(NULL, &m_delimiter);
-//			}
 		/**< Then we try to create a token with that info */
 		/**< If it doesn't work andit's the first token, we don't throw an error. Instead, we try again with another line */
 		try {
@@ -402,8 +386,12 @@ uToken uParser::_getNextEntryCustom() {
 }
 
 void uParser::_convertLineToTokenInfosCustom(char* line, std::stringstream& token_infos) {
+	char l[4096];
+	for (int i = 0; i < 4096; i++) {
+		l[i] = line[i];
+	}
 	char* current;
-	current = strtok(line, &m_delimiter);
+	current = strtok(l, &m_delimiter);
 	for(size_t i = 0; i < m_customFieldNames.size(); i++) {
 		if (m_customFieldNames[i] != "NA") {
 			token_infos << m_customFieldNames[i] << "\t" << current << "\n";

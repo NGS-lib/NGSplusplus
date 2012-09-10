@@ -67,7 +67,6 @@ private:
 
 	char m_delimiter = '\t';
 	bool m_header = false;
-//	bool m_firstToken = true;
 	std::vector<std::string> m_customFieldNames{};
 	//TODO: To avoid using delete on m_pIostream if ifstream constructor was used. Is there a better way?
 	bool m_dynamicStream = false;
