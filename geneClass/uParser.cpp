@@ -4,8 +4,8 @@
  * \param std::string filename: Name of the file to load
  * \param file_type type: Currently supported formats: BED, SAM
  */
-uParser::uParser(const std::string& filename, file_type type, bool header) {
-	std::fstream* ifs = new std::fstream(filename.c_str(), std::fstream::in);
+uParser::uParser(const std::string& filename, file_type type, bool header):m_fileType(type),m_header(header) {
+	std::ifstream* ifs = new std::ifstream(filename.c_str(), std::ifstream::in);
 	if (!ifs->is_open()) {
 		std::string error = "Error opening file: " + filename;
 		throw std::runtime_error(error.c_str());
@@ -13,23 +13,25 @@ uParser::uParser(const std::string& filename, file_type type, bool header) {
 	else {
 		m_pIostream = ifs;
 	}
-	m_fileType = type;
-	m_header = header;
-	if (m_header == true) {
+
+	m_info=_makeTypeInfo(type);
+
+	if (m_header == false) {
 		_fetchHeader();
+
 	}
 	m_dynamicStream = true;
 }
 
-/** \brief uParser constructor with iostream
- * \param std::iostream* stream: stream to load the data from
+
+/** \brief uParser constructor with istream
+ * \param std::istream* stream: stream to load the data from
  * \param file_type type: Currently supported formats: BED, SAM
  */
-uParser::uParser(std::iostream* stream, file_type type, bool header) {
+uParser::uParser(std::iostream* stream, file_type type, bool header):m_fileType(type),m_header(header)  {
 	m_pIostream = stream;
-	m_fileType = type;
-	m_header = header;
-	if (m_header == true) {
+    m_info=_makeTypeInfo(type);
+	if (m_header == false) {
 		_fetchHeader();
 	}
 	m_dynamicStream = false;
@@ -39,7 +41,7 @@ uParser::uParser(std::iostream* stream, file_type type, bool header) {
  * \param const std::vector<string> columnNames: The name of every field in the custom format, in the SAME ORDER as they appear in the file. Must be of the string version of token_param (see uToken.h). Mandatory fields are: CHR, START_POS and END_POS.
  * \param char delimiter: The delimiter between each field.
  */
-uParser::uParser(const std::string& filename, const std::vector<std::string>& fieldsNames, bool header, char delimiter) {
+uParser::uParser(const std::string& filename, const std::vector<std::string>& fieldsNames, bool header, char delimiter):m_fileType(file_type::CUSTOM) {
 	/**< Check if filename is valid, then open it */
 	std::fstream* ifs = new std::fstream(filename.c_str(), std::fstream::in);
 	if (!ifs->is_open()) {
@@ -58,7 +60,7 @@ uParser::uParser(const std::string& filename, const std::vector<std::string>& fi
 		throw e;
 	}
 	/**< Set other parameters */
-	m_fileType = file_type::CUSTOM;
+
 	m_delimiter = delimiter;
 	m_header = header;
 	if (m_header == true) {
@@ -67,7 +69,8 @@ uParser::uParser(const std::string& filename, const std::vector<std::string>& fi
 	m_dynamicStream = true;
 }
 
-uParser::uParser(std::iostream* stream, const std::vector<std::string>& fieldsNames, bool header, char delimiter) {
+uParser::uParser(std::iostream* stream, const std::vector<std::string>& fieldsNames, bool header, char delimiter):m_fileType(file_type::CUSTOM) {
+
 	/**< Check if fields are in a valid format */
 	try {
 		_customParserValidateFields(fieldsNames);
@@ -77,9 +80,7 @@ uParser::uParser(std::iostream* stream, const std::vector<std::string>& fieldsNa
 		throw e;
 	}
 	/**< Set other parameters */
-	m_pIostream = stream;
-	m_fileType = file_type::CUSTOM;
-	m_delimiter = delimiter;
+	m_pIostream = stream;	m_delimiter = delimiter;
 	m_header = header;
 	if (m_header == true) {
 		_fetchHeader();
@@ -158,7 +159,7 @@ uToken uParser::getNextEntry() {
 void uParser::_fetchHeader() {
 	switch(m_fileType) {
 	case file_type::BED:
-	case file_type::CUSTOM: 
+	case file_type::CUSTOM:
 		_fetchUnspecifiedHeader();
 		break;
 	// TODO: Write header parser for SAM format
@@ -167,8 +168,31 @@ void uParser::_fetchHeader() {
 	}
 }
 
-// TODO: When header class is available, add unformated string containing header 
-/* \brief Simply fetch header without parsing it
+/** \brief return the appropriate typeInformation to store when parsing a filetype
+ * \return unique_ptr object, holding pointer to appropriate object
+ */
+std::unique_ptr<typeInformation>  uParser::_makeTypeInfo(file_type type){
+
+    switch(m_fileType) {
+	case file_type::BED:
+            return std::unique_ptr<typeInformation>(new bedInformation);
+	case file_type::CUSTOM:
+            return std::unique_ptr<typeInformation>(new customInformation);
+	case file_type::SAM:
+            return std::unique_ptr<typeInformation>(new samInformation);
+    case file_type::WIG:
+             return std::unique_ptr<typeInformation>(new wigInformation);
+	}
+
+
+throw uParser_exception_base()<<string_error("Throwing in _makeTypeInfo, reached non-valid area in function \n");
+
+}
+
+
+
+// TODO: When header class is available, add unformated string containing header
+/** \brief Simply fetch header without parsing it
  */
 void uParser::_fetchUnspecifiedHeader() {
 	bool headerFetched = false;
@@ -375,6 +399,86 @@ void uParser::_convertLineToTokenInfosCustom(char* line, std::stringstream& toke
 		current = strtok(NULL, &m_delimiter);
 	}
 }
+
+
+
+
+
+void uParser::_processWigDeclaration(std::stringstream & curSStream)
+{
+
+}
+
+uToken uParser::_getNextEntryWig() {
+
+try {
+		char line[4096];
+		if (m_pIostream->getline(line, 4096)) {
+			std::stringstream ss;
+			ss << line;
+
+            std::string first_token;
+			//String to test for int
+			std::string chrom;
+			std::string start_pos;
+			std::string end_pos;
+			std::string score;
+            //Transfer ownership
+            std::unique_ptr<wigInformation> pWigInfo(dynamic_cast<wigInformation*>(m_info.release()));
+            //auto info_pointer= dynamic_cast<wigInformation*>(m_info)
+            //Is this a declaration line?
+            ss>>first_token;
+            if((first_token=="variableStep")||(first_token=="fixedStep"))
+            {
+
+
+                if (first_token=="variableStep")
+                    pWigInfo->setStep(wigInformation::stepType::VARIABLE);
+                else
+                   pWigInfo->setStep(wigInformation::stepType::FIXED);
+
+                _processWigDeclaration(ss);
+                //Declaration step, pârse datra
+
+
+            }
+            else{
+/*
+                ss >> seq_name >> flag >> chr >> start_pos >> MAPQual >> cigar>>RNext>>pNext>>Tlen>>seq>>qual;
+
+                token_infos << "CHR\t" << chr << "\n";
+                token_infos << "START_POS\t" << start_pos << "\n";
+                //token_infos << "END_POS\t" << end_pos << "\n";
+                token_infos << "FLAG\t" << flag << "\n";
+                token_infos << "SEQ_NAME\t" << seq_name << "\n";
+                token_infos << "MAP_SCORE\t" << MAPQual << "\n";
+                token_infos << "SEQUENCE\t" << seq << "\n";
+                token_infos << "CIGAR\t" << cigar << "\n";
+                token_infos << "PHRED_SCORE\t" << qual << "\n";
+
+                uToken token(token_infos);
+                //Give ownership back
+                m_info=(dynamic_cast<typeInformation*>(pWigInfo.release());
+
+                return token;*/
+			}
+		}
+		else {
+			#ifdef DEBUG
+			std::cerr << "Reached end of file." << std::endl;
+			#endif
+			end_of_file_throw e;
+			e << string_error("Reached end of file.");
+			throw e;
+		}
+	}
+	catch(invalid_uToken_throw& e) {
+		throw e;
+	}
+
+
+
+    }
 
 void uParser::_customParserValidateFields(const std::vector<std::string>& fieldsNames) {
 	/**< Must have at least 2 fields */
