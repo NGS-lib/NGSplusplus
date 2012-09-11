@@ -447,7 +447,7 @@ TEST(uParserGetNextEntry, ReachedEOF) {
 	Token = Parser.getNextEntry();
 	ASSERT_THROW(Token = Parser.getNextEntry(), end_of_file_throw);
 }
-//TODO Code the tests!
+
 /*
  * Tests for the function:
  *		uHeader getHeaderData() const;
@@ -456,21 +456,39 @@ TEST(uParserGetNextEntry, ReachedEOF) {
  *		OnlyUnformatedHeader
  */
 
+TEST(getHeaderData, NoHeaderData) {
+	uParser Parser("test.bed", file_type::BED);
+	uHeader Header = Parser.getHeaderData();
+	ASSERT_EQ(Header.getUnformatedHeader(), "");
+}
+
+TEST(getHeaderData, OnlyUnformatedHeader) {
+	uParser Parser("header.bed", file_type::BED, true);
+	uHeader Header = Parser.getHeaderData();
+	string unformated = "";
+	unformated += "browser position chr7:127471196-127495720";
+	unformated += "browser hide all";
+	unformated += "track name=\"ItemRGBDemo\" description=\"Item RGB demonstration\" visibility=2";
+	unformated += "itemRgb=\"On\"";
+	ASSERT_EQ(Header.getUnformatedHeader(), unformated);
+}
+
 /* 
  * Tests for the function:
  *		std::string getHeaderParam(header_param name) const;
  *	Valid case:
- * 		ParamIsSet
+ * 		ParamIsSet // TODO: Do when there is at least a param to test
  *	Invalid case:
- *		ParamIsNotSet
+ *		ParamIsNotSet // TODO: Do when there is at least a param to test
  */
+
 
 /*
  *Tests for the function:
  * 		bool isParamSet(const header_param& name) const;
  *	Valid cases:
- *		ParamIsSet
- *		ParamIsNotSet
+ *		ParamIsSet // TODO: Do when there is at least a param to test
+ *		ParamIsNotSet // TODO: Do when there is at least a param to test
  */
 
 /* 
@@ -480,3 +498,18 @@ TEST(uParserGetNextEntry, ReachedEOF) {
  *		NoHeader
  *		WithHeader
  */
+
+TEST(getUnformatedHeader, NoHeader) {
+	uParser Parser("test.bed", file_type::BED);
+	ASSERT_EQ(Parser.getUnformatedHeader(), "");
+}
+
+TEST(getUnformatedHeader, WithHeader) {
+	uParser Parser("header.bed", file_type::BED, true);
+	string unformated = "";
+	unformated += "browser position chr7:127471196-127495720";
+	unformated += "browser hide all";
+	unformated += "track name=\"ItemRGBDemo\" description=\"Item RGB demonstration\" visibility=2";
+	unformated += "itemRgb=\"On\"";
+	ASSERT_EQ(Parser.getUnformatedHeader(), unformated);
+}
