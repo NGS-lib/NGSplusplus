@@ -30,7 +30,7 @@ public:
 
 class CustomConstructorTests_InvalidListMandatoryCHR: public ::testing::Test {
 public:
-	CustomConstructorTests_InvalidListMandatoryCHR() { 
+	CustomConstructorTests_InvalidListMandatoryCHR() {
 		m_fieldsList.push_back("STRAND");
 		m_fieldsList.push_back("START_POS");
 		m_fieldsList.push_back("END_POS");
@@ -42,7 +42,7 @@ public:
 
 class CustomConstructorTests_InvalidListMandatorySTART_POS: public ::testing::Test {
 public:
-	CustomConstructorTests_InvalidListMandatorySTART_POS() { 
+	CustomConstructorTests_InvalidListMandatorySTART_POS() {
 		m_fieldsList.push_back("CHR");
 		m_fieldsList.push_back("STRAND");
 		m_fieldsList.push_back("END_POS");
@@ -181,7 +181,7 @@ TEST_F(CustomConstructorTests_InvalidListEND_POS, ValidFilename) {
  * 	Valid cases:
  *		ValidStream
  *		AlternateDelimiter
- *		EmptyStream	
+ *		EmptyStream
  *	Invalid cases:
  *		EmptyFieldsList
  * 		MissingMandatoryFields
@@ -228,11 +228,11 @@ TEST_F(CustomConstructorTests_InvalidListEND_POS, ValidStream) {
 }
 
 /* Tests for the function:
- * 		bool eof() const 
+ * 		bool eof() const
  *	Valid cases:
  *		NotEndOfFile
  *		EndOfFile
- *		NoTokenInStream 
+ *		NoTokenInStream
  */
 
 TEST(uParserEof, NotEndOfFile) {
@@ -257,7 +257,7 @@ TEST(uParserEof, NoTokenInStream) {
 	ASSERT_TRUE(Parser.eof());
 }
 
-/* 
+/*
  * Tests for the function:
  *		uToken getNextEntry();
  *	Valid cases:
@@ -267,7 +267,7 @@ TEST(uParserEof, NoTokenInStream) {
  *		CorrectlyFormatedCustom
  *		CorrectlyFormatedHeaderCUSTOM
  *		CorrectlyFormatedCustomAlternateDelimiter
- *		
+ *
  *	Invalid cases:
  *		IncorrectlyFormatedBED
  * 		IncorrectlyFormatedHeaderBED
@@ -473,7 +473,7 @@ TEST(getHeaderData, OnlyUnformatedHeader) {
 	ASSERT_EQ(Header.getUnformatedHeader(), unformated);
 }
 
-/* 
+/*
  * Tests for the function:
  *		std::string getHeaderParam(header_param name) const;
  *	Valid case:
@@ -491,7 +491,7 @@ TEST(getHeaderData, OnlyUnformatedHeader) {
  *		ParamIsNotSet // TODO: Do when there is at least a param to test
  */
 
-/* 
+/*
  * Tests for the function:
  *		std::string getUnformatedHeader() const;
  *	Valid cases:
@@ -512,4 +512,55 @@ TEST(getUnformatedHeader, WithHeader) {
 	unformated += "track name=\"ItemRGBDemo\" description=\"Item RGB demonstration\" visibility=2";
 	unformated += "itemRgb=\"On\"";
 	ASSERT_EQ(Parser.getUnformatedHeader(), unformated);
+}
+
+
+/*
+ * Tests for the function:
+ *		uToken getNextEntry();
+ *	Valid cases:
+ *		CorrectlyFormatedBED6
+ *		CorrectlyFormatedBED4
+ *		CorrectlyFormatedHeaderBED
+ *		CorrectlyFormatedCustom
+ *		CorrectlyFormatedHeaderCUSTOM
+ *		CorrectlyFormatedCustomAlternateDelimiter
+ *
+ *	Invalid cases:
+ *		IncorrectlyFormatedBED
+ * 		IncorrectlyFormatedHeaderBED
+ *		CorrectlyFormatedHeaderButNotSpecifiedBED
+ *		IncorrectlyFormatedCustom
+ * 		IncorrectlyFormatedHeaderCUSTOM
+ *		CorrectlyFormatedHeaderButNotSpecifiedCUSTOM
+ *		ReachedEOF
+ */
+
+
+TEST(uParserGetNextEntry, CorrectlyFormatedVariableWIG) {
+	uParser Parser("./wig/correctVariable.wig", file_type::WIG);
+
+	int count=0;
+	uToken Token = Parser.getNextEntry();
+	count++;
+	EXPECT_EQ(Token.getParam(token_param::CHR), "chr19");
+	EXPECT_EQ(Token.getParam(token_param::START_POS), "49304701");
+	EXPECT_EQ(Token.getParam(token_param::END_POS), std::to_string(49304701+150));
+	EXPECT_EQ(Token.getParam(token_param::SCORE), "10");
+
+	Token = Parser.getNextEntry();
+	count++;
+	EXPECT_EQ(Token.getParam(token_param::CHR), "chr19");
+	EXPECT_EQ(Token.getParam(token_param::START_POS), "49304901");
+	EXPECT_EQ(Token.getParam(token_param::END_POS), std::to_string(49304901+150));
+	EXPECT_EQ(Token.getParam(token_param::SCORE), "12.5");
+	//ASSERT_EQ(Token.getParam(token_param::STRAND), "+");
+EXPECT_NO_THROW(
+	while(!(Parser.eof())){
+    Token = Parser.getNextEntry();
+	count++;
+	}
+);
+EXPECT_EQ(count, 9);
+
 }
