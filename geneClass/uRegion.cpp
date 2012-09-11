@@ -755,6 +755,7 @@ wigType curWig = wigType::NONE;
                 curStart+=curStep;
                 break;
             case  wigType::VARIABLE_STEP:
+
                  data.NextToken();
                  int tagcount=utility::stringToInt(data.GetToken());
                  curReg.setChr(curChr);

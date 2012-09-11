@@ -40,7 +40,8 @@ struct param_not_found : virtual invalid_uToken_throw{};
 // uParser Exceptions
 struct uParser_exception_base : virtual std::exception, virtual boost::exception {};
 struct end_of_file_throw : virtual uParser_exception_base{};
-struct customParser_missing_mandatory_values : virtual uParser_exception_base{};
+struct Parser_missing_mandatory_values : virtual uParser_exception_base{};
+struct customParser_missing_mandatory_values : virtual Parser_missing_mandatory_values{};
 
 // Util functions
 static inline void addStringError(ugene_exception_base & e, const std::string & err){

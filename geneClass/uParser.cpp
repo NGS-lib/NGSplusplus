@@ -171,17 +171,17 @@ void uParser::_fetchHeader() {
 /** \brief return the appropriate typeInformation to store when parsing a filetype
  * \return unique_ptr object, holding pointer to appropriate object
  */
-std::unique_ptr<typeInformation>  uParser::_makeTypeInfo(file_type type){
+std::shared_ptr<typeInformation>  uParser::_makeTypeInfo(file_type type){
 
     switch(m_fileType) {
 	case file_type::BED:
-            return std::unique_ptr<typeInformation>(new bedInformation);
+            return std::shared_ptr<typeInformation>(new bedInformation);
 	case file_type::CUSTOM:
-            return std::unique_ptr<typeInformation>(new customInformation);
+            return std::shared_ptr<typeInformation>(new customInformation);
 	case file_type::SAM:
-            return std::unique_ptr<typeInformation>(new samInformation);
+            return std::shared_ptr<typeInformation>(new samInformation);
     case file_type::WIG:
-             return std::unique_ptr<typeInformation>(new wigInformation);
+             return std::shared_ptr<typeInformation>(new wigInformation);
 	}
 
 
@@ -403,15 +403,94 @@ void uParser::_convertLineToTokenInfosCustom(char* line, std::stringstream& toke
 
 
 
+/** \brief Private function to process a Fixed track definition line in a wig file. Sets m_info details
+ * \return
+ */
+void uParser::_processFixedWigLine(std::stringstream & curSStream)
+{
+    auto pWigInfo =    std::dynamic_pointer_cast<wigInformation>(m_info);
 
-void uParser::_processWigDeclaration(std::stringstream & curSStream,std::unique_ptr<wigInformation> pWigInfo)
+    std::string chrom, strstart, strsspan;
+    int curStart;
+        /**< Chrom */
+                   curSStream >> chrom;
+                  if (chrom.find("chrom=")==std::string::npos)
+                        throw Parser_missing_mandatory_values()<<string_error("Missing chrom value in wig track definition");
+                  chrom=chrom.substr(chrom.find("chrom="));
+                    /**< Start */
+                   curSStream>>strstart;
+                   if (strstart.find("start=")==std::string::npos)
+                        throw Parser_missing_mandatory_values()<<string_error("Missing start value in wig track definition");;
+
+                    strstart=strstart.substr(strstart.find("start="));
+                    curStart=stoi(strstart);
+                    /**< Step */
+                  std::string step;
+                  curSStream >>step;
+                  //Format definition is not sure if step is mandatory, so we will pretend it is not...
+                  int curStep=1;
+                 if (step.size()){
+                  if (step.find("step=")==std::string::npos)
+                        throw  Parser_missing_mandatory_values()<<string_error("Missing step value in wig track definition");;;
+
+                   step=step.substr(step.find("step="));
+
+                   curStep=stoi(step);
+                }
+                    /**< Optional Span parameter */
+                    int curSpan=1;
+                    std::string span;
+                    curSStream>>span;
+                 if(span.size()){
+                    /**< If not, fail again*/
+                    if (span.find("span=")==std::string::npos)
+                         throw Parser_missing_mandatory_values()<<string_error("invalid Track definition line in wig file, failling \n");
+
+                     span=span.substr(span.find("span="));
+                     curSpan=stoi(span);
+
+                 }
+                 //Nothing threw, modify values
+                 //Specification say's you cannot change spans
+                 if ((pWigInfo->getSpan()!=-1)&&(pWigInfo->getSpan()!=curSpan))
+                      throw Parser_missing_mandatory_values()<<string_error("invalid Track definition line in wig file. Specification forbids changin span in dataset \n");
+                    pWigInfo->setStepType(wigInformation::stepType::FIXED);
+                    pWigInfo->setChrom(chrom);
+                    pWigInfo->setStep(curStep);
+                    pWigInfo->setSpan(curSpan);
+                    pWigInfo->setCurPos(curStart);
+}
+
+void uParser::_processVariabledWigLine(std::stringstream & curSStream)
 {
 
+    auto pWigInfo =  std::dynamic_pointer_cast<wigInformation>(m_info);
 
+   std::string chrom;
+   std::string span;
+    int curSpan=0;
+    /**< Chrom tag */
+    curSStream>> chrom;
+          /**< If invalid chrom header */
+        if (!(chrom.size())||((chrom.find("chrom=")==std::string::npos)))
+                throw Parser_missing_mandatory_values()<<string_error("invalid Track definition line in wig file, failling \n");
+        chrom=chrom.substr(chrom.find("chrom="));
+        /**< Optional Span parameter */
+         curSpan=1;
+         curSStream >> span;
+         if(span.size()){
+            /**< If good, yay, if not, fail again*/
+            if (span.find("span=")==std::string::npos)
+                throw Parser_missing_mandatory_values()<<string_error("invalid Track definition line in wig file, failling \n");;
 
-
-
-
+             span=span.substr(span.find("span="));
+             curSpan=stoi(span);
+         }
+      if ((pWigInfo->getSpan()!=-1)&&(pWigInfo->getSpan()!=curSpan))
+                  throw Parser_missing_mandatory_values()<<string_error("invalid Track definition line in wig file. Specification forbids changin span in dataset \n");
+        pWigInfo->setStepType(wigInformation::stepType::VARIABLE);
+        pWigInfo->setChrom(chrom);
+        pWigInfo->setSpan(curSpan);
 }
 
 uToken uParser::_getNextEntryWig() {
@@ -422,51 +501,55 @@ try {
 			std::stringstream ss;
 			ss << line;
 
-            std::string first_token;
-			//String to test for int
-			std::string chrom;
-			std::string start_pos;
-			std::string end_pos;
-			std::string score;
-            //Transfer ownership
-            std::unique_ptr<wigInformation> pWigInfo(dynamic_cast<wigInformation*>(m_info.release()));
-            //auto info_pointer= dynamic_cast<wigInformation*>(m_info)
-            //Is this a declaration line?
-            ss>>first_token;
-            if((first_token=="variableStep")||(first_token=="fixedStep"))
+            std::string cur_token;
+            ss>>cur_token;
+            if((cur_token=="variableStep")||(cur_token=="fixedStep"))
             {
-
-
-                if (first_token=="variableStep")
-                    pWigInfo->setStep(wigInformation::stepType::VARIABLE);
-                else
-                   pWigInfo->setStep(wigInformation::stepType::FIXED);
-
-                _processWigDeclaration(ss, pWigInfo);
-                //Declaration step, pârse datra
-
+                if (cur_token=="variableStep"){
+                      _processVariabledWigLine(ss);
+                }
+                else{
+                      _processFixedWigLine(ss);
+                }
 
             }
-            else{
-/*
-                ss >> seq_name >> flag >> chr >> start_pos >> MAPQual >> cigar>>RNext>>pNext>>Tlen>>seq>>qual;
+            //If not eof
 
-                token_infos << "CHR\t" << chr << "\n";
+
+               ss>>cur_token;
+               auto pWigInfo =  std::dynamic_pointer_cast<wigInformation>(m_info);
+                int end_pos;
+                int start_pos =0;
+                float score=0.0f;
+
+                switch (pWigInfo->getStepType())
+                {
+                case wigInformation::stepType::NA:
+
+                    throw Parser_missing_mandatory_values()<<string_error("No wig type set, error parsing \n");
+                    break;
+                case  wigInformation::stepType::FIXED:
+                    //curReg.setChr(curChr);
+                   // curReg.setStartEnd(curStart,curStart+curSpan);
+                    //curReg.setCount(utility::stringToInt(firstToken));
+                   // curStart+=curStep;
+                    break;
+                case   wigInformation::stepType::VARIABLE:
+                     int start_pos=stoi(cur_token);
+                     ss >> cur_token;
+                    score=stof(cur_token);
+                    end_pos= start_pos+pWigInfo->getSpan();
+
+                    break;
+                }
+                std::stringstream token_infos;
+
+                token_infos << "CHR\t" << pWigInfo->getChrom() << "\n";
                 token_infos << "START_POS\t" << start_pos << "\n";
-                //token_infos << "END_POS\t" << end_pos << "\n";
-                token_infos << "FLAG\t" << flag << "\n";
-                token_infos << "SEQ_NAME\t" << seq_name << "\n";
-                token_infos << "MAP_SCORE\t" << MAPQual << "\n";
-                token_infos << "SEQUENCE\t" << seq << "\n";
-                token_infos << "CIGAR\t" << cigar << "\n";
-                token_infos << "PHRED_SCORE\t" << qual << "\n";
+                token_infos << "END_POS\t" << end_pos << "\n";
+                token_infos << "SCORE\t" << score << "\n";
 
-                uToken token(token_infos);
-                //Give ownership back
-                m_info=(dynamic_cast<typeInformation*>(pWigInfo.release());
-
-                return token;*/
-			}
+                return uToken(token_infos);
 		}
 		else {
 			#ifdef DEBUG
@@ -480,10 +563,11 @@ try {
 	catch(invalid_uToken_throw& e) {
 		throw e;
 	}
+    catch(Parser_missing_mandatory_values& e) {
+		throw e;
+	}
 
-
-
-    }
+}
 
 void uParser::_customParserValidateFields(const std::vector<std::string>& fieldsNames) {
 	/**< Must have at least 2 fields */
