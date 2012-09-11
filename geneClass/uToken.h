@@ -13,7 +13,7 @@
 
 /**< List of param is hard coded as strongly typed enum for extra safety. */
 /**< This list has to be updated for every new param */
-enum class token_param { CHR, START_POS, END_POS, STRAND, MAP_SCORE, PHRED_SCORE, CIGAR, SEQUENCE, SEQ_NAME, FLAGS };
+enum class token_param { CHR, START_POS, END_POS, STRAND, MAP_SCORE, PHRED_SCORE, CIGAR, SEQUENCE, SEQ_NAME, FLAGS ,SCORE};
 
 /**< uToken class, to bridge parser and the library's class */
 /**< This is the class that takes care of data validation */
@@ -28,22 +28,23 @@ public:
 	std::string getParam(token_param name) const;
 	bool  isParamSet(const token_param& name)const;
 	uToken& operator=(uToken const& assign_from);
-	
+
 	/** \brief Check if a string has a corresponding token_param value
 	 * \param const std::string& param: The param to check.
 	 * \return True if there is a matching token_param value, otherwise false.
 	 */
 	static inline bool checkParam(const std::string& param) {
-		return (param == "CHR" 
-		     || param == "START_POS" 
+		return (param == "CHR"
+		     || param == "START_POS"
 		     || param == "END_POS"
-		     || param == "STRAND" 
-		     || param == "MAP_SCORE" 
+		     || param == "STRAND"
+		     || param == "MAP_SCORE"
 		     || param == "PHRED_SCORE"
 		     || param == "CIGAR"
-		     || param == "SEQUENCE" 
-		     || param == "SEQ_NAME" 
-		     || param == "FLAGS");
+		     || param == "SEQUENCE"
+		     || param == "SEQ_NAME"
+		     || param == "FLAGS"
+		     || param == "SCORE");
 	}
 
 private:
@@ -94,6 +95,7 @@ inline std::ostream & operator<<(std::ostream& Str, token_param name) {
 	case token_param::SEQUENCE: return Str << "SEQUENCE";
 	case token_param::SEQ_NAME: return Str << "SEQ_NAME";
 	case token_param::FLAGS: return Str << "FLAGS";
+	case token_param::SCORE: return Str <<"SCORE";
 	default: return Str << (int) name;
 	}
 }
@@ -111,6 +113,7 @@ inline std::istream& operator>>(std::istream &is, token_param& name) {
 	else if (token == "SEQUENCE") name = token_param::SEQUENCE;
 	else if (token == "SEQ_NAME") name = token_param::SEQ_NAME;
 	else if (token == "FLAGS") name = token_param::FLAGS;
+	else if (token == "SCORE") name = token_param::SCORE;
 	else {
 		invalid_token_param_throw e;
 		e << string_error(token);

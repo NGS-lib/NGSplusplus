@@ -114,6 +114,8 @@ void uToken::_postProcessParam(const token_param& name, const std::string& value
 		break;
 	case token_param::SEQ_NAME:
 		break;
+    case token_param::SCORE:
+		break;
 	default:
 		break;
 	}
@@ -128,6 +130,7 @@ bool uToken::_validateParam(const token_param& name, const std::string& value) c
 	if (value.size() == 0) {
 		return false;
 	}
+	//TODO numerical checks?
 	/**< Then we do basic check for every type of parameters */
 	switch(name) {
 	case token_param::START_POS:
@@ -149,6 +152,9 @@ bool uToken::_validateParam(const token_param& name, const std::string& value) c
 		return true;
 	case token_param::SEQ_NAME:
 		return true;
+    case token_param::SCORE:
+          return true;
+
 	default:
 		return false;
 	}

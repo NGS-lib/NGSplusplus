@@ -15,7 +15,7 @@ INCLUDES = -I$(UTIL_DIR) -I$(BOOST_DIR)
 all: $(UTILS) $(PROJECT)
 
 .cpp.o:
-	/Users/charles/Documents/gcc/dist/bin/g++ -c $(CFLAGS) $(INCLUDES) $<
+	g++-4.7 -c $(CFLAGS) $(INCLUDES) $<
 
 $(PROJECT): $(OBJECTS)
 	libtool -o $(PROJECT) -static $(OBJECTS) $(SRC_DIR)/utility.o

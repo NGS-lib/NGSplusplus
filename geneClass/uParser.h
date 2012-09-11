@@ -62,7 +62,7 @@ class customInformation : public typeInformation{
 		void addFieldName(const std::string& name) { m_fieldsName.push_back(name); }
 		std::string getFieldName(unsigned int columnNumber) { return m_fieldsName[columnNumber]; };
 	private:
-		std::vector<std::string> m_fieldsName;
+		std::vector<std::string> m_fieldsName={};
 };
 
 
@@ -86,7 +86,7 @@ public:
 	  */
 	std::string getHeaderParam(header_param name) const { return m_headerData.getParam(name); }
 	/** \brief Check if there is a value associated with a given param.
-	  * \param header_param& name: name of the param to check.	
+	  * \param header_param& name: name of the param to check.
 	  */
 	bool isParamSet(const header_param& name) const { return m_headerData.isParamSet(name); }
 	/** \brief Return a string containing an exact copy of the header from input data.
@@ -110,6 +110,7 @@ private:
     void _processFixedWigLine(std::stringstream & curSStream);
     void _processVariabledWigLine(std::stringstream & curSStream);
 
+    void _fetchWigHeader();
 	void _fetchHeader();
 	void _fetchUnspecifiedHeader();
 	void _pushBackLine(char* line);

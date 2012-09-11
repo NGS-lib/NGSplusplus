@@ -38,28 +38,28 @@ public:
 	  */
 	bool isParamSet(const header_param& name) const { return m_params.count(name); };
 	uHeader& operator=(uHeader const& assign_from);
-	
+
 	/** \brief Check if a string has a corresponding header_param value
 	 * \param const std::string& param: The param to check.
 	 * \return True if there is a matching header_param value, otherwise false.
 	 */
 	static inline bool checkParam(const std::string& param) { //TODO
 		return true;
-//		return (param == "CHR" 
-//		     || param == "START_POS" 
+//		return (param == "CHR"
+//		     || param == "START_POS"
 //		     || param == "END_POS"
-//		     || param == "STRAND" 
-//		     || param == "MAP_SCORE" 
+//		     || param == "STRAND"
+//		     || param == "MAP_SCORE"
 //		     || param == "PHRED_SCORE"
 //		     || param == "CIGAR"
-//		     || param == "SEQUENCE" 
-//		     || param == "SEQ_NAME" 
+//		     || param == "SEQUENCE"
+//		     || param == "SEQ_NAME"
 //		     || param == "FLAGS");
 	}
 
 private:
 	std::map<header_param, std::string> m_params={};
-	std::string m_unformatedHeader;
+	std::string m_unformatedHeader="";
 	void _setParam(const header_param& name, const std::string& value);
 	std::string _convertHeaderParamToString(const header_param& header) const;
 
