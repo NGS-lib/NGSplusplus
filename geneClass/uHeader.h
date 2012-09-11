@@ -34,6 +34,7 @@ public:
 	  */
 	std::string getUnformatedHeader() const { return m_unformatedHeader;};
 	/** \brief Check if there is a value associated with a given param.
+          * \param header_param& name: name of the param to check.
 	  */
 	bool isParamSet(const header_param& name) const { return m_params.count(name); };
 	uHeader& operator=(uHeader const& assign_from);
