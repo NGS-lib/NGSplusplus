@@ -79,7 +79,7 @@ public:
 TEST(uParserConstructorFilename, ValidFileName) {
 	ASSERT_NO_THROW(uParser Parser("test.bed", file_type::BED));
 	ASSERT_NO_THROW(uParser Parser("test.bed", file_type::SAM));
-	ASSERT_NO_THROW(uParser Parser("test.bed", file_type::CUSTOM));
+	ASSERT_NO_THROW(uParser Parser("test.bed", file_type::CUSTOM, false));
 }
 
 //TODO: Add SAM when it is available. There is no check for header until getNextEntry for BED and CUSTOM file type
@@ -419,11 +419,11 @@ TEST_F(CustomConstructorTests_ValidList, getNextEntry_IncorrectlyFormatedCustom)
 TEST_F(CustomConstructorTests_ValidList, getNextEntry_IncorrectlyFormatedHeaderCUSTOM) {
 	uParser Parser("incorrect_header.custom", m_fieldsList, true);
 	uToken Token = Parser.getNextEntry();
-//ASSERT_EQ(Token.getParam(token_param::CHR), "chr1");
-//	ASSERT_EQ(Token.getParam(token_param::START_POS), "21");
-//	ASSERT_EQ(Token.getParam(token_param::END_POS), "31");
-//	ASSERT_EQ(Token.getParam(token_param::STRAND), "+");
-//	ASSERT_THROW(Parser.getNextEntry(), uToken_exception_base);
+	ASSERT_EQ(Token.getParam(token_param::CHR), "chr1");
+	ASSERT_EQ(Token.getParam(token_param::START_POS), "21");
+	ASSERT_EQ(Token.getParam(token_param::END_POS), "31");
+	ASSERT_EQ(Token.getParam(token_param::STRAND), "+");
+	ASSERT_THROW(Parser.getNextEntry(), uToken_exception_base);
 }
 
 TEST_F(CustomConstructorTests_ValidList, getNextEntry_CorrectlyFormatedHeaderButNotSpecifiedBED) {
@@ -447,3 +447,36 @@ TEST(uParserGetNextEntry, ReachedEOF) {
 	Token = Parser.getNextEntry();
 	ASSERT_THROW(Token = Parser.getNextEntry(), end_of_file_throw);
 }
+//TODO Code the tests!
+/*
+ * Tests for the function:
+ *		uHeader getHeaderData() const;
+ *	Valid cases:
+ *		NoHeaderData
+ *		OnlyUnformatedHeader
+ */
+
+/* 
+ * Tests for the function:
+ *		std::string getHeaderParam(header_param name) const;
+ *	Valid case:
+ * 		ParamIsSet
+ *	Invalid case:
+ *		ParamIsNotSet
+ */
+
+/*
+ *Tests for the function:
+ * 		bool isParamSet(const header_param& name) const;
+ *	Valid cases:
+ *		ParamIsSet
+ *		ParamIsNotSet
+ */
+
+/* 
+ * Tests for the function:
+ *		std::string getUnformatedHeader() const;
+ *	Valid cases:
+ *		NoHeader
+ *		WithHeader
+ */
