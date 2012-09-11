@@ -189,13 +189,11 @@ throw uParser_exception_base()<<string_error("Throwing in _makeTypeInfo, reached
 
 }
 
-
-
-// TODO: When header class is available, add unformated string containing header
 /** \brief Simply fetch header without parsing it
  */
 void uParser::_fetchUnspecifiedHeader() {
 	bool headerFetched = false;
+	std::string unformatedHeader;
 	/**< We parse a line at a time until we get a valid token, then we return the token back in the stream */
 	do {
 		char line[4096];
@@ -218,7 +216,8 @@ void uParser::_fetchUnspecifiedHeader() {
 			catch(invalid_uToken_throw& e) { }
 			catch(invalid_value_throw& e) { }
 			if (headerFetched == false) {
-				// TODO add line to header object
+				std::string s(line);
+				unformatedHeader += s;
 			}
 		}
 		else {
@@ -231,6 +230,7 @@ void uParser::_fetchUnspecifiedHeader() {
 			throw e;
 		}
 	} while(headerFetched == false);
+	m_headerData.setUnformatedHeader(unformatedHeader);
 }
 
 void uParser::_pushBackLine(char* line) {
