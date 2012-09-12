@@ -7,8 +7,8 @@
 #include <sstream>
 #include <stdexcept>
 #include <cctype>
-#include "uGeneException.h"
-#include "uGeneException.h"
+#include "../uGeneException.h"
+
 namespace NGS {
 /**< List of param is hard coded as strongly typed enum for extra safety. */
 /**< This list has to be updated for every new param */

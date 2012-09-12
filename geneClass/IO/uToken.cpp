@@ -1,5 +1,5 @@
 #include "uToken.h"
-#include "utility/utility.h"
+#include "../utility/utility.h"
 namespace NGS {
 //enum class token_param { CHR, START_POS, END_POS, STRAND, MAP_SCORE, PHRED_SCORE, CIGAR, SEQUENCE, SEQ_NAME, FLAGS };
 

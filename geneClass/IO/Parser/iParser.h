@@ -10,19 +10,21 @@
 #include <iostream>
 #include <algorithm>
 #include <fstream>
-#include "uToken.h"
+#include "../uToken.h"
 #include "../uGeneException.h"
-#include "uHeader.h"
+#include  "iParserBase.h"
+#include "../uHeader.h"
 
+class uHeader;
 class Parser{
 
 public :
 
-    parserBase(const std::string& filename, const std::string & type, bool header = false);
-	parserBase(std::iostream* stream, const std::string & type, bool header = false);
-	parserBase(const std::string& filename, const std::vector<std::string>& fieldsNames, bool header = false, char delimiter = '\t');
-	parserBase(std::iostream* stream, const std::vector<std::string>& fieldsNames, bool header = false, char delimiter = '\t');
-	~parserBase();
+    Parser(const std::string& filename, const std::string & type, bool header = false);
+	Parser(std::iostream* stream, const std::string & type, bool header = false);
+	Parser(const std::string& filename, const std::vector<std::string>& fieldsNames, bool header = false, char delimiter = '\t');
+	Parser(std::iostream* stream, const std::vector<std::string>& fieldsNames, bool header = false, char delimiter = '\t');
+	~Parser();
 
     bool eof() const { return m_pIostream->peek() == EOF; }
 	uToken getNextEntry();
@@ -37,8 +39,8 @@ public :
 private:
 
     uHeader m_headerData
-    unique_ptr<parserBase> m_pParserBase;
+    std::shared_ptr<parserBase> m_pParserBase;
 
 }
 
-
+#endif

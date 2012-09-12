@@ -7,17 +7,17 @@ class parserBase{
     parserBase();
     virtual ~parserBase();
 
-     virtual void init(const std::string& filename, bool header = false);
-	 virtual void init(std::iostream* stream, bool header = false);
-	 virtual void init(const std::string& filename, const std::vector<std::string>& fieldsNames, bool header = false, char delimiter = '\t');
-	 virtual void init(std::iostream* stream, const std::vector<std::string>& fieldsNames, bool header = false, char delimiter = '\t');
+     virtual void init(const std::string& filename, bool header = false)=0;
+	 virtual void init(std::iostream* stream, bool header = false)=0;
+	 virtual void init(const std::string& filename, const std::vector<std::string>& fieldsNames, bool header = false, char delimiter = '\t')=0;
+	 virtual void init(std::iostream* stream, const std::vector<std::string>& fieldsNames, bool header = false, char delimiter = '\t')=0;
 	~parserBase();
 	parserBase& operator=(const parserBase& copyFrom) = delete;
 	parserBase(const parserBase&) = delete;
 	/** \brief Check if input data is at end of file.
 	  */
 	bool eof() const { return m_pIostream->peek() == EOF; }
-	virtual uToken getNextEntry();
+	virtual uToken getNextEntry()=0;
 	/** \brief Get a specific data from header.
 	  */
 	std::string getHeaderParam(header_param name) const { return m_headerData.getParam(name); }
