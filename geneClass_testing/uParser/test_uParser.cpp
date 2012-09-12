@@ -1,9 +1,10 @@
 #include <gtest/gtest.h>
 #include <string>
 #include <sstream>
-//TODO
+//TODO : Split tests by type of file??
 /**< To test private member directly, changed private for public */
 //#define private public
+//#include "IO/Parser/uParser.h" // TODO: When the new parser will be functional, we will change it
 #include "uParser.h"
 
 using namespace std;
