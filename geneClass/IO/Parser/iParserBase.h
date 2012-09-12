@@ -37,8 +37,11 @@ class uParserBase{
 	  * \param header_param& name: name of the param to check.
 	  */
 //	bool isHeaderParamSet(const header_param& name) const { return m_headerData.isParamSet(name); }
-private:
+
+protected:
     std::istream* m_pIostream=nullptr;
+
+
 };
 
 //Thank you Stack Overflow for this basic structure
