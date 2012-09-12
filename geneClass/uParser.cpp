@@ -1,5 +1,20 @@
 #include "uParser.h"
 #include "uGeneException.h"
+
+
+using namespace std;
+
+// Base interface
+
+class formatType
+{
+      virtual uToken _getNextEntry();
+}
+
+
+
+
+
 /** \brief uParser constructor with filename
  * \param std::string filename: Name of the file to load
  * \param file_type type: Currently supported formats: BED, SAM
