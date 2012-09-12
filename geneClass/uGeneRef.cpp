@@ -1,6 +1,6 @@
 #include "UGeneRef.h"
 #include "limits.h"
-
+namespace NGS {
 uGeneRef::uGeneRef() {  // default constructor
 
 
@@ -343,4 +343,4 @@ long int uGeneRef::distanceFromClosestTss(std::string chrom,int pos){
 
 }
 
-
+} // End of namespace NGS

@@ -3,7 +3,7 @@
 
 #include "uFormats.h"
 #include "chromConstants.h"
-
+namespace NGS {
 
 //This is a strongly typed class that represents a gene entry.
 //Our problem.. is that a gene is many, many things.
@@ -125,5 +125,5 @@ typedef map<string, vector<uGene> >  GeneVectorMap;
 
 
 #endif // UGENEREF_H_INCLUDED
-
+} // End of namespace NGS
 

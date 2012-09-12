@@ -7,6 +7,8 @@
 #include "utility/utility.h"
 #include "uGeneException.h"
 #include "uToken.h"
+
+namespace NGS {
 //Our basic Site for NGS format
 //Very weak class as there are many differences in the functionality of derived classes.
 enum class StrandDir
@@ -251,5 +253,5 @@ namespace factory
 uGenericNGS makeNGSfromTabString(std::string tabString);
 }
 
-
+} // End of namespace NGS
 #endif // UFORMATBASE_H_INCLUDED

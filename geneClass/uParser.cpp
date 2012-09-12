@@ -1,20 +1,6 @@
 #include "uParser.h"
 #include "uGeneException.h"
-
-
-using namespace std;
-
-// Base interface
-
-class formatType
-{
-      virtual uToken _getNextEntry();
-}
-
-
-
-
-
+namespace NGS {
 /** \brief uParser constructor with filename
  * \param std::string filename: Name of the file to load
  * \param file_type type: Currently supported formats: BED, SAM
@@ -801,3 +787,4 @@ void uParser::_customParserCopyFields(const std::vector<std::string>& fieldsName
         }
     }
 }
+} // End of namespace NGS

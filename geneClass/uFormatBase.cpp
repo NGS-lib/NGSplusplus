@@ -4,7 +4,7 @@
 #include "uFormatBase.h"
 #include <cassert>
 #include "utility/utility.h"
-
+namespace NGS {
 /** \brief Increase size of the element. Coordinates can go no lower then 0,
  *
  * \param extendLeft int : Left shift size, must be +
@@ -341,4 +341,4 @@ uGenericNGS makeNGSfromTabString(std::string tabString)
 }
 
 }
-
+} // End of namespace NGS

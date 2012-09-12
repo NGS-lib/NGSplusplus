@@ -7,7 +7,7 @@
 #include <algorithm>
 #include <parallel/numeric>
 #include <functional>
-
+namespace NGS {
 template<typename _BASE_>
 class uGenericNGSChrom
 {
@@ -1245,5 +1245,5 @@ public:
         this->maxSite(comparePos)->getEnd();
     }
 
-
+} // End of namespace NGS
 #endif // UFORMATCHROM_H_INCLUDED

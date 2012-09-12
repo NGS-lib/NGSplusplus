@@ -3,6 +3,7 @@
 
 #include "uFormats.h"
 #include <memory>
+namespace NGS {
 //Our Tag format
 //We used this to store mapped tags from NGS experiments
 //This is used for single End tags
@@ -347,4 +348,5 @@ public:
     uTags nextSamLine(bool minimal=false);
     std::vector<float> getRegionSignal(std::string chrom, int start, int end, bool overlap);
 };
+} // End of namespace NGS
 #endif // UTAGS_H_INCLUDED

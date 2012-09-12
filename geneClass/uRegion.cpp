@@ -5,7 +5,7 @@
 #include "uToken.h"
 #include <limits>
 using namespace std;
-
+namespace NGS {
 /** \brief Default constructor
  */
 uRegion::uRegion()
@@ -785,3 +785,4 @@ wigType curWig = wigType::NONE;
     }
 
 }
+} // End of namespace NGS

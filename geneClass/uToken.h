@@ -10,7 +10,7 @@
 #include "uGeneException.h"
 //#include "boost/exception/all.hpp"
 #include "uGeneException.h"
-
+namespace NGS {
 /**< List of param is hard coded as strongly typed enum for extra safety. */
 /**< This list has to be updated for every new param */
 enum class token_param { CHR, START_POS, END_POS, STRAND, MAP_SCORE, PHRED_SCORE, CIGAR, SEQUENCE, SEQ_NAME, FLAGS ,SCORE};
@@ -121,4 +121,5 @@ inline std::istream& operator>>(std::istream &is, token_param& name) {
 	}
 	return is;
 }
+} // End of namespace NGS
 #endif // UTOKEN_H_INCLUDED

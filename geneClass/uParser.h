@@ -9,7 +9,7 @@
 #include "uToken.h"
 #include "uGeneException.h"
 #include "uHeader.h"
-
+namespace NGS {
 enum class file_type{ BED, SAM, CUSTOM ,WIG};
 
 class typeInformation{
@@ -125,5 +125,5 @@ private:
 	void _customParserValidateFields(const std::vector<std::string>& fieldNames);
 	void _customParserCopyFields(const std::vector<std::string>& fieldsNames);
 };
-
+} // End of namespace NGS
 #endif // UPARSER_H_INCLUDED

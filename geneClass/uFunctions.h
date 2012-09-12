@@ -1,5 +1,6 @@
 #ifndef UFUNCTIONS_H_INCLUDED
 #define UFUNCTIONS_H_INCLUDED
+namespace NGS {
 
 namespace RegionTags{
 //How many tags exactly fit in the region
@@ -8,3 +9,5 @@ int getTagCount(uRegion inputRegion, uTagsExperiment* ourExp, OverlapType overla
 void getSignal(uRegion* inputRegion, uTagsExperiment* ourExp,  bool signal);
 }
 #endif
+} // End of namespace NGS
+

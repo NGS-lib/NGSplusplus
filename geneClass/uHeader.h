@@ -9,7 +9,7 @@
 #include <cctype>
 #include "uGeneException.h"
 #include "uGeneException.h"
-
+namespace NGS {
 /**< List of param is hard coded as strongly typed enum for extra safety. */
 /**< This list has to be updated for every new param */
 // TODO: Add param as they are needed. Remove TMP when there is one valid param, it's there to avoid compiling error.
@@ -111,4 +111,5 @@ private:
 //	}
 //	return is;
 //}
+} // End of namespace NGS
 #endif // UHEADER_H_INCLUDED

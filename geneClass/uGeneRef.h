@@ -9,7 +9,7 @@
 
 
 #include <map>
-
+namespace NGS {
  using namespace std;
 class uGeneRef{
 
@@ -59,5 +59,5 @@ typedef map<string, vector<uGene> >  GeneVectorMap;
 };
 
 
-
+} // End of namespace NGS
 #endif // UGENEREF_H_INCLUDED

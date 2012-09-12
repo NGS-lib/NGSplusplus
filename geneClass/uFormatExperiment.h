@@ -2,6 +2,7 @@
 #define UFORMATEXPERIMENT_H_INCLUDED
 #include <fstream>
 #include "uParser.h"
+namespace NGS {
 //_BASE_ is our Tags, _CHROM_ our Chrom structure.
 enum class ReadMode{ DEFAULT, GRADUAL };
 template<typename _CHROM_, typename _BASE_>
@@ -745,5 +746,5 @@ void uGenericNGSExperiment<_CHROM_,_BASE_>::divideItemsIntoBinofSize(int N, Spli
 //}
 
 
-
+} // End of namespace NGS
 #endif // UFORMATEXPERIMENT_H_INCLUDED

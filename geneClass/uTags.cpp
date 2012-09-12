@@ -2,7 +2,7 @@
 #include <string.h>
 #include <sstream>
 #include "uTags.h"
-
+namespace NGS {
 
 using namespace std;
 /** \brief Default constructor, not PE and positive strand
@@ -1085,3 +1085,4 @@ void uTagsExperiment::writeTrimmedSamToOutput(std::ostream &out, int left, int r
         iterMap->second.writeTrimmedSamToOutput(out, left, right);
     }
 }
+} // End of namespace NGS
