@@ -1,6 +1,6 @@
 #include "uGene.h"
 #include "limits.h"
-
+namespace NGS {
 uGeneRef::uGeneRef() {  // default constructor
 
 
@@ -511,4 +511,4 @@ bool uGene::overlapsTss(int start, int end){
 
 return false;
 }
-
+} // End of namespace NGS

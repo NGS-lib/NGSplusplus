@@ -1,7 +1,7 @@
 #include "uTags.h"
 #include "uRegion.h"
 #include "uFunctions.h"
-
+namespace NGS {
 //Some functions using Regions, we can put elsewhere later.
 
 namespace RegionTags{
@@ -36,3 +36,4 @@ namespace RegionTags{
 
 
 }
+} // End of namespace NGS
