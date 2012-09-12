@@ -8,7 +8,7 @@
 #include <stdexcept>
 #include <cctype>
 #include "../uGeneException.h"
-//#include "boost/exception/all.hpp"
+
 namespace NGS {
 /**< List of param is hard coded as strongly typed enum for extra safety. */
 /**< This list has to be updated for every new param */

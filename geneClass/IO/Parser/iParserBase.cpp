@@ -1,6 +1,13 @@
-#include "base.h"
-std::map<std::string, std::function<parserBase*()> > *parserBaseFactory::mapItem;
+#include "iParserBase.h"
+namespace NGS {
+std::map<std::string, std::function<uParserBase*()> > *uParserBaseFactory::mapItem;
 
-parserBase::parserBase(){};
+uParserBase::uParserBase(){};
 
-parserBase::~parserBase(){};
+uParserBase::~uParserBase(){};
+
+
+bool uParserBase::eof() const
+{ return m_pIostream->peek() == EOF; }
+
+}

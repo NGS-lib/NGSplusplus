@@ -10,21 +10,23 @@
 #include <iostream>
 #include <algorithm>
 #include <fstream>
-#include "uToken.h"
+#include "../uToken.h"
 #include "../uGeneException.h"
-#include "uHeader.h"
-
+#include  "iParserBase.h"
+#include "../uHeader.h"
+namespace NGS {
+class uHeader;
 class Parser{
 
 public :
 
-    parserBase(const std::string& filename, const std::string & type, bool header = false);
-	parserBase(std::iostream* stream, const std::string & type, bool header = false);
-	parserBase(const std::string& filename, const std::vector<std::string>& fieldsNames, bool header = false, char delimiter = '\t');
-	parserBase(std::iostream* stream, const std::vector<std::string>& fieldsNames, bool header = false, char delimiter = '\t');
-	~parserBase();
+    Parser(const std::string& filename, const std::string & type, bool header = false);
+	Parser(std::iostream* stream, const std::string & type, bool header = false);
+	Parser(const std::string& filename, const std::vector<std::string>& fieldsNames, bool header = false, char delimiter = '\t');
+	Parser(std::iostream* stream, const std::vector<std::string>& fieldsNames, bool header = false, char delimiter = '\t');
+	~Parser();
 
-    bool eof() const { return m_pIostream->peek() == EOF; }
+    bool eof() const ;
 	uToken getNextEntry();
 
 	/** \brief Get a specific data from header.
@@ -36,9 +38,9 @@ public :
 	bool isHeaderParamSet(const header_param& name) const { return m_headerData.isParamSet(name); }
 private:
 
-    uHeader m_headerData
-    unique_ptr<parserBase> m_pParserBase;
+    uHeader m_headerData;
+    std::shared_ptr<uParserBase> m_pParserBase=nullptr;
 
+};
 }
-
-
+#endif

@@ -1,33 +1,44 @@
-#include "uGeneException.h"
-#include "iParse.h"
+#include "../../uGeneException.h"
+#include "iParser.h"
+#include "iParserBase.h"
+namespace NGS {
 
-
-    parserBase::parserBase(const std::string& filename, const std::string & type, bool header = false)
+    Parser::Parser(const std::string& filename, const std::string & type, bool header)
     {
 
-
-
+        uParserBaseFactory myFact;
+        m_pParserBase=myFact.createInstance(type);
+        m_pParserBase->init(filename, header);
 
     };
-	parserBase::parserBase(std::iostream* stream, const std::string & type, bool header = false){
+	Parser::Parser(std::iostream* stream, const std::string & type, bool header){
 
-
-
-	};
-	parserBase::parserBase(const std::string& filename, const std::vector<std::string>& fieldsNames, bool header = false, char delimiter = '\t'){
-
-
-
+        uParserBaseFactory myFact;
+        m_pParserBase=myFact.createInstance(type);
+        m_pParserBase->init(stream, header);
 
 	};
-	parserBase::parserBase(std::iostream* stream, const std::vector<std::string>& fieldsNames, bool header = false, char delimiter = '\t'){
+	Parser::Parser(const std::string& filename, const std::vector<std::string>& fieldsNames, bool header, char delimiter){
 
-
+        uParserBaseFactory myFact;
+        m_pParserBase=myFact.createInstance("CUSTOM");
+        m_pParserBase->init(filename, fieldsNames,header,delimiter);
 
 	};
-	parserBase::~parserBase(){};
+	Parser::Parser(std::iostream* stream, const std::vector<std::string>& fieldsNames, bool header, char delimiter){
 
-	uToken parserBase::getNextEntry(
-                                return  *m_pParserBase.getNextEntry();
-                                 );
+        uParserBaseFactory myFact;
+        m_pParserBase=myFact.createInstance("CUSTOM");
+        m_pParserBase->init(stream, fieldsNames,header,delimiter);
 
+	};
+	Parser::~Parser(){};
+
+     bool Parser::eof() const {
+       //  return m_pParserBase->eof();
+         };
+
+    uToken Parser::getNextEntry(){
+	// return  m_pParserBase->getNextEntry();
+	};
+}
