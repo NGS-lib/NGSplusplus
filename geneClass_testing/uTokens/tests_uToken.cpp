@@ -1,9 +1,10 @@
 #include <gtest/gtest.h>
-#include "uToken.h"
+#include "IO/uToken.h"
 #include <string>
 #include <sstream>
 
 using namespace std;
+using namespace NGS;
 
 /* Dummy test */
 TEST(test, testing) {

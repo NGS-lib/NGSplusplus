@@ -8,6 +8,7 @@
 #include "uParser.h"
 
 using namespace std;
+using namespace NGS;
 
 /**< Fixtures */
 class CustomConstructorTests_ValidList: public ::testing::Test {
