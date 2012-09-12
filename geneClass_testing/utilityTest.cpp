@@ -2,7 +2,7 @@
 #include "gtest.h"
 #include "gnuplot_i.hpp"
 using namespace std;
-
+using namespace NGS;
 TEST(utility, MeanTest)
 {
     const vector<float> ourValues= {22, 11, 30, 0 ,50};

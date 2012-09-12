@@ -18,7 +18,7 @@ namespace NGS {
 class uParserBase{
     public :
     uParserBase();
-    virtual ~uParserBase();
+    virtual ~uParserBase(){};
 
      virtual void init(const std::string& filename, bool header = false)=0;
 	 virtual void init(std::iostream* stream, bool header = false)=0;
@@ -29,7 +29,7 @@ class uParserBase{
 	/** \brief Check if input data is at end of file.
 	  */
 	bool eof() const;
-	virtual uToken getNextEntry();
+	virtual uToken getNextEntry()=0;
 	/** \brief Get a specific data from header.
 	  */
 	//std::string getHeaderParam(header_param name) const { return m_headerData.getParam(name); }
@@ -50,18 +50,23 @@ template<typename T> uParserBase * createT() { return new T; }
 
 struct uParserBaseFactory {
    typedef std::map<std::string, std::function<uParserBase*()> > map_type;
-
-
+    virtual ~uParserBaseFactory(){};
     static std::shared_ptr<uParserBase> createInstance(std::string const& s) {
         map_type::iterator it = getMap()->find(s);
+
+        std::cout << getMap()->size() <<std::endl;
+         map_type::iterator temp= getMap()->begin();
+         std::cout << it->first <<std::endl;
         if(it == getMap()->end())
-            return nullptr;
+            throw uParser_exception_base()<<string_error("Asked for unregistered type, failling");
         return std::shared_ptr<uParserBase>(it->second());
     }
 
 protected:
  static map_type * mapItem;
         static map_type * getMap() {
+              std::cout << "Building HAHA" <<std::endl;
+
         if(!mapItem) { mapItem= new map_type; }
         return mapItem;
     };
@@ -69,10 +74,12 @@ protected:
 };
 template<typename T>
 struct DerivedRegister : uParserBaseFactory {
+    ~DerivedRegister(){};
     DerivedRegister(std::string const& s) {
-       // getMap()->insert(std::pair(s, &createT<T>));
+          std::cout << "REGISTERING HAHA" <<std::endl;
+        getMap()->insert(std::pair<std::string, std::function<uParserBase*() >> (s, &createT<T>));
        map_type * test= getMap();
-      (*test)[s]= std::bind(&createT<T>);
+      //(*test)[s]= std::bind(&createT<T>);
     }
 };
 }

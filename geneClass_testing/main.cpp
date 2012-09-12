@@ -17,64 +17,7 @@ using namespace std;
 
     #define SOMENUMBER 102343
 
-using namespace testing;
-class TestEventListenerProxy : public TestEventListener
-{
-public:
-explicit TestEventListenerProxy(TestEventListener* event_listener);
-virtual ~TestEventListenerProxy();
-
-virtual void OnTestProgramStart(const UnitTest& unit_test);
-virtual void OnTestIterationStart(const UnitTest& unit_test, int iteration);
-virtual void OnEnvironmentsSetUpStart(const UnitTest& unit_test);
-virtual void OnEnvironmentsSetUpEnd(const UnitTest& unit_test);
-virtual void OnTestCaseStart(const TestCase& test_case);
-virtual void OnTestStart(const TestInfo& test_info);
-virtual void OnTestPartResult(const TestPartResult& result);
-virtual void OnTestEnd(const TestInfo& test_info);
-virtual void OnTestCaseEnd(const TestCase& test_case);
-virtual void OnEnvironmentsTearDownStart(const UnitTest& unit_test);
-virtual void OnEnvironmentsTearDownEnd(const UnitTest& unit_test);
-virtual void OnTestIterationEnd(const UnitTest& unit_test, int iteration);
-virtual void OnTestProgramEnd(const UnitTest& unit_test);
-
-protected:
-TestEventListener* listener;
-};
-
-
-class CaseSummaryAndFailurePrinter : public TestEventListenerProxy
-{
-public:
-explicit CaseSummaryAndFailurePrinter(TestEventListener* default_printer)
-    : TestEventListenerProxy(default_printer)
-{
-}
-
-virtual void OnEnvironmentsTearDownStart(const UnitTest& /*unit_test*/) { }
-virtual void OnEnvironmentsSetUpStart(const UnitTest& /*unit_test*/) { }
-virtual void OnTestStart(const TestInfo& /*test_info*/) { }
-
-virtual void OnTestEnd(const TestInfo& test_info) {
-    if (test_info.result()->Failed())
-        listener->OnTestEnd(test_info);
-    }
-};
-
-
-
-class SummaryAndFailurePrinter : public CaseSummaryAndFailurePrinter
-{
-public:
-explicit SummaryAndFailurePrinter(TestEventListener* default_printer)
-    : CaseSummaryAndFailurePrinter(default_printer)
-{
-}
-
-virtual void OnTestCaseStart(const TestCase& /*test_case*/) { }
-virtual void OnTestCaseEnd(const TestCase& /*test_case*/) { }
-};
-
+using namespace NGS;
 
 class uItem : public uGenericNGS{
 

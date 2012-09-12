@@ -13,7 +13,7 @@
 #include "utility/utility.h"
 #include <time.h>
 #include "gtest.h"
-
+using namespace NGS;
 
 class ourDerivedClass : public uGenericNGSChrom<uGenericNGS> {
 

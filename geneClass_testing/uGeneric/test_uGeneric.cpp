@@ -16,7 +16,7 @@
 using namespace std;
 
 #define SOMENUMBER 102343
-
+using namespace NGS;
 /**< Testing our parent unitary uGenericNGS */
 TEST(uGenericNGSTest, DefaultCTr){
  uGenericNGS uTest;

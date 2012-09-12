@@ -35,10 +35,10 @@ namespace NGS {
 	Parser::~Parser(){};
 
      bool Parser::eof() const {
-       //  return m_pParserBase->eof();
+         return m_pParserBase->eof();
          };
 
     uToken Parser::getNextEntry(){
-	// return  m_pParserBase->getNextEntry();
+	 return  m_pParserBase->getNextEntry();
 	};
 }

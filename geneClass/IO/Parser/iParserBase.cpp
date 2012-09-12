@@ -4,7 +4,7 @@ std::map<std::string, std::function<uParserBase*()> > *uParserBaseFactory::mapIt
 
 uParserBase::uParserBase(){};
 
-uParserBase::~uParserBase(){};
+//uParserBase::~uParserBase(){};
 
 
 bool uParserBase::eof() const
