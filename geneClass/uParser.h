@@ -6,9 +6,9 @@
 #include <iostream>
 #include <algorithm>
 #include <fstream>
-#include "uToken.h"
+#include "IO/uToken.h"
 #include "uGeneException.h"
-#include "uHeader.h"
+#include "IO/uHeader.h"
 namespace NGS {
 enum class file_type{ BED, SAM, CUSTOM ,WIG};
 

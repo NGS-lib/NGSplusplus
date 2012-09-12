@@ -2,7 +2,7 @@
 #include "uRegion.h"
 #include "uTags.h"
 #include "uParser.h"
-#include "uToken.h"
+#include "IO/uToken.h"
 #include <limits>
 using namespace std;
 namespace NGS {

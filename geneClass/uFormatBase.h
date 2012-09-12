@@ -6,7 +6,7 @@
 #include <vector>
 #include "utility/utility.h"
 #include "uGeneException.h"
-#include "uToken.h"
+#include "IO/uToken.h"
 
 namespace NGS {
 //Our basic Site for NGS format
