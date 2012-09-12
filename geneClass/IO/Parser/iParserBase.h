@@ -1,5 +1,5 @@
-#ifndef IPARSERBASE_H_INCLUDED
-#define IPARSERBASE_H_INCLUDED
+#ifndef IuParserBase_H_INCLUDED
+#define IuParserBase_H_INCLUDED
 
 #include <map>
 #include <string>
@@ -13,23 +13,22 @@
 #include "../uToken.h"
 #include "../../uGeneException.h"
 #include "../uHeader.h"
+namespace NGS {
 
-class uToken;
-class header_param;
-class parserBase{
+class uParserBase{
     public :
-    parserBase();
-    virtual ~parserBase();
+    uParserBase();
+    virtual ~uParserBase();
 
      virtual void init(const std::string& filename, bool header = false)=0;
 	 virtual void init(std::iostream* stream, bool header = false)=0;
 	 virtual void init(const std::string& filename, const std::vector<std::string>& fieldsNames, bool header = false, char delimiter = '\t')=0;
 	 virtual void init(std::iostream* stream, const std::vector<std::string>& fieldsNames, bool header = false, char delimiter = '\t')=0;
-	parserBase& operator=(const parserBase& copyFrom) = delete;
-	parserBase(const parserBase&) = delete;
+	uParserBase& operator=(const uParserBase& copyFrom) = delete;
+	uParserBase(const uParserBase&) = delete;
 	/** \brief Check if input data is at end of file.
 	  */
-	bool eof() const { return m_pIostream->peek() == EOF; }
+	bool eof() const;
 	virtual uToken getNextEntry();
 	/** \brief Get a specific data from header.
 	  */
@@ -44,17 +43,17 @@ private:
 
 //Thank you Stack Overflow for this basic structure
 
-template<typename T> parserBase * createT() { return new T; }
+template<typename T> uParserBase * createT() { return new T; }
 
-struct parserBaseFactory {
-   typedef std::map<std::string, std::function<parserBase*()> > map_type;
+struct uParserBaseFactory {
+   typedef std::map<std::string, std::function<uParserBase*()> > map_type;
 
 
-    static std::shared_ptr<parserBase> createInstance(std::string const& s) {
+    static std::shared_ptr<uParserBase> createInstance(std::string const& s) {
         map_type::iterator it = getMap()->find(s);
         if(it == getMap()->end())
             return nullptr;
-        return std::shared_ptr<parserBase>(it->second());
+        return std::shared_ptr<uParserBase>(it->second());
     }
 
 protected:
@@ -66,11 +65,12 @@ protected:
 
 };
 template<typename T>
-struct DerivedRegister : parserBaseFactory {
+struct DerivedRegister : uParserBaseFactory {
     DerivedRegister(std::string const& s) {
        // getMap()->insert(std::pair(s, &createT<T>));
        map_type * test= getMap();
       (*test)[s]= std::bind(&createT<T>);
     }
 };
-#endif // IPARSERBASE_H_INCLUDED
+}
+#endif // IuParserBase_H_INCLUDED

@@ -14,7 +14,7 @@
 #include "../uGeneException.h"
 #include  "iParserBase.h"
 #include "../uHeader.h"
-
+namespace NGS {
 class uHeader;
 class Parser{
 
@@ -26,7 +26,7 @@ public :
 	Parser(std::iostream* stream, const std::vector<std::string>& fieldsNames, bool header = false, char delimiter = '\t');
 	~Parser();
 
-    bool eof() const { return m_pIostream->peek() == EOF; }
+    bool eof() const ;
 	uToken getNextEntry();
 
 	/** \brief Get a specific data from header.
@@ -38,9 +38,9 @@ public :
 	bool isHeaderParamSet(const header_param& name) const { return m_headerData.isParamSet(name); }
 private:
 
-    uHeader m_headerData
-    std::shared_ptr<parserBase> m_pParserBase;
+    uHeader m_headerData;
+    std::shared_ptr<uParserBase> m_pParserBase=nullptr;
 
+};
 }
-
 #endif

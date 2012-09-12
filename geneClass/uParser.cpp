@@ -725,7 +725,8 @@ bool foundToken=false;
     {
         throw e;
     }
-
+    std::cerr <<"Fatal error in _getNextEntryCustom(), should not reach here" <<std::endl;
+    abort();
 }
 
 void uParser::_customParserValidateFields(const std::vector<std::string>& fieldsNames)
