@@ -7,7 +7,7 @@
 #include "boost/exception/all.hpp"
 #include <vector>
 
-
+namespace NGS {
 class uRegion;
 class uTags;
 class uGenericNGS;
@@ -57,5 +57,6 @@ static inline std::string fetchStringError(ugene_exception_base& e) {
 		trace = *ste;
 	return trace;
 }
-
+} // End of namespace NGS
 #endif // UGENEERROR_H
+

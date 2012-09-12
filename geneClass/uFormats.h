@@ -6,9 +6,7 @@
 #include "uFormatChrom.h"
 #include "uFormatExperiment.h"
 
-
-
-
+namespace NGS {
 typedef uGenericNGSExperiment<uGenericNGSChrom<uGenericNGS>,uGenericNGS> GenExp;
 
 
@@ -19,4 +17,5 @@ Before all the chr, ourchr, pchr get out of hand.
 
 // TODO Most of our Set functions should work by const ref, would optimise stuff
 */
+} // End of namespace NGS
 #endif // UFORMATS_H_INCLUDED

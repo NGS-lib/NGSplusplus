@@ -7,7 +7,7 @@
 #include "uFormats.h"
 #include "uTags.h"
 #include <limits>
-
+namespace NGS {
 class uToken;
 class uParser;
 class uRegion : public uGenericNGS
@@ -91,4 +91,5 @@ class uRegionExperiment: public uGenericNGSExperiment<uRegionChrom, uRegion>{
 
    void loadFromWig(std::ifstream & inputStream);
 };
+} // End of namespace NGS
 #endif
