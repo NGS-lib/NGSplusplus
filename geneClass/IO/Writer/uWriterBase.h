@@ -8,9 +8,9 @@ class uWriterBase{
 public :
 	uWriterBase() {}
 	virtual ~uWriterBase() {}
-	void init(const std::string& filename)=0;
-	void init(std::ostream* os)=0;
-	void writeToken(const uToken& token);
+	virtual void init(const std::string& filename)=0;
+	virtual void init(std::ostream* os)=0;
+	virtual void writeToken(const uToken& token)=0;
 	uWriterBase& operator=(const uParserBase& copyFrom) = delete;
 	uWriterBase(const uParserBase&) = delete;
 private:
