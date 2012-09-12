@@ -3,17 +3,21 @@
 
 #include <iostream>
 #include "../NGS++.h"
+#include "uWriterBase.h"
 
 namespace NGS {
 
 class uWriterBed : public uWriterBase {
 public:
-	uWriterBed(const std::string& filename);
-	uWriterBed(std::ostream* os);
+	uWriterBed() {}
+	~uWriterBed() {} 
+	void init(const std::string& filename);
+	void init(std::ofstream* os);
 	void writeToken(const uToken& token);
 
 private:
 	ostream* m_pOstream;
+	static DerivedRegister<uWriterBed> reg;
 
 }; // End of class uWriterBed
 
