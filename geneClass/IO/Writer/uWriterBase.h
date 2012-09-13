@@ -24,13 +24,13 @@ template<typename T> uWriterBase * createT() { return new T; }
 
 struct uWriterBaseFactory {
 	typedef std::map<std::string, std::function<uWriterBase*()> > map_type;
-
+	virtual ~uWriterBaseFactory() {}
 	static std::shared_ptr<uWriterBase> createInstance(std::string const& s) {
-	map_type::iterator it = getMap()->find(s);
-	if(it == getMap()->end()) {
-		return nullptr;
-	}
-	return std::shared_ptr<uWriterBase>(it->second());
+		map_type::iterator it = getMap()->find(s);
+		if(it == getMap()->end()) {
+			return nullptr;
+		}
+		return std::shared_ptr<uWriterBase>(it->second());
 	}
 
 protected:
@@ -46,8 +46,9 @@ protected:
 template<typename T>
 struct DerivedRegister : uWriterBaseFactory {
 	DerivedRegister(std::string const& s) {
+		getMap()->insert(std::pair<std::string, std::function<uWriterBase*() >> (s, &createT<T>));
 		map_type * test= getMap();
-		(*test)[s]= std::bind(&createT<T>);
+//		(*test)[s]= std::bind(&createT<T>);
 	}
 }; // End of struct DerivedRegister 
 

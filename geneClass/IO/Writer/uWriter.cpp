@@ -11,7 +11,7 @@ uWriter::uWriter(const std::string& filename, const std::string& type) {
 uWriter::uWriter(std::ostream* os, const std::string& type) {
 	uWriterBaseFactory myFactory;
 	m_pWriterBase = myFactory.createInstance(type);
-	m_pWriterBase->init(filename);
+	m_pWriterBase->init(os);
 }
 
 void uWriter::writeToken(const uToken& token) {
