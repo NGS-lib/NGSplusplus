@@ -1,6 +1,7 @@
 #ifndef UWRITERBASE_H_INCLUDED
 #define UWRITERBASE_H_INCLUDED
 #include <iostream>
+#include "../uToken.h"
 
 namespace NGS {
 
@@ -11,8 +12,8 @@ public :
 	virtual void init(const std::string& filename)=0;
 	virtual void init(std::ostream* os)=0;
 	virtual void writeToken(const uToken& token)=0;
-	uWriterBase& operator=(const uParserBase& copyFrom) = delete;
-	uWriterBase(const uParserBase&) = delete;
+	uWriterBase& operator=(const uWriterBase& copyFrom) = delete;
+	uWriterBase(const uWriterBase&) = delete;
 private:
 	std::ostream* m_pOstream = nullptr;
 };

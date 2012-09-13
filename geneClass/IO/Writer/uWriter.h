@@ -5,9 +5,11 @@
 #include <string>
 #include <memory>
 //#include <cstddef>
-#include "../../NGS++.h"
+//#include "../../NGS++.h"
 #include "../../uGeneException.h"
 #include "uWriterBase.h"
+#include "../uToken.h"
+#include "../uHeader.h"
 
 namespace NGS {
 
@@ -19,7 +21,7 @@ public:
 
 private:
 	uHeader m_headerData;
-	unique_ptr<writerBase> m_pWriterBase = nullptr;
+	std::unique_ptr<uWriterBase> m_pWriterBase = nullptr;
 }; // End of class uWriter
 
 } // End of namespace NGS
