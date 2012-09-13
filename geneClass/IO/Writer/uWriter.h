@@ -21,7 +21,7 @@ public:
 
 private:
 	uHeader m_headerData;
-	std::unique_ptr<uWriterBase> m_pWriterBase = nullptr;
+	std::shared_ptr<uWriterBase> m_pWriterBase = nullptr;
 }; // End of class uWriter
 
 } // End of namespace NGS

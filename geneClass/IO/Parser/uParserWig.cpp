@@ -87,7 +87,6 @@ uToken uParserWig::getNextEntry()
                     }
                     else
                     {
-
                         //If not eof
                         int end_pos;
                         int start_pos =0;

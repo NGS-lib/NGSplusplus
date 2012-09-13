@@ -5,7 +5,7 @@ namespace NGS {
 void uWriterBed::init(const std::string& filename) {
 }
 
-void uWriterBed::init(std::ofstream* os) {
+void uWriterBed::init(std::ostream* os) {
 }
 
 void uWriterBed::writeToken(const uToken& token) {

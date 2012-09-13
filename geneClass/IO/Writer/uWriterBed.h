@@ -10,13 +10,13 @@ namespace NGS {
 class uWriterBed : public uWriterBase {
 public:
 	uWriterBed() {}
-	~uWriterBed() {} 
+	~uWriterBed() {}
 	void init(const std::string& filename);
-	void init(std::ofstream* os);
+	void init(std::ostream* os);
 	void writeToken(const uToken& token);
 
 private:
-	ostream* m_pOstream;
+	std::ostream* m_pOstream;
 	static DerivedRegister<uWriterBed> reg;
 
 }; // End of class uWriterBed
