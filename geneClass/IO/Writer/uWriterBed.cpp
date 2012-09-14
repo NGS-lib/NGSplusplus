@@ -2,6 +2,8 @@
 
 namespace NGS {
 
+/** \brief Destructor of uWriterBed
+  */
 uWriterBed::~uWriterBed() {
 	if (m_dynamicStream == true) {
 		delete m_pOstream;
@@ -9,6 +11,9 @@ uWriterBed::~uWriterBed() {
 	m_pOstream = nullptr;
 }
 
+/** \brief Initialise the Bed writer with a file name.
+  * \param const std::string& filename: name of the file to write output. 
+  */
 void uWriterBed::init(const std::string& filename) {
 	std::filebuf fb;
 	fb.open (filename.c_str(),std::ios::out);

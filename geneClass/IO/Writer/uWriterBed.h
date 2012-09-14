@@ -10,6 +10,8 @@ namespace NGS {
 
 class uWriterBed : public uWriterBase {
 public:
+	/** \brief Empty constructor (call object with init through factory instead)
+	  */
 	uWriterBed() {}
 	~uWriterBed();
 	void init(const std::string& filename);
