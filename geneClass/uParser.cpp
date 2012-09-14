@@ -409,10 +409,21 @@ void uParser::_convertLineToTokenInfosBed(char* line, std::stringstream& token_i
     token_infos << "START_POS\t" << start_pos << "\n";
     token_infos << "END_POS\t" << end_pos << "\n";
     token_infos << "SEQ_NAME\t" << seq_name << "\n";
-    /**< If there was no strand info, we don't add an empty string */
-    if (strand.size() != 0)
+    /**< If there is no score info, we have a Bed4. We don't add SCORE and STRAND to uToken. */
+    if (score.size() != 0)
     {
-        token_infos << "STRAND\t" << strand << "\n";
+		token_infos << "SCORE\t" << score << "\n";
+		/**< If there was no strand info, the line is not correctly formated. */
+		if (strand.size() != 0)
+		{
+			token_infos << "STRAND\t" << strand << "\n";
+		}
+		else
+		{
+			Parser_missing_mandatory_values e;
+			e << string_error("SCORE value is present, but STRAND is absent.");
+			throw e;
+		}
     }
 }
 
