@@ -14,7 +14,7 @@ using namespace NGS;
 
 TEST(newParserGetNext, CorrectlyFormatedVariableWIG) {
      std::cerr <<"Hello" <<std::endl;
-	Parser ourParser("./wig/correctVariable.wig", "WIG");
+	Parser ourParser("../wig/correctVariable.wig", "WIG");
     std::cerr <<"Hello before Parser" <<std::endl;
 	int count=0;
 	uToken Token = ourParser.getNextEntry();
