@@ -13,6 +13,8 @@
 
 namespace NGS {
 
+class header;
+
 class uWriter {
 public:
 	uWriter(const std::string& filename, const std::string& type);
