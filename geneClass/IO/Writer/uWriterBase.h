@@ -1,7 +1,18 @@
 #ifndef UWRITERBASE_H_INCLUDED
 #define UWRITERBASE_H_INCLUDED
 #include <iostream>
+#include <map>
+#include <string>
+#include <functional>
+#include <memory>
+#include <string>
+#include <vector>
+#include <iostream>
+#include <algorithm>
+#include <fstream>
 #include "../uToken.h"
+#include "../../uGeneException.h"
+#include "../uHeader.h"
 
 namespace NGS {
 
