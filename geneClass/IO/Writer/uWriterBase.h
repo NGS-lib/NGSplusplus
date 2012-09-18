@@ -25,8 +25,9 @@ public :
 	virtual void writeToken(const uToken& token)=0;
 	uWriterBase& operator=(const uWriterBase& copyFrom) = delete;
 	uWriterBase(const uWriterBase&) = delete;
-private:
+protected:
 	std::ostream* m_pOstream = nullptr;
+	bool m_dynamicStream = false;
 };
 
 //Thank you Stack Overflow for this basic structure

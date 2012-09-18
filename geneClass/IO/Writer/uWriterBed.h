@@ -8,7 +8,7 @@
 
 namespace NGS {
 
-class uWriterBed : public uWriterBase {
+class uWriterBed : public uWriterBase { 
 public:
 	/** \brief Empty constructor (call object with init through factory instead)
 	  */
@@ -16,12 +16,7 @@ public:
 	~uWriterBed();
 	void init(const std::string& filename);
 	void init(std::ostream* os);
-	void writeToken(const uToken& token);
-
-private:
-	std::ostream* m_pOstream;
-	static DerivedRegister<uWriterBed> reg;
-	bool m_dynamicStream = false;
+	virtual void writeToken(const uToken& token);
 
 }; // End of class uWriterBed
 

@@ -28,7 +28,6 @@ void uWriterBed::init(const std::string& filename) {
 	m_dynamicStream = true;
 }
 
-
 /** \brief Initialise the Bed writer with a stream
   * \param std::ostream* os: the stream to save the data to.
   */
@@ -44,20 +43,19 @@ void uWriterBed::writeToken(const uToken& token) {
 		std::string chr = token.getParam(token_param::CHR);	
 		std::string start_pos = token.getParam(token_param::START_POS);	
 		std::string end_pos = token.getParam(token_param::END_POS);	
-		std::string seq_name = token.getParam(token_param::SEQ_NAME);	
-		*m_pOstream << chr << '\t' << start_pos << '\t' << end_pos << '\t' << seq_name;
-		/**< If score is set, we expect strand to be setted too */
-		if (token.isParamSet(token_param::SCORE)) {
-			std::string score = token.getParam(token_param::SCORE);	
-			std::string strand = token.getParam(token_param::STRAND);	
-			*m_pOstream << '\t' << score << '\t' << strand;
+		/**< If seq_name is not set, we replace it with the value "." */
+		std::string seq_name;
+		if (token.isParamSet(token_param::SEQ_NAME)) {
+			seq_name = token.getParam(token_param::SEQ_NAME);	
 		}
-		*m_pOstream << std::endl;
+		else {
+			seq_name = ".";
+		}
+		*m_pOstream << chr << '\t' << start_pos << '\t' << end_pos << '\t' << seq_name;
 	}
 	catch(param_not_found& e) {
 		throw e;
 	}
 }
 
-DerivedRegister<uWriterBed> uWriterBed::reg("BED");
 } // End of namespace NGS
