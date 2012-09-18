@@ -3,13 +3,13 @@
 
 #include <iostream>
 #include <string>
+#include <vector>
 #include <memory>
-//#include <cstddef>
-//#include "../../NGS++.h"
-#include "../../uGeneException.h"
+#include "../../NGS++.h"
+//#include "../../uGeneException.h"
 #include "uWriterBase.h"
-#include "../uToken.h"
-#include "../uHeader.h"
+//#include "../uToken.h"
+//#include "../uHeader.h"
 
 namespace NGS {
 
@@ -19,6 +19,8 @@ class uWriter {
 public:
 	uWriter(const std::string& filename, const std::string& type);
 	uWriter(std::ostream* os, const std::string& type);
+	uWriter(const std::string& filename, const std::vector<std::string>& fieldsNames, const std::string& type);
+	uWriter(std::ostream* os, const std::vector<std::string>& fieldsNames, const std::string& type);
 	void writeToken(const uToken& token);
 
 private:

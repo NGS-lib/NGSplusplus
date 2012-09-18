@@ -14,8 +14,8 @@ public:
 	  */
 	uWriterBed4() {}
 	virtual ~uWriterBed4() {}
-	virtual void init(const std::string& filename) { uWriterBed::init(filename); }
-	virtual void init(std::ostream* os) { uWriterBed::init(os); }
+	void init(const std::string& filename) { uWriterBed::init(filename); }
+	void init(std::ostream* os) { uWriterBed::init(os); }
 	virtual void writeToken(const uToken& token);
 
 private:

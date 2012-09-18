@@ -20,8 +20,10 @@ class uWriterBase{
 public :
 	uWriterBase() {}
 	virtual ~uWriterBase() {}
-	virtual void init(const std::string& filename)=0;
-	virtual void init(std::ostream* os)=0;
+	void init(const std::string& filename) {} 
+	void init(std::ostream* os) {}
+	void init(const std::string& filename, const std::vector<std::string>& fieldsNames) {} 
+	void init(std::ostream* os, const std::vector<std::string>& fieldsNames) {}
 	virtual void writeToken(const uToken& token)=0;
 	uWriterBase& operator=(const uWriterBase& copyFrom) = delete;
 	uWriterBase(const uWriterBase&) = delete;
