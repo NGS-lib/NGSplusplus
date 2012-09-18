@@ -17,17 +17,33 @@ public:
 		ss << "CHR\tchr1\n" << "START_POS\t1\n" << "END_POS\t21\n";
 		ss << "STRAND\t+\n" << "MAP_SCORE\t255\n" << "PHRED_SCORE\t####################\n";
 		ss << "CIGAR\t2M3I2X1=12X\n" << "SEQUENCE\tACGTN.acgtn.ACGTGTCN\n";
-		ss << "SEQ_NAME\tab00001\n" << "FLAGS\t256\n";
+		ss << "SEQ_NAME\tab00001\n" << "SCORE\t111\n" << "FLAGS\t256\n";
 		uToken Token1(ss);
 		m_pWriter->writeToken(Token1);
 		// Write a second token with writer
 		ss.clear();
-		ss << "CHR\tchr2\n" << "START_POS\t101\n" << "END_POS\t121\n";
-		ss << "STRAND\t-\n" << "MAP_SCORE\t24\n" << "PHRED_SCORE\t####################\n";
-		ss << "CIGAR\t2M3I2X1=12X\n" << "SEQUENCE\tNCGTN.acgtn.ACGTGTCN\n";
-		ss << "SEQ_NAME\tab00002\n" << "FLAGS\t257\n";
+		ss << "CHR\tchr1\n" << "START_POS\t1\n" << "END_POS\t21\n";
+		ss << "STRAND\t+\n" << "MAP_SCORE\t255\n" << "PHRED_SCORE\t####################\n";
+		ss << "CIGAR\t2M3I2X1=12X\n" << "SEQUENCE\tACGTN.acgtn.ACGTGTCN\n";
+		ss << "SEQ_NAME\tab00001\n" << "FLAGS\t256\n";
 		uToken Token2(ss);
 		m_pWriter->writeToken(Token2);
+		// Write a third token with writer
+		ss.clear();
+		ss << "CHR\tchr1\n" << "START_POS\t1\n" << "END_POS\t21\n";
+		ss << "STRAND\t+\n" << "MAP_SCORE\t255\n" << "PHRED_SCORE\t####################\n";
+		ss << "CIGAR\t2M3I2X1=12X\n" << "SEQUENCE\tACGTN.acgtn.ACGTGTCN\n";
+		ss << "SCORE\t111\n" << "FLAGS\t256\n";
+		uToken Token3(ss);
+		m_pWriter->writeToken(Token3);
+		// Write a fourth token with writer
+		ss.clear();
+		ss << "CHR\tchr1\n" << "START_POS\t1\n" << "END_POS\t21\n";
+		ss << "MAP_SCORE\t255\n" << "PHRED_SCORE\t####################\n";
+		ss << "CIGAR\t2M3I2X1=12X\n" << "SEQUENCE\tACGTN.acgtn.ACGTGTCN\n";
+		ss << "SEQ_NAME\tab00001\n" << "FLAGS\t256\n";
+		uToken Token4(ss);
+		m_pWriter->writeToken(Token4);
 
 	}
 	~TestsBedWriter() {
