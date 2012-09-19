@@ -33,6 +33,7 @@ void uWriterBed::init(const std::string& filename) {
   */
 void uWriterBed::init(std::ostream* os) {
 	m_pOstream = os;
+	m_dynamicStream = false;
 }
 
 /** \brief Print the values of a token in Bed format in current file

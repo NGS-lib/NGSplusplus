@@ -30,7 +30,8 @@ uWriter::uWriter(std::ostream* os, const std::string& type) {
 uWriter::uWriter(const std::string& filename, const std::vector<std::string>& fieldsNames, const std::string& type) {
 	uWriterBaseFactory myFactory;
 	m_pWriterBase = myFactory.createInstance(type);
-	m_pWriterBase->init(filename, fieldsNames);
+	m_pWriterBase->init(filename);
+	m_pWriterBase->setFieldsNames(fieldsNames);
 }
 
 /** \brief Custom constructor with stream.
@@ -41,7 +42,8 @@ uWriter::uWriter(const std::string& filename, const std::vector<std::string>& fi
 uWriter::uWriter(std::ostream* os, const std::vector<std::string>& fieldsNames, const std::string& type) {
 	uWriterBaseFactory myFactory;
 	m_pWriterBase = myFactory.createInstance(type);
-	m_pWriterBase->init(os, fieldsNames);
+	m_pWriterBase->init(os);
+	m_pWriterBase->setFieldsNames(fieldsNames);
 }
 
 /** \brief Print the information of the token in the desired format.

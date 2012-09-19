@@ -20,16 +20,16 @@ class uWriterBase{
 public :
 	uWriterBase() {}
 	virtual ~uWriterBase() {}
-	void init(const std::string& filename) {} 
-	void init(std::ostream* os) {}
-	void init(const std::string& filename, const std::vector<std::string>& fieldsNames) {} 
-	void init(std::ostream* os, const std::vector<std::string>& fieldsNames) {}
+	virtual void init(const std::string& filename)=0;
+	virtual void init(std::ostream* os)=0; 
 	virtual void writeToken(const uToken& token)=0;
+	void setFieldsNames(const std::vector<std::string>& fieldsNames);
 	uWriterBase& operator=(const uWriterBase& copyFrom) = delete;
 	uWriterBase(const uWriterBase&) = delete;
 protected:
 	std::ostream* m_pOstream = nullptr;
 	bool m_dynamicStream = false;
+	std::vector<std::string> m_fieldsNames;
 };
 
 //Thank you Stack Overflow for this basic structure
