@@ -43,6 +43,10 @@ struct end_of_file_throw : virtual uParser_exception_base{};
 struct Parser_missing_mandatory_values : virtual uParser_exception_base{};
 struct customParser_missing_mandatory_values : virtual Parser_missing_mandatory_values{};
 
+// uWriter Exceptions
+struct uWriter_exception_base : virtual std::exception, virtual boost::exception {};
+struct no_fields_names : virtual uWriter_exception_base{};
+
 // Util functions
 static inline void addStringError(ugene_exception_base & e, const std::string & err){
 	std::string trace;
