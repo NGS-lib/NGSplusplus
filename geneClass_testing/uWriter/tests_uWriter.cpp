@@ -120,3 +120,25 @@ TEST(uWriterCustomOstreamConstructor, EmptyFieldsNames) {
 	ASSERT_THROW(uWriter writer(&oss, vs, "BED6"), no_fields_names);
 	ASSERT_THROW(uWriter writer(&oss, vs, "CUSTOM"), no_fields_names);
 }
+
+/*
+ * Tests for the function:
+ * 		void printString(const std::string& str);
+ *	ValidCases:
+ *		ValidString
+ *		EmptyString
+ */
+
+TEST(uWriterPrintString, ValidString) {
+	ostringstream oss;
+	uWriter writer(&oss, "BED4");
+	writer.printString("test string\n");
+	ASSERT_EQ(oss.str(), "test string\n");
+}
+
+TEST(uWriterPrintString, EmptyString) {
+	ostringstream oss;
+	uWriter writer(&oss, "BED4");
+	writer.printString("");
+	ASSERT_EQ(oss.str(), "");
+}
