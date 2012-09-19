@@ -15,6 +15,9 @@ uWriterBed::~uWriterBed() {
   * \param const std::string& filename: name of the file to write output. 
   */
 void uWriterBed::init(const std::string& filename) {
+	if (filename.size() == 0) {
+		throw std::runtime_error("Filename must be longer than 0");
+	}
 	std::filebuf fb;
 	fb.open (filename.c_str(),std::ios::out);
 	if (!fb.is_open()) {  
@@ -32,7 +35,12 @@ void uWriterBed::init(const std::string& filename) {
   * \param std::ostream* os: the stream to save the data to.
   */
 void uWriterBed::init(std::ostream* os) {
-	m_pOstream = os;
+	if (os != nullptr && os->good() == true) {
+		m_pOstream = os;
+	}
+	else {
+		throw std::runtime_error("Invalid stream.");
+	}
 	m_dynamicStream = false;
 }
 

@@ -9,7 +9,12 @@ namespace NGS {
 uWriter::uWriter(const std::string& filename, const std::string& type) {
 	uWriterBaseFactory myFactory;
 	m_pWriterBase = myFactory.createInstance(type);
-	m_pWriterBase->init(filename);
+	try {
+		m_pWriterBase->init(filename);
+	}
+	catch (std::runtime_error& e) {
+		throw e;
+	}
 }
 
 /** \brief Constructor with stream.
@@ -30,7 +35,12 @@ uWriter::uWriter(std::ostream* os, const std::string& type) {
 uWriter::uWriter(const std::string& filename, const std::vector<std::string>& fieldsNames, const std::string& type) {
 	uWriterBaseFactory myFactory;
 	m_pWriterBase = myFactory.createInstance(type);
-	m_pWriterBase->init(filename);
+	try {
+		m_pWriterBase->init(filename);
+	}
+	catch (std::runtime_error& e) {
+		throw e;
+	}
 	m_pWriterBase->setFieldsNames(fieldsNames);
 }
 

@@ -38,7 +38,12 @@ void uWriterCustom::init(const std::string& filename) {
   */
 //void uWriterCustom::init(std::ostream* os, const std::vector<std::string>& fieldsNames) {
 void uWriterCustom::init(std::ostream* os) {
-	m_pOstream = os;
+	if (os != nullptr && os->good() == true) {
+		m_pOstream = os;
+	}
+	else {
+		throw std::runtime_error("Invalid stream.");
+	}
 }
 
 /** \brief Sets the fields names for the writer.
