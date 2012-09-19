@@ -93,7 +93,7 @@ public:
 		/**< Initialize streams */
 		m_pOss = new ostringstream(ostringstream::out);	
 		/**< Initialize writers */
-		uWriter writerCustom(m_pOss, m_fieldList, "CUSTOM");
+		uWriter writerCustom(m_pOss, m_fieldList); 
 		/**< Write tokens */
 		validTokens tokens;
 		for (size_t i = 0; i < tokens.m_vTokens.size(); i++) {
@@ -116,7 +116,7 @@ public:
 		/**< Initialize streams */
 		m_pOss = new ostringstream(ostringstream::out);	
 		/**< Initialize writers */
-		uWriter writerCustom(m_pOss, m_fieldList, "CUSTOM");
+		uWriter writerCustom(m_pOss, m_fieldList);
 		/**< Write tokens */
 		validTokens tokens;
 		for (size_t i = 0; i < tokens.m_vTokens.size(); i++) {
@@ -138,7 +138,7 @@ public:
 		/**< Initialize streams */
 		m_pOss = new ostringstream(ostringstream::out);	
 		/**< Initialize writers */
-		uWriter writerCustom(m_pOss, m_fieldList, "CUSTOM");
+		uWriter writerCustom(m_pOss, m_fieldList);
 		/**< Write tokens */
 		validTokens tokens;
 		for (size_t i = 0; i < tokens.m_vTokens.size(); i++) {

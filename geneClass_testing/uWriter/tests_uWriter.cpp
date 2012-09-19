@@ -65,24 +65,18 @@ TEST(uWriterOstreamConstructor, InvalidOstream) {
 TEST(uWriterCustomFilenameConstructor, NormalUsage) {
 	vector<string> vs;
 	vs.push_back("CHR");
-	ASSERT_NO_THROW(uWriter writer("test.txt", vs, "BED4"));
-	ASSERT_NO_THROW(uWriter writer("test.txt", vs, "BED6"));
-	ASSERT_NO_THROW(uWriter writer("test.txt", vs, "CUSTOM"));
+	ASSERT_NO_THROW(uWriter writer("test.txt", vs));
 }
 
 TEST(uWriterCustomFilenameConstructor, EmptyFilename) {
 	vector<string> vs;
 	vs.push_back("CHR");
-	ASSERT_THROW(uWriter writer("", vs, "BED4"), std::runtime_error);
-	ASSERT_THROW(uWriter writer("", vs, "BED6"), std::runtime_error);
-	ASSERT_THROW(uWriter writer("", vs, "CUSTOM"), std::runtime_error);
+	ASSERT_THROW(uWriter writer("", vs), std::runtime_error);
 }
 
 TEST(uWriterCustomFilenameConstructor, EmptyFieldsNames) {
 	vector<string> vs;
-	ASSERT_THROW(uWriter writer("test.txt", vs, "BED4"), no_fields_names);
-	ASSERT_THROW(uWriter writer("test.txt", vs, "BED6"), no_fields_names);
-	ASSERT_THROW(uWriter writer("test.txt", vs, "CUSTOM"), no_fields_names);
+	ASSERT_THROW(uWriter writer("test.txt", vs), no_fields_names);
 }
 
 /*
@@ -99,26 +93,20 @@ TEST(uWriterCustomOstreamConstructor, NormalUsage) {
 	ostringstream oss;
 	vector<string> vs;
 	vs.push_back("CHR");
-	ASSERT_NO_THROW(uWriter writer(&oss, vs, "BED4"));
-	ASSERT_NO_THROW(uWriter writer(&oss, vs, "BED6"));
-	ASSERT_NO_THROW(uWriter writer(&oss, vs, "CUSTOM"));
+	ASSERT_NO_THROW(uWriter writer(&oss, vs));
 }
 
 TEST(uWriterCustomOstreamConstructor, InvalidOstream) {
 	ostringstream* oss = nullptr;
 	vector<string> vs;
 	vs.push_back("CHR");
-	ASSERT_THROW(uWriter writer(oss, vs, "BED4"), std::runtime_error);
-	ASSERT_THROW(uWriter writer(oss, vs, "BED6"), std::runtime_error);
-	ASSERT_THROW(uWriter writer(oss, vs, "CUSTOM"), std::runtime_error);
+	ASSERT_THROW(uWriter writer(oss, vs), std::runtime_error);
 }
 
 TEST(uWriterCustomOstreamConstructor, EmptyFieldsNames) {
 	ostringstream oss;
 	vector<string> vs;
-	ASSERT_THROW(uWriter writer(&oss, vs, "BED4"), no_fields_names);
-	ASSERT_THROW(uWriter writer(&oss, vs, "BED6"), no_fields_names);
-	ASSERT_THROW(uWriter writer(&oss, vs, "CUSTOM"), no_fields_names);
+	ASSERT_THROW(uWriter writer(&oss, vs), no_fields_names);
 }
 
 /*
