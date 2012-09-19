@@ -32,9 +32,9 @@ uWriter::uWriter(std::ostream* os, const std::string& type) {
   * \param const std::vector<std::string>& fieldsNames: Vector containing the name of every fields (columns). In correct order.
   * \param const std::string& type: Type of file to write output (i.e: Bed, Sam, etc...). 
   */
-uWriter::uWriter(const std::string& filename, const std::vector<std::string>& fieldsNames, const std::string& type) {
+uWriter::uWriter(const std::string& filename, const std::vector<std::string>& fieldsNames) {
 	uWriterBaseFactory myFactory;
-	m_pWriterBase = myFactory.createInstance(type);
+	m_pWriterBase = myFactory.createInstance("CUSTOM");
 	try {
 		m_pWriterBase->init(filename);
 	}
@@ -49,9 +49,9 @@ uWriter::uWriter(const std::string& filename, const std::vector<std::string>& fi
   * \param const std::vector<std::string>& fieldsNames: Vector containing the name of every fields (columns). In correct order.
   * \param const std::string& type: Type of file to write output (i.e: Bed, Sam, etc...). 
   */
-uWriter::uWriter(std::ostream* os, const std::vector<std::string>& fieldsNames, const std::string& type) {
+uWriter::uWriter(std::ostream* os, const std::vector<std::string>& fieldsNames) {
 	uWriterBaseFactory myFactory;
-	m_pWriterBase = myFactory.createInstance(type);
+	m_pWriterBase = myFactory.createInstance("CUSTOM");
 	m_pWriterBase->init(os);
 	m_pWriterBase->setFieldsNames(fieldsNames);
 }
