@@ -13,7 +13,7 @@
 
 namespace NGS {
 
-class header;
+//class header;
 
 class uWriter {
 public:
@@ -22,9 +22,10 @@ public:
 	uWriter(const std::string& filename, const std::vector<std::string>& fieldsNames, const std::string& type);
 	uWriter(std::ostream* os, const std::vector<std::string>& fieldsNames, const std::string& type);
 	void writeToken(const uToken& token);
+	void printString(const std::string& str);
 
 private:
-	uHeader m_headerData;
+//	uHeader m_headerData;
 	std::shared_ptr<uWriterBase> m_pWriterBase = nullptr;
 }; // End of class uWriter
 

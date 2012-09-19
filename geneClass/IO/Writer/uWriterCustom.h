@@ -16,13 +16,9 @@ public:
 	~uWriterCustom();
 	virtual void init(const std::string& filename);
 	virtual void init(std::ostream* os);
-//	void init(const std::string& filename, const std::vector<std::string>& fieldsNames);
-//	void init(std::ostream* os, const std::vector<std::string>& fieldsNames);
-//	void setFieldsNames(const std::vector<std::string> fieldsNames);
 	virtual void writeToken(const uToken& token);
 
 private:
-//	std::vector<std::string> m_fieldsNames;
 	static DerivedRegister<uWriterCustom> reg;
 
 }; // End of class uWriterCustom

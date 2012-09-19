@@ -9,6 +9,10 @@ void uWriterBase::setFieldsNames(const std::vector<std::string>& fieldsNames) {
 	m_fieldsNames = fieldsNames;
 }
 
+void uWriterBase::printString(const std::string& str) {
+	*m_pOstream << str;
+}
+
 std::map<std::string, std::function<uWriterBase*()> > *uWriterBaseFactory::mapItem;
 
 } // End of namespace NGS

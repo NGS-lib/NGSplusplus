@@ -63,4 +63,8 @@ void uWriter::writeToken(const uToken& token) {
 	m_pWriterBase->writeToken(token);
 }
 
+void uWriter::printString(const std::string& str) {
+	m_pWriterBase->printString(str);
+}
+
 }; // End of namespace NGS

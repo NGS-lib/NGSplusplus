@@ -24,6 +24,7 @@ public :
 	virtual void init(std::ostream* os)=0; 
 	virtual void writeToken(const uToken& token)=0;
 	void setFieldsNames(const std::vector<std::string>& fieldsNames);
+	void printString(const std::string& str);
 	uWriterBase& operator=(const uWriterBase& copyFrom) = delete;
 	uWriterBase(const uWriterBase&) = delete;
 protected:

@@ -14,11 +14,7 @@ uWriterCustom::~uWriterCustom() {
 /** \brief Initialise the Custom writer with a file name.
   * \param const std::string& filename: name of the file to write output. 
   */
-//void uWriterCustom::init(const std::string& filename, const std::vector<std::string>& fieldsNames) {
 void uWriterCustom::init(const std::string& filename) {
-//	if (fieldsNames.size() == 0) {
-//		throw no_fields_names() << string_error("fieldsNames vector is empty");
-//	}
 	std::filebuf fb;
 	fb.open (filename.c_str(),std::ios::out);
 	if (!fb.is_open()) {  
@@ -30,7 +26,6 @@ void uWriterCustom::init(const std::string& filename) {
 		m_pOstream = os;
 	}
 	m_dynamicStream = true;
-//	m_fieldsNames = fieldsNames;
 }
 
 /** \brief Initialise the Custom writer with a stream
@@ -45,17 +40,6 @@ void uWriterCustom::init(std::ostream* os) {
 		throw std::runtime_error("Invalid stream.");
 	}
 }
-
-/** \brief Sets the fields names for the writer.
-  * \param const std::vector<std::string>& fieldsNames: Vector containing the name of every fields (columns). In correct order.
-  */
-//void uWriterCustom::setFieldsNames(const std::vector<std::string> fieldsNames) {
-//	if (fieldsNames.size() == 0) {
-//		throw no_fields_names() << string_error("fieldsNames vector is empty");
-//	}
-//	m_fieldsNames = fieldsNames;
-//	m_dynamicStream = false;
-//}
 
 /** \brief Print the values of a token in Custom format in current file
   * \param const uToken& token: the token to print.
