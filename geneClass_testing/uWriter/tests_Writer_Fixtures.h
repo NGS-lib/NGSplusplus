@@ -42,6 +42,14 @@ public:
 		ss << "SEQ_NAME\tab00001\n" << "FLAGS\t256\n";
 		uToken Token4(ss);
 		m_vTokens.push_back(Token4);
+		/**< Token 5: Token 1 minus SEQUENCE */
+		ss.clear();
+		ss << "CHR\tchr1\n" << "START_POS\t1\n" << "END_POS\t21\n";
+		ss << "STRAND\t+\n" << "MAP_SCORE\t255\n" << "PHRED_SCORE\t####################\n";
+		ss << "CIGAR\t2M3I2X1=12X\n"; 
+		ss << "SEQ_NAME\tab00001\n" << "SCORE\t111\n" << "FLAGS\t256\n";
+		uToken Token5(ss);
+		m_vTokens.push_back(Token5);
 	}
 
 	vector<uToken> m_vTokens;
@@ -73,4 +81,71 @@ public:
 
 	ostringstream* m_pOssBed4 = nullptr;
 	ostringstream* m_pOssBed6 = nullptr;
+};
+
+class TestsCustomWriter: public ::testing::Test {
+public:
+	TestsCustomWriter() {
+		/**< Initialize fields list */
+		m_fieldList.push_back("CHR"); 
+		m_fieldList.push_back("START_POS"); 
+		m_fieldList.push_back("SEQUENCE"); 
+		/**< Initialize streams */
+		m_pOss = new ostringstream(ostringstream::out);	
+		/**< Initialize writers */
+		uWriter writerCustom(m_pOss, m_fieldList, "CUSTOM");
+		/**< Write tokens */
+		validTokens tokens;
+		for (size_t i = 0; i < tokens.m_vTokens.size(); i++) {
+			writerCustom.writeToken(tokens.m_vTokens[i]);
+		}
+	}
+
+	vector<string> m_fieldList;
+	ostringstream* m_pOss = nullptr;
+};
+
+class TestsCustomWriterOneInvalidValue: public ::testing::Test {
+public:
+	TestsCustomWriterOneInvalidValue() {
+		/**< Initialize fields list */
+		m_fieldList.push_back("CHR"); 
+		m_fieldList.push_back("START_POS"); 
+		m_fieldList.push_back("SEQUENCE"); 
+		m_fieldList.push_back("NEW_SCORE"); 
+		/**< Initialize streams */
+		m_pOss = new ostringstream(ostringstream::out);	
+		/**< Initialize writers */
+		uWriter writerCustom(m_pOss, m_fieldList, "CUSTOM");
+		/**< Write tokens */
+		validTokens tokens;
+		for (size_t i = 0; i < tokens.m_vTokens.size(); i++) {
+			writerCustom.writeToken(tokens.m_vTokens[i]);
+		}
+	}
+
+	vector<string> m_fieldList;
+	ostringstream* m_pOss = nullptr;
+};
+
+class TestsCustomWriterNoValidValues: public ::testing::Test {
+public:
+	TestsCustomWriterNoValidValues() {
+		/**< Initialize fields list */
+		m_fieldList.push_back("NEW_SCORE"); 
+		m_fieldList.push_back("OLD_SCORE"); 
+		m_fieldList.push_back("DENSITY"); 
+		/**< Initialize streams */
+		m_pOss = new ostringstream(ostringstream::out);	
+		/**< Initialize writers */
+		uWriter writerCustom(m_pOss, m_fieldList, "CUSTOM");
+		/**< Write tokens */
+		validTokens tokens;
+		for (size_t i = 0; i < tokens.m_vTokens.size(); i++) {
+			writerCustom.writeToken(tokens.m_vTokens[i]);
+		}
+	}
+
+	vector<string> m_fieldList;
+	ostringstream* m_pOss = nullptr;
 };
