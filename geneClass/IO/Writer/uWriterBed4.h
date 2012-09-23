@@ -13,9 +13,6 @@ public:
 	/** \brief Empty constructor (call object with init through factory instead)
 	  */
 	uWriterBed4() {}
-	virtual ~uWriterBed4() {}
-	void init(const std::string& filename) { uWriterBed::init(filename); }
-	void init(std::ostream* os) { uWriterBed::init(os); }
 	virtual void writeToken(const uToken& token);
 
 private:

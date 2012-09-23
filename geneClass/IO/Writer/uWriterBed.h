@@ -13,13 +13,7 @@ public:
 	/** \brief Empty constructor (call object with init through factory instead)
 	  */
 	uWriterBed() {}
-	~uWriterBed();
-	void init(const std::string& filename);
-	void init(std::ostream* os);
 	virtual void writeToken(const uToken& token);
-protected:
-//	std::ostream* m_pOstream;
-//	bool m_dynamicStream = false;
 
 }; // End of class uWriterBed
 

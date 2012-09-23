@@ -63,6 +63,9 @@ void uWriter::writeToken(const uToken& token) {
 	m_pWriterBase->writeToken(token);
 }
 
+/** \brief Print an unformated string.
+  * \param const std::string& str: the string to write to the file or stream.
+  */
 void uWriter::printString(const std::string& str) {
 	m_pWriterBase->printString(str);
 }
