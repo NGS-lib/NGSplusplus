@@ -23,14 +23,12 @@ public :
 	void init(const std::string& filename);
 	void init(std::ostream* os); 
 	virtual void writeToken(const uToken& token)=0;
-	void setFieldsNames(const std::vector<std::string>& fieldsNames);
 	void printString(const std::string& str);
 	uWriterBase& operator=(const uWriterBase& copyFrom) = delete;
 	uWriterBase(const uWriterBase&) = delete;
 protected:
 	std::ostream* m_pOstream = nullptr;
 	bool m_dynamicStream = false;
-	std::vector<std::string> m_fieldsNames;
 };
 
 //Thank you Stack Overflow for this basic structure

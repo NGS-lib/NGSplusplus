@@ -44,17 +44,6 @@ void uWriterBase::init(std::ostream* os) {
 	m_dynamicStream = false;
 }
 
-/** \brief Set the fields name (only used for the Custom file)
-  */
-void uWriterBase::setFieldsNames(const std::vector<std::string>& fieldsNames) {
-	if (fieldsNames.size() == 0) {
-		throw no_fields_names() << string_error("fieldsNames vector is empty");
-	}
-	m_fieldsNames = fieldsNames;
-}
-
-// TODO: Add the support for alternative delimiter
-
 /** \brief Print an unformated string.
   * \param const std::string& str: the string to write to the file or stream.
   */

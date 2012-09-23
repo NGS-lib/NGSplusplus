@@ -2,6 +2,14 @@
 
 namespace NGS {
 
+uWriterCustom::uWriterCustom() {
+	m_delimiter = '\t';
+	m_fieldsNames.push_back("CHR");
+	m_fieldsNames.push_back("START_POS");
+	m_fieldsNames.push_back("END_POS");
+	m_fieldsNames.push_back("SEQ_NAME");
+}
+
 /** \brief Print the values of a token in Custom format in current file
   * \param const uToken& token: the token to print.
   */
@@ -30,11 +38,21 @@ void uWriterCustom::writeToken(const uToken& token) {
 		}
 		*m_pOstream << values[i];
 		if (i != m_fieldsNames.size() - 1) {
-			*m_pOstream << '\t';
+			*m_pOstream << m_delimiter;
 		}
 	}
 	*m_pOstream << std::endl;
 }
 
+/** \brief Set the fields name (only used for the Custom file)
+  */
+void uWriterCustom::setFieldsNames(const std::vector<std::string>& fieldsNames) {
+	if (fieldsNames.size() == 0) {
+		throw no_fields_names() << string_error("fieldsNames vector is empty");
+	}
+	m_fieldsNames = fieldsNames;
+}
+
 DerivedRegister<uWriterCustom> uWriterCustom::reg("CUSTOM");
+
 } // End of namespace NGS
