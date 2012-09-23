@@ -16,13 +16,12 @@ class uWriter {
 public:
 	uWriter(const std::string& filename, const std::string& type);
 	uWriter(std::ostream* os, const std::string& type);
-	uWriter(const std::string& filename, const std::vector<std::string>& fieldsNames);
-	uWriter(std::ostream* os, const std::vector<std::string>& fieldsNames);
+	uWriter(const std::string& filename, const std::vector<std::string>& fieldsNames, char delimiter = '\t');
+	uWriter(std::ostream* os, const std::vector<std::string>& fieldsNames, char delimiter = '\t');
 	void writeToken(const uToken& token);
 	void printString(const std::string& str);
 
 private:
-//	uHeader m_headerData;
 	std::shared_ptr<uWriterBase> m_pWriterBase = nullptr;
 }; // End of class uWriter
 

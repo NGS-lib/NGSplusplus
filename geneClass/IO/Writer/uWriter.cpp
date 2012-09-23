@@ -32,7 +32,7 @@ uWriter::uWriter(std::ostream* os, const std::string& type) {
   * \param const std::vector<std::string>& fieldsNames: Vector containing the name of every fields (columns). In correct order.
   * \param const std::string& type: Type of file to write output (i.e: Bed, Sam, etc...). 
   */
-uWriter::uWriter(const std::string& filename, const std::vector<std::string>& fieldsNames) {
+uWriter::uWriter(const std::string& filename, const std::vector<std::string>& fieldsNames, char delimiter) {
 	uWriterBaseFactory myFactory;
 	m_pWriterBase = myFactory.createInstance("CUSTOM");
 	try {
@@ -42,6 +42,7 @@ uWriter::uWriter(const std::string& filename, const std::vector<std::string>& fi
 		throw e;
 	}
 	m_pWriterBase->setFieldsNames(fieldsNames);
+	m_pWriterBase->setDelimiter(delimiter);
 }
 
 /** \brief Custom constructor with stream.
@@ -49,11 +50,12 @@ uWriter::uWriter(const std::string& filename, const std::vector<std::string>& fi
   * \param const std::vector<std::string>& fieldsNames: Vector containing the name of every fields (columns). In correct order.
   * \param const std::string& type: Type of file to write output (i.e: Bed, Sam, etc...). 
   */
-uWriter::uWriter(std::ostream* os, const std::vector<std::string>& fieldsNames) {
+uWriter::uWriter(std::ostream* os, const std::vector<std::string>& fieldsNames, char delimiter) {
 	uWriterBaseFactory myFactory;
 	m_pWriterBase = myFactory.createInstance("CUSTOM");
 	m_pWriterBase->init(os);
 	m_pWriterBase->setFieldsNames(fieldsNames);
+	m_pWriterBase->setDelimiter(delimiter);
 }
 
 /** \brief Print the information of the token in the desired format.
