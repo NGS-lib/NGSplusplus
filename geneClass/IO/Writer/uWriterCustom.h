@@ -14,14 +14,9 @@ public:
 	  */
 	uWriterCustom();
 	virtual void writeToken(const uToken& token);
-	void setFieldsNames(const std::vector<std::string>& fieldsNames);
-	void setDelimiter(char delimiter) { m_delimiter = delimiter; }
 
 private:
 	static DerivedRegister<uWriterCustom> reg;
-
-	std::vector<std::string> m_fieldsNames;
-	char m_delimiter = '\t';
 
 }; // End of class uWriterCustom
 

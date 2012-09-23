@@ -44,15 +44,6 @@ void uWriterCustom::writeToken(const uToken& token) {
 	*m_pOstream << std::endl;
 }
 
-/** \brief Set the fields name (only used for the Custom file)
-  */
-void uWriterCustom::setFieldsNames(const std::vector<std::string>& fieldsNames) {
-	if (fieldsNames.size() == 0) {
-		throw no_fields_names() << string_error("fieldsNames vector is empty");
-	}
-	m_fieldsNames = fieldsNames;
-}
-
 DerivedRegister<uWriterCustom> uWriterCustom::reg("CUSTOM");
 
 } // End of namespace NGS

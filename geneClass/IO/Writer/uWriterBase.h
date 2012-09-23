@@ -26,9 +26,14 @@ public :
 	void printString(const std::string& str);
 	uWriterBase& operator=(const uWriterBase& copyFrom) = delete;
 	uWriterBase(const uWriterBase&) = delete;
+	void setFieldsNames(const std::vector<std::string>& fieldsNames);
+	void setDelimiter(char delimiter) { m_delimiter = delimiter; }
 protected:
 	std::ostream* m_pOstream = nullptr;
 	bool m_dynamicStream = false;
+
+	std::vector<std::string> m_fieldsNames;
+	char m_delimiter = '\t';
 };
 
 //Thank you Stack Overflow for this basic structure
