@@ -13,6 +13,7 @@ public:
 	/** \brief Empty constructor (call object with init through factory instead)
 	  */
 	uWriterBed() {}
+	virtual ~uWriterBed() {}
 	virtual void writeToken(const uToken& token);
 
 }; // End of class uWriterBed
