@@ -66,8 +66,6 @@ struct DerivedRegister : uWriterBaseFactory {
 	~DerivedRegister(){};
 	DerivedRegister(std::string const& s) {
 		getMap()->insert(std::pair<std::string, std::function<uWriterBase*() >> (s, &createT<T>));
-		map_type * test= getMap();
-//		(*test)[s]= std::bind(&createT<T>);
 	}
 }; // End of struct DerivedRegister 
 
