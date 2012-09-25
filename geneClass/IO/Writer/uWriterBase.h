@@ -19,7 +19,7 @@ namespace NGS {
 class uWriterBase{
 public :
 	uWriterBase() {}
-	~uWriterBase();
+	virtual ~uWriterBase();
 	void init(const std::string& filename);
 	void init(std::ostream* os); 
 	virtual void writeToken(const uToken& token)=0;

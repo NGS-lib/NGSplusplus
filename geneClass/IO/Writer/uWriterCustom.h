@@ -13,6 +13,7 @@ public:
 	/** \brief Empty constructor (call object with init through factory instead)
 	  */
 	uWriterCustom();
+	virtual ~uWriterCustom() {};
 	virtual void writeToken(const uToken& token);
 
 private:
