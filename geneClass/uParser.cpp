@@ -5,7 +5,7 @@ namespace NGS {
  * \param std::string filename: Name of the file to load
  * \param file_type type: Currently supported formats: BED, SAM
  */
-uParser::uParser(const std::string& filename, file_type type, bool header):m_fileType(type),m_header(header)
+uParser::uParser(const std::string& filename, file_type type, bool header):m_fileType(type),m_headerData(),m_header(header)
 {
     std::ifstream* ifs = new std::ifstream(filename.c_str(), std::ifstream::in);
     if (!ifs->is_open())
@@ -32,7 +32,7 @@ uParser::uParser(const std::string& filename, file_type type, bool header):m_fil
  * \param std::istream* stream: stream to load the data from
  * \param file_type type: Currently supported formats: BED, SAM
  */
-uParser::uParser(std::iostream* stream, file_type type, bool header):m_fileType(type),m_header(header)
+uParser::uParser(std::iostream* stream, file_type type, bool header):m_fileType(type),m_headerData(),m_header(header)
 {
     m_pIostream = stream;
     m_info=_makeTypeInfo(type);
@@ -48,7 +48,7 @@ uParser::uParser(std::iostream* stream, file_type type, bool header):m_fileType(
  * \param const std::vector<string> columnNames: The name of every field in the custom format, in the SAME ORDER as they appear in the file. Must be of the string version of token_param (see uToken.h). Mandatory fields are: CHR, START_POS and END_POS.
  * \param char delimiter: The delimiter between each field.
  */
-uParser::uParser(const std::string& filename, const std::vector<std::string>& fieldsNames, bool header, char delimiter):m_fileType(file_type::CUSTOM)
+uParser::uParser(const std::string& filename, const std::vector<std::string>& fieldsNames, bool header, char delimiter):m_fileType(file_type::CUSTOM),m_headerData()
 {
     /**< Check if filename is valid, then open it */
     std::fstream* ifs = new std::fstream(filename.c_str(), std::fstream::in);
@@ -82,7 +82,7 @@ uParser::uParser(const std::string& filename, const std::vector<std::string>& fi
     m_dynamicStream = true;
 }
 
-uParser::uParser(std::iostream* stream, const std::vector<std::string>& fieldsNames, bool header, char delimiter):m_fileType(file_type::CUSTOM)
+uParser::uParser(std::iostream* stream, const std::vector<std::string>& fieldsNames, bool header, char delimiter):m_fileType(file_type::CUSTOM),m_headerData()
 {
 
     /**< Check if fields are in a valid format */

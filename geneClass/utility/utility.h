@@ -180,7 +180,6 @@ inline static std::vector<float> quartilesofVector(std::vector<float> inputVecto
 
     std::vector<float> returnVector;
     int q1, med, q3;
-
     //quartile positions.
     q1=inputVector.size()*0.25;
     med=inputVector.size()*0.5;

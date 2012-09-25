@@ -21,7 +21,7 @@ public :
 	uWriterBase() {}
 	~uWriterBase();
 	void init(const std::string& filename);
-	void init(std::ostream* os); 
+	void init(std::ostream* os);
 	virtual void writeToken(const uToken& token)=0;
 	void printString(const std::string& str);
 	uWriterBase& operator=(const uWriterBase& copyFrom) = delete;
@@ -54,8 +54,8 @@ struct uWriterBaseFactory {
 protected:
 	static map_type* mapItem;
         static map_type* getMap() {
-		if(!mapItem) { 
-			mapItem= new map_type; 
+		if(!mapItem) {
+			mapItem= new map_type;
 		}
 		return mapItem;
 	};
@@ -66,10 +66,9 @@ struct DerivedRegister : uWriterBaseFactory {
 	~DerivedRegister(){};
 	DerivedRegister(std::string const& s) {
 		getMap()->insert(std::pair<std::string, std::function<uWriterBase*() >> (s, &createT<T>));
-		map_type * test= getMap();
-//		(*test)[s]= std::bind(&createT<T>);
+
 	}
-}; // End of struct DerivedRegister 
+}; // End of struct DerivedRegister
 
 } // End of namespace NGS
 #endif // UWRITERBASE_H_INCLUDED

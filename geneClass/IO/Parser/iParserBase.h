@@ -65,8 +65,6 @@ struct uParserBaseFactory {
 protected:
  static map_type * mapItem;
         static map_type * getMap() {
-              std::cout << "Building HAHA" <<std::endl;
-
         if(!mapItem) { mapItem= new map_type; }
         return mapItem;
     };
@@ -76,10 +74,8 @@ template<typename T>
 struct DerivedRegister : uParserBaseFactory {
     ~DerivedRegister(){};
     DerivedRegister(std::string const& s) {
-          std::cout << "REGISTERING HAHA" <<std::endl;
         getMap()->insert(std::pair<std::string, std::function<uParserBase*() >> (s, &createT<T>));
-       map_type * test= getMap();
-      //(*test)[s]= std::bind(&createT<T>);
+
     }
 };
 }
