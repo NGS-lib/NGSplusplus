@@ -1,7 +1,7 @@
 #ifndef UFORMATEXPERIMENT_H_INCLUDED
 #define UFORMATEXPERIMENT_H_INCLUDED
 #include <fstream>
-#include "uParser.h"
+#include "IO/Parser/uParser.h"
 namespace NGS {
 //_BASE_ is our Tags, _CHROM_ our Chrom structure.
 enum class ReadMode{ DEFAULT, GRADUAL };
@@ -97,7 +97,7 @@ public:
     typename std::vector<_BASE_>::const_iterator findNextSite(std::string chr, int position)const;
 
     virtual void loadFromTabFile(std::ifstream& stream);
-    virtual void loadFile(std::ifstream& stream, file_type pType);
+    virtual void loadFile(std::ifstream& stream, std::string pType);
 
 
     void writeAsBedFile(std::ostream& out)const;
@@ -436,7 +436,7 @@ template<typename _CHROM_, typename _BASE_>
  *
  */
 template<typename _CHROM_, typename _BASE_>
- void uGenericNGSExperiment<_CHROM_, _BASE_>::loadFile(std::ifstream& stream, file_type pType)
+ void uGenericNGSExperiment<_CHROM_, _BASE_>::loadFile(std::ifstream& stream, std::string pType)
 {
   //  auto refStream = dynamic_cast<std::iostream&>(stream);
   //  uParser Curparser(&refStream, pType);

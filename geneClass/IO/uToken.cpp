@@ -37,6 +37,7 @@ uToken::uToken(std::istream& paramList) {
 		_validateToken();
 	}
 	catch (invalid_uToken_throw& e) {
+	    addStringError(e,"Throwing in uToken constructor(std::istream paramList)");
 		throw e;
 	}
 }
@@ -54,8 +55,8 @@ std::string uToken::getParam(token_param name) const {
 	else {
 		param_not_found e;
 		std::string error = "Tried to getParam that is not set: " + _convertTokenParamToString(name) + "\n";
-		e << string_error(error);
-		e << string_error(_convertTokenParamToString(name));
+		addStringError(e,error);
+		addStringError(e,_convertTokenParamToString(name));
 		throw e;
 	}
 }
@@ -70,13 +71,14 @@ void uToken::_setParam(const token_param& name, const std::string& value)
 	try {
 		if (_validateParam(name, value) == false) {
 			invalid_value_throw e;
-			e << string_error(value);
+			e << string_error(value+"\n");
 			throw e;
 		}
 		_postProcessParam(name, value);
 		m_params[name] = value;
 	}
 	catch(invalid_value_throw &e) {
+		addStringError(e,"Throwing in _setParam()");
 		throw e;
 	}
 }

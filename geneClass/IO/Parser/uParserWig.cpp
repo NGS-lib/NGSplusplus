@@ -22,41 +22,89 @@ void uParserWig::init(const std::string& filename, bool header )
     else
     {
         m_pIostream = ifs;
-    }
-  //  m_header = header;
- //   if (m_header == true)
-  //  {
-  //      _fetchHeader();
- //   }
-  //  m_dynamicStream = true;
+         char line[4096];
+    if (m_pIostream->getline(line, 4096))
+    {
+        std::stringstream ss;
+        ss << line;
 
+        std::string cur_token;
+        ss>>cur_token;
+
+        if((cur_token=="variableStep")||(cur_token=="fixedStep"))
+        {
+            if (m_pIostream->eof())
+                throw end_of_file_throw()<<string_error("Badly formed wig file, track definition line with no entries following \n");
+           try {
+            if (cur_token=="variableStep")
+            {
+                _processVariabledWigLine(ss);
+            }
+            else
+            {
+                _processFixedWigLine(ss);
+            }
+            }
+            catch(Parser_missing_mandatory_values &e){
+                throw e;
+            }
+        }
+        else
+            throw Parser_missing_mandatory_header()<<string_error("Missing header in wiggle file \n");
+
+        }
+    }
 
 }
 void uParserWig::init(std::iostream* stream, bool header )
 {
     m_pIostream = stream;
-  //  m_info=_makeTypeInfo(type);
-  //  m_header = header;
-  //  if (m_header == true)
-  //  {
-  //      _fetchHeader();
-  //  }
-  //  m_dynamicStream = false;
+      char line[4096];
+    if (m_pIostream->getline(line, 4096))
+    {
+        std::stringstream ss;
+        ss << line;
 
+        std::string cur_token;
+        ss>>cur_token;
+
+        if((cur_token=="variableStep")||(cur_token=="fixedStep"))
+        {
+            if (m_pIostream->eof())
+                throw end_of_file_throw()<<string_error("Badly formed wig file, track definition line with no entries following \n");
+           try {
+            if (cur_token=="variableStep")
+            {
+                _processVariabledWigLine(ss);
+            }
+            else
+            {
+                _processFixedWigLine(ss);
+            }
+            }
+            catch(Parser_missing_mandatory_values &e){
+                throw e;
+            }
+        }
+        else
+            throw Parser_missing_mandatory_header()<<string_error("Missing header in wiggle file \n");
+
+        }
 }
+
+
 void uParserWig::init(const std::string& filename, const std::vector<std::string>& fieldsNames, bool header , char delimiter)
 {
-
-
 }
+
+
 void uParserWig::init(std::iostream* stream, const std::vector<std::string>& fieldsNames, bool header , char delimiter )
 {
-
-
 }
+
+
 uToken uParserWig::getNextEntry()
 {
-        std::cerr<<"trying to get Wig"<< std::endl;
         bool foundToken=false;
         try
         {
@@ -91,28 +139,32 @@ uToken uParserWig::getNextEntry()
                         int end_pos;
                         int start_pos =0;
                         float score=0.0f;
-
+                      //  std::cerr << "Getting info " <<std::endl;
                         switch (m_Info.getStepType())
                         {
                         case wigInformation::stepType::NA:
-
                             throw Parser_missing_mandatory_values()<<string_error("No declaraction line in Wig, error parsing \n");
                             break;
                         case  wigInformation::stepType::FIXED:
-                            //curReg.setChr(curChr);
-                            // curReg.setStartEnd(curStart,curStart+curSpan);
-                            //curReg.setCount(utility::stringToInt(firstToken));
-                            // curStart+=curStep;
+                            if (!ss.eof())
+                                throw Parser_invalid_line()<<string_error("Invalid line in file \n");
+
+                            start_pos=m_Info.getCurPos();
+                            score=stof(cur_token);
+                            end_pos= start_pos+m_Info.getSpan();
+                            m_Info.setCurPos(start_pos+m_Info.getStep());
                             break;
                         case   wigInformation::stepType::VARIABLE:
                             start_pos=stoi(cur_token);
                             ss >> cur_token;
                             score=stof(cur_token);
                             end_pos= start_pos+m_Info.getSpan();
+                            if (!ss.eof())
+                                throw Parser_invalid_line()<<string_error("Invalid line in file \n");
+
                             break;
                         }
                         std::stringstream token_infos;
-
                         token_infos << "CHR\t" << m_Info.getChrom() << "\n";
                         token_infos << "START_POS\t" << start_pos << "\n";
                         token_infos << "END_POS\t" << end_pos << "\n";
@@ -136,12 +188,15 @@ uToken uParserWig::getNextEntry()
         {
             throw e;
         }
-        catch(Parser_missing_mandatory_values& e)
+        catch(ugene_exception_base& e)
         {
+           // std::cerr << "Throwing in getnextEntry uParser" <<std::endl;
+            std::cerr << fetchStringError(e) <<std::endl;
             throw e;
         }
         catch(std::exception & e)
         {
+          //  std::cerr << "Throwing in getnextEntry, exception" <<std::endl;
             throw e;
         }
         std::cerr <<"Fatal error in _getNextEntryCustom(), should not reach here" <<std::endl;
@@ -244,6 +299,6 @@ void uParserWig::_processVariabledWigLine(std::stringstream & curSStream)
     m_Info.setSpan(curSpan);
 }
 
-DerivedRegister<uParserWig> uParserWig::reg("WIG");
+DerivedParserRegister<uParserWig> uParserWig::reg("WIG");
 
 }

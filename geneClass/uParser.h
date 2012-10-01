@@ -66,7 +66,7 @@ class customInformation : public typeInformation{
 };
 
 
-class uParser {
+class uParser{
 public:
 	uParser(const std::string& filename, file_type type, bool header = false);
 	uParser(std::iostream* stream, file_type type, bool header = false);

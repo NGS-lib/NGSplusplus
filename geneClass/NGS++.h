@@ -13,7 +13,7 @@
 //#include "uFormatBase.h"
 //#include "uFormats.h"
 #include "uGeneException.h"
-#include "uParser.h"
+#include "IO/Parser/uParser.h"
 #include "uTags.h"
 
 //#include "uParser2.h"

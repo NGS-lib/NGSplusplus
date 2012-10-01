@@ -1,9 +1,9 @@
 #include "../../uGeneException.h"
-#include "iParser.h"
-#include "iParserBase.h"
+#include "uParser.h"
+#include "uParserBase.h"
 namespace NGS {
 
-    Parser::Parser(const std::string& filename, const std::string & type, bool header)
+    uParser::uParser(const std::string& filename, const std::string & type, bool header)
     {
 
         uParserBaseFactory myFact;
@@ -11,34 +11,34 @@ namespace NGS {
         m_pParserBase->init(filename, header);
 
     };
-	Parser::Parser(std::iostream* stream, const std::string & type, bool header){
+	uParser::uParser(std::iostream* stream, const std::string & type, bool header){
 
         uParserBaseFactory myFact;
         m_pParserBase=myFact.createInstance(type);
         m_pParserBase->init(stream, header);
 
 	};
-	Parser::Parser(const std::string& filename, const std::vector<std::string>& fieldsNames, bool header, char delimiter){
+	uParser::uParser(const std::string& filename, const std::vector<std::string>& fieldsNames, bool header, char delimiter){
 
         uParserBaseFactory myFact;
         m_pParserBase=myFact.createInstance("CUSTOM");
         m_pParserBase->init(filename, fieldsNames,header,delimiter);
 
 	};
-	Parser::Parser(std::iostream* stream, const std::vector<std::string>& fieldsNames, bool header, char delimiter){
+	uParser::uParser(std::iostream* stream, const std::vector<std::string>& fieldsNames, bool header, char delimiter){
 
         uParserBaseFactory myFact;
         m_pParserBase=myFact.createInstance("CUSTOM");
         m_pParserBase->init(stream, fieldsNames,header,delimiter);
 
 	};
-	Parser::~Parser(){};
+	uParser::~uParser(){};
 
-     bool Parser::eof() const {
+     bool uParser::eof() const {
          return m_pParserBase->eof();
          };
 
-    uToken Parser::getNextEntry(){
+    uToken uParser::getNextEntry(){
 	 return  m_pParserBase->getNextEntry();
 	};
 }

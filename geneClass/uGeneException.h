@@ -38,13 +38,15 @@ struct invalid_value_throw : virtual uToken_exception_base{};
 struct param_not_found : virtual invalid_uToken_throw{};
 
 // uParser Exceptions
-struct uParser_exception_base : virtual std::exception, virtual boost::exception {};
+struct uParser_exception_base : virtual ugene_exception_base{};
 struct end_of_file_throw : virtual uParser_exception_base{};
 struct Parser_missing_mandatory_values : virtual uParser_exception_base{};
+struct Parser_missing_mandatory_header : virtual uParser_exception_base{};
+struct Parser_invalid_line : virtual uParser_exception_base{};
 struct customParser_missing_mandatory_values : virtual Parser_missing_mandatory_values{};
 
 // uWriter Exceptions
-struct uWriter_exception_base : virtual std::exception, virtual boost::exception {};
+struct uWriter_exception_base : virtual ugene_exception_base{};
 struct no_fields_names : virtual uWriter_exception_base{};
 
 // Util functions

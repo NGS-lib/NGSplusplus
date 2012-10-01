@@ -7,7 +7,7 @@
 		<Option compiler="mingw64" />
 		<Build>
 			<Target title="Debug">
-				<Option output="../../libs/debug/libgeneClass" prefix_auto="1" extension_auto="1" />
+				<Option output="../../libs/debug/geneClass" prefix_auto="1" extension_auto="1" />
 				<Option working_dir="" />
 				<Option object_output="obj/Debug/" />
 				<Option type="2" />
@@ -25,7 +25,7 @@
 				</Linker>
 			</Target>
 			<Target title="Release">
-				<Option output="../../libs/release/libgeneClass" prefix_auto="1" extension_auto="1" />
+				<Option output="../../libs/release/geneClass" prefix_auto="1" extension_auto="1" />
 				<Option working_dir="" />
 				<Option object_output="obj/Release/" />
 				<Option type="2" />
@@ -46,6 +46,24 @@
 		<Compiler>
 			<Add directory="../../myUtilityFiles" />
 		</Compiler>
+		<Unit filename="IO/Parser/iParser.cpp" />
+		<Unit filename="IO/Parser/iParser.h" />
+		<Unit filename="IO/Parser/iParserBase.cpp" />
+		<Unit filename="IO/Parser/iParserBase.h" />
+		<Unit filename="IO/Parser/uParserBed.cpp" />
+		<Unit filename="IO/Parser/uParserBed.h" />
+		<Unit filename="IO/Parser/uParserWig.cpp" />
+		<Unit filename="IO/Parser/uParserWig.h" />
+		<Unit filename="IO/Writer/uWriter.cpp" />
+		<Unit filename="IO/Writer/uWriter.h" />
+		<Unit filename="IO/Writer/uWriterBase.cpp" />
+		<Unit filename="IO/Writer/uWriterBase.h" />
+		<Unit filename="IO/Writer/uWriterBed.cpp" />
+		<Unit filename="IO/Writer/uWriterBed.h" />
+		<Unit filename="IO/uHeader.cpp" />
+		<Unit filename="IO/uHeader.h" />
+		<Unit filename="IO/uToken.cpp" />
+		<Unit filename="IO/uToken.h" />
 		<Unit filename="uFormatBase.cpp">
 			<Option weight="9" />
 		</Unit>
@@ -68,8 +86,6 @@
 		<Unit filename="uTags.h">
 			<Option target="&lt;{~None~}&gt;" />
 		</Unit>
-		<Unit filename="uToken.cpp" />
-		<Unit filename="uToken.h" />
 		<Unit filename="utility/utility.cpp" />
 		<Unit filename="utility/utility.h" />
 		<Extensions>

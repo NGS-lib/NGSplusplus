@@ -1,7 +1,7 @@
 #ifndef UPARSERWIG_H_INCLUDED
 #define UPARSERWIG_H_INCLUDED
 
-#include "iParserBase.h"
+#include "uParserBase.h"
 #include <iostream>
 
 namespace NGS
@@ -80,7 +80,7 @@ public :
     uToken getNextEntry();
 
 private:
-    static DerivedRegister<uParserWig> reg;
+    static DerivedParserRegister<uParserWig> reg;
     wigInformation m_Info;
     void _processFixedWigLine(std::stringstream & curSStream);
     void _processVariabledWigLine(std::stringstream & curSStream);
