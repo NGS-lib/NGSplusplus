@@ -9,7 +9,7 @@ using namespace NGS;
 
 //TODO: Ajouter les tests pour InvalidFileType quand ce sera implémenté
 /*
- * Tests for uWriter filename constructor: 
+ * Tests for uWriter filename constructor:
  * 		uWriter(const std::string& filename, const std::string& type);
  *	Valid case:
  *		NormalUsage
@@ -30,7 +30,7 @@ TEST(uWriterFilenameConstructor, EmptyFilename) {
 }
 
 /*
- * Tests for uWriter ostream constructor: 
+ * Tests for uWriter ostream constructor:
  * 		uWriter(std::ostream* os, const std::string& type);
  *	Valid case:
  *		NormalUsage
@@ -53,7 +53,7 @@ TEST(uWriterOstreamConstructor, InvalidOstream) {
 }
 
 /*
- * Tests for uWriter filename custom constructor: 
+ * Tests for uWriter filename custom constructor:
  * 		uWriter(const std::string& filename, const std::vector<std::string>& fieldsNames, const std::string& type);
  *	Valid case:
  *		NormalUsage
@@ -80,12 +80,12 @@ TEST(uWriterCustomFilenameConstructor, EmptyFieldsNames) {
 }
 
 /*
- * Tests for uWriter ostream custom constructor: 
+ * Tests for uWriter ostream custom constructor:
  *		uWriter(std::ostream* os, const std::vector<std::string>& fieldsNames, const std::string& type);
  *	Valid case:
  *		NormalUsage
  *	Invalid case:
- *		InvalidOstream	
+ *		InvalidOstream
  *		EmptyFieldsNames
  */
 

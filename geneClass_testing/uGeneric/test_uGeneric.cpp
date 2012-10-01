@@ -137,14 +137,12 @@ TEST(uGenericNGSTest, OVERLAP){
      uTags uTestOverlapPoly("chr1", 100, 200);
      uGenericNGS uTestEmpty;
      uRegion uTestOverlapPolyempty;
-    std::cerr << "Overlap 1" <<std::endl;
     EXPECT_TRUE( uTest.doesOverlap(uTestSame));
     EXPECT_TRUE( uTest.doesOverlap(uTestOverlap1R));
     EXPECT_TRUE( uTest.doesOverlap(uTestOverlapiL));
     EXPECT_TRUE( uTest.doesOverlap(uTestOverlapPoly));
     EXPECT_TRUE(uTestEmpty.doesOverlap(uTestEmpty));
 
-    std::cerr << "Overlap 2" <<std::endl;
     EXPECT_FALSE (uTest.doesOverlap(uTestEmpty));
     EXPECT_FALSE (uTest.doesOverlap(uTestOverlapPolyempty));
     EXPECT_FALSE (uTest.doesOverlap(uTestOverlapNot));

@@ -75,8 +75,6 @@ TEST_F(ChromDivide, FIND_TEST){
 
 
 
-
-
 /**< Testing DivideItemsIntoNBin */
 TEST_F(ChromDivide, DIVIDEINTONBINFAILCHROM){
     EXPECT_ANY_THROW(uChromTestOverlap.divideItemsIntoNBins(7));
