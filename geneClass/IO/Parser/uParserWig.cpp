@@ -191,7 +191,7 @@ uToken uParserWig::getNextEntry()
         catch(ugene_exception_base& e)
         {
            // std::cerr << "Throwing in getnextEntry uParser" <<std::endl;
-            std::cerr << fetchStringError(e) <<std::endl;
+            //std::cerr << fetchStringError(e) <<std::endl;
             throw e;
         }
         catch(std::exception & e)
