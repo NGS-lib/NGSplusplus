@@ -21,7 +21,7 @@ public :
 	uWriterBase() {}
 	virtual ~uWriterBase();
 	void init(const std::string& filename);
-	void init(std::ostream* os); 
+	void init(std::ostream* os);
 	virtual void writeToken(const uToken& token)=0;
 	void printString(const std::string& str);
 	uWriterBase& operator=(const uWriterBase& copyFrom) = delete;
