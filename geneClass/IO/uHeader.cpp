@@ -1,5 +1,4 @@
 #include "uHeader.h"
-//#include "../utility/polyTypes.h"
 namespace NGS {
 /** \brief If the param exist, it returns it's value in string format. Otherwise returns param_not_found error.
  * \param header_param name the name of the param from header_param strongly type enum types.
