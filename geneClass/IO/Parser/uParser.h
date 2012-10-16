@@ -11,7 +11,7 @@
 #include <algorithm>
 #include <fstream>
 #include "../uToken.h"
-#include "../uGeneException.h"
+#include "../../uGeneException.h"
 #include  "uParserBase.h"
 #include "../uHeader.h"
 namespace NGS {
@@ -31,14 +31,12 @@ public :
 
 	/** \brief Get a specific data from header.
 	  */
-	std::string getHeaderParam(header_param name) const { return m_headerData.getParam(name); }
+	std::string getHeaderParam(header_param name) const { return m_pParserBase->getHeaderParam(name); }
 	/** \brief Check if there is a value associated with a given param.
 	  * \param header_param& name: name of the param to check.
 	  */
-	bool isHeaderParamSet(const header_param& name) const { return m_headerData.isParamSet(name); }
-protected:
-
-    uHeader m_headerData;
+	bool isHeaderParamSet(const header_param& name) const { return m_pParserBase->isHeaderParamSet(name); }
+private:
     std::shared_ptr<uParserBase> m_pParserBase=nullptr;
 
 };

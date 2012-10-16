@@ -953,6 +953,7 @@ void uTagsExperiment::parseSamHeader()
 
             }
              this->setChromSize(chrom, chromsize);
+             //this->setChr
         }
     }
 }

@@ -65,6 +65,7 @@ template<typename T>
 struct DerivedRegister : uWriterBaseFactory {
 	~DerivedRegister(){};
 	DerivedRegister(std::string const& s) {
+        std::cerr << "register "<<s <<std::endl;
 		getMap()->insert(std::pair<std::string, std::function<uWriterBase*() >> (s, &createT<T>));
 
 	}

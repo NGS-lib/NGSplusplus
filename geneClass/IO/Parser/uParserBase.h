@@ -32,15 +32,15 @@ class uParserBase{
 	virtual uToken getNextEntry()=0;
 	/** \brief Get a specific data from header.
 	  */
-	//std::string getHeaderParam(header_param name) const { return m_headerData.getParam(name); }
+	std::string getHeaderParam(header_param name) const { return m_headerData.getParam(name); }
 	/** \brief Check if there is a value associated with a given param.
 	  * \param header_param& name: name of the param to check.
 	  */
-//	bool isHeaderParamSet(const header_param& name) const { return m_headerData.isParamSet(name); }
+	bool isHeaderParamSet(const header_param& name) const { return m_headerData.isParamSet(name); }
 
 protected:
     std::istream* m_pIostream=nullptr;
-
+    uHeader m_headerData;
 
 };
 
@@ -54,11 +54,13 @@ struct uParserBaseFactory {
     static std::shared_ptr<uParserBase> createInstance(std::string const& s) {
         parser_map_type::iterator it = getParserMap()->find(s);
 
-       // std::cout << getParserMap()->size() <<std::endl;
-         parser_map_type::iterator temp= getParserMap()->begin();
+      //  std::cout << getParserMap()->size() <<std::endl;
+       //  parser_map_type::iterator temp= getParserMap()->begin();
       //   std::cout << it->first <<std::endl;
-        if(it == getParserMap()->end())
+        if(it == getParserMap()->end()){
             throw uParser_exception_base()<<string_error("Asked for unregistered type, failling");
+        }
+      //  std::cerr << "Returning" <<std::endl;
         return std::shared_ptr<uParserBase>(it->second());
     }
 
@@ -74,7 +76,16 @@ template<typename T>
 struct DerivedParserRegister : uParserBaseFactory {
     ~DerivedParserRegister(){};
     DerivedParserRegister(std::string const& s) {
-        getParserMap()->insert(std::pair<std::string, std::function<uParserBase*() >> (s, &createT<T>));
+
+         auto it = getParserMap()->find(s);
+        if(it == getParserMap()->end()){
+             getParserMap()->insert(std::pair<std::string, std::function<uParserBase*() >> (s, &createT<T>));
+        } else
+        {
+            throw uParser_exception_base()<<string_error("Duplicated type registering in Parser, failling\n Type is:"+s+"\n");
+        }
+
+
     }
 
 };

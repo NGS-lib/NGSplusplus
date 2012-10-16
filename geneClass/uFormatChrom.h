@@ -62,7 +62,7 @@ private :
 protected:
 
     /**< Pointers to our functions and determines if sorted */
-    bool m_isSorted=false;
+    bool m_isSorted=true;
     std::function<int(const _BASE_*)> sortGetStart=nullptr;
     std::function<int(const _BASE_*)> sortGetEnd=nullptr ;
     std::function<bool(const _BASE_ &item1, const _BASE_ &item2)> m_comptFunc=nullptr;
@@ -120,6 +120,11 @@ public:
     void addSite( _BASE_ newSite);
     int getSubsetCount(int start, int end, OverlapType overlap=OverlapType::OVERLAP_PARTIAL)const;
 
+
+    bool getSortedStatus() const
+    {
+        return m_isSorted;
+    }
 
     /**< Return number of elements */
     int count() const
@@ -302,8 +307,10 @@ public:
     UnaryOperation applyOnAllSites(UnaryOperation f)
     {
         try
-        {
-            return for_each(std::begin(VecSites), std::end(VecSites), f);
+        {   if (VecSites.size()>0)
+                return for_each(std::begin(VecSites), std::end(VecSites), f);
+            else
+                return f;
         }
         catch(std::exception & e)
         {
@@ -368,7 +375,7 @@ public:
         {
             try
             {
-                m_isSorted=true;
+                this->m_isSorted=true;
                 sortGetStart=getStart_funct;
                 sortGetEnd= getEnd_funct;
                 m_comptFunc=comp;
@@ -920,9 +927,10 @@ public:
         try
         {
             /**< If unsorted, fail */
-            if ((m_isSorted==false)||(sortGetStart==nullptr)||(sortGetEnd==nullptr))
+            if (m_isSorted==false)
                 throw ugene_exception_base() <<string_error("findPrecedingSite called on unsorted vector \n") ;
-
+            if ((sortGetStart==nullptr)||(sortGetEnd==nullptr))
+                throw ugene_exception_base() <<string_error(" findPrecedingSite called on chrom without appropriate start or end function\n") ;
             auto comp = [&] (const _BASE_ &item1, const int &item2)
             {
                 return sortGetStart(&item1)< item2;
@@ -930,8 +938,6 @@ public:
 
             /**< Compare, sort Value */
             auto lower = std::lower_bound(VecSites.begin(), VecSites.end(), position, comp);
-
-
 
             /**< If no result, or result is our first item */
             if (lower==VecSites.end()||(lower==VecSites.begin()))
@@ -999,11 +1005,9 @@ public:
         try
         {
             auto pos = this->findPrecedingSite(start);
-
             /**<  If no tag leftwise, we start at beginning*/
             if (pos==this->end())
                 pos=this->begin();
-
             int tagcount=0;
             for (; pos != this->end(); pos++)
             {
@@ -1015,8 +1019,13 @@ public:
 
             return tagcount;
         }
+        catch (ugene_exception_base & e )
+        {
+            throw e;
+        }
         catch(std::exception & e)
         {
+            //std::cerr << " Catching in getSubsetCount" <<std::endl;
             throw e;
         }
     }
