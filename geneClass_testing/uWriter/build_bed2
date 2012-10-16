@@ -1,6 +1,0 @@
-g++-4.7 -O3 -Wall -std=c++11 tests_uWriterBed.cpp \
--force_load ../../libs/libgeneClass.a \
-../../../../Documents/gtest-1.6.0/make/gtest_main.a \
--I../../geneClass -I../../../../Documents/gtest-1.6.0/include \
--I../../geneClass/boost-include \
--o tests_uWriterBed 
