@@ -45,12 +45,12 @@ void uParserWig::init(const std::string& filename, bool header )
                 _processFixedWigLine(ss);
             }
             }
-            catch(Parser_missing_mandatory_values &e){
+            catch(uParser_missing_mandatory_values &e){
                 throw e;
             }
         }
         else
-            throw Parser_missing_mandatory_header()<<string_error("Missing header in wiggle file \n");
+            throw uParser_missing_mandatory_header()<<string_error("Missing header in wiggle file \n");
 
         }
     }
@@ -82,12 +82,12 @@ void uParserWig::init(std::iostream* stream, bool header )
                 _processFixedWigLine(ss);
             }
             }
-            catch(Parser_missing_mandatory_values &e){
+            catch(uParser_missing_mandatory_values &e){
                 throw e;
             }
         }
         else
-            throw Parser_missing_mandatory_header()<<string_error("Missing header in wiggle file \n");
+            throw uParser_missing_mandatory_header()<<string_error("Missing header in wiggle file \n");
 
         }
 }
@@ -143,11 +143,11 @@ uToken uParserWig::getNextEntry()
                         switch (m_Info.getStepType())
                         {
                         case wigInformation::stepType::NA:
-                            throw Parser_missing_mandatory_values()<<string_error("No declaraction line in Wig, error parsing \n");
+                            throw uParser_missing_mandatory_values()<<string_error("No declaraction line in Wig, error parsing \n");
                             break;
                         case  wigInformation::stepType::FIXED:
                             if (!ss.eof())
-                                throw Parser_invalid_line()<<string_error("Invalid line in file \n");
+                                throw uParser_invalid_line()<<string_error("Invalid line in file \n");
 
                             start_pos=m_Info.getCurPos();
                             score=stof(cur_token);
@@ -160,7 +160,7 @@ uToken uParserWig::getNextEntry()
                             score=stof(cur_token);
                             end_pos= start_pos+m_Info.getSpan();
                             if (!ss.eof())
-                                throw Parser_invalid_line()<<string_error("Invalid line in file \n");
+                                throw uParser_invalid_line()<<string_error("Invalid line in file \n");
 
                             break;
                         }
@@ -218,12 +218,12 @@ void uParserWig::_processFixedWigLine(std::stringstream & curSStream)
     /**< Chrom */
     curSStream >> chrom;
     if (chrom.find(CHROMSYMBOL)==std::string::npos)
-        throw Parser_missing_mandatory_values()<<string_error("Missing chrom value in wig track definition");
+        throw uParser_missing_mandatory_values()<<string_error("Missing chrom value in wig track definition");
     chrom=chrom.substr(chrom.find(CHROMSYMBOL)+CHROMSYMBOL.size());
     /**< Start */
     curSStream>>strstart;
     if (strstart.find(STARTSYMBOL)==std::string::npos)
-        throw Parser_missing_mandatory_values()<<string_error("Missing start value in wig track definition");;
+        throw uParser_missing_mandatory_values()<<string_error("Missing start value in wig track definition");;
 
     strstart=strstart.substr(strstart.find(STARTSYMBOL)+STARTSYMBOL.size());
     curStart=stoi(strstart);
@@ -235,7 +235,7 @@ void uParserWig::_processFixedWigLine(std::stringstream & curSStream)
     if (step.size())
     {
         if (step.find(STEPSYMBOL)==std::string::npos)
-            throw  Parser_missing_mandatory_values()<<string_error("Missing step value in wig track definition");;;
+            throw  uParser_missing_mandatory_values()<<string_error("Missing step value in wig track definition");;;
 
         step=step.substr(step.find(STEPSYMBOL)+STEPSYMBOL.size());
 
@@ -249,7 +249,7 @@ void uParserWig::_processFixedWigLine(std::stringstream & curSStream)
     {
         /**< If not, fail again*/
         if (span.find(SPANSYMBOL)==std::string::npos)
-            throw Parser_missing_mandatory_values()<<string_error("invalid Track definition line in wig file, failling \n");
+            throw uParser_missing_mandatory_values()<<string_error("invalid Track definition line in wig file, failling \n");
 
         span=span.substr(span.find(SPANSYMBOL)+SPANSYMBOL.size());
         curSpan=stoi(span);
@@ -258,7 +258,7 @@ void uParserWig::_processFixedWigLine(std::stringstream & curSStream)
     //Nothing threw, modify values
     //Specification say's you cannot change spans
     if ((m_Info.getSpan()!=-1)&&(m_Info.getSpan()!=curSpan))
-        throw Parser_missing_mandatory_values()<<string_error("invalid Track definition line in wig file. Specification forbids changin span in dataset \n");
+        throw uParser_missing_mandatory_values()<<string_error("invalid Track definition line in wig file. Specification forbids changin span in dataset \n");
     m_Info.setStepType(wigInformation::stepType::FIXED);
     m_Info.setChrom(chrom);
     m_Info.setStep(curStep);
@@ -278,7 +278,7 @@ void uParserWig::_processVariabledWigLine(std::stringstream & curSStream)
     curSStream>> chrom;
     /**< If invalid chrom header */
     if (!(chrom.size())||((chrom.find(CHROMSYMBOL)==std::string::npos)))
-        throw Parser_missing_mandatory_values()<<string_error("invalid Track definition line in wig file, failling \n");
+        throw uParser_missing_mandatory_values()<<string_error("invalid Track definition line in wig file, failling \n");
     chrom=chrom.substr(chrom.find(CHROMSYMBOL)+CHROMSYMBOL.size());
     /**< Optional Span parameter */
     curSpan=1;
@@ -287,13 +287,13 @@ void uParserWig::_processVariabledWigLine(std::stringstream & curSStream)
     {
         /**< If good, yay, if not, fail again*/
         if (span.find(SPANSYMBOL)==std::string::npos)
-            throw Parser_missing_mandatory_values()<<string_error("invalid Track definition line in wig file, failling \n");;
+            throw uParser_missing_mandatory_values()<<string_error("invalid Track definition line in wig file, failling \n");;
         //   int testpos= span.find(SPANSYMBOL);
         span=span.substr(span.find(SPANSYMBOL)+SPANSYMBOL.size());
         curSpan=stoi(span);
     }
     if ((m_Info.getSpan()!=-1)&&(m_Info.getSpan()!=curSpan))
-        throw Parser_missing_mandatory_values()<<string_error("invalid Track definition line in wig file. Specification forbids changin span in dataset \n");
+        throw uParser_missing_mandatory_values()<<string_error("invalid Track definition line in wig file. Specification forbids changin span in dataset \n");
     m_Info.setStepType(wigInformation::stepType::VARIABLE);
     m_Info.setChrom(chrom);
     m_Info.setSpan(curSpan);

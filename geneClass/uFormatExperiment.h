@@ -38,8 +38,8 @@ protected:
 public:
 
     virtual ~uGenericNGSExperiment(){};
-    uGenericNGSExperiment& operator=(const uGenericNGSExperiment& copFrom)=delete;
-    uGenericNGSExperiment(const uGenericNGSExperiment&) = delete;
+    uGenericNGSExperiment& operator=(const uGenericNGSExperiment& copFrom);
+    uGenericNGSExperiment(const uGenericNGSExperiment&);
 
     auto begin()->decltype(ExpMap.begin()){return ExpMap.begin();};
     auto end()->decltype(ExpMap.end()){return ExpMap.end();};
@@ -53,8 +53,14 @@ public:
     //Should we be publicy allowing the turn of a pointer to our internal structure? I would assume not..
 
     /**< Should we allow this? */
+    //TODO, throw catch
     const _CHROM_* getpChrom(const std::string & chrom) const
     {
+        std::cerr << " Getting pointer to " <<chrom <<std::endl;
+        if (ExpMap.count(chrom)==0){
+            return nullptr;
+           // std::cerr << "Invalid request" <<std::endl;
+        }
         auto refer=&(ExpMap.find(chrom)->second);
         return (refer);
     };
@@ -108,6 +114,10 @@ public:
     uGenericNGSExperiment getOverlapping(uGenericNGSChrom<_BASEPAR_> &compareExp, OverlapType type=OverlapType::OVERLAP_COMPLETE);
     uGenericNGSExperiment getOverlapping(std::string chr, int start, int end, OverlapType type=OverlapType::OVERLAP_COMPLETE);
 
+
+
+    /**< Temp */
+    void printChromSortStatus()const;
 
     uGenericNGSExperiment getDistinct(uGenericNGSExperiment &compareExp);
     /**<  ok from here*/
@@ -351,10 +361,13 @@ public:
     //TODO FIX THIS' MAKE EVERYTHIGN WITH IT PROTECTED
     _CHROM_* getpChrom(const std::string & chrom)
     {
+       // std::cerr << " Getting pointer to " <<chrom <<std::endl;
+        if (ExpMap.count(chrom)==0){
+           // std::cerr << "Invalid request" <<std::endl;
+            return nullptr;
+        }
         return &(ExpMap[chrom]);
     };
-
-
 };
 
 //Start uGenericNGSExperiment
@@ -366,6 +379,7 @@ void uGenericNGSExperiment<_CHROM_, _BASE_>::addSite(const _BASE_ & newSite)
     _CHROM_* ptempChrom;
 
     ptempChrom=&(ExpMap[newSite.getChr()]);
+    ptempChrom->setChr(newSite.getChr());
     ptempChrom->addSite(newSite);
     }
     catch(std::exception & e)
@@ -511,14 +525,26 @@ template<typename _CHROM_, typename _BASE_>
 void uGenericNGSExperiment<_CHROM_, _BASE_>::sortData()
 {
     //TODO Why won't this work with applyOnAllChroms
- for( auto it = this->begin(); it!=this->end(); it++)
-            it->second.sortSites();;
+  //  std::cerr << " Are we in this"
+ for( auto it = this->begin(); it!=this->end(); it++){
+            it->second.sortSites();
+}
+
+
  //  std::function<void (_CHROM_&)> funct;//=
  // funct=    (void(_CHROM_::*)()) &_CHROM_::sortSites;
   // applyOnAllChroms(funct);
   //  applyOnAllChroms(std::mem_fun_ref(static_cast<void (_CHROM_::*)()>(&_CHROM_::sortSites)));
-
 }
+
+template<typename _CHROM_, typename _BASE_>
+void uGenericNGSExperiment<_CHROM_,_BASE_>::printChromSortStatus()const
+{
+     for( auto it = this->begin(); it!=this->end(); it++){
+            std::cerr << it->second.getChr() << " is sorted  " <<   it->second.getSortedStatus() <<std::endl;
+    }
+}
+
 
 template<typename _CHROM_, typename _BASE_>
 typename std::vector<_BASE_>::const_iterator uGenericNGSExperiment<_CHROM_,_BASE_>::findPrecedingSite(std::string chr, int position)const

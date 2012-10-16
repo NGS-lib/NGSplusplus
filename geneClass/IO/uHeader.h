@@ -13,7 +13,7 @@ namespace NGS {
 /**< List of param is hard coded as strongly typed enum for extra safety. */
 /**< This list has to be updated for every new param */
 // TODO: Add param as they are needed. Remove TMP when there is one valid param, it's there to avoid compiling error.
-enum class header_param { TMP };
+enum class header_param { CHR_LIST, CHR_SIZES };
 
 /**< uHeader class, to keep track of information in header, formated or not */
 // TODO: Data validation?
@@ -23,11 +23,13 @@ class uHeader {
 public:
 	/** \brief Default constructor.
 	  */
-	uHeader() {};
+	uHeader() ;
 	void setUnformatedHeader(const std::string& unformatedHeader) { m_unformatedHeader = unformatedHeader; };
 	/** \brief Fetch a param. Throw param_not_found if the param does not exist.
 	 * \param header_param& name: the name of the param we wish to get.
 	 */
+
+    std::vector<std::string> getParamVector(header_param name) const;
 	std::string getParam(header_param name) const;
 
 	/** \brief Return the exact same header that was in the input data.
@@ -44,25 +46,24 @@ public:
 	 * \return True if there is a matching header_param value, otherwise false.
 	 */
 	static inline bool checkParam(const std::string& param) { //TODO
-		return true;
-//		return (param == "CHR"
-//		     || param == "START_POS"
+
+		return (param == "CHR_LIST"
+		     || param == "CHR_SIZES" );
 //		     || param == "END_POS"
-//		     || param == "STRAND"
-//		     || param == "MAP_SCORE"
-//		     || param == "PHRED_SCORE"
-//		     || param == "CIGAR"
-//		     || param == "SEQUENCE"
-//		     || param == "SEQ_NAME"
-//		     || param == "FLAGS");
-	}
+    }
 
 private:
-	std::map<header_param, std::string> m_params={};
+	std::map<header_param, std::vector<std::string>> m_params={};
 	std::string m_unformatedHeader="";
 	void _setParam(const header_param& name, const std::string& value);
-	std::string _convertHeaderParamToString(const header_param& header) const;
+    void _postProcessParam(const header_param& name, const std::string& value);
 
+	std::string _convertHeaderParamToString(const header_param& header) const;
+    std::map<header_param, std::function<bool(uHeader*)>> validate_func_map;
+    std::map<header_param, std::function<void(uHeader*,std::string)>> post_func_map;
+
+
+   // std::map<header_param, std::function<void>> validate_map;
 //	void _postProcessParam(const header_param& name, const std::string& value);
 //	bool _validateParam(const header_param& name, const std::string& value) const;
 //	void _validateHeader();
@@ -72,21 +73,19 @@ private:
 //	bool _isDigit(char value) const { return std::isdigit(value);}//(value >= '0' && value <= '9'); }
 //	bool _isStreamEmpty(const std::istream& stream) const;
 
+
+    bool _noValidate(){return true;};
+    void _noPost(std::string){};
+
+    /**< Sam file parameters */
+    bool _validateChrSize(std::string sizeString);
+    bool _validateChrList(std::string idList);
 }; // End of class Header
 
 /**< Overloading of stream operator for header_param */
 //inline std::ostream & operator<<(std::ostream& Str, header_param name) {
 //	switch (name) {
 //	case header_param::CHR: return Str << "CHR";
-//	case header_param::START_POS: return Str << "START_POS";
-//	case header_param::END_POS: return Str << "END_POS";
-//	case header_param::STRAND: return Str << "STRAND";
-//	case header_param::MAP_SCORE: return Str << "MAP_SCORE";
-//	case header_param::PHRED_SCORE: return Str << "PHRED_SCORE";
-//	case header_param::CIGAR: return Str << "CIGAR";
-//	case header_param::SEQUENCE: return Str << "SEQUENCE";
-//	case header_param::SEQ_NAME: return Str << "SEQ_NAME";
-//	case header_param::FLAGS: return Str << "FLAGS";
 //	default: return Str << (int) name;
 //	}
 //}
@@ -96,13 +95,7 @@ private:
 //	is >> header;
 //	if (header == "CHR") name = header_param::CHR;
 //	else if (header == "START_POS") name = header_param::START_POS;
-//	else if (header == "END_POS") name = header_param::END_POS;
-//	else if (header == "STRAND") name = header_param::STRAND;
-//	else if (header == "MAP_SCORE") name = header_param::MAP_SCORE;
-//	else if (header == "PHRED_SCORE") name = header_param::PHRED_SCORE;
-//	else if (header == "CIGAR") name = header_param::CIGAR;
-//	else if (header == "SEQUENCE") name = header_param::SEQUENCE;
-//	else if (header == "SEQ_NAME") name = header_param::SEQ_NAME;
+
 //	else if (header == "FLAGS") name = header_param::FLAGS;
 //	else {
 //		invalid_header_param_throw e;

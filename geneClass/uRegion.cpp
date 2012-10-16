@@ -215,6 +215,7 @@ void uRegionExperiment::measureDensityOverlap(uGenericNGSExperiment<uGenericNGSC
     for (auto it =ExpMap.begin(); it!=ExpMap.end(); it++ )
     {
         uGenericNGSChrom<uGenericNGS>* chromToCompare=expToComp.getpChrom(it->second.getChr());
+
         (it)->second.measureDensityOverlap(*chromToCompare,poverlap);
     }
 }
@@ -225,10 +226,17 @@ void uRegionExperiment::measureDensityOverlap(uGenericNGSExperiment<uGenericNGSC
  */
 void uRegionExperiment::measureDensityOverlap(uTagsExperiment& expToComp, const OverlapType poverlap)
 {
+    //std::cerr << "All status are " <<std::endl;
+    // expToComp.printChromSortStatus() ;
     for (auto it =ExpMap.begin(); it!=ExpMap.end(); it++ )
     {
-        uTagsChrom* chromToCompare=expToComp.getpChrom(it->second.getChr());
-        (it)->second.measureDensityOverlap(*chromToCompare,poverlap);
+        //std::cerr << " Getting " << it->second.getChr() <<std::endl;
+           // std::cerr << " Before" << std::endl;
+        if (expToComp.getpChrom(it->second.getChr())!=nullptr){
+           // std::cerr << " Inside" << std::endl;
+            uTagsChrom* chromToCompare=expToComp.getpChrom(it->second.getChr());
+            (it)->second.measureDensityOverlap(*chromToCompare,poverlap);
+            }
     }
 }
 
@@ -265,6 +273,7 @@ void uRegionChrom::measureDensityOverlap(uTagsChrom& chromtoComp, const OverlapT
 {
     for (auto it =VecSites.begin(); it!=VecSites.end(); it++ )
     {
+
         it->setCount((chromtoComp.getSubsetCount(it->getStart(), it->getEnd(),pOverlap)));
     }
 }
@@ -410,8 +419,11 @@ void uRegionChrom::generateSignal(uTagsExperiment& expToComp)
 {
 
 //TODO redo error management
-     vector<long int> densityValues;
+    vector<long int> densityValues;
     string trace;
+
+    if (expToComp.getpChrom(this->getChr())==nullptr)
+        return;
     try
     {
         auto pTag =expToComp.getpChrom(this->getChr());
@@ -518,7 +530,7 @@ void uRegionExperiment::generateSignal(uTagsExperiment& expToComp)
     for(auto& chrom : ExpMap)
     {
        try {
-        chrom.second.generateSignal(expToComp);
+            chrom.second.generateSignal(expToComp);
         }
         /**<  Managed invalid tags. Eventually, this should offer HARD/SOFT/SILENT Options */
         catch(skipped_elem_throw & e)
