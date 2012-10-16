@@ -1,11 +1,9 @@
 #include "uHeader.h"
-#include "../utility/polyTypes.h"
+//#include "../utility/polyTypes.h"
 namespace NGS {
 /** \brief If the param exist, it returns it's value in string format. Otherwise returns param_not_found error.
  * \param header_param name the name of the param from header_param strongly type enum types.
  */
-
-
 
 bool uHeader::_validateChrSize(std::string sizeString)
 {
@@ -47,7 +45,6 @@ bool uHeader::_validateChrList(std::string chrString)
     post_func_map[header_param::CHR_SIZES]=&uHeader::_noPost;
 
  }
-
 
 std::vector<std::string> uHeader::getParamVector(header_param name) const{
 	if(isParamSet(name)) {
@@ -123,7 +120,6 @@ std::string uHeader::_convertHeaderParamToString(const header_param& header) con
 void uHeader::_postProcessParam(const header_param& name, const std::string& value) {
 	post_func_map[name](this,value);
 }
-
 
 
 } // End of namespace NGS
