@@ -1,10 +1,10 @@
 #ifndef UWRITERBED_H_INCLUDED
 #define UWRITERBED_H_INCLUDED
 
+#include "uWriterBase.h"
 #include <iostream>
 #include <fstream>
 #include "../NGS++.h"
-#include "uWriterBase.h"
 
 namespace NGS {
 
