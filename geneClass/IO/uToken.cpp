@@ -71,7 +71,7 @@ void uToken::_setParam(const token_param& name, const std::string& value)
 	try {
 		if (_validateParam(name, value) == false) {
 			invalid_value_throw e;
-			e << string_error(value+"\n");
+			e << string_error(this->_convertTokenParamToString(name)+" "+value+"\n");
 			throw e;
 		}
 		_postProcessParam(name, value);

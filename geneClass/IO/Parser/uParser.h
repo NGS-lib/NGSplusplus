@@ -32,6 +32,7 @@ public :
 	/** \brief Get a specific data from header.
 	  */
 	std::string getHeaderParam(header_param name) const { return m_pParserBase->getHeaderParam(name); }
+    std::vector<std::string> getHeaderParamVector(header_param name) const { return m_pParserBase->getHeaderParamVector(name); }
 	/** \brief Check if there is a value associated with a given param.
 	  * \param header_param& name: name of the param to check.
 	  */

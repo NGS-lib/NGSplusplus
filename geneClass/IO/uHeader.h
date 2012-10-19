@@ -13,7 +13,7 @@ namespace NGS {
 /**< List of param is hard coded as strongly typed enum for extra safety. */
 /**< This list has to be updated for every new param */
 // TODO: Add param as they are needed. Remove TMP when there is one valid param, it's there to avoid compiling error.
-enum class header_param { CHR_LIST, CHR_SIZES };
+enum class header_param { CHR, CHR_SIZE };
 
 /**< uHeader class, to keep track of information in header, formated or not */
 // TODO: Data validation?
@@ -25,6 +25,9 @@ public:
 	  */
 	uHeader() ;
 	void setUnformatedHeader(const std::string& unformatedHeader) { m_unformatedHeader = unformatedHeader; };
+    void _setParam(const header_param& name, const std::string& value);
+    void _addToParam(const header_param& name, const std::string& value);
+
 	/** \brief Fetch a param. Throw param_not_found if the param does not exist.
 	 * \param header_param& name: the name of the param we wish to get.
 	 */
@@ -47,62 +50,62 @@ public:
 	 */
 	static inline bool checkParam(const std::string& param) { //TODO
 
-		return (param == "CHR_LIST"
-		     || param == "CHR_SIZES" );
-//		     || param == "END_POS"
+		return (param == "CHR"
+		     || param == "CHR_SIZE" );
     }
 
 private:
 	std::map<header_param, std::vector<std::string>> m_params={};
 	std::string m_unformatedHeader="";
-	void _setParam(const header_param& name, const std::string& value);
-    void _postProcessParam(const header_param& name, const std::string& value);
+
+    void _postProcessParam(const header_param& name, std::string& value);
+    bool _validateParam(header_param name, const std::string& value);
 
 	std::string _convertHeaderParamToString(const header_param& header) const;
-    std::map<header_param, std::function<bool(uHeader*)>> validate_func_map;
+    std::map<header_param, std::function<bool(const uHeader*,const std::string&)> > validate_func_map;
     std::map<header_param, std::function<void(uHeader*,std::string)>> post_func_map;
 
 
-   // std::map<header_param, std::function<void>> validate_map;
-//	void _postProcessParam(const header_param& name, const std::string& value);
-//	bool _validateParam(const header_param& name, const std::string& value) const;
-//	void _validateHeader();
-//	void _checkMandatoryValues() const;
-//	void _throwInvalidHeader(const std::string& baseErrorMessage) const;
-
-//	bool _isDigit(char value) const { return std::isdigit(value);}//(value >= '0' && value <= '9'); }
-//	bool _isStreamEmpty(const std::istream& stream) const;
-
-
-    bool _noValidate(){return true;};
-    void _noPost(std::string){};
+    bool _noValidate(const std::string& value)const {return true;};
+    void _noPost(std::string) {};
 
     /**< Sam file parameters */
-    bool _validateChrSize(std::string sizeString);
-    bool _validateChrList(std::string idList);
+    bool _validateChrSize(const std::string& sizeString)const;
+    bool _validateChrList(const std::string& chrString)const;
 }; // End of class Header
 
-/**< Overloading of stream operator for header_param */
-//inline std::ostream & operator<<(std::ostream& Str, header_param name) {
-//	switch (name) {
-//	case header_param::CHR: return Str << "CHR";
-//	default: return Str << (int) name;
-//	}
-//}
-//
-//inline std::istream& operator>>(std::istream &is, header_param& name) {
-//	std::string header;
-//	is >> header;
-//	if (header == "CHR") name = header_param::CHR;
-//	else if (header == "START_POS") name = header_param::START_POS;
 
-//	else if (header == "FLAGS") name = header_param::FLAGS;
-//	else {
-//		invalid_header_param_throw e;
-//		e << string_error(header);
-//		throw e;
-//	}
-//	return is;
-//}
+
+
+/**< Overloading of stream operator for header_param */
+inline std::ostream & operator<<(std::ostream& Str, header_param name) {
+	switch (name) {
+	case header_param::CHR : return Str << "CHR";
+	case header_param::CHR_SIZE : return Str << "CHR_SIZE";
+	default: return Str << (int) name;
+	}
+}
+
+/**< Overloading of stream operator for header_param */
+inline std::string& operator<<(std::string& Str, header_param name) {
+	switch (name) {
+	case header_param::CHR : return Str+="CHR";
+	case header_param::CHR_SIZE : return Str+="CHR_SIZE";
+	default: return Str;
+	}
+}
+
+inline std::istream& operator>>(std::istream &is, header_param& name) {
+	std::string header;
+	is >> header;
+	if (header == "CHR") name = header_param::CHR;
+	else if (header == "CHR_SIZE") name = header_param::CHR_SIZE;
+	else {
+		invalid_header_param_throw e;
+		e << string_error(header);
+		throw e;
+	}
+	return is;
+}
 } // End of namespace NGS
 #endif // UHEADER_H_INCLUDED

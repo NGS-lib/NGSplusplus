@@ -30,12 +30,19 @@ struct construct_elem_throw : virtual elem_throw{};
 struct param_throw : virtual elem_throw{};
 struct format_parsing_error : virtual ugene_exception_base{};
 
+
+/**< File IO exceptions */
+
+
+
 /**< uToken Exceptions */
 struct uToken_exception_base : virtual ugene_exception_base{};
 struct invalid_uToken_throw : virtual uToken_exception_base{};
 struct invalid_token_param_throw : virtual uToken_exception_base{};
 struct invalid_value_throw : virtual uToken_exception_base{};
 struct param_not_found : virtual invalid_uToken_throw{};
+
+
 
  /**< uParser Exceptions */
 struct uParser_exception_base : virtual ugene_exception_base{};
@@ -49,6 +56,9 @@ struct customParser_missing_mandatory_values : virtual uParser_missing_mandatory
 struct uParser_invalid_Sam_header : virtual uParser_invalid_header{};
 struct uParser_invalid_Sam_line : virtual uParser_invalid_line{};
 
+/**< uHeader Exceptions */
+
+struct invalid_header_param_throw : virtual uParser_exception_base{};
 
 /**< uWrite exception */
 struct uWriter_exception_base : virtual ugene_exception_base{};

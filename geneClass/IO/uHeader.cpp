@@ -4,44 +4,15 @@ namespace NGS {
  * \param header_param name the name of the param from header_param strongly type enum types.
  */
 
-bool uHeader::_validateChrSize(std::string sizeString)
-{
-    try {
-        int value = std::stoi(sizeString);
-        /**< Chr size must be above 0 */
-        if (value <= 0)
-            return false;
-        return true;
-    }
-    catch(...){
-        return false;
-    }
-}
-
-bool uHeader::_validateChrList(std::string chrString)
-{
-    /**< Make sur our name is unique */
-    if (isParamSet(header_param::CHR_LIST))
-    {
-       auto listVector = getParamVector(header_param::CHR_LIST);
-       auto it = find (listVector.begin(), listVector.end(), chrString);
-       if (it!=listVector.end())
-        return false;
-    }
-
-    return true;
-}
-
-
  uHeader::uHeader(){
 
 /**< Register our functions */
     /**< Validate functions */
-    validate_func_map[header_param::CHR_LIST]= &uHeader::_noValidate;
-    validate_func_map[header_param::CHR_SIZES]=&uHeader::_noValidate;
+    validate_func_map[header_param::CHR]= &uHeader::_validateChrList;
+    validate_func_map[header_param::CHR_SIZE]=&uHeader::_validateChrSize;
     /**< Post processing function */
-    post_func_map[header_param::CHR_LIST]=&uHeader::_noPost;
-    post_func_map[header_param::CHR_SIZES]=&uHeader::_noPost;
+    post_func_map[header_param::CHR]=&uHeader::_noPost;
+    post_func_map[header_param::CHR_SIZE]=&uHeader::_noPost;
 
  }
 
@@ -71,6 +42,33 @@ std::string uHeader::getParam(header_param name) const{
 	}
 }
 
+bool uHeader::_validateChrSize(const std::string& sizeString)const{
+    try {
+        int value = std::stoi(sizeString);
+        /**< Chr size must be above 0 */
+        if (value <= 0)
+            return false;
+        return true;
+    }
+    catch(...){
+        return false;
+    }
+};
+
+
+bool uHeader::_validateChrList(const std::string& chrString)const
+{
+    /**< Make sur our name is unique */
+    if (isParamSet(header_param::CHR))
+    {
+       auto listVector = getParamVector(header_param::CHR);
+       auto it = find (listVector.begin(), listVector.end(), chrString);
+       if (it!=listVector.end())
+        return false;
+    }
+
+    return true;
+}
  //auto begin()->decltype(ExpMap.begin()){return ExpMap.begin();};
 //auto uHeader::getParam(header_param name)->( std::tuple_element<0,  m_params.find(name)->second>)
 //{
@@ -94,18 +92,41 @@ void uHeader::_setParam(const header_param& name, const std::string& value){
 	// TODO: Valiation and post-process of param?
 	if (m_params[name].size()==0)
           m_params[name].resize(1);
+    if (_validateParam(name,value)==false){
+            std::string errMsg;
+            std::string strName; strName << name;
+            errMsg = ("Invalid header, type = "+  strName +" value = " + value+"\n");
+            throw invalid_header_param_throw()<<string_error(errMsg);
+        }
 
     m_params[name].at(0) = value;
 }
+
+/** \brief Add a param to the vector of that param
+ * \param const header_param& name: the name of the param. Must be a header_param type.
+ * \param const std::string& value: the value of the param in string format.
+ */
+void uHeader::_addToParam(const header_param& name, const std::string& value){
+	// TODO: Valiation and post-process of param?
+	std::string strName; strName << name;
+	  if (_validateParam(name,value)==false){
+            std::string errMsg;
+            std::string strName; strName << name;
+            errMsg = ("Invalid header, type = "+  strName +" value = " + value+"\n");
+            throw invalid_header_param_throw()<<string_error(errMsg);
+        }
+    m_params[name].push_back(value);
+}
+
 
 /** \brief Utility function to convert an header_param type to it's string counterpart.
  * \param const header_param& header: the header_param type to convert to string.
  */
 std::string uHeader::_convertHeaderParamToString(const header_param& header) const {
-	// TODO: Code operator << when we have some header_param
-//	std::stringstream ss;
-//	ss << token;
-//	return ss.str();
+
+	std::stringstream ss;
+	ss << header;
+	return ss.str();
 	return "";
 }
 
@@ -116,9 +137,23 @@ std::string uHeader::_convertHeaderParamToString(const header_param& header) con
  * \return void
  *
  */
-void uHeader::_postProcessParam(const header_param& name, const std::string& value) {
+void uHeader::_postProcessParam(const header_param& name, std::string& value) {
 	post_func_map[name](this,value);
 }
+
+
+/** \brief Call the associated validation function
+ *
+ * \param name const token_param&
+ * \param value const std::string&a
+ * \return bool
+ *
+ */
+bool uHeader::_validateParam(header_param name, const std::string& value) {
+   // std::cout << "validating call" <<std::endl;
+    return validate_func_map[name](this,value);
+}
+
 
 
 } // End of namespace NGS

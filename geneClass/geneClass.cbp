@@ -46,12 +46,14 @@
 		<Compiler>
 			<Add directory="../../myUtilityFiles" />
 		</Compiler>
-		<Unit filename="IO/Parser/iParser.cpp" />
-		<Unit filename="IO/Parser/iParser.h" />
-		<Unit filename="IO/Parser/iParserBase.cpp" />
-		<Unit filename="IO/Parser/iParserBase.h" />
+		<Unit filename="IO/Parser/uParser.cpp" />
+		<Unit filename="IO/Parser/uParser.h" />
+		<Unit filename="IO/Parser/uParserBase.cpp" />
+		<Unit filename="IO/Parser/uParserBase.h" />
 		<Unit filename="IO/Parser/uParserBed.cpp" />
 		<Unit filename="IO/Parser/uParserBed.h" />
+		<Unit filename="IO/Parser/uParserSam.cpp" />
+		<Unit filename="IO/Parser/uParserSam.h" />
 		<Unit filename="IO/Parser/uParserWig.cpp" />
 		<Unit filename="IO/Parser/uParserWig.h" />
 		<Unit filename="IO/Writer/uWriter.cpp" />
@@ -76,8 +78,6 @@
 		</Unit>
 		<Unit filename="uFunctions.h" />
 		<Unit filename="uGeneException.h" />
-		<Unit filename="uParser.cpp" />
-		<Unit filename="uParser.h" />
 		<Unit filename="uRegion.cpp" />
 		<Unit filename="uRegion.h" />
 		<Unit filename="uTags.cpp">

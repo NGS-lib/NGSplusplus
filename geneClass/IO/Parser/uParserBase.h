@@ -32,7 +32,8 @@ class uParserBase{
 	virtual uToken getNextEntry()=0;
 	/** \brief Get a specific data from header.
 	  */
-	std::string getHeaderParam(header_param name) const { return m_headerData.getParam(name); }
+	std::string getHeaderParam(header_param name) const { return m_headerData.getParam(name); } ;
+    std::vector<std::string> getHeaderParamVector(header_param name) const{return m_headerData.getParamVector(name); } ;
 	/** \brief Check if there is a value associated with a given param.
 	  * \param header_param& name: name of the param to check.
 	  */

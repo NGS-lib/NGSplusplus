@@ -115,7 +115,7 @@ inline std::istream& operator>>(std::istream &is, token_param& name) {
 	else if (token == "SCORE") name = token_param::SCORE;
 	else {
 		invalid_token_param_throw e;
-		e << string_error(token);
+		e << string_error("Failling in Token >> operator, missing param: "+token+"\n");
 		throw e;
 	}
 	return is;
