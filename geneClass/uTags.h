@@ -26,7 +26,6 @@ private:
     char* name=nullptr;
     char* phredScore=nullptr;
     char* cigar=nullptr;
-
     //Paired End
     // bool PE;
     //Unmapped
@@ -338,6 +337,8 @@ private:
 public:
 
     void loadFromSam(std::ifstream& ourStream, bool minimal= false);
+    void loadFromSamWithParser(std::string);
+
     void loadSamHeader(std::ifstream& ourStream);
     void writeToBed(std::ostream& out) const;
     void setChromSize(std::string chrom, int size);

@@ -32,7 +32,7 @@ protected:
 	std::ostream* m_pOstream = nullptr;
 	bool m_dynamicStream = false;
 
-	std::vector<std::string> m_fieldsNames;
+	std::vector<std::string> m_fieldsNames={};
 	char m_delimiter = '\t';
 };
 

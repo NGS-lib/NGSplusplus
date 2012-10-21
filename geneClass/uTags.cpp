@@ -11,6 +11,8 @@ uTags::uTags():uGenericNGS()
 {
 }
 
+
+/**< From uTokens */
 uTags::uTags(uToken pToken)try:uGenericNGS(pToken){
 
 if (pToken.isParamSet(token_param::CIGAR))
@@ -767,6 +769,29 @@ std::vector<float> uTagsChrom::getRegionSignal(int start, int end, bool overlap)
     }
     return tempSignal;
 }
+
+void uTagsExperiment::loadFromSamWithParser(std::string filepath)
+{
+    op_mode= ReadMode::DEFAULT;
+    uParser ourParser(filepath, "SAM");
+    auto chrList=ourParser.getHeaderParamVector(header_param::CHR);
+    auto chrSizes=ourParser.getHeaderParamVector(header_param::CHR_SIZE);
+try {
+    for (int i=0; i<(int)chrList.size();i++){
+        std::cerr << "name and size are :" <<chrList.at(i) <<" "<<chrSizes.at(i)<<std::endl;
+        this->setChromSize(chrList.at(i), std::stoi(chrSizes.at(i)));
+    }
+
+    while (ourParser.eof()==false){
+        auto Token =ourParser.getNextEntry();
+        this->addSite(uTags(Token));
+    }
+}
+    catch(...){
+        throw;
+    }
+}
+
 
 /** \brief Loads an entire Sam file, SE or PE
  *

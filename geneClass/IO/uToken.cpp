@@ -71,7 +71,7 @@ void uToken::_setParam(const token_param& name, const std::string& value)
 	try {
 		if (_validateParam(name, value) == false) {
 			invalid_value_throw e;
-			e << string_error(this->_convertTokenParamToString(name)+" "+value+"\n");
+			e << string_error("Invalid token type is : "+this->_convertTokenParamToString(name)+"\n Invalid value is :"+value+"\n");
 			throw e;
 		}
 		_postProcessParam(name, value);
@@ -230,7 +230,9 @@ void uToken::_validateSequenceCigar() const {
 						break;
 					}
 					cigar_size += value;
+					/**< Clear the stream */
 					ss.clear();
+					ss.str(std::string());
 				}
 			}
 			/**< Check if sequence length and cigar sum match  */
@@ -241,7 +243,8 @@ void uToken::_validateSequenceCigar() const {
 				cigar_size_stream << cigar_size;
 				std::string error = "Sequence length and sum of cigar M/I/S/=/X values do not match.\n";
 				error += "Sequence length: " + seq_size_stream.str();
-				error += ". Sum of cigar values: " + cigar_size_stream.str() + ".";
+				error += ". Sum of cigar values: " + cigar_size_stream.str() + "\n";
+				error += "Cigar string is : "+str_cigar+"\n";
 				_throwInvalidToken(error);
 			}
 		}
@@ -255,14 +258,17 @@ void uToken::_validateSequencePhred() const {
 		if (isParamSet(token_param::PHRED_SCORE)) {
 			std::string str_phred = getParam(token_param::PHRED_SCORE);
 			if (str_phred.size() != 0) {
-				if (str_sequence.size() != str_phred.size()) {
-					std::stringstream seq_size;
-					seq_size << str_sequence.size();
-					std::stringstream phred_size;
-					phred_size << str_phred.size();
-					std::string error = "Sequence and phred score length does not match.\n";
-					error += "Sequence size: " + seq_size.str() + ". Phred size: " + phred_size.str() + ".";
-					_throwInvalidToken(error);
+			    /**< If only 1 element and *, then not stored */
+			    if(! ((str_phred.size()==1) &&(str_phred.at(0)=='*') )){
+                    if (str_sequence.size() != str_phred.size()) {
+                        std::stringstream seq_size;
+                        seq_size << str_sequence.size();
+                        std::stringstream phred_size;
+                        phred_size << str_phred.size();
+                        std::string error = "Sequence and phred score length does not match.\n";
+                        error += "Sequence size: " + seq_size.str() + ". Phred size: " + phred_size.str() + ".";
+                        _throwInvalidToken(error);
+                    }
 				}
 			}
 		}
@@ -353,6 +359,10 @@ bool uToken::_sequenceIsValid(const std::string& value) const {
 		case 'N':
 			break;
 		case '.':
+			break;
+        case '=':
+			break;
+        case '*':
 			break;
 		default:
 			return false;

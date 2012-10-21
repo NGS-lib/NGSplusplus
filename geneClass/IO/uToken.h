@@ -14,6 +14,7 @@ namespace NGS {
 /**< This list has to be updated for every new param */
 enum class token_param { CHR, START_POS, END_POS, STRAND, MAP_SCORE, PHRED_SCORE, CIGAR, SEQUENCE, SEQ_NAME, FLAGS ,SCORE};
 
+
 /**< uToken class, to bridge parser and the library's class */
 /**< This is the class that takes care of data validation */
 /**< All the data is saved in a map in string format */

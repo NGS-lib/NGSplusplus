@@ -1,4 +1,5 @@
 #include "uParserSam.h"
+#include "../utility/utility.h"
 #include <sstream>
 using namespace std;
 
@@ -89,10 +90,19 @@ uToken uParserSam::getNextEntry()
             token_infos << "CIGAR\t" << cigar << "\n";
             token_infos << "PHRED_SCORE\t" << qual << "\n";
 
-           ss>>qual;
 
-            if (!ss.eof())
-                throw uParser_invalid_line()<<string_error("Invalid line in Sam file, superfluous lines final token \n");
+            std::string strand="+";
+            if (utility::querySamFlag(std::stoi(flag),SamQuery::SEQ_REV_STRAND))
+                strand="-";
+
+             token_infos << "STRAND\t" << strand << "\n";
+
+
+           /**< Currently ignore aligment tags */
+           //TODO support aligment tags
+
+           // if (!ss.eof())
+           //     throw uParser_invalid_line()<<string_error("Invalid line in Sam file, superfluous lines final token \n");
             uToken token(token_infos);
             return token;
         }

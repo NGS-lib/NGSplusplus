@@ -68,7 +68,7 @@ struct no_fields_names : virtual uWriter_exception_base{};
 static inline void addStringError(ugene_exception_base & e, const std::string & err){
 	std::string trace;
 	if (std::string const * ste =boost::get_error_info<string_error>(e) )
-	trace=*ste;
+        trace=*ste;
 	e << string_error(trace+err+"\n");
 }
 
