@@ -40,6 +40,7 @@ class uParserBase{
 	bool isHeaderParamSet(const header_param& name) const { return m_headerData.isParamSet(name); }
 
 protected:
+	bool m_dynamicStream = false;
     std::istream* m_pIostream=nullptr;
     uHeader m_headerData;
 

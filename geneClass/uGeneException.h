@@ -52,6 +52,7 @@ struct uParser_missing_mandatory_values : virtual uParser_exception_base{};
 struct uParser_missing_mandatory_header : virtual uParser_invalid_header{};
 struct uParser_invalid_line : virtual uParser_exception_base{};
 struct customParser_missing_mandatory_values : virtual uParser_missing_mandatory_values{};
+struct uParserBed_invalid_number_of_columns : virtual uParser_exception_base{};
 /**< Sam Parser exception */
 struct uParser_invalid_Sam_header : virtual uParser_invalid_header{};
 struct uParser_invalid_Sam_line : virtual uParser_invalid_line{};
