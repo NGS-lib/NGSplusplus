@@ -51,9 +51,10 @@
 				<Linker>
 					<Add option="-s" />
 					<Add option="-lpthread" />
-					<Add library="../../libs/release/libgeneClass.a" />
+					<Add option="-Wl,-whole-archive ../../libs/release/libgeneClass.a -Wl,-no-whole-archive" />
 					<Add library="../../libs/release/libgtest.a" />
 					<Add library="gomp" />
+					<Add directory="../../libs/release" />
 				</Linker>
 			</Target>
 		</Build>
@@ -77,7 +78,9 @@
 			<Option target="&lt;{~None~}&gt;" />
 		</Unit>
 		<Unit filename="main.cpp" />
-		<Unit filename="uParser/test_uParser.cpp" />
+		<Unit filename="uGeneric/test_uGeneric.cpp" />
+		<Unit filename="uGeneric/test_uGenericChrom.cpp" />
+		<Unit filename="uParser/test_uParserWig.cpp" />
 		<Unit filename="uTagTests.cpp">
 			<Option compilerVar="CC" />
 			<Option compile="0" />
