@@ -777,8 +777,8 @@ void uTagsExperiment::loadFromSamWithParser(std::string filepath)
     auto chrList=ourParser.getHeaderParamVector(header_param::CHR);
     auto chrSizes=ourParser.getHeaderParamVector(header_param::CHR_SIZE);
 try {
+//        std::cerr << "name and size are :" <<chrList.at(i) <<" "<<chrSizes.at(i)<<std::endl;
     for (int i=0; i<(int)chrList.size();i++){
-        std::cerr << "name and size are :" <<chrList.at(i) <<" "<<chrSizes.at(i)<<std::endl;
         this->setChromSize(chrList.at(i), std::stoi(chrSizes.at(i)));
     }
 
