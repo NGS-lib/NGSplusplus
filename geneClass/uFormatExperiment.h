@@ -32,6 +32,7 @@ protected:
     std::map<std::string,_CHROM_>  ExpMap;
 
     void removeSite(std::string chr,int position);
+
     void inferChrSize();
 
 
@@ -67,13 +68,14 @@ public:
 
     void combine(const _CHROM_ &);
     void addSite(const _BASE_ & newSite);
+
+
     long long count() const;
 
     int countExpUnique();
 
     //TODO Implement merge
     //void cutDuplicates();
-
 
     //Replace with parser
     bool isEndfile()
@@ -136,6 +138,32 @@ public:
 
     void divideItemsIntoBinofSize(int N, SplitType type=SplitType::STRICT);
     void divideItemsIntoNBins(int N, SplitType type=SplitType::STRICT);
+
+
+    /** \brief Remove sites from every chrom for which the predicate is true.
+     *
+     * \param pred UnaryPredicate Predicate to test, follows standard pattern
+     * \return void
+     *
+     */
+    template<class UnaryPredicate>
+    void removeSpecificSites(UnaryPredicate pred){
+    try
+        {
+        for(auto& x : ExpMap)
+            {
+                x.second.removeSpecificSites(pred);
+            }
+        }
+        catch(uChrom_operation_throw &e)
+        {
+            #ifdef DEBUG
+            std::cerr << "Failed in divideItemsIntoBinofSize"<<std::endl;
+            #endif
+            throw uExp_operation_throw()<<string_error("Throwing while trying to call removeSpecificSites() on all chroms");
+        }
+
+    }
     /**< Wrappers around the STL algorithms */
     /** \brief Accumulate information by querying all chromosomes
       *
@@ -731,10 +759,12 @@ for( auto& x : ExpMap)
             x.second.divideItemsIntoNBins(N,type);
         }
     }
-    catch(...)
+    catch(uChrom_operation_throw &e)
     {
-        std::cerr << "Failed in divideItemsIntoBinofSize"<<std::endl;
-        throw;
+        #ifdef DEBUG
+        std::cerr << "Failed in divideItemsIntoNBins"<<std::endl;
+        #endif
+        throw uExp_operation_throw()<<string_error("Throwing while trying to call divideItemsIntoNBins() on all chroms");
     }
 }
 
@@ -756,20 +786,15 @@ void uGenericNGSExperiment<_CHROM_,_BASE_>::divideItemsIntoBinofSize(int N, Spli
             x.second.divideItemsIntoBinofSize(N,type);
         }
     }
-    catch(...)
+    catch(uChrom_operation_throw &e)
     {
+        #ifdef DEBUG
         std::cerr << "Failed in divideItemsIntoBinofSize"<<std::endl;
-        throw;
+        #endif
+        throw uExp_operation_throw()<<string_error("Throwing while trying to call divideItemsIntoBinofSize() on all chroms");
     }
 }
 
-
-
-//namespace uGeneric{
-//
-//    #define uGenericExp uGenericNGSExperiment<uGenericNGSChrom<uGenericNGS>,uGenericNGS>
-
-//}
 
 
 } // End of namespace NGS

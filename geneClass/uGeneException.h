@@ -29,7 +29,9 @@ struct skipped_elem_throw : virtual elem_throw{};
 struct construct_elem_throw : virtual elem_throw{};
 struct param_throw : virtual elem_throw{};
 struct format_parsing_error : virtual ugene_exception_base{};
-
+struct ugene_operation_throw : virtual ugene_exception_base{};
+struct uChrom_operation_throw : virtual ugene_operation_throw{};
+struct uExp_operation_throw : virtual uChrom_operation_throw{};
 
 /**< File IO exceptions */
 

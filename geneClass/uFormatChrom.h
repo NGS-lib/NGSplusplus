@@ -275,7 +275,7 @@ public:
      * \return void
      *
      */
-    void removeSpecificSites(UnaryPredicate pred) const
+    void removeSpecificSites(UnaryPredicate pred)
     {
         try
         {
