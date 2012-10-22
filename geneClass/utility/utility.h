@@ -9,6 +9,7 @@
 #include <exception>
 #include <iostream>
 #include <fstream>
+#include <stdexcept>
 
 /**< When comparing intervals */
 enum class OverlapType
@@ -132,12 +133,13 @@ inline static void loadStream(const std::string & filepath,std::ifstream& file)
         file.open(filepath);
         if( !(file))
         {
-            throw(10);
+            throw(0);
         }
     }
     catch(...)
     {
-        throw filepath;
+        std::string error("Invalid filepath to stream, failling in LoadStream()\n Path is: "+filepath+"\n");
+        throw std::runtime_error(error.c_str());
     }
 
 }
