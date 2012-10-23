@@ -28,7 +28,10 @@ void uParserBed::init(const std::string& filename, bool header)
 		m_pIostream = ifs;
 		m_dynamicStream = true;
 	}
-	_parseHeader();
+	if (header == true)
+	{
+		_parseHeader();
+	}
 }
 
 void uParserBed::init(std::iostream* stream, bool header) 
