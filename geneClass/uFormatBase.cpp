@@ -4,6 +4,7 @@
 #include "uFormatBase.h"
 #include <cassert>
 #include "utility/utility.h"
+#include <limits>
 namespace NGS {
 /** \brief Increase size of the element. Coordinates can go no lower then 0,
  *
@@ -307,6 +308,31 @@ std::vector<uGenericNGS> uGenericNGS::divideIntoBinofSize(const int N, const Spl
 
     return returnVec;
 };
+/**< A score is an arbitray value set that can be used later */
+/** \brief Set the score of a contig. Note that this involves resizing the vector, so settting arbitrarily large score counts can bust your memory
+ * \param float p_score: the score to set
+ * \param int p_Pos: the count of the score to set
+ */
+void uGenericNGS::setScore(float p_score, int p_Pos)
+{
+    try {
+    if (p_Pos>= ((int)score.size()))
+        score.resize(p_Pos+1);
+    score.at(p_Pos)=p_score;
+    }
+    catch(std::exception &e){throw e;}
+}
+
+/** \brief Fetch the score at a specific region, return infinity if not set
+ * \param int p_Pos: the position where the score should be fetched
+ */
+float uGenericNGS::getScore(int p_Pos) const
+{
+    if (p_Pos>= ((int)score.size()))
+       return std::numeric_limits<float>::infinity();
+    return score.at(p_Pos);
+}
+
 
 //TODO USE PARSER
 namespace factory
@@ -341,4 +367,7 @@ uGenericNGS makeNGSfromTabString(std::string tabString)
 }
 
 }
+
+
+
 } // End of namespace NGS

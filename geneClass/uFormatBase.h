@@ -30,7 +30,7 @@ protected:
     long int startPos=0;
     long int endPos=0;
     StrandDir strand=StrandDir::FORWARD;
-
+    std::vector<float> score={};
 public:
 
     /**< Constructor taking chromosome name, start and end */
@@ -244,6 +244,12 @@ public:
     /**< Should this be there? */
     bool doesOverlap(uGenericNGS other,OverlapType type=OverlapType::OVERLAP_PARTIAL) const;
 
+    float getScore(int p_Pos) const;
+    float getScore() const {return getScore(0);};
+    int getScoreCount() const { return score.size();};
+
+    void setScore(float p_score, int p_Pos);
+    void setScore(float ourscore) {setScore(ourscore,0);}
 
 };
 

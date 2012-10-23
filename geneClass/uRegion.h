@@ -30,12 +30,8 @@ class uRegion : public uGenericNGS
         void setSignal(std::vector<float>);
         std::vector<float> getSignal();
 
-        float getScore(int p_Pos) const;
-        float getScore() const {return getScore(0);};
-        int getScoreCount() const { return score.size();};
 
-        void setScore(float p_score, int p_Pos);
-        void setScore(float ourscore) {setScore(ourscore,0);}
+
 
         void writeSignal(std::ostream& out) const;
         void writeRegion(std::ostream& out) const;
@@ -54,7 +50,7 @@ class uRegion : public uGenericNGS
     /**< Varies again */
     int count=0;
     /**< And again */
-    std::vector<float> score={};
+
 };
 
 // TODO: Move read-write to parser and output class?
