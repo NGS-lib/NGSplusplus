@@ -335,7 +335,6 @@ private:
     // void loadSamStream(std::ifstream& ourStream){samStream =ourStream;};
     void parseSamHeader();
 public:
-
     void loadFromSam(std::ifstream& ourStream, bool minimal= false);
     void loadFromSamWithParser(std::string);
 

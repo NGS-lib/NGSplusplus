@@ -3,7 +3,7 @@
 #include "uTags.h"
 //#include "uParser.h"
 #include "IO/uToken.h"
-#include <limits>
+
 using namespace std;
 namespace NGS {
 /** \brief Default constructor
@@ -68,29 +68,6 @@ catch(construct_elem_throw &e)
 uRegion::~uRegion()
 {}
 
-/** \brief Set the score of a region. Note that this involves resizing the vector, so settting arbitrarily large score counts can bust your memory
- * \param float p_score: the score to set
- * \param int p_Pos: the count of the score to set
- */
-void uRegion::setScore(float p_score, int p_Pos)
-{
-    try {
-    if (p_Pos>= ((int)score.size()))
-        score.resize(p_Pos+1);
-    score.at(p_Pos)=p_score;
-    }
-    catch(std::exception &e){throw e;}
-}
-
-/** \brief Fetch the score at a specific region, return infinity if not set
- * \param int p_Pos: the position where the score should be fetched
- */
-float uRegion::getScore(int p_Pos) const
-{
-    if (p_Pos>= ((int)score.size()))
-       return numeric_limits<float>::infinity();
-    return score.at(p_Pos);
-}
 
 /** \brief Set the signal value for our region at a specific position.
  *

@@ -246,6 +246,7 @@ public:
       * cases, the function must return void (any other return value will be
       * ignored).
       *
+      *
       * \param unary_op UnaryOperation : Unary operation to perform on the chromosomes collection
       * \return unary_op, the operation that was performed on all chromosomes
       */
