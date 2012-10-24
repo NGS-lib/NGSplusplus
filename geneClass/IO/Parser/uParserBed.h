@@ -30,6 +30,7 @@ private:
 	void _pushBackLine(char* line);
 
         int m_numberOfColumn = 0;
+	bool m_headerParsed = false;
 	static DerivedParserRegister<uParserBed> reg;
 };
 

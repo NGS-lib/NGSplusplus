@@ -32,12 +32,14 @@ void uParserBed::init(const std::string& filename, bool header)
 	{
 		_parseHeader();
 	}
+	m_headerParsed = true;
 }
 
 void uParserBed::init(std::iostream* stream, bool header) 
 {
 	m_pIostream = stream;
 	m_dynamicStream = false;
+	m_headerParsed = true;
 }
 
 void uParserBed::init(const std::string& filename, const std::vector<std::string>& fieldsNames, bool header, char delimiter)
@@ -91,7 +93,7 @@ void uParserBed::_convertLineToTokenInfosBed(char* line, std::stringstream& toke
 {
 	std::stringstream ss;
 	ss << line;
-	if (m_numberOfColumn == 0) 
+	if (m_numberOfColumn == 0 && m_headerParsed == true) 
 	{
 		m_numberOfColumn = _countColumns(line);
 		_validateColumnNumber();
@@ -149,7 +151,6 @@ void uParserBed::_validateColumnNumber() const
 
 void uParserBed::_parseHeader()
 {
-	bool headerFetched = false;
 	std::string unformatedHeader;
 	/**< We parse a line at a time until we get a valid token, then we return the token back in the stream */
 	do
@@ -165,12 +166,12 @@ void uParserBed::_parseHeader()
 				/**< When we have a valid token, we consider that all the header have beed fetched */
 				/**< We put token back into stream, and exit function */
 				_pushBackLine(line);
-				headerFetched = true;
+				m_headerParsed = true;
 			}
 			/**< If there is a throw, we are not at the first valid token line, so we add line to header object */
 			catch(invalid_uToken_throw& e) { }
 			catch(invalid_value_throw& e) { }
-			if (headerFetched == false)
+			if (m_headerParsed == false)
 			{
 				std::string s(line);
 				unformatedHeader += s;
@@ -186,8 +187,7 @@ void uParserBed::_parseHeader()
 			e << string_error("Reached end of file.");
 			throw e;
 		}
-	}
-	while(headerFetched == false);
+	} while(m_headerParsed == false);
 	m_headerData.setUnformatedHeader(unformatedHeader);
 }
 
