@@ -8,27 +8,41 @@ namespace NGS {
  */
 uToken::uToken(std::istream& paramList) {
 	char line[1024];
+	bool custom = false;
 	while (paramList.getline(line, 1024)) {
 		std::stringstream ss;
 		ss << line;
 
 		/**< Fetch name */
 		token_param name;
+		std::string customName;
 		try {
 			ss >> name;
+			custom = false;
 		}
 		catch (invalid_token_param_throw& e) {
-			throw e;
+//			throw e;
+			ss >> customName;
+			custom = true;
 		}
 
 		/**< Fetch value */
 		std::string value;
 		ss >> value;
-		try {
-			_setParam(name, value);
+		if (custom = false) 
+		{
+			try 
+			{
+				_setParam(name, value);
+			}
+			catch (invalid_value_throw& e) 
+			{
+				throw e;
+			}
 		}
-		catch (invalid_value_throw& e) {
-			throw e;
+		else
+		{
+			_setParamCustom(customName, value);
 		}
 	}
 
@@ -48,15 +62,34 @@ uToken& uToken::operator=(uToken const& assign_from) {
 	return *this;
 }
 
-std::string uToken::getParam(token_param name) const {
-	if(isParamSet(name)) {
+std::string uToken::getParam(token_param name) const 
+{
+	if(isParamSet(name)) 
+	{
 		return (m_params.find(name)->second);
 	}
-	else {
+	else 
+	{
 		param_not_found e;
 		std::string error = "Tried to getParam that is not set: " + _convertTokenParamToString(name) + "\n";
 		addStringError(e,error);
 		addStringError(e,_convertTokenParamToString(name));
+		throw e;
+	}
+}
+
+std::string uToken::getParam(const std::string& name) const 
+{
+	if (isParamSet(name))
+	{
+		return (m_customParams.find(name)->second);
+	}
+	else
+	{
+		param_not_found e;
+		std::string error = "Tried to getParam that is not set: " + name + "\n";
+		addStringError(e,error);
+		addStringError(e,name);
 		throw e;
 	}
 }
@@ -83,8 +116,19 @@ void uToken::_setParam(const token_param& name, const std::string& value)
 	}
 }
 
-bool uToken::isParamSet(const token_param& name)const {
+void uToken::_setParamCustom(const std::string& name, const std::string& value) 
+{
+	m_customParams[name] = value;
+}
+
+bool uToken::isParamSet(const token_param& name) const 
+{
 	return m_params.count(name);
+}
+
+bool uToken::isParamSet(const std::string& name) const 
+{
+	return m_customParams.count(name);
 }
 
 /** \brief Operate any necessary post_processing on our values. Note this may include setting values to the token
@@ -165,7 +209,6 @@ bool uToken::_validateParam(const token_param& name, const std::string& value) c
 
 void uToken::_validateToken()
 {
-	//TODO: Should no longer a long ass function, make subfunctions!
 	try {
 		_checkMandatoryValues();
 		_validateStartEnd();

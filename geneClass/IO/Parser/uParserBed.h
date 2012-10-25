@@ -22,12 +22,16 @@ public :
 
 	uToken getNextEntry();
 
+protected:
+	char m_delimiter = '\t';
+
 private:
 	void _parseHeader();
 	int _countColumns(char* line) const;
 	void _validateColumnNumber() const;
 	void _convertLineToTokenInfosBed(char* line, std::stringstream& token_infos);
 	void _pushBackLine(char* line);
+	std::string _getNextEntry(char* line);
 
         int m_numberOfColumn = 0;
 	bool m_headerParsed = false;

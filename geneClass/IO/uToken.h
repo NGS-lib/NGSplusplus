@@ -26,7 +26,9 @@ public:
 	 */
 	 //TODO Does this throw correctly?
 	std::string getParam(token_param name) const;
-	bool  isParamSet(const token_param& name)const;
+	std::string getParam(const std::string& name) const;
+	bool isParamSet(const token_param& name) const;
+	bool isParamSet(const std::string& name) const;
 	uToken& operator=(uToken const& assign_from);
 
 	/** \brief Check if a string has a corresponding token_param value
@@ -49,7 +51,9 @@ public:
 
 private:
 	std::map<token_param, std::string> m_params={};
+	std::map<std::string, std::string> m_customParams={};
 	void _setParam(const token_param& name, const std::string& value);
+	void _setParamCustom(const std::string& name, const std::string& value);
 
 	void _postProcessParam(const token_param& name, const std::string& value);
 	bool _validateParam(const token_param& name, const std::string& value) const;
