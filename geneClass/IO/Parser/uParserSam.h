@@ -15,7 +15,6 @@ class uParserSam: public uParserBase
 
     private :
 
-
     };
 
 public :
@@ -33,6 +32,7 @@ private:
     samInformation m_Info;
     void _processSamline(std::stringstream & curSStream);
     void _parseHeader();
+
 };
 
 }

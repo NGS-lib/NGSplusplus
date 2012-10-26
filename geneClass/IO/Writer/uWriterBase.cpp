@@ -12,7 +12,7 @@ uWriterBase::~uWriterBase() {
 }
 
 /** \brief Initialise the Bed writer with a file name.
-  * \param const std::string& filename: name of the file to write output. 
+  * \param const std::string& filename: name of the file to write output.
   */
 void uWriterBase::init(const std::string& filename) {
 	if (filename.size() == 0) {
@@ -20,11 +20,11 @@ void uWriterBase::init(const std::string& filename) {
 	}
 	std::filebuf fb;
 	fb.open (filename.c_str(),std::ios::out);
-	if (!fb.is_open()) {  
+	if (!fb.is_open()) {
 		std::string error = "Error opening file: " + filename;
 		throw std::runtime_error(error.c_str());
 	}
-	else {  
+	else {
 		std::ostream* os = new std::ostream(&fb);
 		m_pOstream = os;
 	}
@@ -60,6 +60,14 @@ void uWriterBase::setFieldsNames(const std::vector<std::string>& fieldsNames) {
 	m_fieldsNames = fieldsNames;
 }
 
+
+void uWriterBase::addToHeader(header_param param,std::string value){
+    m_headerData._addToParam(param, value);
+}
+
+void uWriterBase::writeHeader(){
+
+}
 
 std::map<std::string, std::function<uWriterBase*()> > *uWriterBaseFactory::mapItem;
 

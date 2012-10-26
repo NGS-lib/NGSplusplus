@@ -2,9 +2,9 @@
 
 namespace NGS {
 
-/** \brief Constructor with filename. 
+/** \brief Constructor with filename.
   * \param const std::string& filename: name of the file to write output.
-  * \param const std::string& type: Type of file to write output (i.e: Bed, Sam, etc...). 
+  * \param const std::string& type: Type of file to write output (i.e: Bed, Sam, etc...).
   */
 uWriter::uWriter(const std::string& filename, const std::string& type) {
 	uWriterBaseFactory myFactory;
@@ -19,7 +19,7 @@ uWriter::uWriter(const std::string& filename, const std::string& type) {
 
 /** \brief Constructor with stream.
   * \param std::ostream* os: stream to write output.
-  * \param const std::string& type: Type of file to write output (i.e: Bed, Sam, etc...). 
+  * \param const std::string& type: Type of file to write output (i.e: Bed, Sam, etc...).
   */
 uWriter::uWriter(std::ostream* os, const std::string& type) {
 	uWriterBaseFactory myFactory;
@@ -30,7 +30,7 @@ uWriter::uWriter(std::ostream* os, const std::string& type) {
 /** \brief Custom constructor with filename.
   * \param const std::string& filename: name of the file to write output.
   * \param const std::vector<std::string>& fieldsNames: Vector containing the name of every fields (columns). In correct order.
-  * \param const std::string& type: Type of file to write output (i.e: Bed, Sam, etc...). 
+  * \param const std::string& type: Type of file to write output (i.e: Bed, Sam, etc...).
   */
 uWriter::uWriter(const std::string& filename, const std::vector<std::string>& fieldsNames, char delimiter) {
 	uWriterBaseFactory myFactory;
@@ -48,7 +48,7 @@ uWriter::uWriter(const std::string& filename, const std::vector<std::string>& fi
 /** \brief Custom constructor with stream.
   * \param std::ostream* os: stream to write output.
   * \param const std::vector<std::string>& fieldsNames: Vector containing the name of every fields (columns). In correct order.
-  * \param const std::string& type: Type of file to write output (i.e: Bed, Sam, etc...). 
+  * \param const std::string& type: Type of file to write output (i.e: Bed, Sam, etc...).
   */
 uWriter::uWriter(std::ostream* os, const std::vector<std::string>& fieldsNames, char delimiter) {
 	uWriterBaseFactory myFactory;
@@ -70,6 +70,28 @@ void uWriter::writeToken(const uToken& token) {
   */
 void uWriter::printString(const std::string& str) {
 	m_pWriterBase->printString(str);
+}
+
+/** \brief setHeaderParameter to be writen
+ *
+ * \param param header_param
+ * \param value std::string
+ * \return void
+ *
+ */
+void uWriter::addToHeader(header_param param,std::string value){
+    m_pWriterBase->addToHeader(param, value);
+}
+
+/** \brief Write the header, ideally use this once
+ *
+ * \param param header_param
+ * \param value std::string
+ * \return void
+ *
+ */
+void uWriter::writeHeader(){
+    m_pWriterBase->writeHeader();
 }
 
 }; // End of namespace NGS
