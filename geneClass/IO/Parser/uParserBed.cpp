@@ -33,6 +33,7 @@ void uParserBed::init(const std::string& filename, bool header)
 		_parseHeader();
 	}
 	m_headerParsed = true;
+	m_delimiter = '\t';
 }
 
 void uParserBed::init(std::iostream* stream, bool header) 
@@ -40,6 +41,7 @@ void uParserBed::init(std::iostream* stream, bool header)
 	m_pIostream = stream;
 	m_dynamicStream = false;
 	m_headerParsed = true;
+	m_delimiter = '\t';
 }
 
 void uParserBed::init(const std::string& filename, const std::vector<std::string>& fieldsNames, bool header, char delimiter)
@@ -115,7 +117,7 @@ void uParserBed::_convertLineToTokenInfosBed(char* line, std::stringstream& toke
 	{
 //		ss >> score >> strand;
 		score = _getNextEntry(line);
-		score = _getNextEntry(line);
+		strand = _getNextEntry(line);
 		token_infos << "SCORE\t" << score << "\n";
 		token_infos << "STRAND\t" << strand << "\n";
 //		if (score.size() == 0 || strand.size() == 0)
@@ -131,7 +133,7 @@ void uParserBed::_convertLineToTokenInfosBed(char* line, std::stringstream& toke
 int uParserBed::_countColumns(char* line) const
 {
 	int count = 1;
-	for (int i = 0; line[i] != '\0' || line[i] != '\n'; i++)
+	for (int i = 0; line[i] != '\0' && line[i] != '\n'; i++)
 	{
 		if (line[i] == '\t')
 		{
@@ -213,19 +215,22 @@ std::string uParserBed::_getNextEntry(char* line)
 	{
 		toReturnChar[i] = line[i];
 		i++;
-	} while (line[i] != m_delimiter);
+	} while (line[i] != m_delimiter && line[i] != '\0');
 	toReturnChar[i] = '\0';
 
 	/**< Remove fetched entry from line */
 	int j = 0;
-	i++;
-	do 
+	if (line[i] != '\0')
 	{
-		line[j] = line[i];
 		i++;
-		j++;
-	} while (line[i] != '\n');
-	line[j] = '\n';
+		do 
+		{
+			line[j] = line[i];
+			i++;
+			j++;
+		} while (line[i] != '\n' && line[i] != '\0');
+	}
+	line[j] = '\0';
 
 	std::string toReturn(toReturnChar);
 	return toReturn;

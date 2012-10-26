@@ -22,8 +22,8 @@ void uParserCustom::init(std::iostream* stream, bool header)
 
 void uParserCustom::init(const std::string& filename, const std::vector<std::string>& fieldsNames, bool header, char delimiter)
 {
-    m_delimiter = delimiter;
     uParserBed::init(filename, header);
+    m_delimiter = delimiter;
     /**< Check if fields are in a valid format */
     try
     {
@@ -38,8 +38,8 @@ void uParserCustom::init(const std::string& filename, const std::vector<std::str
 
 void uParserCustom::init(std::iostream* stream, const std::vector<std::string>& fieldsNames, bool header, char delimiter)
 {
-    m_delimiter = delimiter;
     uParserBed::init(stream, header);
+    m_delimiter = delimiter;
     /**< Check if fields are in a valid format */
     try
     {
