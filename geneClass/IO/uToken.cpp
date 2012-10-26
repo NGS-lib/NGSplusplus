@@ -29,7 +29,7 @@ uToken::uToken(std::istream& paramList) {
 		/**< Fetch value */
 		std::string value;
 		ss >> value;
-		if (custom = false) 
+		if (custom == false) 
 		{
 			try 
 			{
