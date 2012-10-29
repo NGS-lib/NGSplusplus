@@ -403,7 +403,6 @@ public:
             }
 
         }
-
         /** \brief Indicates if the sites collection is sorted according to a certain comparison
           *
           * This function take a pointer to a function to determine if the the sites
