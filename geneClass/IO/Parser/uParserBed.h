@@ -17,10 +17,13 @@ public :
 
 	void init(const std::string& filename, bool header = false);
 	void init(std::iostream* stream, bool header = false);
-	void init(const std::string& filename, const std::vector<std::string>& fieldsNames, bool header = false, char delimiter = '\t');
-	void init(std::iostream* stream, const std::vector<std::string>& fieldsNames, bool header = false, char delimiter = '\t');
+	void init(const std::string& filename, const std::vector<std::string>& fieldsNames, char delimiter = '\t');
+	void init(std::iostream* stream, const std::vector<std::string>& fieldsNames, char delimiter = '\t');
 
 	uToken getNextEntry();
+
+protected:
+	char m_delimiter = '\t';
 
 private:
 	void _parseHeader();
@@ -28,6 +31,7 @@ private:
 	void _validateColumnNumber() const;
 	void _convertLineToTokenInfosBed(char* line, std::stringstream& token_infos);
 	void _pushBackLine(char* line);
+	std::string _getNextEntry(char* line);
 
         int m_numberOfColumn = 0;
 	bool m_headerParsed = false;

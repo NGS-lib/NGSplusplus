@@ -93,12 +93,12 @@ void uParserWig::init(std::iostream* stream, bool header )
 }
 
 
-void uParserWig::init(const std::string& filename, const std::vector<std::string>& fieldsNames, bool header , char delimiter)
+void uParserWig::init(const std::string& filename, const std::vector<std::string>& fieldsNames, char delimiter)
 {
 }
 
 
-void uParserWig::init(std::iostream* stream, const std::vector<std::string>& fieldsNames, bool header , char delimiter )
+void uParserWig::init(std::iostream* stream, const std::vector<std::string>& fieldsNames, char delimiter )
 {
 }
 

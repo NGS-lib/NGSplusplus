@@ -22,13 +22,16 @@ public :
 
     uParser(const std::string& filename, const std::string & type, bool header = false);
 	uParser(std::iostream* stream, const std::string & type, bool header = false);
-	uParser(const std::string& filename, const std::vector<std::string>& fieldsNames, bool header = false, char delimiter = '\t');
-	uParser(std::iostream* stream, const std::vector<std::string>& fieldsNames, bool header = false, char delimiter = '\t');
+	uParser(const std::string& filename, const std::vector<std::string>& fieldsNames, char delimiter = '\t');
+	uParser(std::iostream* stream, const std::vector<std::string>& fieldsNames, char delimiter = '\t');
 	~uParser();
 
     bool eof() const ;
 	uToken getNextEntry();
 
+	/** \brief Get an unformated version of header (i.e.: a single string containing the whole header)
+	*/
+	std::string getUnformatedHeader() const { return m_pParserBase->getUnformatedHeader(); }
 	/** \brief Get a specific data from header.
 	  */
 	std::string getHeaderParam(header_param name) const { return m_pParserBase->getHeaderParam(name); }

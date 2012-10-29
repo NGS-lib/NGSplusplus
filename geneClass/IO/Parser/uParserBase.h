@@ -22,14 +22,17 @@ class uParserBase{
 
      virtual void init(const std::string& filename, bool header = false)=0;
 	 virtual void init(std::iostream* stream, bool header = false)=0;
-	 virtual void init(const std::string& filename, const std::vector<std::string>& fieldsNames, bool header = false, char delimiter = '\t')=0;
-	 virtual void init(std::iostream* stream, const std::vector<std::string>& fieldsNames, bool header = false, char delimiter = '\t')=0;
+	 virtual void init(const std::string& filename, const std::vector<std::string>& fieldsNames, char delimiter = '\t')=0;
+	 virtual void init(std::iostream* stream, const std::vector<std::string>& fieldsNames, char delimiter = '\t')=0;
 	uParserBase& operator=(const uParserBase& copyFrom) = delete;
 	uParserBase(const uParserBase&) = delete;
 	/** \brief Check if input data is at end of file.
 	  */
 	bool eof() const;
 	virtual uToken getNextEntry()=0;
+	/** \brief Get an unformated version of header (i.e.: a single string containing the whole header)
+	*/
+	std::string getUnformatedHeader() const { return m_headerData.getUnformatedHeader(); }
 	/** \brief Get a specific data from header.
 	  */
 	std::string getHeaderParam(header_param name) const { return m_headerData.getParam(name); } ;
