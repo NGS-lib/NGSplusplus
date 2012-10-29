@@ -22,8 +22,8 @@ class uParserBase{
 
      virtual void init(const std::string& filename, bool header = false)=0;
 	 virtual void init(std::iostream* stream, bool header = false)=0;
-	 virtual void init(const std::string& filename, const std::vector<std::string>& fieldsNames, bool header = false, char delimiter = '\t')=0;
-	 virtual void init(std::iostream* stream, const std::vector<std::string>& fieldsNames, bool header = false, char delimiter = '\t')=0;
+	 virtual void init(const std::string& filename, const std::vector<std::string>& fieldsNames, char delimiter = '\t')=0;
+	 virtual void init(std::iostream* stream, const std::vector<std::string>& fieldsNames, char delimiter = '\t')=0;
 	uParserBase& operator=(const uParserBase& copyFrom) = delete;
 	uParserBase(const uParserBase&) = delete;
 	/** \brief Check if input data is at end of file.

@@ -28,20 +28,20 @@ uParser::uParser(std::iostream* stream, const std::string & type, bool header)
     m_pParserBase->init(stream, header);
 
 };
-uParser::uParser(const std::string& filename, const std::vector<std::string>& fieldsNames, bool header, char delimiter)
+uParser::uParser(const std::string& filename, const std::vector<std::string>& fieldsNames, char delimiter)
 {
 
     uParserBaseFactory myFact;
     m_pParserBase=myFact.createInstance("CUSTOM");
-    m_pParserBase->init(filename, fieldsNames,header,delimiter);
+    m_pParserBase->init(filename, fieldsNames, delimiter);
 
 };
-uParser::uParser(std::iostream* stream, const std::vector<std::string>& fieldsNames, bool header, char delimiter)
+uParser::uParser(std::iostream* stream, const std::vector<std::string>& fieldsNames, char delimiter)
 {
 
     uParserBaseFactory myFact;
     m_pParserBase=myFact.createInstance("CUSTOM");
-    m_pParserBase->init(stream, fieldsNames,header,delimiter);
+    m_pParserBase->init(stream, fieldsNames, delimiter);
 
 };
 uParser::~uParser() {};

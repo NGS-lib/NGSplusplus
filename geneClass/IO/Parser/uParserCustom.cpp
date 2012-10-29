@@ -20,9 +20,9 @@ void uParserCustom::init(std::iostream* stream, bool header)
     throw ugene_exception_base()<<string_error("Invalid constructor call for Custom Format");
 }
 
-void uParserCustom::init(const std::string& filename, const std::vector<std::string>& fieldsNames, bool header, char delimiter)
+void uParserCustom::init(const std::string& filename, const std::vector<std::string>& fieldsNames, char delimiter)
 {
-    uParserBed::init(filename, header);
+    uParserBed::init(filename);
     m_delimiter = delimiter;
     /**< Check if fields are in a valid format */
     try
@@ -36,9 +36,9 @@ void uParserCustom::init(const std::string& filename, const std::vector<std::str
     }
 }
 
-void uParserCustom::init(std::iostream* stream, const std::vector<std::string>& fieldsNames, bool header, char delimiter)
+void uParserCustom::init(std::iostream* stream, const std::vector<std::string>& fieldsNames, char delimiter)
 {
-    uParserBed::init(stream, header);
+    uParserBed::init(stream);
     m_delimiter = delimiter;
     /**< Check if fields are in a valid format */
     try
