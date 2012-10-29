@@ -30,6 +30,9 @@ class uParserBase{
 	  */
 	bool eof() const;
 	virtual uToken getNextEntry()=0;
+	/** \brief Get an unformated version of header (i.e.: a single string containing the whole header)
+	*/
+	std::string getUnformatedHeader() const { return m_headerData.getUnformatedHeader(); }
 	/** \brief Get a specific data from header.
 	  */
 	std::string getHeaderParam(header_param name) const { return m_headerData.getParam(name); } ;

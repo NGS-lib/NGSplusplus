@@ -29,6 +29,9 @@ public :
     bool eof() const ;
 	uToken getNextEntry();
 
+	/** \brief Get an unformated version of header (i.e.: a single string containing the whole header)
+	*/
+	std::string getUnformatedHeader() const { return m_pParserBase->getUnformatedHeader(); }
 	/** \brief Get a specific data from header.
 	  */
 	std::string getHeaderParam(header_param name) const { return m_pParserBase->getHeaderParam(name); }
