@@ -10,7 +10,6 @@ uParserSam::uParserSam(): uParserBase()
 {
 
 
-
 }
 
 uParserSam::~uParserSam()

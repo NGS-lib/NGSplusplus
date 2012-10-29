@@ -28,12 +28,16 @@ public :
 	uWriterBase(const uWriterBase&) = delete;
 	void setFieldsNames(const std::vector<std::string>& fieldsNames);
 	void setDelimiter(char delimiter) { m_delimiter = delimiter; }
+
+	virtual void addToHeader(header_param param,std::string value);
+	virtual void writeHeader();
+
 protected:
 	std::ostream* m_pOstream = nullptr;
 	bool m_dynamicStream = false;
-
 	std::vector<std::string> m_fieldsNames={};
 	char m_delimiter = '\t';
+	uHeader m_headerData;
 };
 
 //Thank you Stack Overflow for this basic structure

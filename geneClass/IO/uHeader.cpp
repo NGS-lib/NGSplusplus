@@ -138,9 +138,9 @@ std::string uHeader::_convertHeaderParamToString(const header_param& header) con
  *
  */
 void uHeader::_postProcessParam(const header_param& name, std::string& value) {
-	post_func_map[name](this,value);
+    if (post_func_map.count(name))
+        post_func_map[name](this,value);
 }
-
 
 /** \brief Call the associated validation function
  *
@@ -151,9 +151,8 @@ void uHeader::_postProcessParam(const header_param& name, std::string& value) {
  */
 bool uHeader::_validateParam(header_param name, const std::string& value) {
    // std::cout << "validating call" <<std::endl;
-    return validate_func_map[name](this,value);
+   if (validate_func_map.count(name))
+        return validate_func_map[name](this,value);
 }
-
-
 
 } // End of namespace NGS

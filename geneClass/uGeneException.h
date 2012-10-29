@@ -66,7 +66,7 @@ struct invalid_header_param_throw : virtual uParser_exception_base{};
 /**< uWrite exception */
 struct uWriter_exception_base : virtual ugene_exception_base{};
 struct no_fields_names : virtual uWriter_exception_base{};
-
+struct uWriter_missing_mandatory_header : virtual uWriter_exception_base{};
 // Util functions
 static inline void addStringError(ugene_exception_base & e, const std::string & err){
 	std::string trace;

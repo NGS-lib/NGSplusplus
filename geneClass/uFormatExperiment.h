@@ -49,10 +49,9 @@ public:
     auto end()const->decltype(ExpMap.cend()){return ExpMap.cend();};
 
     _CHROM_ getSubset(std::string chr, int start, int end, OverlapType options=OverlapType::OVERLAP_PARTIAL);
-    _CHROM_ getDistinct(std::string chr, int start, int end, OverlapType options=OverlapType::OVERLAP_PARTIAL);
+   // _CHROM_ getDistinct(std::string chr, int start, int end, OverlapType options=OverlapType::OVERLAP_PARTIAL);
 
     //Should we be publicy allowing the turn of a pointer to our internal structure? I would assume not..
-
     /**< Should we allow this? */
     //TODO, throw catch
     const _CHROM_* getpChrom(const std::string & chrom) const
@@ -69,10 +68,9 @@ public:
     void combine(const _CHROM_ &);
     void addSite(const _BASE_ & newSite);
 
-
     long long count() const;
 
-    int countExpUnique();
+   // int countExpUnique();
 
     //TODO Implement merge
     //void cutDuplicates();
@@ -98,15 +96,13 @@ public:
     _BASE_ getSite(typename std::vector<_BASE_>::const_iterator posItr)const;
 
 
-     void sortData();
-
-
+    void sortData();
+    bool isSorted()const;
     typename std::vector<_BASE_>::const_iterator findPrecedingSite(std::string chr, int position)const;
     typename std::vector<_BASE_>::const_iterator findNextSite(std::string chr, int position)const;
 
     virtual void loadFromTabFile(std::ifstream& stream);
     virtual void loadFile(std::ifstream& stream, std::string pType);
-
 
     void writeAsBedFile(std::ostream& out)const;
 
@@ -117,11 +113,13 @@ public:
     uGenericNGSExperiment getOverlapping(std::string chr, int start, int end, OverlapType type=OverlapType::OVERLAP_COMPLETE);
 
 
-
     /**< Temp */
     void printChromSortStatus()const;
 
-    uGenericNGSExperiment getDistinct(uGenericNGSExperiment &compareExp);
+    uGenericNGSExperiment getDistinct(uGenericNGSExperiment &compareExp, OverlapType type=OverlapType::OVERLAP_COMPLETE);
+    uGenericNGSExperiment getDistinct(_CHROM_ &compareChr, OverlapType type=OverlapType::OVERLAP_COMPLETE);
+    uGenericNGSExperiment getDistinct(std::string chr, int start, int end, OverlapType type=OverlapType::OVERLAP_COMPLETE);
+    uGenericNGSExperiment  getDistinct(_BASE_ elem,  OverlapType options);
     /**<  ok from here*/
 
 
@@ -214,6 +212,31 @@ public:
         return results;
     }
 
+    /** \brief Compute a value for all chromosomes in the experiment and return the resulting collection
+      *
+      * This function take a pointer to a function to perform on all the
+      * chromosomes in the collection; this function pointer can either be a)
+      * the name of a function taking a chromosome by reference, b) a lambda
+      * function taking a chromosome by reference or c) a member method of a
+      * chromosome using "mem_fun_ref". In all cases, the function must return a
+      * non void value.
+      *
+      * \param unary_op UnaryOperation : Unary operation to perform on all the chromosomes of the experiment
+      * \return A collection of values computed on each chromosome by unary_op
+      */
+    template<class UnaryOperation>
+    auto computeOnOneChrom(UnaryOperation unary_op, const std::string & chr) const -> std::map<std::string, decltype(unary_op(_CHROM_()))>
+    {
+        std::map<std::string, decltype(unary_op(_CHROM_()))> results;
+       if (ExpMap.count(chr)){
+            transform(std::begin(ExpMap), std::end(ExpMap), std::inserter(results, begin(results)), [&unary_op](NGSExpPair element)
+            {
+                return make_pair(element.first, unary_op(element.second));
+            });
+        }
+        return results;
+    }
+
     /** \brief Get the chromosomes for which a certain predicate is true
       *
       * This function take a pointer to a predicate function; this function
@@ -260,6 +283,41 @@ public:
         return f;
     }
 
+    /** \brief Transform the chromosomes collection by applying a certain function to one chromosomes
+      *
+      * This function take a pointer to a function to transform a single chrom
+      ; this function pointer can either be a) the name of a function
+      * taking a chrom by reference, b) a lambda function taking a chrom by
+      * reference or c) a member method of a site using "mem_fun_ref". In all
+      * cases, the function must return void (any other return value will be
+      * ignored).
+      *
+      *
+      * \param unary_op UnaryOperation : Unary operation to perform on the chromosomes collection
+      * \return unary_op, the operation that was performed on all chromosomes
+      */
+    template<class UnaryFunction>
+    UnaryFunction applyOnOneChrom(UnaryFunction f, const std::string & chr)
+    {
+        if (ExpMap.count(chr)){
+            auto & elem = ExpMap[chr];
+            f(elem);}
+        return f;
+    }
+
+    /** \brief Transform the chromosomes collection by applying a certain function to all chromosomes
+      *
+      * This function take a pointer to a function to transform the chromosomes
+      * collection; this function pointer can either be a) the name of a function
+      * taking a chrom by reference, b) a lambda function taking a chrom by
+      * reference or c) a member method of a chrom using "mem_fun_ref". In all
+      * cases, the function must return void (any other return value will be
+      * ignored).
+      *
+      *
+      * \param unary_op UnaryOperation : Unary operation to perform on the chromosomes collection
+      * \return unary_op, the operation that was performed on all chromosomes
+      */
     template<class UnaryFunction>
     UnaryFunction applyOnAllChroms(const UnaryFunction f)const
     {
@@ -271,17 +329,28 @@ public:
     }
 
 
+    /** \brief Transform site of the EXP by applying a certain function
+      *
+      * This function take a pointer to a function to transform;
+      * this function pointer can either be a) the name of a function
+      * taking a site by reference, b) a lambda function taking a site by
+      * reference or c) a member method of a site using "mem_fun_ref". In all
+      * cases, the function must return void (any other return value will be
+      * ignored).
+      *
+      * \param unary_op UnaryOperation : Unary operation to perform on the sites collection
+      * \return unary_op, the operation that was performed on all sites
+      */
     template<class UnaryFunction>
     UnaryFunction applyOnSites(UnaryFunction f)
     {
         for_each(std::begin(ExpMap), std::end(ExpMap), [&f](NGSExpPair& element)
         {
             element.second.applyOnAllSites(f);
-            //f(element.second);
         });
         return f;
     }
-
+     /**< Const version of its equivalent */
     template<class UnaryFunction>
     UnaryFunction applyOnSites(const UnaryFunction f)const
     {
@@ -292,8 +361,6 @@ public:
         });
         return f;
     }
-
-
 
     /** \brief Count the chromosomes for which a certain predicate is true
       *
@@ -559,11 +626,24 @@ void uGenericNGSExperiment<_CHROM_, _BASE_>::sortData()
             it->second.sortSites();
 }
 
-
  //  std::function<void (_CHROM_&)> funct;//=
  // funct=    (void(_CHROM_::*)()) &_CHROM_::sortSites;
   // applyOnAllChroms(funct);
   //  applyOnAllChroms(std::mem_fun_ref(static_cast<void (_CHROM_::*)()>(&_CHROM_::sortSites)));
+}
+
+template<typename _CHROM_, typename _BASE_>
+/** \brief Returns false if at least one chrom is unsorted
+ *
+ * \return bool true if the experiment is sorted
+ */
+bool uGenericNGSExperiment<_CHROM_, _BASE_>::isSorted()const{
+        bool sorted=true;
+        applyOnAllChroms([&](_CHROM_& chrom){
+                         if (chrom.isSorted()==false)
+                         sorted=false; });
+
+    return sorted;
 }
 
 template<typename _CHROM_, typename _BASE_>
@@ -574,26 +654,46 @@ void uGenericNGSExperiment<_CHROM_,_BASE_>::printChromSortStatus()const
     }
 }
 
-
+/** \brief Return an interator pointing to the element of the chr before or after the specified value
+ *   Note that this is based on the current sort type so may not refer to genomic position.
+ *   Requires the data to be sorted first
+ * \param std::string chrom to search
+ * \param int value to check
+ * \return Iterator pointing to value or nullptr if invalid chr.
+ *
+ */
 template<typename _CHROM_, typename _BASE_>
 typename std::vector<_BASE_>::const_iterator uGenericNGSExperiment<_CHROM_,_BASE_>::findPrecedingSite(std::string chr, int position)const
 {
     typename NGSExpMap::iterator iterMap;
     _CHROM_* tempChrom;
-    tempChrom=&(ExpMap[chr]);
-    return tempChrom->findPrecedingSite(position);
+    if (ExpMap.count(chr))
+        {
+            tempChrom=&(ExpMap[chr]);
+             return tempChrom->findPrecedingSite(position);
+        }
+return nullptr;
 }
-
 template<typename _CHROM_, typename _BASE_>
 typename std::vector<_BASE_>::const_iterator uGenericNGSExperiment<_CHROM_,_BASE_>::findNextSite(std::string chr, int position)const
 {
     typename NGSExpMap::iterator iterMap;
     _CHROM_* tempChrom;
-    tempChrom=&(ExpMap[chr]);
-    return tempChrom->findPrecedingSite(position);
+     if (ExpMap.count(chr))
+        {
+            tempChrom=&(ExpMap[chr]);
+            return tempChrom->findPrecedingSite(position);
+        }
+return nullptr;
 }
 
-
+/** \brief Get a specific site from a specific chrom. Overloaded to work with position or an interator, typically got from findPrecedingor findNext
+ *
+ * \param chr std::string
+ * \param position int
+ * \return _BASE_
+ *
+ */
 template<typename _CHROM_, typename _BASE_>
 _BASE_ uGenericNGSExperiment<_CHROM_,_BASE_>::getSite(std::string chr, int position)const
 {
@@ -631,9 +731,19 @@ _CHROM_ uGenericNGSExperiment<_CHROM_,_BASE_>::getSubset(std::string chr, int st
 
     return returnChrom;
 }
-//TODO this won't work anymore
-template<typename _CHROM_, typename _BASE_>
-uGenericNGSExperiment<_CHROM_,_BASE_> uGenericNGSExperiment<_CHROM_,_BASE_>::getDistinct(uGenericNGSExperiment &compareExp)
+
+
+
+/** \brief Return an EXP containing only the unarity sites that do not overlap does of the input structure
+ *   Overloads include Experiment, Chrom, Site and chr,start,end
+ *
+ * \param compareExp uGenericNGSExperiment& Input, copies exist as mentionned prio
+ * \param options OverlapType How we determine if overlapping or not
+ * \return uGenericNGSExperiment<_CHROM_,_BASE_> Experiment containing the sites in there appropriate Chroms
+ *
+ */
+ template<typename _CHROM_, typename _BASE_>
+uGenericNGSExperiment<_CHROM_,_BASE_> uGenericNGSExperiment<_CHROM_,_BASE_>::getDistinct(uGenericNGSExperiment &compareExp, OverlapType options)
 {
     typename NGSExpMap::iterator iterMap;
     _CHROM_* pChrom;
@@ -641,44 +751,66 @@ uGenericNGSExperiment<_CHROM_,_BASE_> uGenericNGSExperiment<_CHROM_,_BASE_>::get
     for (iterMap = ExpMap.begin(); iterMap != ExpMap.end(); iterMap++)
     {
         pChrom = compareExp.getpChrom(iterMap->first);
-        returnExp.combine(iterMap->second.returnDistinct((uGenericNGSExperiment)compareExp));
+        returnExp.combine(iterMap->second.getDistinct((uGenericNGSExperiment)compareExp));
     }
+    return returnExp;
 }
-
 
 template<typename _CHROM_, typename _BASE_>
-_CHROM_ uGenericNGSExperiment<_CHROM_,_BASE_>::getDistinct(std::string chr, int start, int end, OverlapType options)
+uGenericNGSExperiment<_CHROM_,_BASE_> uGenericNGSExperiment<_CHROM_,_BASE_>::getDistinct(_CHROM_ &compareChr, OverlapType options)
 {
-    _CHROM_ returnChrom;
-    _CHROM_* tempChrom;
 
-    tempChrom=&(ExpMap[chr]);
-    //If you want to use this, you will need to declare a constructur in the parent class of _CHROM_ to manage a _CHROM_<_BASE_> elementa
-    //Copy constructor!
-    returnChrom= (_CHROM_)tempChrom->getDistinct(start, end);
-
-    return returnChrom;
+    _CHROM_* pChrom;
+    uGenericNGSExperiment<_CHROM_,_BASE_> returnExp;
+    if (ExpMap.count(compareChr.getChr()) ){
+        _CHROM_* tempChrom=&(ExpMap[compareChr.getChr()]);
+        returnExp.combine(tempChrom->getDistinct(compareChr));
+        }
+    return returnExp;
 }
 
+template<typename _CHROM_, typename _BASE_>
+uGenericNGSExperiment<_CHROM_,_BASE_> uGenericNGSExperiment<_CHROM_,_BASE_>::getDistinct(_BASE_ elem,  OverlapType options)
+{
+    typename NGSExpMap::iterator iterMap;
+    uGenericNGSExperiment<_CHROM_,_BASE_> returnExp;
+    _CHROM_* tempChrom=&(ExpMap[elem.getChr()]);
+
+    return getDistinct(elem.getChr(),elem.getStart(),elem.getEnd(),options);
+}
+
+template<typename _CHROM_, typename _BASE_>
+uGenericNGSExperiment<_CHROM_,_BASE_> uGenericNGSExperiment<_CHROM_,_BASE_>::getDistinct(std::string chr, int start, int end,  OverlapType options)
+{
+    typename NGSExpMap::iterator iterMap;
+    uGenericNGSExperiment<_CHROM_,_BASE_> returnExp;
+    _CHROM_* tempChrom=&(ExpMap[chr]);
+
+    returnExp.combine(tempChrom->second.getDistinct(chr, start, end) );
+    return returnExp;
+}
+
+
+
+/** \brief Receive a given chrom and add it to the Experiment
+ *
+ * \param inputChrom const _CHROM_& Chrom to add
+ * \return void
+ *
+ */
 template<typename _CHROM_, typename _BASE_>
 void uGenericNGSExperiment<_CHROM_,_BASE_>::combine(const _CHROM_ & inputChrom)
 {
+    //TODO remove const ref to allow move semantics?
     _CHROM_* currentChrom;
     std::vector<_BASE_> vecData;
 
     currentChrom=&(ExpMap[inputChrom.getChr()]);
-
     for(auto itChrom =inputChrom.begin(); itChrom!= inputChrom.end(); itChrom++){
         currentChrom->addSite(*itChrom);
     }
-    /*
-    vecData=inputChrom.returnVecData();
-
-    for (unsigned int k=0; k < vecData.size(); k++)
-    {
-        tempChrom->addSite(vecData.at(k));
-    } */
 }
+
 
 /** \brief Return every element of THIS overlapping with parameter.
  *

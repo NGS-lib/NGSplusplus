@@ -3,8 +3,8 @@
 namespace NGS {
 
 uWriterCustom::uWriterCustom() {
-	m_delimiter = '\t';
 	m_fieldsNames.push_back("CHR");
+	m_delimiter = '\t';
 	m_fieldsNames.push_back("START_POS");
 	m_fieldsNames.push_back("END_POS");
 	m_fieldsNames.push_back("SEQ_NAME");

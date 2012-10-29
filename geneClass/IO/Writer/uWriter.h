@@ -10,8 +10,6 @@
 
 namespace NGS {
 
-//class header;
-
 class uWriter {
 public:
 	uWriter(const std::string& filename, const std::string& type);
@@ -20,6 +18,9 @@ public:
 	uWriter(std::ostream* os, const std::vector<std::string>& fieldsNames, char delimiter = '\t');
 	void writeToken(const uToken& token);
 	void printString(const std::string& str);
+
+    void addToHeader(header_param param,std::string value);
+    void writeHeader();
 
 private:
 	std::shared_ptr<uWriterBase> m_pWriterBase = nullptr;
