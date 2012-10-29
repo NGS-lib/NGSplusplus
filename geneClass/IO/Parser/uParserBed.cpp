@@ -93,40 +93,33 @@ uToken uParserBed::getNextEntry()
 
 void uParserBed::_convertLineToTokenInfosBed(char* line, std::stringstream& token_infos)
 {
+	char line_cpy[4096];
+	strcpy(line_cpy, line);
 	std::stringstream ss;
-	ss << line;
+	ss << line_cpy;
 	if (m_numberOfColumn == 0 && m_headerParsed == true) 
 	{
-		m_numberOfColumn = _countColumns(line);
-		_validateColumnNumber();
+		int numberOfColumn = _countColumns(line);
+		_validateColumnNumber(numberOfColumn);
+		m_numberOfColumn = numberOfColumn;
 	}
-	std::string chr = _getNextEntry(line);
-	std::string start_pos = _getNextEntry(line);
-	std::string end_pos = _getNextEntry(line);
-	std::string seq_name = _getNextEntry(line);
-	std::string score; // = _getNextEntry(line);
-	std::string strand; // = _getNextEntry(line);
-//	ss >> chr >> start_pos >> end_pos >> seq_name; // >> score >> strand;
+	std::string chr = _getNextEntry(line_cpy);
+	std::string start_pos = _getNextEntry(line_cpy);
+	std::string end_pos = _getNextEntry(line_cpy);
+	std::string seq_name = _getNextEntry(line_cpy);
+	std::string score; 
+	std::string strand;
 	token_infos << "CHR\t" << chr << "\n";
 	token_infos << "START_POS\t" << start_pos << "\n";
 	token_infos << "END_POS\t" << end_pos << "\n";
 	token_infos << "SEQ_NAME\t" << seq_name << "\n";
 	/**< If there is no score info, we have a Bed4. We don't add SCORE and STRAND to uToken. */
-//	if (score.size() != 0)
 	if (m_numberOfColumn == 6)
 	{
-//		ss >> score >> strand;
-		score = _getNextEntry(line);
-		strand = _getNextEntry(line);
+		score = _getNextEntry(line_cpy);
+		strand = _getNextEntry(line_cpy);
 		token_infos << "SCORE\t" << score << "\n";
 		token_infos << "STRAND\t" << strand << "\n";
-//		if (score.size() == 0 || strand.size() == 0)
-//		{
-//			uParser_missing_mandatory_values e;
-////			Parser_missing_mandatory_values e;
-//			e << string_error("SCORE and STRAND values are mandatory in BED6.");
-//			throw e;
-//		}
 	}
 }
 
@@ -143,9 +136,9 @@ int uParserBed::_countColumns(char* line) const
 	return count;
 }
 
-void uParserBed::_validateColumnNumber() const
+void uParserBed::_validateColumnNumber(int numberOfColumn) const
 {
-	if (m_numberOfColumn != 4 && m_numberOfColumn != 6) 
+	if (numberOfColumn != 4 && numberOfColumn != 6) 
 	{
 		uParserBed_invalid_number_of_columns e;
 		e << string_error("uParserBed: Invalid number of columns.");
@@ -179,6 +172,7 @@ void uParserBed::_parseHeader()
 			{
 				std::string s(line);
 				unformatedHeader += s;
+				unformatedHeader += '\n';
 			}
 		}
 		else

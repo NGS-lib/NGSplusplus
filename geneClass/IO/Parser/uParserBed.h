@@ -28,7 +28,7 @@ protected:
 private:
 	void _parseHeader();
 	int _countColumns(char* line) const;
-	void _validateColumnNumber() const;
+	void _validateColumnNumber(int numberOfColumn) const;
 	void _convertLineToTokenInfosBed(char* line, std::stringstream& token_infos);
 	void _pushBackLine(char* line);
 	std::string _getNextEntry(char* line);

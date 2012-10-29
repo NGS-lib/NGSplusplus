@@ -48,17 +48,17 @@ TEST(uParserEof, NoTokenInStream) {
  *		WithHeader
  */
 
-//TEST(getUnformatedHeader, NoHeader) {
-//	uParser Parser("test.bed", "BED");
-//	ASSERT_EQ(Parser.getUnformatedHeader(), "");
-//}
+TEST(getUnformatedHeader, NoHeader) {
+	uParser Parser("test.bed", "BED");
+	ASSERT_EQ(Parser.getUnformatedHeader(), "");
+}
 
-//TEST(getUnformatedHeader, WithHeader) {
-//	uParser Parser("header.bed", "BED", true);
-//	string unformated = "";
-//	unformated += "browser position chr7:127471196-127495720";
-//	unformated += "browser hide all";
-//	unformated += "track name=\"ItemRGBDemo\" description=\"Item RGB demonstration\" visibility=2";
-//	unformated += "itemRgb=\"On\"";
-//	ASSERT_EQ(Parser.getUnformatedHeader(), unformated);
-//}
+TEST(getUnformatedHeader, WithHeader) {
+	uParser Parser("header.bed", "BED", true);
+	string unformated = "";
+	unformated += "browser position chr7:127471196-127495720\n";
+	unformated += "browser hide all\n";
+	unformated += "track name=\"ItemRGBDemo\" description=\"Item RGB demonstration\" visibility=2\n";
+	unformated += "itemRgb=\"On\"\n";
+	ASSERT_EQ(Parser.getUnformatedHeader(), unformated);
+}
