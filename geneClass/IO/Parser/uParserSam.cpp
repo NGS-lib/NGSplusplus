@@ -9,8 +9,6 @@ namespace NGS
 uParserSam::uParserSam(): uParserBase()
 {
 
-
-
 }
 
 uParserSam::~uParserSam()

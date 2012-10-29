@@ -6,18 +6,20 @@
 #include <fstream>
 #include "../NGS++.h"
 
-namespace NGS {
+namespace NGS 
+{
 
-class uWriterCustom : public uWriterBase { 
+class uWriterCustom : public uWriterBase 
+{ 
 public:
-	/** \brief Empty constructor (call object with init through factory instead)
-	  */
-	uWriterCustom();
-	virtual ~uWriterCustom() {};
-	virtual void writeToken(const uToken& token);
+    /** \brief Empty constructor (call object with init through factory instead)
+      */
+    uWriterCustom();
+    virtual ~uWriterCustom() {};
+    virtual void writeToken(const uToken& token);
 
 private:
-	static DerivedRegister<uWriterCustom> reg;
+    static DerivedRegister<uWriterCustom> reg;
 
 }; // End of class uWriterCustom
 

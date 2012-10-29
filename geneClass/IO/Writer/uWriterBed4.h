@@ -6,17 +6,19 @@
 #include <fstream>
 #include "../NGS++.h"
 
-namespace NGS {
+namespace NGS 
+{
 
-class uWriterBed4 : public uWriterBed {
+class uWriterBed4 : public uWriterBed 
+{
 public:
-	/** \brief Empty constructor (call object with init through factory instead)
-	  */
-	uWriterBed4() {}
-	virtual void writeToken(const uToken& token);
+    /** \brief Empty constructor (call object with init through factory instead)
+      */
+    uWriterBed4() {}
+    virtual void writeToken(const uToken& token);
 
 private:
-	static DerivedRegister<uWriterBed4> reg;
+    static DerivedRegister<uWriterBed4> reg;
 
 }; // End of class uWriterBed4
 
