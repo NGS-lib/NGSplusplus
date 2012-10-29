@@ -44,12 +44,12 @@ void uParserBed::init(std::iostream* stream, bool header)
 	m_delimiter = '\t';
 }
 
-void uParserBed::init(const std::string& filename, const std::vector<std::string>& fieldsNames, bool header, char delimiter)
+void uParserBed::init(const std::string& filename, const std::vector<std::string>& fieldsNames, char delimiter)
 {
     throw ugene_exception_base()<<string_error("Invalid constructor call for Bed Format");
 }
 
-void uParserBed::init(std::iostream* stream, const std::vector<std::string>& fieldsNames, bool header, char delimiter)
+void uParserBed::init(std::iostream* stream, const std::vector<std::string>& fieldsNames, char delimiter)
 {
     throw ugene_exception_base()<<string_error("Invalid constructor call for Bed Format");
 }

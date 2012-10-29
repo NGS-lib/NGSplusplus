@@ -39,7 +39,7 @@ void uParserSam::init(std::iostream* stream, bool header )
     _parseHeader();
 }
 
-void uParserSam::init(const std::string& filename, const std::vector<std::string>& fieldsNames, bool header , char delimiter)
+void uParserSam::init(const std::string& filename, const std::vector<std::string>& fieldsNames, char delimiter)
 {
 
     throw ugene_exception_base()<<string_error("Invalid constructor call for Sam Format");
@@ -47,7 +47,7 @@ void uParserSam::init(const std::string& filename, const std::vector<std::string
 }
 
 
-void uParserSam::init(std::iostream* stream, const std::vector<std::string>& fieldsNames, bool header , char delimiter )
+void uParserSam::init(std::iostream* stream, const std::vector<std::string>& fieldsNames, char delimiter )
 {
 
     throw ugene_exception_base()<<string_error("Invalid constructor call for Sam Format");
