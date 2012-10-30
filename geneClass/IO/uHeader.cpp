@@ -1,9 +1,10 @@
 #include "uHeader.h"
-namespace NGS {
+namespace NGS 
+{
+
 /** \brief If the param exist, it returns it's value in string format. Otherwise returns param_not_found error.
  * \param header_param name the name of the param from header_param strongly type enum types.
  */
-
 uHeader::uHeader()
 {
     /**< Register our functions */
@@ -15,6 +16,11 @@ uHeader::uHeader()
     post_func_map[header_param::CHR_SIZE]=&uHeader::_noPost;
  }
 
+/** \brief Return a vector containing the list of the values for a given parameter.
+ * \param header_param name: the name of the param to get.
+ * \return A vector containing the list of values associated with the requested parameter.
+ * \exception param_not_found when the param searched is not found in the header list of param.
+ */
 std::vector<std::string> uHeader::getParamVector(header_param name) const
 {
     if(isParamSet(name)) 
@@ -31,6 +37,11 @@ std::vector<std::string> uHeader::getParamVector(header_param name) const
     }
 }
 
+/** \brief Return the first value associated with a given parameter.
+ * \param header_param name: the name of the param to get.
+ * \return A vector containing the list of values associated with the requested parameter.
+ * \exception param_not_found when the param searched is not found in the header list of param.
+ */
 std::string uHeader::getParam(header_param name) const
 {
     if(isParamSet(name)) 

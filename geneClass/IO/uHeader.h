@@ -24,6 +24,10 @@ public:
     /** \brief Default constructor.
       */
     uHeader() ;
+
+    /** \brief Add string to header as is.
+      * \param const std::string& unformatedHeader: the string to copy to header
+      */
     void setUnformatedHeader(const std::string& unformatedHeader) { m_unformatedHeader = unformatedHeader; };
     void _setParam(const header_param& name, const std::string& value);
     void _addToParam(const header_param& name, const std::string& value);
@@ -31,13 +35,13 @@ public:
     /** \brief Fetch a param. Throw param_not_found if the param does not exist.
      * \param header_param& name: the name of the param we wish to get.
      */
-
     std::vector<std::string> getParamVector(header_param name) const;
     std::string getParam(header_param name) const;
 
     /** \brief Return the exact same header that was in the input data.
       */
     std::string getUnformatedHeader() const { return m_unformatedHeader;};
+
     /** \brief Check if there is a value associated with a given param.
           * \param header_param& name: name of the param to check.
       */

@@ -3,6 +3,8 @@
 namespace NGS 
 {
 
+/** \brief Constructor to set default values (the user have to create the class through the writer class)
+  */
 uWriterCustom::uWriterCustom() 
 {
     m_delimiter = '\t';

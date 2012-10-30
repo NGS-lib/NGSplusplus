@@ -2,10 +2,14 @@
 
 namespace NGS {
 
+/** \brief Default constructor (not used directly).
+ */
 uParserBed::uParserBed(): uParserBase() 
 {
 }
 
+/** \brief Destructor.
+ */
 uParserBed::~uParserBed() 
 {
     if (m_dynamicStream == true) 
@@ -15,6 +19,10 @@ uParserBed::~uParserBed()
     m_pIostream = NULL;
 }
 
+/** \brief Initialize the uParserBed object (open file and parse header).
+ * \param const std::string& filename: name of the bed file to parse.
+ * \param bool header: true if there is a header to parse (value at false by default).
+ */
 void uParserBed::init(const std::string& filename, bool header) 
 {
     std::ifstream* ifs = new std::ifstream(filename.c_str(), std::ifstream::in);
@@ -36,6 +44,10 @@ void uParserBed::init(const std::string& filename, bool header)
     m_delimiter = '\t';
 }
 
+/** \brief Initialize the uParserBed object (set stream and parse header).
+ * \param std::iostream* stream: name of the bed stream to parse.
+ * \param bool header: true if there is a header to parse (value at false by default).
+ */
 void uParserBed::init(std::iostream* stream, bool header) 
 {
     m_pIostream = stream;
@@ -44,16 +56,23 @@ void uParserBed::init(std::iostream* stream, bool header)
     m_delimiter = '\t';
 }
 
+/** \brief Initialize the uParserBed object (custom uParserBed is not valid).
+ */
 void uParserBed::init(const std::string& filename, const std::vector<std::string>& fieldsNames, char delimiter)
 {
     throw ugene_exception_base()<<string_error("Invalid constructor call for Bed Format");
 }
 
+/** \brief Initialize the uParserBed object (custom uParserBed is not valid).
+ */
 void uParserBed::init(std::iostream* stream, const std::vector<std::string>& fieldsNames, char delimiter)
 {
     throw ugene_exception_base()<<string_error("Invalid constructor call for Bed Format");
 }
 
+/** \brief Produce a token with next entry in the file/stream.
+ * \return uToken containing the infos of the next entry.
+ */
 uToken uParserBed::getNextEntry() 
 {
     char line[4096];

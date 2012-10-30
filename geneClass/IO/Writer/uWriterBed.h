@@ -15,6 +15,8 @@ public:
     /** \brief Empty constructor (call object with init through factory instead)
       */
     uWriterBed() {}
+    /** \brief Destructor.
+     */
     virtual ~uWriterBed() {}
     virtual void writeToken(const uToken& token);
 

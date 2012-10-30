@@ -4,6 +4,8 @@ namespace NGS {
 
 /** \brief uToken constructor.
  * \param istream& paramList: a stream containing all the parameters in the format: <token_param>\t<value>\n<token_param>\t<value>\n...
+ * \exception invalid_value_throw when using a valid token param, but with an incorrect value (i.e.: a negative value for END_POS) 
+ * \exception invalid_uToken_throw when the token is in an invalid state, even if all the value are valid by themselves (i.e.: START_POS > END_POS)
  */
 uToken::uToken(std::istream& paramList) 
 {
@@ -60,6 +62,8 @@ uToken::uToken(std::istream& paramList)
     }
 }
 
+/** \brief Copy assignment operator
+ */
 uToken& uToken::operator=(uToken const& assign_from) 
 {
     if (this == &assign_from) return *this;
@@ -67,6 +71,10 @@ uToken& uToken::operator=(uToken const& assign_from)
     return *this;
 }
 
+/** \brief Get the value associated with a token_param.
+ * \param token_param name: the name in token_param format.
+ * \exception param_not_found when the param is not setted in the token.
+ */
 std::string uToken::getParam(token_param name) const 
 {
     if(isParamSet(name)) 
@@ -83,6 +91,10 @@ std::string uToken::getParam(token_param name) const
     }
 }
 
+/** \brief Get the value associated with a token_param.
+ * \param const std::string& name: the name in string format.
+ * \exception param_not_found when the param is not setted in the token.
+ */
 std::string uToken::getParam(const std::string& name) const 
 {
     if (isParamSet(name))
@@ -126,11 +138,19 @@ void uToken::_setParamCustom(const std::string& name, const std::string& value)
     m_customParams[name] = value;
 }
 
+/** \brief Check is the param is set.
+ * \param const token_param& name: the name of the param in token_param format.
+ * \return true if the param is set, otherwise return false.
+ */
 bool uToken::isParamSet(const token_param& name) const 
 {
     return m_params.count(name);
 }
 
+/** \brief Check is the param is set.
+ * \param const std::string& name: the name of the param in string format.
+ * \return true if the param is set, otherwise return false.
+ */
 bool uToken::isParamSet(const std::string& name) const 
 {
     return m_customParams.count(name);

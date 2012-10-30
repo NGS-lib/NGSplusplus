@@ -56,7 +56,7 @@ struct uWriterBaseFactory
     {
         map_type::iterator it = getMap()->find(s);
         if(it == getMap()->end()) 
-	{
+    {
             return nullptr;
         }
         return std::shared_ptr<uWriterBase>(it->second());
@@ -65,9 +65,9 @@ struct uWriterBaseFactory
 protected:
     static map_type* mapItem;
         static map_type* getMap() 
-	{
+    {
         if(!mapItem) 
-	{
+    {
             mapItem= new map_type;
         }
         return mapItem;
