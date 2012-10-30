@@ -106,18 +106,18 @@ public:
     void writeAsBedFile(std::ostream& out)const;
 
     template<typename _CHROMPAR_, typename _BASEPAR_>
-    uGenericNGSExperiment getOverlapping(uGenericNGSExperiment<_CHROMPAR_,_BASEPAR_> &compareExp, OverlapType type=OverlapType::OVERLAP_COMPLETE);
+    uGenericNGSExperiment getOverlapping(uGenericNGSExperiment<_CHROMPAR_,_BASEPAR_> &compareExp, OverlapType type=OverlapType::OVERLAP_PARTIAL);
     template<typename _BASEPAR_>
-    uGenericNGSExperiment getOverlapping(uGenericNGSChrom<_BASEPAR_> &compareExp, OverlapType type=OverlapType::OVERLAP_COMPLETE);
-    uGenericNGSExperiment getOverlapping(std::string chr, int start, int end, OverlapType type=OverlapType::OVERLAP_COMPLETE);
+    uGenericNGSExperiment getOverlapping(uGenericNGSChrom<_BASEPAR_> &compareExp, OverlapType type=OverlapType::OVERLAP_PARTIAL);
+    uGenericNGSExperiment getOverlapping(std::string chr, int start, int end, OverlapType type=OverlapType::OVERLAP_PARTIAL);
 
 
     /**< Temp */
     void printChromSortStatus()const;
 
-    uGenericNGSExperiment getDistinct(uGenericNGSExperiment &compareExp, OverlapType type=OverlapType::OVERLAP_COMPLETE);
-    uGenericNGSExperiment getDistinct(_CHROM_ &compareChr, OverlapType type=OverlapType::OVERLAP_COMPLETE);
-    uGenericNGSExperiment getDistinct(std::string chr, int start, int end, OverlapType type=OverlapType::OVERLAP_COMPLETE);
+    uGenericNGSExperiment getDistinct(uGenericNGSExperiment &compareExp, OverlapType type=OverlapType::OVERLAP_PARTIAL);
+    uGenericNGSExperiment getDistinct(_CHROM_ &compareChr, OverlapType type=OverlapType::OVERLAP_PARTIAL);
+    uGenericNGSExperiment getDistinct(std::string chr, int start, int end, OverlapType type=OverlapType::OVERLAP_PARTIAL);
     uGenericNGSExperiment  getDistinct(_BASE_ elem,  OverlapType options);
     /**<  ok from here*/
 
