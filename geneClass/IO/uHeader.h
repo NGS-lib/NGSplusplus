@@ -13,7 +13,7 @@ namespace NGS {
 /**< List of param is hard coded as strongly typed enum for extra safety. */
 /**< This list has to be updated for every new param */
 // TODO: Add param as they are needed. Remove TMP when there is one valid param, it's there to avoid compiling error.
-//enum class header_param { CHR, CHR_SIZE };
+enum class header_param { CHR, CHR_SIZE };
 
 /**< uHeader class, to keep track of information in header, formated or not */
 // TODO: Data validation?
@@ -48,11 +48,11 @@ public:
      * \param const std::string& param: The param to check.
      * \return True if there is a matching header_param value, otherwise false.
      */
-//    static inline bool checkParam(const std::string& param) { //TODO
-//
-//        return (param == "CHR"
-//             || param == "CHR_SIZE" );
-//    }
+    static inline bool checkParam(const std::string& param) { //TODO
+
+        return (param == "CHR"
+             || param == "CHR_SIZE" );
+    }
 
 private:
     std::map<header_param, std::vector<std::string>> m_params={};
