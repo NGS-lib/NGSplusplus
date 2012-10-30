@@ -153,6 +153,8 @@ bool uHeader::_validateParam(header_param name, const std::string& value) {
    // std::cout << "validating call" <<std::endl;
    if (validate_func_map.count(name))
         return validate_func_map[name](this,value);
+    else
+        return true;
 }
 
 } // End of namespace NGS

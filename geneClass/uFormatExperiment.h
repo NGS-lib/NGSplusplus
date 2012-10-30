@@ -21,7 +21,6 @@ class uGenericNGSExperiment
     typedef typename NGSExpMap::value_type     NGSExpPair;
 
     //TODO, const iterators public
-
 protected:
 
     /**< Are we loading gradually? */
