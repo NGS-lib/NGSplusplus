@@ -2,24 +2,37 @@
 
 namespace NGS {
 
+/** \brief Default constructor (not to be used directly, initialize through uParser instead)
+ */
 uParserCustom::uParserCustom(): uParserBed() 
 {
 }
 
+/** \brief Destructor. 
+ */
 uParserCustom::~uParserCustom() 
 {
 }
 
+/** \brief Initialize the uParserCustom object (default initialization of uParserCustom is not valid).
+ */
 void uParserCustom::init(const std::string& filename, bool header) 
 {
     throw ugene_exception_base()<<string_error("Invalid constructor call for Custom Format");
 }
 
+/** \brief Initialize the uParserCustom object (default initialization of uParserCustom is not valid).
+ */
 void uParserCustom::init(std::iostream* stream, bool header) 
 {
     throw ugene_exception_base()<<string_error("Invalid constructor call for Custom Format");
 }
 
+/** \brief Initialize the uParserCustom object.
+ * \param const std::string& filename: the file to parse.
+ * \param const std::vector<std::string>& fieldNames: the identification of columns in the file.
+ * \param char delimiter: the delimitor between each field in a row (default: tabulation). 
+ */
 void uParserCustom::init(const std::string& filename, const std::vector<std::string>& fieldsNames, char delimiter)
 {
     uParserBed::init(filename);
@@ -36,6 +49,11 @@ void uParserCustom::init(const std::string& filename, const std::vector<std::str
     }
 }
 
+/** \brief Initialize the uParserCustom object.
+ * \param std::iostream* stream: the stream to parse.
+ * \param const std::vector<std::string>& fieldNames: the identification of columns in the file.
+ * \param char delimiter: the delimitor between each field in a row (default: tabulation). 
+ */
 void uParserCustom::init(std::iostream* stream, const std::vector<std::string>& fieldsNames, char delimiter)
 {
     uParserBed::init(stream);
@@ -52,6 +70,9 @@ void uParserCustom::init(std::iostream* stream, const std::vector<std::string>& 
     }
 }
 
+/** \brief Produce a token with next entry in the file/stream.
+ * \return uToken containing the infos of the next entry.
+ */
 uToken uParserCustom::getNextEntry() 
 {
     char line[4096];

@@ -25,7 +25,7 @@ TEST_F(CustomConstructorTests_ValidList, Filename_ValidFilename) {
 }
 
 TEST_F(CustomConstructorTests_ValidList, Filename_AlternateDelimiter) {
-	ASSERT_NO_THROW(uParser Parser("test.csv", m_fieldsList, false, ','));
+	ASSERT_NO_THROW(uParser Parser("test.csv", m_fieldsList, ','));
 }
 
 TEST_F(CustomConstructorTests_ValidList, Filename_InvalidFilename) {
@@ -77,7 +77,7 @@ TEST_F(CustomConstructorTests_ValidList, Stream_EmptyStream) {
 
 TEST_F(CustomConstructorTests_ValidList, Stream_AlternateDelimiter) {
 	stringstream ss;
-	ASSERT_NO_THROW(uParser Parser(&ss, m_fieldsList, false, ','));
+	ASSERT_NO_THROW(uParser Parser(&ss, m_fieldsList, ','));
 }
 
 TEST_F(CustomConstructorTests_EmptyList, ValidStream) {
@@ -104,13 +104,12 @@ TEST_F(CustomConstructorTests_InvalidListEND_POS, ValidStream) {
  * Tests for the function:
  *		uToken getNextEntry();
  *	Valid cases:
- *		CorrectlyFormatedHeaderCUSTOM
+ *		CorrectlyFormatedCustom
  *		CorrectlyFormatedCustomAlternateDelimiter
  *
  *	Invalid cases:
  *		IncorrectlyFormatedCustom
- * 		IncorrectlyFormatedHeaderCUSTOM
- *		CorrectlyFormatedHeaderButNotSpecifiedCUSTOM
+ * 		HeaderCUSTOM
  */
 
 TEST_F(CustomConstructorTests_ValidList, getNextEntry_CorrectlyFormatedCustom) {
@@ -128,23 +127,8 @@ TEST_F(CustomConstructorTests_ValidList, getNextEntry_CorrectlyFormatedCustom) {
 	ASSERT_EQ(Token.getParam(token_param::STRAND), "+");
 }
 
-TEST_F(CustomConstructorTests_ValidList, getNextEntry_CorrectlyFormatedHeaderCustom) {
-	uParser Parser("header.custom", m_fieldsList, true);
-	uToken Token = Parser.getNextEntry();
-	ASSERT_EQ(Token.getParam(token_param::CHR), "chr1");
-	ASSERT_EQ(Token.getParam(token_param::START_POS), "21");
-	ASSERT_EQ(Token.getParam(token_param::END_POS), "31");
-	ASSERT_EQ(Token.getParam(token_param::STRAND), "+");
-
-	Token = Parser.getNextEntry();
-	ASSERT_EQ(Token.getParam(token_param::CHR), "chr2");
-	ASSERT_EQ(Token.getParam(token_param::START_POS), "1221");
-	ASSERT_EQ(Token.getParam(token_param::END_POS), "1231");
-	ASSERT_EQ(Token.getParam(token_param::STRAND), "+");
-}
-
 TEST_F(CustomConstructorTests_ValidList, getNextEntry_CorrectlyFormatedCustomAlternateDelimiter) {
-	uParser Parser("test.csv", m_fieldsList, false, ',');
+	uParser Parser("test.csv", m_fieldsList, ',');
 	uToken Token = Parser.getNextEntry();
 	ASSERT_EQ(Token.getParam(token_param::CHR), "chr1");
 	ASSERT_EQ(Token.getParam(token_param::START_POS), "21");
@@ -159,7 +143,7 @@ TEST_F(CustomConstructorTests_ValidList, getNextEntry_CorrectlyFormatedCustomAlt
 }
 
 TEST_F(CustomConstructorTests_ValidList, getNextEntry_IncorrectlyFormatedCustom) {
-	uParser Parser("incorrect.custom", m_fieldsList, false);
+	uParser Parser("incorrect.custom", m_fieldsList);
 	ASSERT_THROW(Parser.getNextEntry(), invalid_value_throw);
 	ASSERT_THROW(Parser.getNextEntry(), invalid_uToken_throw);
 	uToken Token = Parser.getNextEntry();
@@ -169,22 +153,12 @@ TEST_F(CustomConstructorTests_ValidList, getNextEntry_IncorrectlyFormatedCustom)
 	ASSERT_EQ(Token.getParam(token_param::STRAND), "-");
 }
 
-TEST_F(CustomConstructorTests_ValidList, getNextEntry_IncorrectlyFormatedHeaderCUSTOM) {
-	uParser Parser("incorrect_header.custom", m_fieldsList, true);
-	uToken Token = Parser.getNextEntry();
-	ASSERT_EQ(Token.getParam(token_param::CHR), "chr1");
-	ASSERT_EQ(Token.getParam(token_param::START_POS), "21");
-	ASSERT_EQ(Token.getParam(token_param::END_POS), "31");
-	ASSERT_EQ(Token.getParam(token_param::STRAND), "+");
-	ASSERT_THROW(Parser.getNextEntry(), uToken_exception_base);
-}
-
-TEST_F(CustomConstructorTests_ValidList, getNextEntry_CorrectlyFormatedHeaderButNotSpecifiedBED) {
+TEST_F(CustomConstructorTests_ValidList, getNextEntry_HeaderCUSTOM) {
 	uParser Parser("header.custom", m_fieldsList);
-	ASSERT_THROW(Parser.getNextEntry(), uToken_exception_base);
-	ASSERT_THROW(Parser.getNextEntry(), uToken_exception_base);
-	ASSERT_THROW(Parser.getNextEntry(), uToken_exception_base);
-	ASSERT_THROW(Parser.getNextEntry(), uToken_exception_base);
+	ASSERT_THROW(Parser.getNextEntry(), ugene_exception_base);
+	ASSERT_THROW(Parser.getNextEntry(), ugene_exception_base);
+	ASSERT_THROW(Parser.getNextEntry(), ugene_exception_base);
+	ASSERT_THROW(Parser.getNextEntry(), ugene_exception_base);
 	uToken Token = Parser.getNextEntry();
 	ASSERT_EQ(Token.getParam(token_param::CHR), "chr1");
 	ASSERT_EQ(Token.getParam(token_param::START_POS), "21");

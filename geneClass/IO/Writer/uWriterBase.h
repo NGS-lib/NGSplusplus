@@ -14,9 +14,11 @@
 #include "../../uGeneException.h"
 #include "../uHeader.h"
 
-namespace NGS {
+namespace NGS
+{
 
-class uWriterBase{
+class uWriterBase
+{
 public :
 	uWriterBase() {}
 	virtual ~uWriterBase();
@@ -38,39 +40,50 @@ protected:
 	std::vector<std::string> m_fieldsNames={};
 	char m_delimiter = '\t';
 	uHeader m_headerData;
+
 };
 
 //Thank you Stack Overflow for this basic structure
 
-template<typename T> uWriterBase * createT() { return new T; }
+template<typename T> uWriterBase * createT()
+{
+    return new T;
+}
 
-struct uWriterBaseFactory {
-	typedef std::map<std::string, std::function<uWriterBase*()> > map_type;
-	virtual ~uWriterBaseFactory() {}
-	static std::shared_ptr<uWriterBase> createInstance(std::string const& s) {
-		map_type::iterator it = getMap()->find(s);
-		if(it == getMap()->end()) {
-			return nullptr;
-		}
-		return std::shared_ptr<uWriterBase>(it->second());
-	}
+struct uWriterBaseFactory
+{
+    typedef std::map<std::string, std::function<uWriterBase*()> > map_type;
+    virtual ~uWriterBaseFactory() {}
+    static std::shared_ptr<uWriterBase> createInstance(std::string const& s)
+    {
+        map_type::iterator it = getMap()->find(s);
+        if(it == getMap()->end())
+    {
+            return nullptr;
+        }
+        return std::shared_ptr<uWriterBase>(it->second());
+    }
 
 protected:
-	static map_type* mapItem;
-        static map_type* getMap() {
-		if(!mapItem) {
-			mapItem= new map_type;
-		}
-		return mapItem;
-	};
+    static map_type* mapItem;
+        static map_type* getMap()
+    {
+        if(!mapItem)
+    {
+            mapItem= new map_type;
+        }
+        return mapItem;
+    };
 }; // End of struct uWriterBaseFactory
 
 template<typename T>
-struct DerivedRegister : uWriterBaseFactory {
-	~DerivedRegister(){};
-	DerivedRegister(std::string const& s) {
-		getMap()->insert(std::pair<std::string, std::function<uWriterBase*() >> (s, &createT<T>));
-	}
+struct DerivedRegister : uWriterBaseFactory
+{
+    ~DerivedRegister(){};
+    DerivedRegister(std::string const& s)
+    {
+        getMap()->insert(std::pair<std::string, std::function<uWriterBase*() >> (s, &createT<T>));
+    }
 }; // End of struct DerivedRegister
 
 } // End of namespace NGS

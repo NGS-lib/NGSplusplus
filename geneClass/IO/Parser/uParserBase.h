@@ -13,37 +13,39 @@
 #include "../uToken.h"
 #include "../../uGeneException.h"
 #include "../uHeader.h"
-namespace NGS {
+namespace NGS 
+{
 
-class uParserBase{
+class uParserBase
+{
     public :
     uParserBase();
     virtual ~uParserBase(){};
 
-     virtual void init(const std::string& filename, bool header = false)=0;
-	 virtual void init(std::iostream* stream, bool header = false)=0;
-	 virtual void init(const std::string& filename, const std::vector<std::string>& fieldsNames, char delimiter = '\t')=0;
-	 virtual void init(std::iostream* stream, const std::vector<std::string>& fieldsNames, char delimiter = '\t')=0;
-	uParserBase& operator=(const uParserBase& copyFrom) = delete;
-	uParserBase(const uParserBase&) = delete;
-	/** \brief Check if input data is at end of file.
-	  */
-	bool eof() const;
-	virtual uToken getNextEntry()=0;
-	/** \brief Get an unformated version of header (i.e.: a single string containing the whole header)
-	*/
-	std::string getUnformatedHeader() const { return m_headerData.getUnformatedHeader(); }
-	/** \brief Get a specific data from header.
-	  */
-	std::string getHeaderParam(header_param name) const { return m_headerData.getParam(name); } ;
+    virtual void init(const std::string& filename, bool header = false)=0;
+    virtual void init(std::iostream* stream, bool header = false)=0;
+    virtual void init(const std::string& filename, const std::vector<std::string>& fieldsNames, char delimiter = '\t')=0;
+    virtual void init(std::iostream* stream, const std::vector<std::string>& fieldsNames, char delimiter = '\t')=0;
+    uParserBase& operator=(const uParserBase& copyFrom) = delete;
+    uParserBase(const uParserBase&) = delete;
+    /** \brief Check if input data is at end of file.
+      */
+    bool eof() const;
+    virtual uToken getNextEntry()=0;
+    /** \brief Get an unformated version of header (i.e.: a single string containing the whole header)
+    */
+    std::string getUnformatedHeader() const { return m_headerData.getUnformatedHeader(); }
+    /** \brief Get a specific data from header.
+      */
+    std::string getHeaderParam(header_param name) const { return m_headerData.getParam(name); } ;
     std::vector<std::string> getHeaderParamVector(header_param name) const{return m_headerData.getParamVector(name); } ;
-	/** \brief Check if there is a value associated with a given param.
-	  * \param header_param& name: name of the param to check.
-	  */
-	bool isHeaderParamSet(const header_param& name) const { return m_headerData.isParamSet(name); }
+    /** \brief Check if there is a value associated with a given param.
+      * \param header_param& name: name of the param to check.
+      */
+    bool isHeaderParamSet(const header_param& name) const { return m_headerData.isParamSet(name); }
 
 protected:
-	bool m_dynamicStream = false;
+    bool m_dynamicStream = false;
     std::istream* m_pIostream=nullptr;
     uHeader m_headerData;
 
@@ -54,7 +56,7 @@ protected:
 template<typename T> uParserBase * createT() { return new T; }
 
 struct uParserBaseFactory {
-   typedef std::map<std::string, std::function<uParserBase*()> > parser_map_type;
+    typedef std::map<std::string, std::function<uParserBase*()> > parser_map_type;
     virtual ~uParserBaseFactory(){};
     static std::shared_ptr<uParserBase> createInstance(std::string const& s) {
         parser_map_type::iterator it = getParserMap()->find(s);
@@ -70,29 +72,34 @@ struct uParserBaseFactory {
     }
 
 protected:
- static parser_map_type * mapItem;
-        static parser_map_type * getParserMap() {
-        if(!mapItem) { mapItem= new parser_map_type; }
+    static parser_map_type * mapItem;
+    static parser_map_type * getParserMap() 
+    {
+        if(!mapItem) 
+	{ 
+	    mapItem= new parser_map_type; 
+	}
         return mapItem;
     };
 
 };
-template<typename T>
-struct DerivedParserRegister : uParserBaseFactory {
-    ~DerivedParserRegister(){};
-    DerivedParserRegister(std::string const& s) {
 
-         auto it = getParserMap()->find(s);
-        if(it == getParserMap()->end()){
+template<typename T>
+struct DerivedParserRegister : uParserBaseFactory 
+{
+    ~DerivedParserRegister(){};
+    DerivedParserRegister(std::string const& s) 
+    {
+        auto it = getParserMap()->find(s);
+        if(it == getParserMap()->end())
+	{
              getParserMap()->insert(std::pair<std::string, std::function<uParserBase*() >> (s, &createT<T>));
-        } else
+        } 
+	else
         {
             throw uParser_exception_base()<<string_error("Duplicated type registering in Parser, failling\n Type is:"+s+"\n");
         }
-
-
     }
-
 };
 }
 #endif // IuParserBase_H_INCLUDED

@@ -148,15 +148,15 @@ TEST(uParserGetNextEntry, IncorrectlyFormatedHeaderBED) {
 	ASSERT_EQ(Token.getParam(token_param::START_POS), "21");
 	ASSERT_EQ(Token.getParam(token_param::END_POS), "31");
 	ASSERT_EQ(Token.getParam(token_param::STRAND), "+");
-	ASSERT_THROW(Parser.getNextEntry(), uToken_exception_base);
+	ASSERT_THROW(Parser.getNextEntry(), invalid_value_throw);
 }
 
 TEST(uParserGetNextEntry, CorrectlyFormatedHeaderButNotSpecifiedBED) {
 	uParser Parser("header.bed", "BED");
-	ASSERT_THROW(Parser.getNextEntry(), uToken_exception_base);
-	ASSERT_THROW(Parser.getNextEntry(), uToken_exception_base);
-	ASSERT_THROW(Parser.getNextEntry(), uToken_exception_base);
-	ASSERT_THROW(Parser.getNextEntry(), uToken_exception_base);
+	ASSERT_THROW(Parser.getNextEntry(), ugene_exception_base);
+	ASSERT_THROW(Parser.getNextEntry(), ugene_exception_base);
+	ASSERT_THROW(Parser.getNextEntry(), ugene_exception_base);
+	ASSERT_THROW(Parser.getNextEntry(), ugene_exception_base);
 	uToken Token = Parser.getNextEntry();
 	ASSERT_EQ(Token.getParam(token_param::CHR), "chr1");
 	ASSERT_EQ(Token.getParam(token_param::START_POS), "21");
