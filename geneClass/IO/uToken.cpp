@@ -7,32 +7,37 @@ namespace NGS {
  * \exception invalid_value_throw when using a valid token param, but with an incorrect value (i.e.: a negative value for END_POS)
  * \exception invalid_uToken_throw when the token is in an invalid state, even if all the value are valid by themselves (i.e.: START_POS > END_POS)
  */
-uToken::uToken(std::istream& paramList)
+uToken::uToken(std::istream& paramList, bool customValues)
 {
+    m_customValues = customValues;
     char line[1024];
     bool custom = false;
     while (paramList.getline(line, 1024))
     {
-        std::stringstream ss;
-        ss << line;
-
         /**< Fetch name */
         token_param name;
+        std::string value;
         std::string customName;
         try
-	{
-            ss >> name;
+        {
+            std::stringstream ss;
+            ss << line;
+            ss >> name >> value;
             custom = false;
         }
         catch (invalid_token_param_throw& e)
-	{
-            ss >> customName;
-            custom = true;
+        {
+        /**< Only check for custom values is user wants them */
+            if (m_customValues == true)
+            {
+                std::stringstream ss;
+                ss << line;
+                ss >> customName >> value;
+                custom = true;
+            }
         }
 
         /**< Fetch value */
-        std::string value;
-        ss >> value;
         if (custom == false)
         {
             try
@@ -46,7 +51,10 @@ uToken::uToken(std::istream& paramList)
         }
         else
         {
-            _setParamCustom(customName, value);
+            if (m_customValues == true) 
+            {
+                _setParamCustom(customName, value);
+            }
         }
     }
 
@@ -86,40 +94,56 @@ std::string uToken::getParam(token_param name) const
         param_not_found e;
         std::string error = "Tried to getParam that is not set: " + _convertTokenParamToString(name) + "\n";
         addStringError(e,error);
-        addStringError(e,_convertTokenParamToString(name));
         throw e;
     }
 }
 
-/** \brief Get the value associated with a token_param.
+/** \brief Get the value associated with a parameter. Can be a token_param or a custom value.
  * \param const std::string& name: the name in string format.
  * \exception param_not_found when the param is not setted in the token.
  */
 std::string uToken::getParam(const std::string& name) const
 {
+    try
+    {
+        token_param tokenName = _convertStringToTokenParam(name);
+        if (isParamSet(tokenName))
+        {
+            return m_params.find(tokenName)->second;
+        }
+    }
+    catch (invalid_token_param_throw& e)
+    {
+		if (m_customValues == false) 
+		{
+			throw e;
+		}
+    }
+        /**< If not a valid token_param, it can still be a custom value */
     if (isParamSet(name))
     {
-        return (m_customParams.find(name)->second);
+        return m_customParams.find(name)->second;
     }
     else
     {
         param_not_found e;
         std::string error = "Tried to getParam that is not set: " + name + "\n";
-        addStringError(e,error);
-        addStringError(e,name);
+        addStringError(e, error);
         throw e;
     }
 }
 
 /** \brief Set a param only if it's format is valid
- * \param token_param& name: type of param
- * \param const std::string& value: the value of the parameter
- */
+* \param token_param& name: type of param
+* \param const std::string& value: the value of the parameter
+*/
 void uToken::_setParam(const token_param& name, const std::string& value)
 {
-    // TODO: What should we do in case the name is already setted? Overwrite silently, warning or error?
-    try {
-        if (_validateParam(name, value) == false) {
+// TODO: What should we do in case the name is already setted? Overwrite silently, warning or error?
+    try 
+    {
+        if (_validateParam(name, value) == false) 
+        {
             invalid_value_throw e;
             e << string_error("Invalid token type is : "+this->_convertTokenParamToString(name)+"\n Invalid value is :"+value+"\n");
             throw e;
@@ -127,7 +151,8 @@ void uToken::_setParam(const token_param& name, const std::string& value)
         _postProcessParam(name, value);
         m_params[name] = value;
     }
-    catch(invalid_value_throw &e) {
+    catch(invalid_value_throw &e) 
+    {
         addStringError(e,"Throwing in _setParam()");
         throw e;
     }
@@ -135,7 +160,10 @@ void uToken::_setParam(const token_param& name, const std::string& value)
 
 void uToken::_setParamCustom(const std::string& name, const std::string& value)
 {
-    m_customParams[name] = value;
+    if (m_customValues == true)
+    {
+        m_customParams[name] = value;
+    }
 }
 
 /** \brief Check is the param is set.
@@ -153,7 +181,19 @@ bool uToken::isParamSet(const token_param& name) const
  */
 bool uToken::isParamSet(const std::string& name) const
 {
-    return m_customParams.count(name);
+    try
+    {
+        token_param tokenName = _convertStringToTokenParam(name);
+        return isParamSet(tokenName);
+    }
+    catch (invalid_token_param_throw& e)
+    {
+        if (m_customValues == true)
+        {
+            return m_customParams.count(name);
+        }
+    }
+    return false;
 }
 
 /** \brief Operate any necessary post_processing on our values. Note this may include setting values to the token
@@ -164,29 +204,29 @@ bool uToken::isParamSet(const std::string& name) const
  *
  */
 void uToken::_postProcessParam(const token_param& name, const std::string& value) {
-	switch(name) {
-	case token_param::START_POS:
-	case token_param::END_POS:
-		break;
-	case token_param::STRAND:
-		break;
-	case token_param::MAP_SCORE:
-		break;
-	case token_param::PHRED_SCORE:
-		break;
-	case token_param::CIGAR:
-		_postProcCigar(value);
-		break;
-	case token_param::SEQUENCE:
-	    _postProcSequence(value);
-		break;
-	case token_param::FLAGS:
-		_postProcFlag(value);
-		break;
-	case token_param::CHR:
-		break;
-	case token_param::SEQ_NAME:
-		break;
+    switch(name) {
+    case token_param::START_POS:
+    case token_param::END_POS:
+        break;
+    case token_param::STRAND:
+        break;
+    case token_param::MAP_SCORE:
+        break;
+    case token_param::PHRED_SCORE:
+        break;
+    case token_param::CIGAR:
+        _postProcCigar(value);
+        break;
+    case token_param::SEQUENCE:
+        _postProcSequence(value);
+        break;
+    case token_param::FLAGS:
+        _postProcFlag(value);
+        break;
+    case token_param::CHR:
+        break;
+    case token_param::SEQ_NAME:
+        break;
     case token_param::SCORE:
         break;
     default:
@@ -284,21 +324,21 @@ void uToken::_validateSequenceCigar() const {
         std::string str_sequence;
         str_sequence = getParam(token_param::SEQUENCE);
         if (isParamSet(token_param::CIGAR))
-	{
+    {
             std::string str_cigar = getParam(token_param::CIGAR);
             /**< Fetch all numerical values and sum them  */
             size_t cigar_size = 0;
             std::stringstream ss;
             for (size_t i = 0; i < str_cigar.size(); i++)
-	    {
+        {
                 if (_isDigit(str_cigar[i]) == true)
-		{
+        {
                     ss << str_cigar[i];
                 }
                 else {
                     int value;
                     switch(str_cigar[i])
-		    {
+            {
                     case 'M':
                     case 'I':
                     case 'S':
@@ -318,7 +358,7 @@ void uToken::_validateSequenceCigar() const {
             }
             /**< Check if sequence length and cigar sum match  */
             if (str_sequence.size() != cigar_size)
-	    {
+        {
                 std::stringstream seq_size_stream;
                 seq_size_stream << str_sequence.size();
                 std::stringstream cigar_size_stream;
@@ -340,15 +380,15 @@ void uToken::_validateSequencePhred() const
         std::string str_sequence;
         str_sequence = getParam(token_param::SEQUENCE);
         if (isParamSet(token_param::PHRED_SCORE))
-	{
+    {
             std::string str_phred = getParam(token_param::PHRED_SCORE);
             if (str_phred.size() != 0)
-	    {
+        {
                 /**< If only 1 element and *, then not stored */
                 if(! ((str_phred.size()==1) &&(str_phred.at(0)=='*') ))
-		{
+        {
                     if (str_sequence.size() != str_phred.size())
-		    {
+            {
                         std::stringstream seq_size;
                         seq_size << str_sequence.size();
                         std::stringstream phred_size;
@@ -437,7 +477,7 @@ bool uToken::_sequenceIsValid(const std::string& value) const
     for (size_t i = 0; i < value.size(); i++)
     {
         switch (value[i])
-	{
+    {
         case 'a':
             break;
         case 'A':
@@ -510,7 +550,7 @@ bool uToken::_cigarIsValid(const std::string& value) const
     {
         bool currentValue = _isDigit(value[i]);
         if (lastValue == false && currentValue == false)
-	{
+    {
             return false;
         }
         lastValue = currentValue;
@@ -562,10 +602,10 @@ bool uToken::_isStreamEmpty(const std::istream& stream) const
  */
 
 void uToken::_postProcSequence(const std::string& sequence) {
-	if (!(isParamSet(token_param::END_POS))) {
-	auto start_pos = std::stoi(getParam(token_param::START_POS));
-	_setParam(token_param::END_POS, std::to_string(sequence.size()+start_pos-1));
-	}
+    if (!(isParamSet(token_param::END_POS))) {
+    auto start_pos = std::stoi(getParam(token_param::START_POS));
+    _setParam(token_param::END_POS, std::to_string(sequence.size()+start_pos-1));
+    }
 
 }
 
@@ -580,39 +620,50 @@ void uToken::_postProcFlag(const std::string& flag)
 
 }
 void uToken::_postProcCigar(const std::string& cig) {
-	/**< If END_POS is not set, calculate it's value from cigar score and set it */
-	if (!(isParamSet(token_param::END_POS))) {
-		try {
-			int curPos=0;
-			std::string substr;
-			int size=0;
-			for (unsigned int i=0; i< cig.size(); i++) {
-				/**< If isAlpha then check previous numbers */
-				if (isalpha(cig.at(i))) {
-					/**< If a count value */
-					char temp;
-					temp = cig.at(i);
-					if ((temp=='M')||(temp=='I')||(temp=='S')||(temp=='X')||(temp=='+')) {
-						substr= cig.substr(curPos, (i-curPos));
-						size+= atoi(substr.c_str());
-					}
-					curPos=(i+1);
-				}
-			}
-			auto start_pos=std::stoi(getParam(token_param::START_POS));
-			_setParam(token_param::END_POS, std::to_string(start_pos+(size-1) ));
-		}
-		catch(uToken_exception_base &e) {
-			addStringError(e, "Throwing, in _postProcCigar, unable to set END_POS as START_POS not set");
-			throw e;
-		}
-	}
+    /**< If END_POS is not set, calculate it's value from cigar score and set it */
+    if (!(isParamSet(token_param::END_POS))) {
+        try {
+            int curPos=0;
+            std::string substr;
+            int size=0;
+            for (unsigned int i=0; i< cig.size(); i++) {
+                /**< If isAlpha then check previous numbers */
+                if (isalpha(cig.at(i))) {
+                    /**< If a count value */
+                    char temp;
+                    temp = cig.at(i);
+                    if ((temp=='M')||(temp=='I')||(temp=='S')||(temp=='X')||(temp=='+')) {
+                        substr= cig.substr(curPos, (i-curPos));
+                        size+= atoi(substr.c_str());
+                    }
+                    curPos=(i+1);
+                }
+            }
+            auto start_pos=std::stoi(getParam(token_param::START_POS));
+            _setParam(token_param::END_POS, std::to_string(start_pos+(size-1) ));
+        }
+        catch(uToken_exception_base &e) {
+            addStringError(e, "Throwing, in _postProcCigar, unable to set END_POS as START_POS not set");
+            throw e;
+        }
+    }
 }
 
 
-std::string uToken::_convertTokenParamToString(const token_param& token) const {
-	std::stringstream ss;
-	ss << token;
-	return ss.str();
+std::string uToken::_convertTokenParamToString(const token_param& token) const 
+{
+    std::stringstream ss;
+    ss << token;
+    return ss.str();
 }
+
+token_param uToken::_convertStringToTokenParam(const std::string& name) const
+{
+    std::stringstream ss;
+    ss << name;
+    token_param tokenParam;
+    ss >> tokenParam;
+    return tokenParam;
+}
+
 } // End of namespace NGS
