@@ -19,21 +19,21 @@ using namespace NGS;
  */
 TEST(uParserConstructorFilename, ValidFileName) {
 
-	ASSERT_NO_THROW(uParser Parser("./data/BED/test.bed", "BED"));
+	ASSERT_NO_THROW(uParser Parser("../data/BED/test.bed", "BED"));
 }
 
 TEST(uParserConstructorFilename, CorrectlyFormatedHeaderBed) {
-	ASSERT_NO_THROW(uParser Parser("./data/BED/header.bed", "BED", true));
+	ASSERT_NO_THROW(uParser Parser("../data/BED/header.bed", "BED", true));
 }
 
 TEST(uParserConstructorFilename, InvalidFileName) {
 	ASSERT_THROW(uParser Parser("/data/BED/test2.bed", "BED"), std::runtime_error);
 	try {
-		uParser Parser("./data/BED/test2.bed", "BED");
+		uParser Parser("../data/BED/test2.bed", "BED");
 		ASSERT_TRUE(false);
 	}
 	catch (std::runtime_error& e) {
-		ASSERT_STREQ(e.what(), "Error opening file: ./data/BED/test2.bed");
+		ASSERT_STREQ(e.what(), "Error opening file: ../data/BED/test2.bed");
 	}
 }
 
@@ -84,7 +84,7 @@ TEST(uParserConstructorStream, EmptyStream) {
  */
 // TODO: Check score also!
 TEST(uParserGetNextEntry, CorrectlyFormatedBED6) {
-	uParser Parser("./data/BED/test.bed", "BED");
+	uParser Parser("../data/BED/test.bed", "BED");
 	uToken Token = Parser.getNextEntry();
 	ASSERT_EQ(Token.getParam(token_param::CHR), "chr1");
 	ASSERT_EQ(Token.getParam(token_param::START_POS), "21");
@@ -101,7 +101,7 @@ TEST(uParserGetNextEntry, CorrectlyFormatedBED6) {
 }
 
 TEST(uParserGetNextEntry, CorrectlyFormatedBED4) {
-	uParser Parser("./data/BED/test.bed", "BED");
+	uParser Parser("../data/BED/test.bed", "BED");
 	uToken Token = Parser.getNextEntry();
 	ASSERT_EQ(Token.getParam(token_param::CHR), "chr1");
 	ASSERT_EQ(Token.getParam(token_param::START_POS), "21");
@@ -116,7 +116,7 @@ TEST(uParserGetNextEntry, CorrectlyFormatedBED4) {
 }
 
 TEST(uParserGetNextEntry, CorrectlyFormatedHeaderBED) {
-	uParser Parser("./data/BED/header.bed", "BED", true);
+	uParser Parser("../data/BED/header.bed", "BED", true);
 	uToken Token = Parser.getNextEntry();
 	ASSERT_EQ(Token.getParam(token_param::CHR), "chr1");
 	ASSERT_EQ(Token.getParam(token_param::START_POS), "21");
@@ -131,7 +131,7 @@ TEST(uParserGetNextEntry, CorrectlyFormatedHeaderBED) {
 }
 
 TEST(uParserGetNextEntry, IncorrectlyFormatedBED) {
-	uParser Parser("./data/BED/incorrect.bed", "BED", false);
+	uParser Parser("../data/BED/incorrect.bed", "BED", false);
 	ASSERT_THROW(Parser.getNextEntry(), invalid_value_throw);
 
 	uToken Token = Parser.getNextEntry();
@@ -143,7 +143,7 @@ TEST(uParserGetNextEntry, IncorrectlyFormatedBED) {
 }
 // TODO: Check if next entry is ok
 TEST(uParserGetNextEntry, IncorrectlyFormatedHeaderBED) {
-	uParser Parser("./data/BED/incorrect_header.bed", "BED", true);
+	uParser Parser("../data/BED/incorrect_header.bed", "BED", true);
 	uToken Token = Parser.getNextEntry();
 	ASSERT_EQ(Token.getParam(token_param::CHR), "chr1");
 	ASSERT_EQ(Token.getParam(token_param::START_POS), "21");
@@ -153,7 +153,7 @@ TEST(uParserGetNextEntry, IncorrectlyFormatedHeaderBED) {
 }
 
 TEST(uParserGetNextEntry, CorrectlyFormatedHeaderButNotSpecifiedBED) {
-	uParser Parser("./data/BED/header.bed", "BED");
+	uParser Parser("../data/BED/header.bed", "BED");
 	ASSERT_THROW(Parser.getNextEntry(), ugene_exception_base);
 	ASSERT_THROW(Parser.getNextEntry(), ugene_exception_base);
 	ASSERT_THROW(Parser.getNextEntry(), ugene_exception_base);
@@ -166,7 +166,7 @@ TEST(uParserGetNextEntry, CorrectlyFormatedHeaderButNotSpecifiedBED) {
 }
 
 TEST(uParserGetNextEntry, ReachedEOF) {
-	uParser Parser("./data/BED/test.bed", "BED");
+	uParser Parser("../data/BED/test.bed", "BED");
 	uToken Token = Parser.getNextEntry();
 	Token = Parser.getNextEntry();
 	Token = Parser.getNextEntry();

@@ -19,14 +19,14 @@ using namespace NGS;
  */
 
 TEST(uParserEof, NotEndOfFile) {
-	uParser Parser("./data/BED/test.bed", "BED");
+	uParser Parser("../data/BED/test.bed", "BED");
 	ASSERT_FALSE(Parser.eof());
 	uToken Token = Parser.getNextEntry();
 	ASSERT_FALSE(Parser.eof());
 }
 
 TEST(uParserEof, EndOfFile) {
-	uParser Parser("./data/BED/test.bed", "BED");
+	uParser Parser("../data/BED/test.bed", "BED");
 	uToken Token = Parser.getNextEntry();
 	Token = Parser.getNextEntry();
 	Token = Parser.getNextEntry();
@@ -49,12 +49,12 @@ TEST(uParserEof, NoTokenInStream) {
  */
 
 TEST(getUnformatedHeader, NoHeader) {
-	uParser Parser("./data/BED/test.bed", "BED");
+	uParser Parser("../data/BED/test.bed", "BED");
 	ASSERT_EQ(Parser.getUnformatedHeader(), "");
 }
 
 TEST(getUnformatedHeader, WithHeader) {
-	uParser Parser("./data/BED/header.bed", "BED", true);
+	uParser Parser("../data/BED/header.bed", "BED", true);
 	string unformated = "";
 	unformated += "browser position chr7:127471196-127495720\n";
 	unformated += "browser hide all\n";
