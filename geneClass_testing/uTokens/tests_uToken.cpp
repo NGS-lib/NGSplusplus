@@ -6,11 +6,6 @@
 using namespace std;
 using namespace NGS;
 
-/* Dummy test */
-TEST(test, testing) {
-	ASSERT_TRUE(true);
-}
-
 // TODO: test CIGAR containing only a '*'
 /*
  * Constructor tests:
@@ -127,7 +122,7 @@ TEST(uTokenConstructor, EmptyArgument) {
 TEST(uTokenConstructor, Invalid_param_token) {
 	stringstream ss;
 	ss << "CH\tchr1\n" << "START_POS\t1\n" << "END_POS\t21\n";
-	ASSERT_THROW(uToken Token(ss), invalid_uToken_throw);
+	ASSERT_THROW(uToken Token(ss), uToken_exception_base);
 }
 
 TEST(uTokenConstructor, MissingMandatoryArgument_CHR) {
@@ -268,8 +263,9 @@ TEST(uTokenConstructor, SEQUENCE_CIGAR_lengthDontMatch) {
 /*
  * Test for the function:
  *		std::string getParam(token_param name);
- *	Valid cases:
+ *	Valid case:
  *		ArgumentExists
+ *	Invalid case:
  *		ArgumentDoesNotExist
  */
 
@@ -307,6 +303,64 @@ TEST(uTokenGetParam, ArgumentDoesNotExist) {
 	ASSERT_THROW(Token.getParam(token_param::SEQ_NAME), param_not_found);
 	ASSERT_THROW(Token.getParam(token_param::FLAGS), param_not_found);
 }
+
+/*
+ * Test for the function:
+ *		std::string getParam(const std::string& name) const;
+ *	Valid cases:
+ *		ArgumentExistsTokenParam
+ *		ArgumentExistsCustomParam
+ *	Invalid case:
+ *		ArgumentDoesNotExist
+ */
+
+
+TEST(uTokenGetParamString, ArgumentExistsTokenParam) {
+	stringstream ss;
+	ss << "CHR\tchr1\n" << "START_POS\t1\n" << "END_POS\t21\n";
+	ss << "STRAND\t+\n" << "MAP_SCORE\t255\n" << "PHRED_SCORE\t####################\n";
+	ss << "CIGAR\t2M3I2X1=12X\n" << "SEQUENCE\tACGTN.acgtn.ACGTGTCN\n";
+	ss << "SEQ_NAME\tab00001\n" << "FLAGS\t256\n";
+	uToken Token(ss);
+	ASSERT_EQ(Token.getParam("CHR"), "chr1");
+	ASSERT_EQ(Token.getParam("START_POS"), "1");
+	ASSERT_EQ(Token.getParam("END_POS"), "21");
+	ASSERT_EQ(Token.getParam("STRAND"), "+");
+	ASSERT_EQ(Token.getParam("MAP_SCORE"), "255");
+	ASSERT_EQ(Token.getParam("PHRED_SCORE"), "####################");
+	ASSERT_EQ(Token.getParam("CIGAR"), "2M3I2X1=12X");
+	ASSERT_EQ(Token.getParam("SEQUENCE"), "ACGTN.acgtn.ACGTGTCN");
+	ASSERT_EQ(Token.getParam("SEQ_NAME"), "ab00001");
+	ASSERT_EQ(Token.getParam("FLAGS"), "256");
+}
+
+TEST(uTokenGetParamString, ArgumentExistsCustomParam) {
+	stringstream ss;
+	ss << "CHR\tchr1\n" << "START_POS\t1\n" << "END_POS\t21\n";
+	ss << "JUNK\tabcd\n";
+	uToken Token(ss,true);
+	ASSERT_EQ(Token.getParam("CHR"), "chr1");
+	ASSERT_EQ(Token.getParam("START_POS"), "1");
+	ASSERT_EQ(Token.getParam("END_POS"), "21");
+	ASSERT_EQ(Token.getParam("JUNK"), "abcd");
+}
+
+TEST(uTokenGetParamString, ArgumentDoesNotExist) {
+	stringstream ss;
+	ss << "CHR\tchr1\n" << "START_POS\t1\n" << "END_POS\t21\n";
+	uToken Token(ss);
+	ASSERT_EQ(Token.getParam("CHR"), "chr1");
+	ASSERT_EQ(Token.getParam("START_POS"), "1");
+	ASSERT_EQ(Token.getParam("END_POS"), "21");
+	ASSERT_THROW(Token.getParam("STRAND"),param_not_found);
+	ASSERT_THROW(Token.getParam("MAP_SCORE"), param_not_found);
+	ASSERT_THROW(Token.getParam("PHRED_SCORE"), param_not_found);
+	ASSERT_THROW(Token.getParam("CIGAR"), param_not_found);
+	ASSERT_THROW(Token.getParam("SEQUENCE"),param_not_found);
+	ASSERT_THROW(Token.getParam("SEQ_NAME"), param_not_found);
+	ASSERT_THROW(Token.getParam("FLAGS"), param_not_found);
+}
+
 /*
  * Test for the checking if param is Set:
  *		bool uToken::_isParamSet;
@@ -327,6 +381,7 @@ TEST(uTokenGetParam, ArgumentisNotSet) {
 	ASSERT_FALSE(Token.isParamSet(token_param::CIGAR));
 	ASSERT_FALSE(Token.isParamSet(token_param::SEQUENCE));
 }
+
 /*
  * Test for the equality operator overloading:
  *		uToken& operator=(uToken const& assign_from);
