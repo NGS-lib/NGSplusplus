@@ -14,7 +14,7 @@ using namespace NGS;
 
 TEST(newParserWig, CorrectlyFormatedVariableWIG) {
 
-	uParser ourParser("../wig/correctVariable.wig", "WIG");
+	uParser ourParser("./data/WIG//correctVariable.wig", "WIG");
 	int count=0;
 	uToken Token = ourParser.getNextEntry();
 	count++;
@@ -39,7 +39,7 @@ EXPECT_EQ(count, 9);
 }
 TEST(newParserWig, CorrectlyFormatedFixedWIG) {
     int count=0;
-    uParser ourParser("../wig/correctFixed.wig", "WIG");
+    uParser ourParser("./data/WIG/correctFixed.wig", "WIG");
     const int START=49307401;
 	const int STEP=300;
 	const int SPAN=200;
@@ -74,7 +74,7 @@ EXPECT_EQ(count, 10);
 
 TEST(newParserWig, CorrectFormatBoth) {
     int count=0;
-    uParser ourParser("../wig/correct.wig", "WIG");
+    uParser ourParser("./wig/correct.wig", "WIG");
     const int STEP=300;
     vector<int> compareStart{49304701,49304901,49305401,49305601,49305901,49306081,49306301,49306691,49307871,49307401,49307401+STEP,49307401+STEP*2,49307401+STEP*3,49307401+STEP*4,49307401+STEP*5,49307401+STEP*6,49307401+STEP*7,49307401+STEP*8,49307401+STEP*9};
    // vector<int> compareEnd{}
@@ -97,14 +97,14 @@ EXPECT_EQ(compareStart, starts);
 TEST(newParserWig, noChromWig) {
 
 EXPECT_ANY_THROW(
-     uParser ourParser("../wig/nochromFixed.wig", "WIG");
+     uParser ourParser(".../data/WIG/nochromFixed.wig", "WIG");
 );
 
 }
 TEST(newParserWig, noStartFixed) {
 
 EXPECT_ANY_THROW(
-    uParser ourParser("../wig/noStartFixed.wig", "WIG");
+    uParser ourParser("./data/WIG/noStartFixed.wig", "WIG");
 );
 
 }
@@ -112,13 +112,13 @@ EXPECT_ANY_THROW(
 TEST(newParserWig, noDefinition) {
 
 EXPECT_ANY_THROW(
-    uParser ourParser("../wig/no_definition.wig", "WIG");
+    uParser ourParser("./data/WIG/no_definition.wig", "WIG");
 );
 
 }
 
 TEST(newParserWig, incorrectLines) {
-    uParser ourParser("../wig/incorrect.wig", "WIG");
+    uParser ourParser("./data/WIG/incorrect.wig", "WIG");
     EXPECT_ANY_THROW(
 
     while(!(ourParser.eof())){
