@@ -39,7 +39,7 @@ protected:
 	bool m_dynamicStream = false;
 	std::vector<std::string> m_fieldsNames={};
 	char m_delimiter = '\t';
-	uHeader m_headerData;
+	uHeader m_headerData=uHeader();
 
 };
 

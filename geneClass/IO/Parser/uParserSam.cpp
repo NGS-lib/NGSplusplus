@@ -142,7 +142,6 @@ void uParserSam::_parseHeader()
         /**< Parse the line */
         std::stringstream Infostream;
         std::string temp,chrom, size;
-        int chromsize;
         Infostream.str(lineString);
         /**< get Token */
         Infostream >>temp;
@@ -198,7 +197,7 @@ void uParserSam::_parseHeader()
             string data;
             string chrom;
             string REF,AssID,MD5,Species,URI;
-            int refSeqlenght;
+            long long int refSeqlenght;
             bool SN=false, LN=false, AS=false, M5=false, SP=false, UR=false;
             while (!(Infostream.eof()))
             {
@@ -219,8 +218,7 @@ void uParserSam::_parseHeader()
                         throw uParser_invalid_Sam_header()<<string_error("Multiple LN tag in @SQ header, failling: \n"+lineString);
                     LN=true;
                     data.erase(0,3);
-                    refSeqlenght=std::stoi(data);
-
+                    refSeqlenght=std::stoll(data);
                 }
                 else if (data.find("AS:")!=string::npos)
                 {

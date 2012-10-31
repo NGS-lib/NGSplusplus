@@ -21,6 +21,30 @@ class uGenericNGSExperiment
     typedef typename NGSExpMap::value_type     NGSExpPair;
 
     //TODO, const iterators public
+private:
+
+    /**< Comparison functors */
+    static bool comparePosStart(const _BASE_ &item, const int & value)
+    {
+        return item.getStart() < value;
+    }
+    static bool compareStart(const _BASE_ &item1, const _BASE_ &item2)
+    {
+        return item1.getStart() < item2.getStart();
+    }
+    static bool compareLenght(const _BASE_ &item1, const _BASE_ &item2)
+    {
+        return item1.getLenght() < item2.getLenght();
+    }
+    static bool comparePos(const _BASE_ &item1, const _BASE_ &item2)
+    {
+        if ((item1.getStart() != item2.getStart()))
+            return item1.getStart() < item2.getStart();
+        else
+            return item1.getEnd() < item2.getEnd();
+    }
+
+
 protected:
 
     /**< Are we loading gradually? */
@@ -29,6 +53,10 @@ protected:
 
     std::ifstream* ourStream;
     std::map<std::string,_CHROM_>  ExpMap;
+
+    std::function<int(const _BASE_*)> sortGetStart=nullptr;
+    std::function<int(const _BASE_*)> sortGetEnd=nullptr ;
+    std::function<bool(const _BASE_ &item1, const _BASE_ &item2)> m_comptFunc=nullptr;
 
     void removeSite(std::string chr,int position);
 
@@ -95,7 +123,9 @@ public:
     _BASE_ getSite(typename std::vector<_BASE_>::const_iterator posItr)const;
 
 
-    void sortData();
+    void sortSites();
+    template<typename Compare>
+    void sortSites(Compare comp,std::function<int(const _BASE_*)> getStart_funct=nullptr,std::function<int(const _BASE_*)> getEnd_funct=nullptr);
     bool isSorted()const;
     typename std::vector<_BASE_>::const_iterator findPrecedingSite(std::string chr, int position)const;
     typename std::vector<_BASE_>::const_iterator findNextSite(std::string chr, int position)const;
@@ -275,7 +305,7 @@ public:
     template<class UnaryFunction>
     UnaryFunction applyOnAllChroms(UnaryFunction f)
     {
-        for_each(std::begin(ExpMap), std::end(ExpMap), [&f](NGSExpPair element)
+        for_each(std::begin(ExpMap), std::end(ExpMap), [&f](NGSExpPair& element)
         {
             f(element.second);
         });
@@ -616,20 +646,45 @@ int uGenericNGSExperiment<_CHROM_,_BASE_>::getSubsetCount(uGenericNGS subsetReg,
 }
 
 
+
+/** \brief Sort Every site of every chrom based on location
+ *
+ * \return void uGenericNGSExperiment<_CHROM_,
+ *
+ */
 template<typename _CHROM_, typename _BASE_>
-void uGenericNGSExperiment<_CHROM_, _BASE_>::sortData()
+void uGenericNGSExperiment<_CHROM_, _BASE_>::sortSites()
 {
-    //TODO Why won't this work with applyOnAllChroms
-  //  std::cerr << " Are we in this"
- for( auto it = this->begin(); it!=this->end(); it++){
-            it->second.sortSites();
+   sortSites(uGenericNGSExperiment<_CHROM_, _BASE_>::compareStart,&_BASE_::getStart,&_BASE_::getEnd);
 }
 
- //  std::function<void (_CHROM_&)> funct;//=
- // funct=    (void(_CHROM_::*)()) &_CHROM_::sortSites;
-  // applyOnAllChroms(funct);
-  //  applyOnAllChroms(std::mem_fun_ref(static_cast<void (_CHROM_::*)()>(&_CHROM_::sortSites)));
+  /** \brief Sort the sites vector by applying a certain comparison
+      *      See documention on Chrom version for indepth comments
+      *
+      * \param comp Compare : Binary comparison operation to perform on the sites collection
+      * \return void
+      */
+
+template<typename _CHROM_, typename _BASE_>
+template<typename Compare>
+void uGenericNGSExperiment<_CHROM_, _BASE_>::sortSites(Compare comp,std::function<int(const _BASE_*)> getStart_funct,std::function<int(const _BASE_*)> getEnd_funct)
+{
+    try
+    {
+        sortGetStart=getStart_funct;
+        sortGetEnd= getEnd_funct;
+        m_comptFunc=comp;
+        auto sortfunct=std::bind( (void(_CHROM_::*)(Compare,std::function<int(const _BASE_*)>,std::function<int(const _BASE_*)>))
+                                 &_CHROM_::sortSites,std::placeholders::_1, comp,getStart_funct,getEnd_funct);
+        applyOnAllChroms(sortfunct );
+       // return std::sort(std::begin(VecSites), std::end(VecSites), comp);
+    }
+    catch(std::exception &e)
+    {
+        throw e;
+    }
 }
+
 
 template<typename _CHROM_, typename _BASE_>
 /** \brief Returns false if at least one chrom is unsorted
