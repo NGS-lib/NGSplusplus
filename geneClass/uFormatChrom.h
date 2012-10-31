@@ -112,6 +112,7 @@ public:
     uGenericNGSChrom<_BASE_> getOverlapping(uGenericNGSChrom<T2> &compareExp,OverlapType overlap=OverlapType::OVERLAP_PARTIAL) const;
     template <class T2>
     uGenericNGSChrom<_BASE_> getNotOverlapping(uGenericNGSChrom<T2> &compareExp,OverlapType overlap=OverlapType::OVERLAP_PARTIAL) const;
+    uGenericNGSChrom<_BASE_> getDistinct(std::string chr, int start, int end, OverlapType options=OverlapType::OVERLAP_PARTIAL);
 
     /**< Functions to manipulate generically ranges of our elements */
     uGenericNGSChrom<_BASE_> getSubset(int start, int end, OverlapType overlap=OverlapType::OVERLAP_PARTIAL) const;
@@ -403,7 +404,6 @@ public:
             }
 
         }
-
         /** \brief Indicates if the sites collection is sorted according to a certain comparison
           *
           * This function take a pointer to a function to determine if the the sites
@@ -1152,6 +1152,18 @@ public:
         {
             throw e;
         }
+
+    }
+    //TODO should this be in here or in chrom?
+    template<typename _BASE_>
+    uGenericNGSChrom<_BASE_> uGenericNGSChrom<_BASE_>::getDistinct(std::string chr, int start, int end, OverlapType options)
+    {
+        uGenericNGSChrom<_BASE_> returnChrom;
+
+        //If you want to use this, you will need to declare a constructur in the parent class of _CHROM_ to manage a _CHROM_<_BASE_> elementa
+        //Copy constructor!
+        returnChrom= this->getNotOverlapping(start, end);
+        return returnChrom;
     }
 
     /**< Return the elements of A that do not overlap B */

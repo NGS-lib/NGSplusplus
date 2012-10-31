@@ -1,5 +1,5 @@
 #include "uHeader.h"
-namespace NGS 
+namespace NGS
 {
 
 /** \brief If the param exist, it returns it's value in string format. Otherwise returns param_not_found error.
@@ -23,11 +23,11 @@ uHeader::uHeader()
  */
 std::vector<std::string> uHeader::getParamVector(header_param name) const
 {
-    if(isParamSet(name)) 
+    if(isParamSet(name))
     {
         return (m_params.find(name)->second);
     }
-    else 
+    else
     {
         param_not_found e;
         std::string error = "Tried to getParam that is not set: " + _convertHeaderParamToString(name) + "\n";
@@ -44,11 +44,11 @@ std::vector<std::string> uHeader::getParamVector(header_param name) const
  */
 std::string uHeader::getParam(header_param name) const
 {
-    if(isParamSet(name)) 
+    if(isParamSet(name))
     {
         return (m_params.find(name)->second.at(0));
     }
-    else 
+    else
     {
         param_not_found e;
         std::string error = "Tried to getParam that is not set: " + _convertHeaderParamToString(name) + "\n";
@@ -58,7 +58,7 @@ std::string uHeader::getParam(header_param name) const
     }
 }
 
-bool uHeader::_validateChrSize(const std::string& sizeString) const 
+bool uHeader::_validateChrSize(const std::string& sizeString) const
 {
     try {
         int value = std::stoi(sizeString);
@@ -88,7 +88,7 @@ bool uHeader::_validateChrList(const std::string& chrString)const
 
 /** \brief To copy a uHeader object.
  */
-uHeader& uHeader::operator=(uHeader const& assign_from) 
+uHeader& uHeader::operator=(uHeader const& assign_from)
 {
     if (this == &assign_from) return *this;
     m_params = assign_from.m_params;
@@ -136,7 +136,7 @@ void uHeader::_addToParam(const header_param& name, const std::string& value)
 /** \brief Utility function to convert an header_param type to it's string counterpart.
  * \param const header_param& header: the header_param type to convert to string.
  */
-std::string uHeader::_convertHeaderParamToString(const header_param& header) const 
+std::string uHeader::_convertHeaderParamToString(const header_param& header) const
 {
     std::stringstream ss;
     ss << header;
@@ -151,9 +151,10 @@ std::string uHeader::_convertHeaderParamToString(const header_param& header) con
  * \return void
  *
  */
-void uHeader::_postProcessParam(const header_param& name, std::string& value) 
-{
-    post_func_map[name](this,value);
+
+void uHeader::_postProcessParam(const header_param& name, std::string& value) {
+    if (post_func_map.count(name))
+        post_func_map[name](this,value);
 }
 
 /** \brief Call the associated validation function
@@ -163,9 +164,13 @@ void uHeader::_postProcessParam(const header_param& name, std::string& value)
  * \return bool
  *
  */
-bool uHeader::_validateParam(header_param name, const std::string& value) 
-{
-    return validate_func_map[name](this,value);
+
+bool uHeader::_validateParam(header_param name, const std::string& value) {
+   // std::cout << "validating call" <<std::endl;
+   if (validate_func_map.count(name))
+        return validate_func_map[name](this,value);
+    else
+        return true;
 }
 
 } // End of namespace NGS
