@@ -74,7 +74,7 @@ EXPECT_EQ(count, 10);
 
 TEST(newParserWig, CorrectFormatBoth) {
     int count=0;
-    uParser ourParser("./wig/correct.wig", "WIG");
+    uParser ourParser("./data/WIG/correct.wig", "WIG");
     const int STEP=300;
     vector<int> compareStart{49304701,49304901,49305401,49305601,49305901,49306081,49306301,49306691,49307871,49307401,49307401+STEP,49307401+STEP*2,49307401+STEP*3,49307401+STEP*4,49307401+STEP*5,49307401+STEP*6,49307401+STEP*7,49307401+STEP*8,49307401+STEP*9};
    // vector<int> compareEnd{}

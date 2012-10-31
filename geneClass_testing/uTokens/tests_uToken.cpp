@@ -128,6 +128,7 @@ TEST(uTokenConstructor, Invalid_param_token) {
 	stringstream ss;
 	ss << "CH\tchr1\n" << "START_POS\t1\n" << "END_POS\t21\n";
 	ASSERT_THROW(uToken Token(ss), invalid_uToken_throw);
+
 }
 
 TEST(uTokenConstructor, MissingMandatoryArgument_CHR) {
