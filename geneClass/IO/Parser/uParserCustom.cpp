@@ -85,7 +85,7 @@ uToken uParserCustom::getNextEntry()
         /**< If it doesn't work andit's the first token, we don't throw an error. Instead, we try again with another line */
         try
         {
-            uToken token(token_infos);
+            uToken token(token_infos, true);
             return token;
         }
         catch(invalid_uToken_throw& e)

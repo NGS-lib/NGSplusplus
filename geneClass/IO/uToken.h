@@ -20,7 +20,7 @@ enum class token_param { CHR, START_POS, END_POS, STRAND, MAP_SCORE, PHRED_SCORE
 /**< All the data is saved in a map in string format */
 class uToken {
 public:
-    uToken(std::istream& paramList);
+    uToken(std::istream& paramList, bool customValues = false);
     /** \brief Fetch a param. Throw param_not_found if the param does not exist.
      * \param token_param& name: the name of the param we wish to get.
      */
@@ -51,6 +51,7 @@ public:
 
 private:
     std::map<token_param, std::string> m_params={};
+    bool m_customValues = false;
     std::map<std::string, std::string> m_customParams={};
     void _setParam(const token_param& name, const std::string& value);
     void _setParamCustom(const std::string& name, const std::string& value);
@@ -84,6 +85,7 @@ private:
     void _postProcCigar(const std::string& cig);
 
     std::string _convertTokenParamToString(const token_param& token) const;
+    token_param _convertStringToTokenParam(const std::string& name) const;
 }; // End of class Token
 
 /**< Overloading of stream operator for token_param */
