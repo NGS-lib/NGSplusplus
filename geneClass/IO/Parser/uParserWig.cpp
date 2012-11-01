@@ -22,6 +22,7 @@ void uParserWig::init(const std::string& filename, bool header )
     else
     {
         m_pIostream = ifs;
+	m_dynamicStream = true;
          char line[4096];
     if (m_pIostream->getline(line, 4096))
     {
@@ -59,6 +60,7 @@ void uParserWig::init(const std::string& filename, bool header )
 void uParserWig::init(std::iostream* stream, bool header )
 {
     m_pIostream = stream;
+    m_dynamicStream = false;
       char line[4096];
     if (m_pIostream->getline(line, 4096))
     {
@@ -90,16 +92,6 @@ void uParserWig::init(std::iostream* stream, bool header )
             throw uParser_missing_mandatory_header()<<string_error("Missing header in wiggle file \n");
 
         }
-}
-
-
-void uParserWig::init(const std::string& filename, const std::vector<std::string>& fieldsNames, char delimiter)
-{
-}
-
-
-void uParserWig::init(std::iostream* stream, const std::vector<std::string>& fieldsNames, char delimiter )
-{
 }
 
 

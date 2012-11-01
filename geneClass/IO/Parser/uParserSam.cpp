@@ -18,40 +18,15 @@ uParserSam::~uParserSam()
 
 void uParserSam::init(const std::string& filename, bool header )
 {
-    std::ifstream* ifs = new std::ifstream(filename.c_str(), std::ifstream::in);
-    if (!ifs->is_open())
-    {
-        std::string error = "Error opening file: " + filename;
-        throw std::runtime_error(error.c_str());
-    }
-    else
-    {
-        m_pIostream = ifs;
-    }
+    uParserBase::init(filename, header);
     _parseHeader();
 }
+
 void uParserSam::init(std::iostream* stream, bool header )
 {
-    m_pIostream = stream;
-
+    uParserBase::init(stream, header);
     _parseHeader();
 }
-
-void uParserSam::init(const std::string& filename, const std::vector<std::string>& fieldsNames, char delimiter)
-{
-
-    throw ugene_exception_base()<<string_error("Invalid constructor call for Sam Format");
-
-}
-
-
-void uParserSam::init(std::iostream* stream, const std::vector<std::string>& fieldsNames, char delimiter )
-{
-
-    throw ugene_exception_base()<<string_error("Invalid constructor call for Sam Format");
-
-}
-
 
 uToken uParserSam::getNextEntry()
 {

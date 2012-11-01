@@ -22,8 +22,6 @@ public :
     ~uParserSam();
     void init(const std::string& filename, bool header = false);
     void init(std::iostream* stream, bool header = false);
-    void init(const std::string& filename, const std::vector<std::string>& fieldsNames, char delimiter = '\t');
-    void init(std::iostream* stream, const std::vector<std::string>& fieldsNames, char delimiter = '\t');
 
     uToken getNextEntry();
 

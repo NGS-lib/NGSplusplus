@@ -12,11 +12,6 @@ uParserBed::uParserBed(): uParserBase()
  */
 uParserBed::~uParserBed() 
 {
-    if (m_dynamicStream == true) 
-    {
-        delete m_pIostream;
-    }
-    m_pIostream = NULL;
 }
 
 /** \brief Initialize the uParserBed object (open file and parse header).
@@ -25,17 +20,7 @@ uParserBed::~uParserBed()
  */
 void uParserBed::init(const std::string& filename, bool header) 
 {
-    std::ifstream* ifs = new std::ifstream(filename.c_str(), std::ifstream::in);
-    if (!ifs->is_open())
-    {
-        std::string error = "Error opening file: " + filename;
-        throw std::runtime_error(error.c_str());
-    }
-    else
-    {
-        m_pIostream = ifs;
-        m_dynamicStream = true;
-    }
+    uParserBase::init(filename, header);
     if (header == true)
     {
         _parseHeader();
@@ -50,24 +35,9 @@ void uParserBed::init(const std::string& filename, bool header)
  */
 void uParserBed::init(std::iostream* stream, bool header) 
 {
-    m_pIostream = stream;
-    m_dynamicStream = false;
+    uParserBase::init(stream, header);
     m_headerParsed = true;
     m_delimiter = '\t';
-}
-
-/** \brief Initialize the uParserBed object (custom uParserBed is not valid).
- */
-void uParserBed::init(const std::string& filename, const std::vector<std::string>& fieldsNames, char delimiter)
-{
-    throw ugene_exception_base()<<string_error("Invalid constructor call for Bed Format");
-}
-
-/** \brief Initialize the uParserBed object (custom uParserBed is not valid).
- */
-void uParserBed::init(std::iostream* stream, const std::vector<std::string>& fieldsNames, char delimiter)
-{
-    throw ugene_exception_base()<<string_error("Invalid constructor call for Bed Format");
 }
 
 /** \brief Produce a token with next entry in the file/stream.
