@@ -4,7 +4,7 @@
 //TODO : Split tests by type of file??
 /**< To test private member directly, changed private for public */
 //#define private public
-#include "IO/Parser/uParser.h" 
+#include "IO/Parser/uParser.h"
 #include "fixtures.h"
 
 using namespace std;
@@ -19,14 +19,14 @@ using namespace NGS;
  */
 
 TEST(uParserEof, NotEndOfFile) {
-	uParser Parser("test.bed", "BED");
+	uParser Parser("../data/BED/test.bed", "BED");
 	ASSERT_FALSE(Parser.eof());
 	uToken Token = Parser.getNextEntry();
 	ASSERT_FALSE(Parser.eof());
 }
 
 TEST(uParserEof, EndOfFile) {
-	uParser Parser("test.bed", "BED");
+	uParser Parser("../data/BED/test.bed", "BED");
 	uToken Token = Parser.getNextEntry();
 	Token = Parser.getNextEntry();
 	Token = Parser.getNextEntry();
@@ -39,7 +39,7 @@ TEST(uParserEof, NoTokenInStream) {
 	uParser Parser(&ss, "BED");
 	ASSERT_TRUE(Parser.eof());
 }
-	
+
 /*
  * Tests for the function:
  *		std::string getUnformatedHeader() const;
@@ -49,12 +49,12 @@ TEST(uParserEof, NoTokenInStream) {
  */
 
 TEST(getUnformatedHeader, NoHeader) {
-	uParser Parser("test.bed", "BED");
+	uParser Parser("../data/BED/test.bed", "BED");
 	ASSERT_EQ(Parser.getUnformatedHeader(), "");
 }
 
 TEST(getUnformatedHeader, WithHeader) {
-	uParser Parser("header.bed", "BED", true);
+	uParser Parser("../data/BED/header.bed", "BED", true);
 	string unformated = "";
 	unformated += "browser position chr7:127471196-127495720\n";
 	unformated += "browser hide all\n";

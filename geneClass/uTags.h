@@ -314,18 +314,10 @@ public:
 
     std::vector<float> getRegionSignal(int start, int end, bool overlap);
 
-    //TODO FIX THIS
- //   int findPrecedingSite(int position, int low, int high)
- //   {
-      //  return uGenericNGSChrom<uTags>::findPrecedingSite(position, low, high);
- //   };
-
 };
 
 // TODO: Lot's of code that should move to parser?
 /**< Our complete tag experiment */
-/**< Taga can be very very big....how do we deal with this. */
-/**< For now we don't, but at some point we will have to. */
 class uTagsExperiment: public uGenericNGSExperiment<uTagsChrom, uTags>
 {
 
