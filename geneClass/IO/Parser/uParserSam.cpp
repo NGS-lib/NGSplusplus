@@ -22,7 +22,7 @@ void uParserSam::init(const std::string& filename, bool header )
     _parseHeader();
 }
 
-void uParserSam::init(std::iostream* stream, bool header )
+void uParserSam::init(std::istream* stream, bool header )
 {
     uParserBase::init(stream, header);
     _parseHeader();

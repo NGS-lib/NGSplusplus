@@ -21,7 +21,7 @@ public :
     uParserSam();
     ~uParserSam();
     void init(const std::string& filename, bool header = false);
-    void init(std::iostream* stream, bool header = false);
+    void init(std::istream* stream, bool header = false);
 
     uToken getNextEntry();
 

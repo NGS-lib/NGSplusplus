@@ -2,6 +2,9 @@
 #define UFORMATEXPERIMENT_H_INCLUDED
 #include <fstream>
 #include "IO/Parser/uParser.h"
+
+//
+
 namespace NGS {
 //_BASE_ is our Tags, _CHROM_ our Chrom structure.
 enum class ReadMode{ DEFAULT, GRADUAL };
@@ -54,9 +57,9 @@ protected:
     std::ifstream* ourStream;
     std::map<std::string,_CHROM_>  ExpMap;
 
-    std::function<int(const _BASE_*)> sortGetStart=nullptr;
-    std::function<int(const _BASE_*)> sortGetEnd=nullptr ;
-    std::function<bool(const _BASE_ &item1, const _BASE_ &item2)> m_comptFunc=nullptr;
+    std::function<float(const _BASE_*)> sortGetStart=nullptr;
+    std::function<float(const _BASE_*)> sortGetEnd=nullptr ;
+    std::function<bool(const _BASE_ &item1, const _BASE_ &item2)> m_comptFunc=compareStart;
 
     void removeSite(std::string chr,int position);
 
@@ -75,20 +78,26 @@ public:
     auto begin()const->decltype(ExpMap.cbegin()){return ExpMap.cbegin();};
     auto end()const->decltype(ExpMap.cend()){return ExpMap.cend();};
 
-    _CHROM_ getSubset(std::string chr, int start, int end, OverlapType options=OverlapType::OVERLAP_PARTIAL);
+    _CHROM_ getSubset(std::string chr, float start, float end, OverlapType options=OverlapType::OVERLAP_PARTIAL);
    // _CHROM_ getDistinct(std::string chr, int start, int end, OverlapType options=OverlapType::OVERLAP_PARTIAL);
 
     //Should we be publicy allowing the turn of a pointer to our internal structure? I would assume not..
-    /**< Should we allow this? */
-    //TODO, throw catch
+
+    _CHROM_ getChrom(const std::string & chrom) const
+    {
+        if (ExpMap.count(chrom)==0){
+           throw ugene_operation_throw()<<string_error("Requested non-existent Chrom from Exp in getChrom(), value : " +chrom);
+        }
+        return  ExpMap.find(chrom)->second;;
+    };
+
+
     const _CHROM_* getpChrom(const std::string & chrom) const
     {
-        std::cerr << " Getting pointer to " <<chrom <<std::endl;
         if (ExpMap.count(chrom)==0){
-            return nullptr;
-           // std::cerr << "Invalid request" <<std::endl;
+           throw ugene_operation_throw()<<string_error("Required pointer to non-existent Chrom from Exp in getpChrom(), value : " +chrom);
         }
-        auto refer=&(ExpMap.find(chrom)->second);
+        const auto refer=&(ExpMap.find(chrom)->second);
         return (refer);
     };
 
@@ -96,11 +105,6 @@ public:
     void addSite(const _BASE_ & newSite);
 
     long long count() const;
-
-   // int countExpUnique();
-
-    //TODO Implement merge
-    //void cutDuplicates();
 
     //Replace with parser
     bool isEndfile()
@@ -125,13 +129,15 @@ public:
 
     void sortSites();
     template<typename Compare>
-    void sortSites(Compare comp,std::function<int(const _BASE_*)> getStart_funct=nullptr,std::function<int(const _BASE_*)> getEnd_funct=nullptr);
+    void sortSites(Compare comp,std::function<float(const _BASE_*)> getStart_funct=nullptr,std::function<float(const _BASE_*)> getEnd_funct=nullptr);
     bool isSorted()const;
     typename std::vector<_BASE_>::const_iterator findPrecedingSite(std::string chr, int position)const;
     typename std::vector<_BASE_>::const_iterator findNextSite(std::string chr, int position)const;
 
     virtual void loadFromTabFile(std::ifstream& stream);
-    virtual void loadFile(std::ifstream& stream, std::string pType);
+   // virtual void loadFile(std::ifstream& stream, std::string pType);
+    virtual void loadWithParser(std::ifstream&, std::string);
+
 
     void writeAsBedFile(std::ostream& out)const;
 
@@ -160,8 +166,8 @@ public:
         return (ExpMap[chr].getChromSize());
     };
 
-    int getSubsetCount(std::string chr, int start, int end, OverlapType overlap=OverlapType::OVERLAP_PARTIAL);
-    int getSubsetCount(uGenericNGS subsetReg, OverlapType overlap=OverlapType::OVERLAP_PARTIAL);
+    int getSubsetCount(const std::string & chr, const float start, const float end, const OverlapType overlap=OverlapType::OVERLAP_PARTIAL);
+    int getSubsetCount(const uGenericNGS & subsetReg, const OverlapType overlap=OverlapType::OVERLAP_PARTIAL);
 
     void divideItemsIntoBinofSize(int N, SplitType type=SplitType::STRICT);
     void divideItemsIntoNBins(int N, SplitType type=SplitType::STRICT);
@@ -483,13 +489,11 @@ public:
 
   uGenericNGSExperiment():op_mode(ReadMode::DEFAULT) {};
 
-    //TODO FIX THIS' MAKE EVERYTHIGN WITH IT PROTECTED
+    //TODO Move to protect or private, should not be public
     _CHROM_* getpChrom(const std::string & chrom)
     {
-       // std::cerr << " Getting pointer to " <<chrom <<std::endl;
         if (ExpMap.count(chrom)==0){
-           // std::cerr << "Invalid request" <<std::endl;
-            return nullptr;
+           throw ugene_operation_throw()<<string_error("Required pointer to non-existent Chrom from Exp in getpChrom(), value : " +chrom);
         }
         return &(ExpMap[chrom]);
     };
@@ -568,20 +572,24 @@ template<typename _CHROM_, typename _BASE_>
     }
 }
 
-/** \brief load basic data from a tab delimited file, throw away the result.
+/** \brief load basic data from a Parser and load necessary data by passing to object constructor
  *
  * \param stream std::ifstream& file to load from
  * \return void
  *
  */
 template<typename _CHROM_, typename _BASE_>
- void uGenericNGSExperiment<_CHROM_, _BASE_>::loadFile(std::ifstream& stream, std::string pType)
+ void uGenericNGSExperiment<_CHROM_, _BASE_>:: loadWithParser(std::ifstream& pStream, std::string pType)
 {
-  //  auto refStream = dynamic_cast<std::iostream&>(stream);
-  //  uParser Curparser(&refStream, pType);
-  //  while(!Curparser.eof()){
-  //      addSite(Curparser.getNextEntry());
-  //  }
+    try {
+    std::istream& refStream = pStream;
+    uParser Curparser(&refStream, pType);
+    while(!Curparser.eof()){
+        addSite(Curparser.getNextEntry());
+        }
+    }
+    catch(...)
+    { throw; }
 }
 
 
@@ -620,7 +628,7 @@ long long uGenericNGSExperiment<_CHROM_, _BASE_>::count() const
  *
  */
 template<typename _CHROM_, typename _BASE_>
-int uGenericNGSExperiment<_CHROM_,_BASE_>::getSubsetCount(std::string chr, int start, int end, OverlapType overlap)
+int uGenericNGSExperiment<_CHROM_,_BASE_>::getSubsetCount(const std::string & chr, const float start, const float end, OverlapType overlap)
 {
     int count=0;
     typename NGSExpMap::iterator iterMap;
@@ -635,7 +643,7 @@ int uGenericNGSExperiment<_CHROM_,_BASE_>::getSubsetCount(std::string chr, int s
 
 //Return the number of elements in our experiment either overlap or included in the specified region.
 template<typename _CHROM_, typename _BASE_>
-int uGenericNGSExperiment<_CHROM_,_BASE_>::getSubsetCount(uGenericNGS subsetReg, OverlapType overlap)
+int uGenericNGSExperiment<_CHROM_,_BASE_>::getSubsetCount(const uGenericNGS & subsetReg, const OverlapType overlap)
 {
 
     int count=0;
@@ -644,7 +652,6 @@ int uGenericNGSExperiment<_CHROM_,_BASE_>::getSubsetCount(uGenericNGS subsetReg,
                            subsetReg.getEnd());
     return count;
 }
-
 
 
 /** \brief Sort Every site of every chrom based on location
@@ -664,17 +671,17 @@ void uGenericNGSExperiment<_CHROM_, _BASE_>::sortSites()
       * \param comp Compare : Binary comparison operation to perform on the sites collection
       * \return void
       */
-
 template<typename _CHROM_, typename _BASE_>
 template<typename Compare>
-void uGenericNGSExperiment<_CHROM_, _BASE_>::sortSites(Compare comp,std::function<int(const _BASE_*)> getStart_funct,std::function<int(const _BASE_*)> getEnd_funct)
+void uGenericNGSExperiment<_CHROM_, _BASE_>::sortSites(Compare comp,std::function<float(const _BASE_*)> getStart_funct,std::function<float(const _BASE_*)> getEnd_funct)
 {
     try
     {
         sortGetStart=getStart_funct;
         sortGetEnd= getEnd_funct;
         m_comptFunc=comp;
-        auto sortfunct=std::bind( (void(_CHROM_::*)(Compare,std::function<int(const _BASE_*)>,std::function<int(const _BASE_*)>))
+        /**< AS there are two SorSites functions, we must specify this rather clunky signature so it knows what overload to use */
+        auto sortfunct=std::bind( (void(_CHROM_::*)(Compare,std::function<float(const _BASE_*)>,std::function<float(const _BASE_*)>))
                                  &_CHROM_::sortSites,std::placeholders::_1, comp,getStart_funct,getEnd_funct);
         applyOnAllChroms(sortfunct );
        // return std::sort(std::begin(VecSites), std::end(VecSites), comp);
@@ -694,8 +701,9 @@ template<typename _CHROM_, typename _BASE_>
 bool uGenericNGSExperiment<_CHROM_, _BASE_>::isSorted()const{
         bool sorted=true;
         applyOnAllChroms([&](_CHROM_& chrom){
-                         if (chrom.isSorted()==false)
-                         sorted=false; });
+                         if (chrom.isSorted(m_comptFunc)==false)
+                         sorted=false;
+                         });
 
     return sorted;
 }
@@ -758,6 +766,7 @@ _BASE_ uGenericNGSExperiment<_CHROM_,_BASE_>::getSite(std::string chr, int posit
 
     return tempChrom->getSite( chr,position);
 }
+
 template<typename _CHROM_, typename _BASE_>
 _BASE_ uGenericNGSExperiment<_CHROM_,_BASE_>::getSite(typename std::vector<_BASE_>::const_iterator posItr)const
 {
@@ -769,23 +778,29 @@ _BASE_ uGenericNGSExperiment<_CHROM_,_BASE_>::getSite(typename std::vector<_BASE
     return tempChrom->getSite( posItr);
 }
 
-//TODO make removeSubset and make a version that takes and reveices an NGSExp
-template<typename _CHROM_, typename _BASE_>
-_CHROM_ uGenericNGSExperiment<_CHROM_,_BASE_>::getSubset(std::string chr, int start, int end, OverlapType options)
+
+
+
+
+
+/** \brief Return a Chrom containing only the sites that overlap the given chr
+ *
+ *
+ * \param chr std::string
+ * \param start int
+ * \param end int
+ * \param options OverlapType
+ * \return _CHROM_
+ *
+ */
+ template<typename _CHROM_, typename _BASE_>
+_CHROM_ uGenericNGSExperiment<_CHROM_,_BASE_>::getSubset(std::string chr, float start, float end, OverlapType options)
 {
-    _CHROM_ returnChrom;
-    _CHROM_* tempChrom;
+   if (ExpMap.count(chr)==0)
+      return _CHROM_();
 
-    tempChrom=&(ExpMap[chr]);
-    //If you want to use this, you will need to declare a constructur in the parent class of _CHROM_ to manage a _CHROM_<_BASE_> elementa
-    //Copy constructor!
-    returnChrom= (_CHROM_)tempChrom->getSubset(start,
-                 end,
-                 options);
-
-    return returnChrom;
+    return (_CHROM_)ExpMap[chr].getSubset(start,end,options);
 }
-
 
 
 /** \brief Return an EXP containing only the unarity sites that do not overlap does of the input structure

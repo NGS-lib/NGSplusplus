@@ -63,9 +63,9 @@ protected:
 
     /**< Pointers to our functions and determines if sorted */
     bool m_isSorted=true;
-    std::function<int(const _BASE_*)> sortGetStart=nullptr;
-    std::function<int(const _BASE_*)> sortGetEnd=nullptr ;
-    std::function<bool(const _BASE_ &item1, const _BASE_ &item2)> m_comptFunc=nullptr;
+    std::function<float(const _BASE_*)> sortGetStart=nullptr;
+    std::function<float(const _BASE_*)> sortGetEnd=nullptr ;
+    std::function<bool(const _BASE_ &item1, const _BASE_ &item2)> m_comptFunc=compareStart;
     long int chromSize=0;
 
 
@@ -96,8 +96,8 @@ public:
 
 
     /**< Find according to sort value */
-    VecGenConstIter findPrecedingSite(const int & position) const;
-    VecGenConstIter findNextSite(const int & position) const;
+    VecGenConstIter findPrecedingSite(const float position) const;
+    VecGenConstIter findNextSite(const float position) const;
     /**< Functions to create and add items to our chrom */
     template <class T2>
     _BASE_ generateRandomSite(const int size, std::mt19937& engine, const uGenericNGSChrom<T2> &exclList, const int sigma=0, const std::string ID="") const;
@@ -115,11 +115,11 @@ public:
     uGenericNGSChrom<_BASE_> getDistinct(std::string chr, int start, int end, OverlapType options=OverlapType::OVERLAP_PARTIAL);
 
     /**< Functions to manipulate generically ranges of our elements */
-    uGenericNGSChrom<_BASE_> getSubset(int start, int end, OverlapType overlap=OverlapType::OVERLAP_PARTIAL) const;
-    uGenericNGSChrom<_BASE_> removeSubset(int start, int end, OverlapType overlap=OverlapType::OVERLAP_PARTIAL);
+    uGenericNGSChrom<_BASE_> getSubset(float start, float end, OverlapType overlap=OverlapType::OVERLAP_PARTIAL) const;
+    uGenericNGSChrom<_BASE_> removeSubset(float start, float end, OverlapType overlap=OverlapType::OVERLAP_PARTIAL);
 
     void addSite( _BASE_ newSite);
-    int getSubsetCount(int start, int end, OverlapType overlap=OverlapType::OVERLAP_PARTIAL)const;
+    int getSubsetCount(float start, float end, OverlapType overlap=OverlapType::OVERLAP_PARTIAL)const;
 
 
     bool getSortedStatus() const
@@ -372,7 +372,7 @@ public:
           */
 
         template<class Compare>
-        void sortSites(Compare comp,std::function<int(const _BASE_*)> getStart_funct=nullptr,std::function<int(const _BASE_*)> getEnd_funct=nullptr)
+        void sortSites(Compare comp,std::function<float(const _BASE_*)> getStart_funct=nullptr,std::function<float(const _BASE_*)> getEnd_funct=nullptr)
         {
             try
             {
@@ -380,6 +380,7 @@ public:
                 sortGetStart=getStart_funct;
                 sortGetEnd= getEnd_funct;
                 m_comptFunc=comp;
+
                 return std::sort(std::begin(VecSites), std::end(VecSites), comp);
             }
             catch(std::exception &e)
@@ -922,7 +923,7 @@ public:
      *
      */
     template <class _BASE_>
-    typename std::vector<_BASE_>::const_iterator uGenericNGSChrom<_BASE_>::findPrecedingSite(const int & position) const
+    typename std::vector<_BASE_>::const_iterator uGenericNGSChrom<_BASE_>::findPrecedingSite(const float position) const
     {
         try
         {
@@ -931,11 +932,14 @@ public:
                 throw ugene_exception_base() <<string_error("findPrecedingSite called on unsorted vector \n") ;
             if ((sortGetStart==nullptr)||(sortGetEnd==nullptr))
                 throw ugene_exception_base() <<string_error(" findPrecedingSite called on chrom without appropriate start or end function\n") ;
-            auto comp = [&] (const _BASE_ &item1, const int &item2)
+            auto comp = [&] (const _BASE_ &item1, const float &item2)
             {
                 return sortGetStart(&item1)< item2;
             };
-
+            for (auto k:VecSites){
+               float value =sortGetStart(&k);
+               value +=1;
+               }
             /**< Compare, sort Value */
             auto lower = std::lower_bound(VecSites.begin(), VecSites.end(), position, comp);
 
@@ -960,7 +964,7 @@ public:
     }
 //TODO test this and complimentary
     template <class _BASE_>
-    typename std::vector<_BASE_>::const_iterator uGenericNGSChrom<_BASE_>::findNextSite(const int & position) const
+    typename std::vector<_BASE_>::const_iterator uGenericNGSChrom<_BASE_>::findNextSite(const float position) const
     {
         try
         {
@@ -968,7 +972,7 @@ public:
             if ((m_isSorted==false)||(sortGetStart==nullptr)||(sortGetEnd==nullptr))
                 throw ugene_exception_base();
             /**< Return true comparitor if item1 smaller then item 2 */
-            auto comp = [&] (const int &item1, const _BASE_ &item2)
+            auto comp = [&] (const float &item1, const _BASE_ &item2)
             {
                 return item1< sortGetStart(&item2);
             };
@@ -1000,7 +1004,7 @@ public:
      *
      */
     template <class _BASE_>
-    int uGenericNGSChrom<_BASE_>::getSubsetCount(int start, int end, OverlapType overlap) const
+    int uGenericNGSChrom<_BASE_>::getSubsetCount(float start, float end, OverlapType overlap) const
     {
         try
         {
@@ -1040,9 +1044,8 @@ public:
      *
      */
     template <class _BASE_>
-    uGenericNGSChrom<_BASE_> uGenericNGSChrom<_BASE_>::getSubset(int start, int end, OverlapType overlap) const
+    uGenericNGSChrom<_BASE_> uGenericNGSChrom<_BASE_>::getSubset(float start, float end, OverlapType overlap) const
     {
-
         try
         {
             uGenericNGSChrom<_BASE_> returnChrom;
@@ -1085,7 +1088,7 @@ public:
      *
      */
     template <class _BASE_>
-    uGenericNGSChrom<_BASE_> uGenericNGSChrom<_BASE_>::removeSubset(int start, int end, OverlapType overlap)
+    uGenericNGSChrom<_BASE_> uGenericNGSChrom<_BASE_>::removeSubset(float start, float end, OverlapType overlap)
     {
 
         try

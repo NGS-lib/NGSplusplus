@@ -4,13 +4,13 @@ namespace NGS {
 
 /** \brief Default constructor (not used directly).
  */
-uParserBed::uParserBed(): uParserBase() 
+uParserBed::uParserBed(): uParserBase()
 {
 }
 
 /** \brief Destructor.
  */
-uParserBed::~uParserBed() 
+uParserBed::~uParserBed()
 {
 }
 
@@ -18,7 +18,7 @@ uParserBed::~uParserBed()
  * \param const std::string& filename: name of the bed file to parse.
  * \param bool header: true if there is a header to parse (value at false by default).
  */
-void uParserBed::init(const std::string& filename, bool header) 
+void uParserBed::init(const std::string& filename, bool header)
 {
     uParserBase::init(filename, header);
     if (header == true)
@@ -33,7 +33,7 @@ void uParserBed::init(const std::string& filename, bool header)
  * \param std::iostream* stream: name of the bed stream to parse.
  * \param bool header: true if there is a header to parse (value at false by default).
  */
-void uParserBed::init(std::iostream* stream, bool header) 
+void uParserBed::init(std::istream* stream, bool header)
 {
     uParserBase::init(stream, header);
     m_headerParsed = true;
@@ -43,7 +43,7 @@ void uParserBed::init(std::iostream* stream, bool header)
 /** \brief Produce a token with next entry in the file/stream.
  * \return uToken containing the infos of the next entry.
  */
-uToken uParserBed::getNextEntry() 
+uToken uParserBed::getNextEntry()
 {
     char line[4096];
     if (m_pIostream->getline(line, 4096))
@@ -86,7 +86,7 @@ void uParserBed::_convertLineToTokenInfosBed(char* line, std::stringstream& toke
     strcpy(line_cpy, line);
     std::stringstream ss;
     ss << line_cpy;
-    if (m_numberOfColumn == 0 && m_headerParsed == true) 
+    if (m_numberOfColumn == 0 && m_headerParsed == true)
     {
         int numberOfColumn = _countColumns(line);
         _validateColumnNumber(numberOfColumn);
@@ -96,7 +96,7 @@ void uParserBed::_convertLineToTokenInfosBed(char* line, std::stringstream& toke
     std::string start_pos = _getNextEntry(line_cpy);
     std::string end_pos = _getNextEntry(line_cpy);
     std::string seq_name = _getNextEntry(line_cpy);
-    std::string score; 
+    std::string score;
     std::string strand;
     token_infos << "CHR\t" << chr << "\n";
     token_infos << "START_POS\t" << start_pos << "\n";
@@ -127,7 +127,7 @@ int uParserBed::_countColumns(char* line) const
 
 void uParserBed::_validateColumnNumber(int numberOfColumn) const
 {
-    if (numberOfColumn != 4 && numberOfColumn != 6) 
+    if (numberOfColumn != 4 && numberOfColumn != 6)
     {
         uParserBed_invalid_number_of_columns e;
         e << string_error("uParserBed: Invalid number of columns.");
@@ -194,7 +194,7 @@ std::string uParserBed::_getNextEntry(char* line)
     int i = 0;
 
     /**< Fetch the next entry */
-    do 
+    do
     {
         toReturnChar[i] = line[i];
         i++;
@@ -206,7 +206,7 @@ std::string uParserBed::_getNextEntry(char* line)
     if (line[i] != '\0')
     {
         i++;
-        do 
+        do
         {
             line[j] = line[i];
             i++;

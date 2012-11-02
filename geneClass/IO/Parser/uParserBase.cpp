@@ -1,13 +1,13 @@
 #include "uParserBase.h"
 
-namespace NGS 
+namespace NGS
 {
 
 /** \brief Destructor.
  */
-uParserBase::~uParserBase() 
+uParserBase::~uParserBase()
 {
-    if (m_dynamicStream == true) 
+    if (m_dynamicStream == true)
     {
         delete m_pIostream;
     }
@@ -18,7 +18,7 @@ uParserBase::~uParserBase()
  * \param const std::string& filename: name of the bed file to parse.
  * \param bool header: true if there is a header to parse (value at false by default).
  */
-void uParserBase::init(const std::string& filename, bool header) 
+void uParserBase::init(const std::string& filename, bool header)
 {
     std::ifstream* ifs = new std::ifstream(filename.c_str(), std::ifstream::in);
     if (!ifs->is_open())
@@ -37,7 +37,7 @@ void uParserBase::init(const std::string& filename, bool header)
  * \param std::iostream* stream: name of the bed stream to parse.
  * \param bool header: true if there is a header to parse (value at false by default).
  */
-void uParserBase::init(std::iostream* stream, bool header) 
+void uParserBase::init(std::istream* stream, bool header)
 {
     m_pIostream = stream;
     m_dynamicStream = false;
@@ -52,8 +52,8 @@ uParserBase::uParserBase(){};
  * \return true is we are at the end, otherwise false.
  */
 bool uParserBase::eof() const
-{ 
-    return m_pIostream->peek() == EOF; 
+{
+    return m_pIostream->peek() == EOF;
 }
 
 std::map<std::string, std::function<uParserBase*()> > *uParserBaseFactory::mapItem;

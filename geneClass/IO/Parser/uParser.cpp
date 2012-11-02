@@ -7,7 +7,7 @@ namespace NGS
 /** \brief Filename default constructor.
  * \param const std::string& filename: the name of the file to parse.
  * \param const std::string& type: the type of file (i.e.: "BED")
- * \param bool header: true if there is a header (value at false by default). 
+ * \param bool header: true if there is a header (value at false by default).
  */
 uParser::uParser(const std::string& filename, const std::string & type, bool header)
 {
@@ -29,9 +29,9 @@ uParser::uParser(const std::string& filename, const std::string & type, bool hea
 /** \brief Stream default constructor.
  * \param std::iostream* stream: the stream to parse.
  * \param const std::string& type: the type of stream (i.e.: "BED")
- * \param bool header: true if there is a header (value at false by default). 
+ * \param bool header: true if there is a header (value at false by default).
  */
-uParser::uParser(std::iostream* stream, const std::string & type, bool header)
+uParser::uParser(std::istream* stream, const std::string & type, bool header)
 {
 
     uParserBaseFactory myFact;
@@ -43,7 +43,7 @@ uParser::uParser(std::iostream* stream, const std::string & type, bool header)
 /** \brief Filename custom constructor.
  * \param const std::string& filename: the name of the file to parse.
  * \param const std::vector<std::string>& fieldsNames: The name of every column in the file.
- * \param bool header: true if there is a header (value at false by default). 
+ * \param bool header: true if there is a header (value at false by default).
  */
 uParser::uParser(const std::string& filename, const std::vector<std::string>& fieldsNames, char delimiter)
 {
@@ -57,9 +57,9 @@ uParser::uParser(const std::string& filename, const std::vector<std::string>& fi
 /** \brief Stream custom constructor.
  * \param std::iostream* stream: The stream to parse.
  * \param const std::vector<std::string>& fieldsNames: The name of every column in the file.
- * \param bool header: true if there is a header (value at false by default). 
+ * \param bool header: true if there is a header (value at false by default).
  */
-uParser::uParser(std::iostream* stream, const std::vector<std::string>& fieldsNames, char delimiter)
+uParser::uParser(std::istream* stream, const std::vector<std::string>& fieldsNames, char delimiter)
 {
 
     uParserBaseFactory myFact;

@@ -51,7 +51,7 @@ uToken::uToken(std::istream& paramList, bool customValues)
         }
         else
         {
-            if (m_customValues == true) 
+            if (m_customValues == true)
             {
                 _setParamCustom(customName, value);
             }
@@ -114,7 +114,7 @@ std::string uToken::getParam(const std::string& name) const
     }
     catch (invalid_token_param_throw& e)
     {
-		if (m_customValues == false) 
+		if (m_customValues == false)
 		{
 			throw e;
 		}
@@ -140,9 +140,9 @@ std::string uToken::getParam(const std::string& name) const
 void uToken::_setParam(const token_param& name, const std::string& value)
 {
 // TODO: What should we do in case the name is already setted? Overwrite silently, warning or error?
-    try 
+    try
     {
-        if (_validateParam(name, value) == false) 
+        if (_validateParam(name, value) == false)
         {
             invalid_value_throw e;
             e << string_error("Invalid token type is : "+this->_convertTokenParamToString(name)+"\n Invalid value is :"+value+"\n");
@@ -151,7 +151,7 @@ void uToken::_setParam(const token_param& name, const std::string& value)
         _postProcessParam(name, value);
         m_params[name] = value;
     }
-    catch(invalid_value_throw &e) 
+    catch(invalid_value_throw &e)
     {
         addStringError(e,"Throwing in _setParam()");
         throw e;
@@ -603,10 +603,9 @@ bool uToken::_isStreamEmpty(const std::istream& stream) const
 
 void uToken::_postProcSequence(const std::string& sequence) {
     if (!(isParamSet(token_param::END_POS))) {
-    auto start_pos = std::stoi(getParam(token_param::START_POS));
-    _setParam(token_param::END_POS, std::to_string(sequence.size()+start_pos-1));
+        auto start_pos = std::stoi(getParam(token_param::START_POS));
+        _setParam(token_param::END_POS, std::to_string(sequence.size()+start_pos-1));
     }
-
 }
 
 /** \brief Sam Flag can contain multiple settings
@@ -650,7 +649,7 @@ void uToken::_postProcCigar(const std::string& cig) {
 }
 
 
-std::string uToken::_convertTokenParamToString(const token_param& token) const 
+std::string uToken::_convertTokenParamToString(const token_param& token) const
 {
     std::stringstream ss;
     ss << token;

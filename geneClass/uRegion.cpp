@@ -53,7 +53,6 @@ catch(construct_elem_throw &e)
    */
   uRegion::uRegion(uToken pToken)try :uGenericNGS(pToken){
 
-
   }
 catch(construct_elem_throw &e)
 {

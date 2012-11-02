@@ -4,26 +4,26 @@ namespace NGS {
 
 /** \brief Default constructor (not to be used directly, initialize through uParser instead)
  */
-uParserCustom::uParserCustom(): uParserBed() 
+uParserCustom::uParserCustom(): uParserBed()
 {
 }
 
-/** \brief Destructor. 
+/** \brief Destructor.
  */
-uParserCustom::~uParserCustom() 
+uParserCustom::~uParserCustom()
 {
 }
 
 /** \brief Initialize the uParserCustom object (default initialization of uParserCustom is not valid).
  */
-void uParserCustom::init(const std::string& filename, bool header) 
+void uParserCustom::init(const std::string& filename, bool header)
 {
     throw ugene_exception_base()<<string_error("Invalid constructor call for Custom Format");
 }
 
 /** \brief Initialize the uParserCustom object (default initialization of uParserCustom is not valid).
  */
-void uParserCustom::init(std::iostream* stream, bool header) 
+void uParserCustom::init(std::istream* stream, bool header)
 {
     throw ugene_exception_base()<<string_error("Invalid constructor call for Custom Format");
 }
@@ -31,7 +31,7 @@ void uParserCustom::init(std::iostream* stream, bool header)
 /** \brief Initialize the uParserCustom object.
  * \param const std::string& filename: the file to parse.
  * \param const std::vector<std::string>& fieldNames: the identification of columns in the file.
- * \param char delimiter: the delimitor between each field in a row (default: tabulation). 
+ * \param char delimiter: the delimitor between each field in a row (default: tabulation).
  */
 void uParserCustom::init(const std::string& filename, const std::vector<std::string>& fieldsNames, char delimiter)
 {
@@ -50,11 +50,11 @@ void uParserCustom::init(const std::string& filename, const std::vector<std::str
 }
 
 /** \brief Initialize the uParserCustom object.
- * \param std::iostream* stream: the stream to parse.
+ * \param std::istream* stream: the stream to parse.
  * \param const std::vector<std::string>& fieldNames: the identification of columns in the file.
- * \param char delimiter: the delimitor between each field in a row (default: tabulation). 
+ * \param char delimiter: the delimitor between each field in a row (default: tabulation).
  */
-void uParserCustom::init(std::iostream* stream, const std::vector<std::string>& fieldsNames, char delimiter)
+void uParserCustom::init(std::istream* stream, const std::vector<std::string>& fieldsNames, char delimiter)
 {
     uParserBase::init(stream);
     m_delimiter = delimiter;
@@ -73,7 +73,7 @@ void uParserCustom::init(std::iostream* stream, const std::vector<std::string>& 
 /** \brief Produce a token with next entry in the file/stream.
  * \return uToken containing the infos of the next entry.
  */
-uToken uParserCustom::getNextEntry() 
+uToken uParserCustom::getNextEntry()
 {
     char line[4096];
     if (m_pIostream->getline(line, 4096))

@@ -13,7 +13,7 @@
 #include "../uToken.h"
 #include "../../uGeneException.h"
 #include "../uHeader.h"
-namespace NGS 
+namespace NGS
 {
 
 class uParserBase
@@ -23,9 +23,9 @@ class uParserBase
     virtual ~uParserBase();
 
     virtual void init(const std::string& filename, bool header = false);
-    virtual void init(std::iostream* stream, bool header = false);
+    virtual void init(std::istream* stream, bool header = false);
     virtual void init(const std::string& filename, const std::vector<std::string>& fieldsNames, char delimiter = '\t') { };
-    virtual void init(std::iostream* stream, const std::vector<std::string>& fieldsNames, char delimiter = '\t') { };
+    virtual void init(std::istream* stream, const std::vector<std::string>& fieldsNames, char delimiter = '\t') { };
     uParserBase& operator=(const uParserBase& copyFrom) = delete;
     uParserBase(const uParserBase&) = delete;
     /** \brief Check if input data is at end of file.
@@ -73,11 +73,11 @@ struct uParserBaseFactory {
 
 protected:
     static parser_map_type * mapItem;
-    static parser_map_type * getParserMap() 
+    static parser_map_type * getParserMap()
     {
-        if(!mapItem) 
-	{ 
-	    mapItem= new parser_map_type; 
+        if(!mapItem)
+	{
+	    mapItem= new parser_map_type;
 	}
         return mapItem;
     };
@@ -85,16 +85,16 @@ protected:
 };
 
 template<typename T>
-struct DerivedParserRegister : uParserBaseFactory 
+struct DerivedParserRegister : uParserBaseFactory
 {
     ~DerivedParserRegister(){};
-    DerivedParserRegister(std::string const& s) 
+    DerivedParserRegister(std::string const& s)
     {
         auto it = getParserMap()->find(s);
         if(it == getParserMap()->end())
 	{
              getParserMap()->insert(std::pair<std::string, std::function<uParserBase*() >> (s, &createT<T>));
-        } 
+        }
 	else
         {
             throw uParser_exception_base()<<string_error("Duplicated type registering in Parser, failling\n Type is:"+s+"\n");

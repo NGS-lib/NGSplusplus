@@ -52,10 +52,11 @@ public:
     };
 
 
-    uGenericNGS(std::string pchr, int pstart, int pend, StrandDir pstrand, float pScore ):chr(pchr),strand(pstrand),score(pScore)
+    uGenericNGS(std::string pchr, int pstart, int pend, StrandDir pstrand, float pScore ):chr(pchr),strand(pstrand)
     {
         try
         {
+            setScore(pScore);
             setEnd(pend);
             setStart(pstart);
         }
@@ -69,10 +70,11 @@ public:
         }
     };
 
-    uGenericNGS(std::string pchr, int pstart, int pend,float pScore ):chr(pchr),strand(StrandDir::FORWARD),score(pScore)
+    uGenericNGS(std::string pchr, int pstart, int pend,float pScore ):chr(pchr),strand(StrandDir::FORWARD)
     {
         try
         {
+            setScore(pScore);
             setEnd(pend);
             setStart(pstart);
         }
@@ -95,14 +97,12 @@ public:
     {
         try
         {
-            {
-                setEnd(std::stoi(pToken.getParam(token_param::END_POS)));
-                setStart( std::stoi(pToken.getParam(token_param::START_POS)));
-                /**< Default forward */
-                setStrand(pToken.getParam(token_param::STRAND).at(0));
-                if (pToken.isParamSet(token_param::SCORE))
-                    setScore(std::stof (pToken.getParam(token_param::SCORE) ) );
-            }
+            setEnd(std::stoi(pToken.getParam(token_param::END_POS)));
+            setStart( std::stoi(pToken.getParam(token_param::START_POS)));
+            /**< Default forward */
+            setStrand(pToken.getParam(token_param::STRAND).at(0));
+            if (pToken.isParamSet(token_param::SCORE))
+                setScore(std::stof (pToken.getParam(token_param::SCORE) ) );
         }
         catch(ugene_exception_base &e)
         {

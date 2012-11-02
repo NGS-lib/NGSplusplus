@@ -16,7 +16,7 @@ public :
     ~uParserBed();
 
     virtual void init(const std::string& filename, bool header = false);
-    virtual void init(std::iostream* stream, bool header = false);
+    virtual void init(std::istream* stream, bool header = false);
 
     uToken getNextEntry();
 
