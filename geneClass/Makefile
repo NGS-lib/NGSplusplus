@@ -27,4 +27,4 @@ all: $(UTILS) $(IO) $(WRITER) $(PARSER) $(PROJECT)
 	g++-4.7 -c $(CFLAGS) $(INCLUDES) $<
 
 $(PROJECT): $(OBJECTS)
-	libtool -o $(PROJECT) -static $(OBJECTS) $(SRC_DIR)/utility.o
+	ar -r -s $(PROJECT) $(OBJECTS)
