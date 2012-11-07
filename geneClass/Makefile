@@ -4,6 +4,7 @@ WRITER_DIR=./IO/Writer
 PARSER_DIR=./IO/Parser
 SRC_DIR=.
 BOOST_DIR=./boost-include
+GXX?=g++
 
 PROJECT = ../libs/libgeneClass.a
 OBJECTS = $(SRC_DIR)/uTags.o $(SRC_DIR)/uFormatBase.o $(SRC_DIR)/uFunctions.o $(SRC_DIR)/uRegion.o 
@@ -24,7 +25,7 @@ INCLUDES = -I$(UTIL_DIR) -I$(BOOST_DIR)
 all: $(UTILS) $(IO) $(WRITER) $(PARSER) $(PROJECT)
 
 .cpp.o:
-	g++-4.7 -c $(CFLAGS) $(INCLUDES) $<
+	$(GXX) -c $(CFLAGS) $(INCLUDES) $<
 
 $(PROJECT): $(OBJECTS)
 	ar -r -s $(PROJECT) $(OBJECTS)
