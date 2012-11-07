@@ -40,7 +40,7 @@ $(PROJECT): $(OBJECTS)
 samples: 
 	rm -r $(SAMPLE_DIR)/bin
 	mkdir $(SAMPLE_DIR)/bin
-	$(GXX) -Wall -fexception -std=c++11 -pg -g -I $(SRC_DIR) $(SRC_DIR)/boost-include -c $(SAMPLE_DIR)/DTools/DTools.cpp -o $(SAMPLE_DIR)/DTools/DTools.o 
+	$(GXX) -Wall -fexceptions -std=c++11 -pg -g -I $(SRC_DIR) -I $(SRC_DIR)/boost-include -c $(SAMPLE_DIR)/DTools/DTools.cpp -o $(SAMPLE_DIR)/DTools/DTools.o 
 	$(GXX) -o $(SAMPLE_DIR)/bin/DTools $(SAMPLE_DIR)/DTools/DTools.o $(PROJECT)
 
 clean: 
