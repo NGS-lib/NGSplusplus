@@ -57,11 +57,10 @@ TEST_F(ChromDivide, SORT){
 
 TEST_F(ChromDivide, FIND_TEST){
 
-    /**< Unsorted, fail */
 
     uChromTestOverlap.addSite(uGenericNGS("chr1", 200, 800));
     uChromTestOverlap.addSite(uGenericNGS("chr1", 250, 800));
-     uChromTestOverlap.sortSites();
+    uChromTestOverlap.sortSites();
     auto first=uChromTestOverlap.findPrecedingSite(195);
     EXPECT_EQ(100,first->getStart());
 
@@ -69,7 +68,6 @@ TEST_F(ChromDivide, FIND_TEST){
     EXPECT_EQ(250,second->getStart());
 
     EXPECT_EQ(uChromTestOverlap.end(), uChromTestOverlap.findNextSite(1500));
-   //=uChromTestOverlap.findPrecedingSite(195);
 
 }
 

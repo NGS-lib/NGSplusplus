@@ -269,7 +269,7 @@ bool uToken::_validateParam(const token_param& name, const std::string& value) c
     case token_param::SEQ_NAME:
         return true;
     case token_param::SCORE:
-          return true;
+         return _scoreIsValid(value);
 
     default:
         return false;
@@ -303,6 +303,9 @@ void uToken::_checkMandatoryValues() const
         _throwInvalidToken(error);
     }
 }
+
+
+
 
 void uToken::_validateStartEnd() const
 {
@@ -562,6 +565,13 @@ bool uToken::_cigarIsValid(const std::string& value) const
     }
     return true;
 }
+
+
+bool uToken::_scoreIsValid(const std::string& value) const
+{
+    return true;
+}
+
 
 /** \brief Check if a value of a cigar score is a legal character.
  * \param char value: The value to test.

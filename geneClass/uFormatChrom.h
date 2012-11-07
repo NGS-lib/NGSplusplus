@@ -936,10 +936,7 @@ public:
             {
                 return sortGetStart(&item1)< item2;
             };
-            for (auto k:VecSites){
-               float value =sortGetStart(&k);
-               value +=1;
-               }
+
             /**< Compare, sort Value */
             auto lower = std::lower_bound(VecSites.begin(), VecSites.end(), position, comp);
 
@@ -1090,7 +1087,6 @@ public:
     template <class _BASE_>
     uGenericNGSChrom<_BASE_> uGenericNGSChrom<_BASE_>::removeSubset(float start, float end, OverlapType overlap)
     {
-
         try
         {
             uGenericNGSChrom<_BASE_> returnChrom;

@@ -454,8 +454,8 @@ try {
         }
     }
 
- //   ourEnd=(utility::stringToInt(ourStart)+(size-1));
-    uTags returnTag(ourChr,utility::stringToInt(ourStart),utility::stringToInt(ourStart)+(size-1) );
+ //   ourEnd=(std::stoi(ourStart)+(size-1));
+    uTags returnTag(ourChr,std::stoi(ourStart),std::stoi(ourStart)+(size-1) );
     returnTag.setName(ourName);
     returnTag.setFlag(ourFlag);
     returnTag.setMapQual(mapScore);
@@ -972,7 +972,7 @@ void uTagsExperiment::parseSamHeader()
                 }
                 if (data.find("LN:")!=string::npos){
                     data.erase(0,3);
-                    chromsize=utility::stringToInt(data);
+                    chromsize=std::stoi(data);
 
                 }
 

@@ -3,43 +3,40 @@
 #include <string>
 #include <sstream>
 
-//TODO : Split tests by type of file??
-/**< To test private member directly, changed private for public */
-
 #include "IO/Parser/uParser.h"
 
 using namespace std;
 using namespace NGS;
 
 TEST(parserHeaderSamTests, ValidHeader) {
-    EXPECT_NO_THROW(uParser ourParser("./data/SAM/valid_Header.sam", "SAM"));
+    EXPECT_NO_THROW(uParser ourParser("../data/SAM/valid_Header.sam", "SAM"));
 }
 
 TEST(parserHeaderSamTests, InvalidLN_VALUE) {
-	EXPECT_THROW(uParser ourParser("./data/SAM/invalid_LN.sam", "SAM"),invalid_header_param_throw); }
+	EXPECT_THROW(uParser ourParser("../data/SAM/invalid_LN.sam", "SAM"),invalid_header_param_throw); }
 
 TEST(parserHeaderSamTests, MissingVN) {
-	  EXPECT_THROW(uParser ourParser("./data/SAM/missing_HD_VN.sam", "SAM"),uParser_invalid_Sam_header); }
+	  EXPECT_THROW(uParser ourParser("../data/SAM/missing_HD_VN.sam", "SAM"),uParser_invalid_Sam_header); }
 
 TEST(parserHeaderSamTests, MissingSN) {
-	EXPECT_THROW(uParser ourParser("./data/SAM/missing_SQ_SN.sam", "SAM"),uParser_invalid_Sam_header); }
+	EXPECT_THROW(uParser ourParser("../data/SAM/missing_SQ_SN.sam", "SAM"),uParser_invalid_Sam_header); }
 
 TEST(parserHeaderSamTests, InvalidLine) {
-	 EXPECT_THROW(uParser ourParser("./data/SAM/invalid_header.sam", "SAM"),uParser_invalid_Sam_header  ); }
+	 EXPECT_THROW(uParser ourParser("../data/SAM/invalid_header.sam", "SAM"),uParser_invalid_Sam_header  ); }
 
 TEST(parserHeaderSamTests, InvalidFilePath) {
-	 EXPECT_THROW(uParser ourParser("./data/SAM/nothinghere.sam", "SAM"),std::runtime_error  ); }
+	 EXPECT_THROW(uParser ourParser("../data/SAM/nothinghere.sam", "SAM"),std::runtime_error  ); }
 
 TEST(parserHeaderSamTests, MissingSQ) {
-	EXPECT_THROW(uParser ourParser("./data/SAM/missing_SQ_SN.sam", "SAM"),uParser_invalid_Sam_header); }
+	EXPECT_THROW(uParser ourParser("../data/SAM/missing_SQ_SN.sam", "SAM"),uParser_invalid_Sam_header); }
 
 TEST(parserHeaderSamTests, getEntryUnitary) {
 
     const std::string CHR="chr21";
     const int START = 42653323;
     const int END=START+158-1;
-    EXPECT_NO_THROW(uParser ourParser("./data/SAM/UnitaryValid.sam", "SAM"));
-	uParser ourParser("./data/SAM/UnitaryValid.sam", "SAM");
+    EXPECT_NO_THROW(uParser ourParser("../data/SAM/UnitaryValid.sam", "SAM"));
+	uParser ourParser("../data/SAM/UnitaryValid.sam", "SAM");
 
     uToken Token =ourParser.getNextEntry();
 
@@ -56,7 +53,7 @@ TEST(parserHeaderSamTests, getEntryUnitary) {
     /**< Validate opening and first value*/
 
     try{
-        uParser ourParser("./data/SAM/fiveCountValid.sam", "SAM");
+        uParser ourParser("../data/SAM/fiveCountValid.sam", "SAM");
     }
     catch(ugene_exception_base &e)
     {
@@ -69,11 +66,11 @@ TEST(parserHeaderSamTests, getEntryUnitary) {
     }
 
 {
-    ASSERT_NO_THROW(uParser ourParser("./data/SAM/fiveCountValid.sam", "SAM"));
-    uParser ourParser("./data/SAM/fiveCountValid.sam", "SAM");
+    ASSERT_NO_THROW(uParser ourParser("../data/SAM/fiveCountValid.sam", "SAM"));
+    uParser ourParser("../data/SAM/fiveCountValid.sam", "SAM");
     EXPECT_NO_THROW(auto token=ourParser.getNextEntry());
 }
-	uParser ourParser("./data/SAM/fiveCountValid.sam", "SAM");
+	uParser ourParser("../data/SAM/fiveCountValid.sam", "SAM");
 
     int count=0;
     while (ourParser.eof()==false){

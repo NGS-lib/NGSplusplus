@@ -6,28 +6,49 @@ using namespace std;
 namespace NGS
 {
 
+/** \brief Default empty constructor
+ */
 uParserSam::uParserSam(): uParserBase()
 {
-
 }
 
+/** \brief Default empty destructor
+ */
 uParserSam::~uParserSam()
 {
-
 }
 
+/** \brief Called when created, loads stream and parses Sam file header, loading mandatory info
+ *
+ * \param filename const std::string& Path to file
+ * \param header bool leave at false, ignored if set
+ * \return void
+ *
+ */
 void uParserSam::init(const std::string& filename, bool header )
 {
     uParserBase::init(filename, header);
     _parseHeader();
 }
 
+/** \brief Called when created, reads from stream and parses Sam file header, loading mandatory info
+ *
+ * \param stream std::istream*
+ * \param header bool leave at false, ignored if set
+ * \return void
+ *
+ */
 void uParserSam::init(std::istream* stream, bool header )
 {
     uParserBase::init(stream, header);
     _parseHeader();
 }
 
+/** \brief Parses next line in Sam file
+ *
+ * \return uToken Token created from Sam
+ *
+ */
 uToken uParserSam::getNextEntry()
 {
     try
@@ -96,6 +117,7 @@ uToken uParserSam::getNextEntry()
 }
 
 
+/**< Ignore this */
 void uParserSam::_processSamline(std::stringstream & curSStream)
 {
 
