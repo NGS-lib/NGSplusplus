@@ -7,6 +7,8 @@ BOOST_DIR=./boost-include
 GXX?=g++
 DESTDIR=/usr/lib
 
+SAMPLE_DIR=./sample-src
+
 PROJECT = ../libs/libgeneClass.a
 OBJECTS = $(SRC_DIR)/utility.o
 OBJECTS += $(SRC_DIR)/uHeader.o $(SRC_DIR)/uToken.o 
@@ -33,6 +35,13 @@ all: $(UTILS) $(IO) $(WRITER) $(PARSER) $(PROJECT) $(LIBRARY)
 
 $(PROJECT): $(OBJECTS)
 	ar -r -s $(PROJECT) $(OBJECTS)
+
+
+samples: 
+	rm -r $(SAMPLE_DIR)/bin
+	mkdir $(SAMPLE_DIR)/bin
+	$(GXX) -Wall -fexception -std=c++11 -pg -g -I $(SRC_DIR) $(SRC_DIR)/boost-include -c $(SAMPLE_DIR)/DTools/DTools.cpp -o $(SAMPLE_DIR)/DTools/DTools.o 
+	$(GXX) -o $(SAMPLE_DIR)/bin/DTools $(SAMPLE_DIR)/DTools/DTools.o $(PROJECT)
 
 clean: 
 	rm *.o $(PROJECT)
