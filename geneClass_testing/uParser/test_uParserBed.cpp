@@ -27,7 +27,7 @@ TEST(uParserConstructorFilename, CorrectlyFormatedHeaderBed) {
 }
 
 TEST(uParserConstructorFilename, InvalidFileName) {
-	ASSERT_THROW(uParser Parser("/data/BED/test2.bed", "BED"), std::runtime_error);
+	ASSERT_THROW(uParser Parser("../data/BED/test2.bed", "BED"), std::runtime_error);
 	try {
 		uParser Parser("../data/BED/test2.bed", "BED");
 		ASSERT_TRUE(false);

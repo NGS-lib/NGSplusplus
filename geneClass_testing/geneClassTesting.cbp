@@ -12,7 +12,7 @@
 				<Option object_output="obj/Debug/" />
 				<Option type="1" />
 				<Option compiler="gcc" />
-				<Option parameters="--gtest_filter=*Tag*" />
+				<Option parameters="--gtest_filter=*" />
 				<Compiler>
 					<Add option="-std=c++11" />
 					<Add option="-pg" />
@@ -40,6 +40,7 @@
 				<Option object_output="obj/Release/" />
 				<Option type="1" />
 				<Option compiler="gcc" />
+				<Option parameters="--gtest_filter=*SORTEXP*" />
 				<Compiler>
 					<Add option="-O2" />
 					<Add option="-std=c++11" />
@@ -77,27 +78,24 @@
 			<Add option="-static-libgcc" />
 			<Add option="-static-libstdc++" />
 		</Linker>
-		<Unit filename="errorTest.cpp">
-			<Option compile="0" />
-			<Option link="0" />
-			<Option target="&lt;{~None~}&gt;" />
-		</Unit>
 		<Unit filename="main.cpp" />
-		<Unit filename="parserCompare.cpp" />
 		<Unit filename="uGeneric/test_uGeneric.cpp" />
 		<Unit filename="uGeneric/test_uGenericChrom.cpp" />
+		<Unit filename="uGeneric/test_uGenericExp.cpp" />
+		<Unit filename="uParser/fixtures.h" />
+		<Unit filename="uParser/test_uParser.cpp" />
+		<Unit filename="uParser/test_uParserBed.cpp" />
+		<Unit filename="uParser/test_uParserCustom.cpp" />
 		<Unit filename="uParser/test_uParserSam.cpp" />
 		<Unit filename="uParser/test_uParserWig.cpp" />
-		<Unit filename="uTagTests.cpp">
-			<Option compilerVar="CC" />
-			<Option compile="0" />
-			<Option link="0" />
-		</Unit>
+		<Unit filename="uTags/uTagTests.cpp" />
 		<Unit filename="uTokens/tests_uToken.cpp" />
-		<Unit filename="utilityTest.cpp">
-			<Option compile="0" />
-			<Option link="0" />
-		</Unit>
+		<Unit filename="uWriter/tests_Writer_Fixtures.h" />
+		<Unit filename="uWriter/tests_uWriter.cpp" />
+		<Unit filename="uWriter/tests_uWriterBed.cpp" />
+		<Unit filename="uWriter/tests_uWriterCustom.cpp" />
+		<Unit filename="uWriter/tests_uWriterSam.cpp" />
+		<Unit filename="utility/utilityTest.cpp" />
 		<Extensions>
 			<code_completion />
 			<debugger />
