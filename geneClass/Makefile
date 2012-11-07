@@ -8,7 +8,7 @@ GXX?=g++
 DESTDIR=/usr/lib
 
 PROJECT = ../libs/libgeneClass.a
-OBJECTS = $(SRC_DIR)/uTags.o $(SRC_DIR)/uFormatBase.o $(SRC_DIR)/uFunctions.o $(SRC_DIR)/uRegion.o 
+OBJECTS = $(SRC_DIR)/utility.o
 OBJECTS += $(SRC_DIR)/uHeader.o $(SRC_DIR)/uToken.o 
 OBJECTS += $(SRC_DIR)/uWriter.o $(SRC_DIR)/uWriterBase.o $(SRC_DIR)/uWriterBed.o 
 OBJECTS += $(SRC_DIR)/uWriterBed4.o $(SRC_DIR)/uWriterBed6.o $(SRC_DIR)/uWriterCustom.o
