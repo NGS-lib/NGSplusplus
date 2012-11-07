@@ -5,7 +5,7 @@
 #include <string>
 #include <vector>
 #include <memory>
-#include "../../NGS++.h"
+//#include "../../NGS++.h"
 #include "uWriterBase.h"
 
 namespace NGS

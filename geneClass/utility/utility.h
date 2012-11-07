@@ -12,6 +12,9 @@
 #include <stdexcept>
 
 /**< When comparing intervals */
+/**< Overlap_Partial is any overlap betwen A and B */
+/**< OVERLAP_COMPLETE mean that A is included in B */
+/**< OVERLAP_CENTRE means the center of A is overlap by B */
 enum class OverlapType
 {
     OVERLAP_PARTIAL, OVERLAP_COMPLETE, OVERLAP_CENTRE
@@ -23,10 +26,10 @@ enum class SamQuery
 };
 
 /**< Used by our parser and others, defined file types we can load/write */
-enum class GenomicFileType
-{
-    BED, SAM
-};
+//enum class GenomicFileType
+//{
+//    BED, SAM
+//};
 
 
 namespace utility
@@ -38,15 +41,6 @@ template<typename Child, typename Parent>
 //{
 //    static_assert(dynamic_cast<Parent*>(static_cast<Child*>(0)) == nullptr, "First class is not derived from the second");
 //};
-/**< Some conversion functions */
-static std::string convertInt(int number);
-static int stringToInt(const std::string &ourStr);
-static float stringToNumber( const std::string &ourStr );
-
-//static inline  std::string clean_WString(const std::string & input_string);
-
-
-
 /**< Debugging functions */
 static inline void stringTocerr(const std::string & value);
 /**< Overlap functions */
@@ -58,12 +52,20 @@ static bool isRegionAInsideRegionB( int A1, int A2, int B1, int B2 );
 /**< Return the quartiles of a given vector */
 static std::vector<float> quartilesofVector(std::vector<float> inputVector);
 static std::string concatStringInt(std::string ourstring, int ourInt, bool concatstringleft=true);
+/**< Minor statistics */
 static float getSd(const std::vector<float> & ourVec, const float & mean);
 static float gaussianSim(float x1, float x2, float sd);
 static float getMean(const std::vector<float> & ourVec);
-static void debug_string(std::string input_string);
+//static void debug_string(std::string input_string);
 
 
+/** \brief Check and return if a specified sam flag is set from a received sam flag (int)
+ *
+ * \param flag const int SamFlag
+ * \param toQuery const SamQuery Flag we are checking
+ * \return bool True if flag is set
+ *
+ */
 static inline bool querySamFlag(const int flag, const SamQuery toQuery)
 {
 bool query_result;
@@ -106,7 +108,9 @@ bool query_result;
 return query_result;
 }
 
-//TODO Make more functional. Among other things, offer a "Next Token and return" option;
+
+/** \brief Simple tokenizer class that can sometimes be handy to use
+ */
 class Tokenizer
 {
 public:
@@ -124,141 +128,137 @@ protected:
     std::string m_delimiters;
 };
 
-//TODO better error generation
+
+/** \brief Wrapper functions, opens a given path with the stream. Checks if valid and returns error if invalid path
+ *
+ * \param filepath const std::string& Path to the file we want to open
+ * \param file std::ifstream& Stream to open file with
+ * \return void
+ *
+ */
 inline static void loadStream(const std::string & filepath,std::ifstream& file)
 {
-    try
-    {
-        file.clear();
-        file.open(filepath);
-        if( !(file))
-        {
-            throw(0);
-        }
-    }
-    catch(...)
+
+    file.clear();
+    file.open(filepath);
+    if( !(file))
     {
         std::string error("Invalid filepath to stream, failling in LoadStream()\n Path is: "+filepath+"\n");
         throw std::runtime_error(error.c_str());
     }
-
 }
-
-
-
-
 //TODO Multi-dimentional Gaussian sim
 //One dimensional Gaussian
+/** \brief Returns the gaussiam sim between two points for a given Standard deviation
+ *
+ * \param x1 float Point a
+ * \param x2 float Point b
+ * \param sigma float SD
+ * \return float Between 0 and 1
+ *
+ */
 inline static float gaussianSim(float x1, float x2, float sigma)
 {
-
-    float returnvalue;
-    //Gaussian similarity function
-    //TODO abs
-    returnvalue= exp(-( pow((x1-x2),2)/(2*pow(sigma,2))));
-    return returnvalue;
+    return exp(-( pow((x1-x2),2)/(2*pow(sigma,2))));
 }
 
-//Utility function courtesy of the internet.
-inline static std::string convertInt(int number)
-{
-    if (number == 0)
-        return "0";
-    std::string temp="";
-    std::string returnvalue="";
-    while (number>0)
-    {
-        temp+=number%10+48;
-        number/=10;
-    }
-    for (unsigned int i=0; i<temp.length(); i++)
-        returnvalue+=temp[temp.length()-i-1];
-    return returnvalue;
-}
 
-//We return a vector with element 0 is Q1, element 1 is median and element 2 is q3
-inline static std::vector<float> quartilesofVector(std::vector<float> inputVector)
-{
 
-    std::vector<float> returnVector;
-    int q1, med, q3;
-    //quartile positions.
-    q1=inputVector.size()*0.25;
-    med=inputVector.size()*0.5;
-    q3=inputVector.size()*0.75;
-
-    std::nth_element (inputVector.begin(), inputVector.begin()+q1, inputVector.end());
-    returnVector.push_back(inputVector.at(q1));
-
-    std::nth_element (inputVector.begin(), inputVector.begin()+med, inputVector.end());
-    returnVector.push_back(inputVector.at(med));
-
-    std::nth_element (inputVector.begin(), inputVector.begin()+q3, inputVector.end());
-    returnVector.push_back(inputVector.at(q3));
-
-    return returnVector;
-};
-
+/** \brief Checks if a point is inside two other points on a one dimensional axis
+ *
+ * \param pos int Point to check
+ * \param start int Begning of zone
+ * \param end int End of zone
+ * \return bool True if point is included between start and end
+ *
+ */
 inline static bool isInInterval(int pos, int start, int end)
 {
     if ((pos>=start)&&(pos<=end))
         return true;
     else
         return false;
-
 }
 
-//Is region X1 inside X2
+/** \brief Is a set of two points  A contained within a different set of two points B on a 1-D axis
+ *
+ * \param A1 int Point 1 of region A
+ * \param A2 int Point 2 of region A
+ * \param B1 int Point 1 of region B
+ * \param B2 int point 2 of region B
+ * \return bool true if A inside B
+ *
+ */
 inline static bool isRegionAInsideRegionB( int A1, int A2, int B1, int B2 )
 {
-
     if (isInInterval( A1, B1, B2 )&&(isInInterval(A2, B1, B2)))
         return true;
     else
         return false;
 }
 
-//Do these two overlap
+
+/** \brief Do two points X overlap two points Y
+ *
+ * \param X1 int Point 1 of X
+ * \param X2 int Point 2 of X
+ * \param Y1 int Point 1 of Y
+ * \param Y2 int Point 2 of Y
+ * \return bool true if X overlap Y
+ *
+ */
 inline static bool checkOverlap(int X1, int X2, int Y1, int Y2)
 {
-
-    //Start is inside
+    /**<Start is inside  */
     if ((X1>=Y1)&&(X1<=Y2))
         return true;
 
-    //Stop is inside
+    /**< Stop is inside */
     if ((X2>=Y1)&&(X2<=Y2))
         return true;
 
-    //Y is englobed by X
+    /**< Y is englobed by X */
     if ((X1<=Y1)&&(X2>=Y2))
         return true;
 
     return false;
 }
-//Return how many bp overlap
-inline static int overlapCount(int X1, int X2, int Y1, int Y2)
+
+/** \brief Count subsection of segemen X that ov erlap segement Y
+ *
+ * \param X1 int Point 1 of X
+ * \param X2 int Point 2 of X
+ * \param Y1 int Point 1 of Y
+ * \param Y2 int Point 2 of Y
+ * \return Size of overlap segment, can be 0
+ *
+ */inline static int overlapCount(int X1, int X2, int Y1, int Y2)
 {
 
     int overlap=0;
     int bigX=X1, smallY=Y1;
-
     if (checkOverlap(X1, X2, Y1, Y2))
     {
-
         if (X2>X1)
             bigX =X2;
 
         if (Y2<Y1)
             smallY=Y2;
         overlap =smallY- bigX;
-
-        return overlap;
     }
-    else
-        return overlap;
+
+    return overlap;
 }
-//By default, partial overlap, otherwise as specified.
+/** \brief Verify if X overlaps Y according to various definitions of "Overlap". Wrapper function
+ *
+ * \param X1 int Point 1 of X
+ * \param X2 int Point 2 of X
+ * \param Y1 int Point 1 of Y
+ * \param Y2 int Point 2 of Y
+ * \param overlap OverlapType What we call an overlap,
+ * \return bool True if overlapping
+ *
+ */
 inline static bool isOverlap(int X1, int X2, int Y1, int Y2, OverlapType overlap)
 {
 
@@ -291,16 +291,26 @@ inline static bool isOverlap(int X1, int X2, int Y1, int Y2, OverlapType overlap
 }
 
 
+/** \brief Return mean of a vector of floats
+ *
+ * \param ourVec const std::vector<float>& Vector
+ * \return float mean returned
+ *
+ */
 inline static float getMean(const std::vector<float> & ourVec)
 {
 
     float sum = std::accumulate(ourVec.begin(), ourVec.end(), 0.0);
-
     return (sum/ourVec.size());
 }
 
-//Return as float the SD of a list of elements
-//Naturally, this is not precise.
+/** \brief Standard deviations, This is suceptible to overflow/underflow for large values ( or small ones)
+ *
+ * \param ourVec const std::vector<float>& Vector of values
+ * \param mean const float& Mean
+ * \return float Returned standard deviation
+ *
+ */
 inline static float getSd(const std::vector<float> & ourVec, const float & mean)
 {
     float sumsq, sd;
@@ -323,7 +333,14 @@ inline static float getSd(const std::vector<float> & ourVec, const float & mean)
     return sd;
 }
 
-//Combine a String and int
+/** \brief Take a string and int, return a string with the int concatenated left or right
+ *
+ * \param ourstring std::string original string
+ * \param ourInt int int to add
+ * \param concatstringleft bool if true, add int to the right, otherwis eleft
+ * \return std::string modified string
+ *
+ */
 inline static std::string concatStringInt(std::string ourstring, int ourInt, bool concatstringleft)
 {
 
@@ -336,25 +353,38 @@ inline static std::string concatStringInt(std::string ourstring, int ourInt, boo
 
 }
 
-
-inline static int stringToInt( const std::string &ourStr )
+/** \brief Return a vector containing the first quartile, median and q3 of a vector.
+ *
+ * \param inputVector std::vector<float> Vector of elements
+ * \return std::vector<float> Vector containing 3 values
+ *
+ */
+inline static std::vector<float> quartilesofVector(std::vector<float> inputVector)
 {
-    try {
-    return std::stoi( ourStr );
-    }
-    catch(std::exception &e){
-        throw e;
-    }
-}
 
-inline static float stringToNumber( const std::string &ourStr )
-{
-    //character array as argument
-    std::stringstream ss(ourStr);
-    float result;
-    return ss >> result ? result : 0;
-}
+    std::vector<float> returnVector;
+    int q1, med, q3;
+    //quartile positions.
+    q1=inputVector.size()*0.25;
+    med=inputVector.size()*0.5;
+    q3=inputVector.size()*0.75;
 
+    std::nth_element (inputVector.begin(), inputVector.begin()+q1, inputVector.end());
+    returnVector.push_back(inputVector.at(q1));
+
+    std::nth_element (inputVector.begin(), inputVector.begin()+med, inputVector.end());
+    returnVector.push_back(inputVector.at(med));
+
+    std::nth_element (inputVector.begin(), inputVector.begin()+q3, inputVector.end());
+    returnVector.push_back(inputVector.at(q3));
+
+    return returnVector;
+};
+
+
+/** \brief Returns quartiles, deprecated , do not use
+ *
+ */
 inline static std::vector<long int> quartilesSize(std::vector<long int> vectorSizes)
 {
 
@@ -380,6 +410,11 @@ inline static std::vector<long int> quartilesSize(std::vector<long int> vectorSi
     return returnVector;
 }
 
+/** \brief Call to pause program, waits for input
+ *
+ * \return void
+ *
+ */
 static inline void pause_input()
 {
     std::cerr << "Pausing, hit anything to continue" <<std::endl;
@@ -388,7 +423,12 @@ static inline void pause_input()
 }
 
 
-
+/** \brief Debug functions, outputs value to standard error.
+ *
+ * \param value const int& Value to output. Overloaded for float, double and string
+ * \return void
+ *
+ */
 static inline void number_to_cerr(const int & value)
 {
     std::cerr << value <<std::endl;
@@ -407,21 +447,14 @@ static inline void stringTocerr(const std::string & value)
     std::cerr << value <<std::endl;
 }
 
-static inline void debug_string(std::string input_string)
-{
-    std::cerr << "String is " <<input_string <<std::endl;
-
-    if (input_string.size())
-    {
-        char last = input_string.at(input_string.size()-1);
 
 
-        if (last=='\n')
-            std::cerr << "Last character is return " <<input_string <<std::endl;
-        if (last=='\t')
-            std::cerr << "Last character is tab " <<input_string <<std::endl;
-    }
-}
+/** \brief "Cleans" a window string for use in Unix format. Rarely used
+ *
+ * \param input_string const std::string& string to clean
+ * \return std::string clean string
+ *
+ */
 static inline std::string clean_WString(const std::string & input_string)
 {
     size_t cr_idx;
@@ -439,10 +472,18 @@ static inline std::string clean_WString(const std::string & input_string)
 
 
 
+/**< Clustering contains odd and ends, distance measures and such */
 namespace clustering
 {
 
-/**<  Average Euclidean distance of all points*/
+
+/** \brief Returns average Euclidean distance of all points of a vector to another. No normalization
+ *
+ * \param vecA const std::vector<float> Set A
+ * \param vecB const std::vector<float> Set B, must be same size as A
+ * \return float average Euclidiean distance
+ *
+ */
 static inline float norm_euclidean_dist(const std::vector<float> vecA, const std::vector<float> vecB)
 {
     try
@@ -485,6 +526,8 @@ static inline float norm_euclidean_dist(const std::vector<float> vecA, const std
 * p_delta: Window when comparing points between A and B.
 *
 * return: edit distance between the set of points A and the set of points B.
+*
+* Thank you to Marc for original code
 */
 static inline float align_distance(const std::vector<float> p_A, const std::vector<float> p_B, const float p_ups, const int p_delta, float penalty=0)
 {
@@ -502,11 +545,9 @@ static inline float align_distance(const std::vector<float> p_A, const std::vect
         d[i] = 0;
     }
     /**< Find every local maxima at p_delta distance */
-
-
     for (i=1; i!=n; ++i)
     {
-        /**< Patch from Marco to selectively change max */
+        /**< Patch  to selectively change max */
         float ups = p_ups; //Donc, si p_ups vaut 0, c'est comme si on l'utilisait pas.
 
         for (j= std::max(1,i-p_delta); j < std::min(n,i+p_delta); ++j)
@@ -563,8 +604,15 @@ static inline float align_distance(const std::vector<float> p_A, const std::vect
 }
 
 
-/**<  Courtesy of the internet : http://www.gamedev.net/topic/406316-hausdorff-distance-between-images/ */
-//Distance between two set of points, using position in the vector as X
+/**<  Courtesy of the internet original code: http://www.gamedev.net/topic/406316-hausdorff-distance-between-images/ */
+
+/** \brief Measure the hausdorff distance between two vector of points, points being the Y value and position in the vector the X value
+ *
+ * \param vecA const std::vector<float>& Set A
+ * \param vecB const std::vector<float>& Set B
+ * \return float Hausdorf distance
+ *
+ */
 static float hausdorff(const std::vector<float> & vecA, const std::vector<float> & vecB)
 {
     int sizeA = vecA.size(), sizeB = vecB.size();
@@ -594,7 +642,6 @@ static float hausdorff(const std::vector<float> & vecA, const std::vector<float>
         maxDistAB += minB;
     }
     maxDistAB *= 1.0/((float)vecA.size()*heightA);
-    //vecA std::cerr << "maxDistAB = "<< maxDistAB <<std::endl;
 // Calculate Hausdorff distance d(B,A)
     float maxDistBA = 0;
     for (float i=0; i<vecB.size(); i++)
@@ -617,9 +664,6 @@ static float hausdorff(const std::vector<float> & vecA, const std::vector<float>
     auto returnval = std::max(maxDistAB,maxDistBA);
     return returnval;
 }
-
-
-
 
 /** \brief Distance between two equaled sized Score vectors
  *
@@ -649,7 +693,5 @@ static inline float hausdorffTwoRegions(const std::vector<float> &  vectorA, con
 
 
 }
-
-
 
 #endif // UTILITY_H_INCLUDED

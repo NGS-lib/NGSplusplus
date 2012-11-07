@@ -7,6 +7,7 @@
 #include "utility/utility.h"
 #include "uGeneException.h"
 #include "IO/uToken.h"
+#include "IO/Writer/uWriter.h"
 
 namespace NGS {
 //Our basic Site for NGS format
@@ -32,7 +33,6 @@ protected:
     StrandDir strand=StrandDir::FORWARD;
     std::vector<float> score={};
 public:
-
     /**< Constructor taking chromosome name, start and end */
     uGenericNGS(std::string pchr, int pstart, int pend, StrandDir pstrand=StrandDir::FORWARD ):chr(pchr),strand(pstrand)
     {
@@ -50,7 +50,6 @@ public:
             throw e;
         }
     };
-
 
     uGenericNGS(std::string pchr, int pstart, int pend, StrandDir pstrand, float pScore ):chr(pchr),strand(pstrand)
     {
@@ -88,10 +87,8 @@ public:
         }
     };
 
-
-
     uGenericNGS()
-    { };
+    {};
 
     uGenericNGS(const uToken & pToken):chr(pToken.getParam(token_param::CHR))
     {
@@ -100,9 +97,12 @@ public:
             setEnd(std::stoi(pToken.getParam(token_param::END_POS)));
             setStart( std::stoi(pToken.getParam(token_param::START_POS)));
             /**< Default forward */
-            setStrand(pToken.getParam(token_param::STRAND).at(0));
-            if (pToken.isParamSet(token_param::SCORE))
+            if (pToken.isParamSet(token_param::STRAND))
+                setStrand(pToken.getParam(token_param::STRAND).at(0));
+            if ((pToken.isParamSet(token_param::SCORE))&&(pToken.getParam(token_param::SCORE)!="." ) )  {
+                //auto arg =pToken.getParam(token_param::SCORE) ;
                 setScore(std::stof (pToken.getParam(token_param::SCORE) ) );
+                }
         }
         catch(ugene_exception_base &e)
         {
@@ -118,13 +118,15 @@ public:
     virtual ~uGenericNGS() {};
     /**< End Constructor/Destructor */
 
-
-    /**< Write to Bed functions */
+    /**< Write to Bed functions, to be deprecated*/
     virtual void writeBedToOuput(std::ostream &out, bool endLine) const;
     virtual void writeBedToOuput(std::ostream &out) const
     {
         writeBedToOuput(out, true);
     };
+     virtual void writeToOutput(uWriter& pWriter) const;
+     virtual uToken getToken()const;
+
     /**< Get /Set */
     std::string getChr() const
     {
@@ -136,14 +138,6 @@ public:
             throw param_throw() << string_error("Throwing in setChr, ID must be of size > 0");
         chr=ourchr;
     };
-
-    /* char getStrand () const
-     {
-         if (strand==StrandDir::REVERSE)
-             return '-';
-         else
-             return '+';
-     }; */
 
     StrandDir getStrand() const
     {
@@ -256,7 +250,6 @@ public:
     };
 
 
-
     /**< Strictly for debugging */
     virtual void debugElem() const
     {
@@ -282,7 +275,7 @@ public:
     bool doesOverlap(uGenericNGS other,OverlapType type=OverlapType::OVERLAP_PARTIAL) const;
 
     float getScore(int p_Pos) const;
-    float getScore() const {return getScore(0);};
+    float getScore()const{return getScore(0);};
     int getScoreCount() const { return score.size();};
 
     void setScore(float p_score, int p_Pos);

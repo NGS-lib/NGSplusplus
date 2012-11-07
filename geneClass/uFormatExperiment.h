@@ -135,8 +135,8 @@ public:
     typename std::vector<_BASE_>::const_iterator findNextSite(std::string chr, int position)const;
 
     virtual void loadFromTabFile(std::ifstream& stream);
-   // virtual void loadFile(std::ifstream& stream, std::string pType);
     virtual void loadWithParser(std::ifstream&, std::string);
+    virtual void loadWithParser(std::string, std::string);
 
 
     void writeAsBedFile(std::ostream& out)const;
@@ -154,7 +154,7 @@ public:
     uGenericNGSExperiment getDistinct(uGenericNGSExperiment &compareExp, OverlapType type=OverlapType::OVERLAP_PARTIAL);
     uGenericNGSExperiment getDistinct(_CHROM_ &compareChr, OverlapType type=OverlapType::OVERLAP_PARTIAL);
     uGenericNGSExperiment getDistinct(std::string chr, int start, int end, OverlapType type=OverlapType::OVERLAP_PARTIAL);
-    uGenericNGSExperiment  getDistinct(_BASE_ elem,  OverlapType options);
+    uGenericNGSExperiment getDistinct(_BASE_ elem,  OverlapType options);
     /**<  ok from here*/
 
 
@@ -497,6 +497,7 @@ public:
         }
         return &(ExpMap[chrom]);
     };
+
 };
 
 //Start uGenericNGSExperiment
@@ -579,7 +580,7 @@ template<typename _CHROM_, typename _BASE_>
  *
  */
 template<typename _CHROM_, typename _BASE_>
- void uGenericNGSExperiment<_CHROM_, _BASE_>:: loadWithParser(std::ifstream& pStream, std::string pType)
+ void uGenericNGSExperiment<_CHROM_, _BASE_>::loadWithParser(std::ifstream& pStream, std::string pType)
 {
     try {
     std::istream& refStream = pStream;
@@ -592,6 +593,30 @@ template<typename _CHROM_, typename _BASE_>
     { throw; }
 }
 
+template<typename _CHROM_, typename _BASE_>
+void uGenericNGSExperiment<_CHROM_, _BASE_>::loadWithParser(std::string filepath, std::string pType)
+{
+    uParser ourParser(filepath, pType);
+   // auto chrList=ourParser.getHeaderParamVector(header_param::CHR);
+   // auto chrSizes=ourParser.getHeaderParamVector(header_param::CHR_SIZE);
+try {
+//        std::cerr << "name and size are :" <<chrList.at(i) <<" "<<chrSizes.at(i)<<std::endl;
+   // for (int i=0; i<(int)chrList.size();i++){
+   //     this->setChromSize(chrList.at(i), std::stoi(chrSizes.at(i)));
+   // }
+
+    while (ourParser.eof()==false){
+        auto Token =ourParser.getNextEntry();
+        this->addSite((Token));
+    }
+}
+catch (...)
+    {
+        throw;
+    }
+    inferChrSize();
+
+}
 
 
 /** \brief Write our data as a legal bed file, filling only the first three columns
@@ -641,7 +666,7 @@ int uGenericNGSExperiment<_CHROM_,_BASE_>::getSubsetCount(const std::string & ch
     return count;
 }
 
-//Return the number of elements in our experiment either overlap or included in the specified region.
+//TODO Deprecate or make general
 template<typename _CHROM_, typename _BASE_>
 int uGenericNGSExperiment<_CHROM_,_BASE_>::getSubsetCount(const uGenericNGS & subsetReg, const OverlapType overlap)
 {

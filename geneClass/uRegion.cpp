@@ -675,7 +675,7 @@ wigType curWig = wigType::NONE;
                         throw 18;
 
                      span=span.substr(span.find("span="));
-                     curSpan=utility::stringToInt(span);
+                     curSpan=std::stoi(span);
                  }
             }/**< Fixed Step */
             else
@@ -697,7 +697,7 @@ wigType curWig = wigType::NONE;
                         throw 20;
 
                    start=start.substr(start.find("start="));
-                    curStart=utility::stringToInt(start);
+                    curStart=std::stoi(start);
                     /**< Step */
                     if (!(data.NextToken()))
                         throw 21;
@@ -707,7 +707,7 @@ wigType curWig = wigType::NONE;
                         throw 21;
 
                    step=step.substr(start.find("step="));
-                   curStep=utility::stringToInt(step);
+                   curStep=std::stoi(step);
 
                     /**<Span  */
 
@@ -721,7 +721,7 @@ wigType curWig = wigType::NONE;
                         throw 22;
 
                      span=span.substr(span.find("span="));
-                     curSpan=utility::stringToInt(span);
+                     curSpan=std::stoi(span);
                  }
             }
         }
@@ -739,15 +739,15 @@ wigType curWig = wigType::NONE;
             case wigType::FIXED_STEP:
                 curReg.setChr(curChr);
                 curReg.setStartEnd(curStart,curStart+curSpan);
-                curReg.setCount(utility::stringToInt(firstToken));
+                curReg.setCount(std::stoi(firstToken));
                 curStart+=curStep;
                 break;
             case  wigType::VARIABLE_STEP:
 
                  data.NextToken();
-                 int tagcount=utility::stringToInt(data.GetToken());
+                 int tagcount=std::stoi(data.GetToken());
                  curReg.setChr(curChr);
-                 int start=utility::stringToInt(firstToken);
+                 int start=std::stoi(firstToken);
                  curReg.setStartEnd(start,start+curSpan);
                  curReg.setCount(tagcount);
                 break;

@@ -104,7 +104,7 @@ void uGenericNGS::trimSites(int trim)
     try {
         this->trimSites(trim,trim);
     }
-    catch(std::exception & e)
+    catch(param_throw & e)
     {
         throw e;
     }
@@ -126,14 +126,14 @@ bool uGenericNGS::doesOverlap(uGenericNGS other, OverlapType type) const
     return returnb;
 }
 
-/** \brief Output in Bed format, Endline can be optionally be delegated
+/** \brief Deprecated code, output in Bed format, Endline can be optionally be delegated
+ *  \brief Will be removed next update
  *
  * \param out std::ostream& : Our output steram
  * \param endLine bool : If true, write endline
  * \return void
  *
  */
-//TODO use parser
 void uGenericNGS::writeBedToOuput(std::ostream &out, bool endLine) const
 {
 
@@ -143,11 +143,23 @@ void uGenericNGS::writeBedToOuput(std::ostream &out, bool endLine) const
         out <<std::endl;
 }
 
+/** \brief Write contig to writer.
+ *
+ * \param pWriter uWriter& Previously declared writer, passe by param
+ * \return void
+ *
+ */
+void uGenericNGS::writeToOutput(uWriter& pWriter) const
+{
+    pWriter.writeToken(this->getToken());
+}
 
-/** \brief
+
+
+/** \brief Divide the contig into N contigs of equal size
  *
  * \param N int : Number of entries to create from the entry
- * \return vector<uGenericNGS>
+ * \return vector<uGenericNGS> List of created contigs
  *
  */
 std::vector<uGenericNGS> uGenericNGS::divideIntoNBin(int N,SplitType ptype)
@@ -226,10 +238,11 @@ std::vector<uGenericNGS> uGenericNGS::divideIntoNBin(int N,SplitType ptype)
     return returnVec;
 }
 
-/** \brief
+/** \brief Divide the contig into contigs of size N
  *
  * \param N int : Size of bins to create.
- * \return vector<uGenericNGS>
+ * \param const SplitType: Determines how you managed leftover
+ * \return vector<uGenericNGS> List of returned contigs
  *
  */
 std::vector<uGenericNGS> uGenericNGS::divideIntoBinofSize(const int N, const SplitType type)
@@ -328,19 +341,31 @@ void uGenericNGS::setScore(float p_score, int p_Pos)
  */
 float uGenericNGS::getScore(int p_Pos) const
 {
-    if (p_Pos>= ((int)score.size()))
+    if (p_Pos>=((int)score.size()))
        return std::numeric_limits<float>::infinity();
     return score.at(p_Pos);
 }
 
 
-//TODO USE PARSER
+ /** \brief Get the parser Token associated with our Read/Write class
+  *
+  * \return uToken The token returned
+  *
+  */
+ uToken uGenericNGS::getToken() const
+ {
+    std::stringstream ss;
+    ss << "CHR\t"<<this->getChr()<<"\nSTART_POS\t"<<this->getStart()<<"\n" << "END_POS\t"<<this->getEnd()<<"\n";
+    if (getScore()!=std::numeric_limits<float>::infinity())
+       ss << "SCORE\t"<<this->getScore()<<"\n";
+
+    return uToken(ss);
+ }
+
+
+/**< Legacy code, will return a uGenericNGS from  a tab delimited code. Deprecated, will be removed */
 namespace factory
 {
-/** @brief Create a basic format from a tab delimited formatted string
-  *
-  * @todo: document this function
-  */
 uGenericNGS makeNGSfromTabString(std::string tabString)
 {
 
@@ -353,9 +378,9 @@ uGenericNGS makeNGSfromTabString(std::string tabString)
         tabLine.NextToken();
         chrm = tabLine.GetToken();
         tabLine.NextToken();
-        start = utility::stringToInt(tabLine.GetToken());
+        start = std::stoi(tabLine.GetToken());
         tabLine.NextToken();
-        end = utility::stringToInt(tabLine.GetToken());
+        end = std::stoi(tabLine.GetToken());
 
         return uGenericNGS(chrm,start,end);
     }
