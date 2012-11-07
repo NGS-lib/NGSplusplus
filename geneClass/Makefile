@@ -29,3 +29,6 @@ all: $(UTILS) $(IO) $(WRITER) $(PARSER) $(PROJECT)
 
 $(PROJECT): $(OBJECTS)
 	ar -r -s $(PROJECT) $(OBJECTS)
+
+clean: 
+	rm *o $(PROJECT)
