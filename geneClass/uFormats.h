@@ -11,11 +11,8 @@ typedef uGenericNGSExperiment<uGenericNGSChrom<uGenericNGS>,uGenericNGS> GenExp;
 
 
 /*
-Note: We need to seriously refactor most of this code for names.
-Standardize our member variables, our parameters names, etc.
-Before all the chr, ourchr, pchr get out of hand.
 
-// TODO Most of our Set functions should work by const ref, would optimise stuff
+
 */
 } // End of namespace NGS
 #endif // UFORMATS_H_INCLUDED

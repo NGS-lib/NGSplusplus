@@ -7,6 +7,8 @@ BOOST_DIR=./boost-include
 GXX?=g++
 DESTDIR=/usr/lib
 
+SAMPLE_DIR=./sample-src
+
 PROJECT = ../libs/libgeneClass.a
 
 SOURCE = $(UTIL_DIR)/utility.cpp

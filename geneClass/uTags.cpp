@@ -11,7 +11,6 @@ uTags::uTags():uGenericNGS()
 {
 }
 
-
 /**< From uTokens */
 uTags::uTags(uToken pToken)try:uGenericNGS(pToken){
 

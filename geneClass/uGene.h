@@ -116,7 +116,6 @@ typedef map<string, vector<uGene> >  GeneVectorMap;
  void outputChromtoFile(string chrom, ofstream& );
  void outputAlltoFile(ofstream&);
 
-
   //std::vector<uGene> findRegion(string chrom,int pos, int size);
   void loadfromUCSCDB(ifstream& geneStream);
 
