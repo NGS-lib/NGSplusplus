@@ -10,6 +10,7 @@ DESTDIR=/usr/lib
 INCLUDE_DIR=/usr/include/NGS
 SAMPLE_DIR=./sample-src
 OBJ_DIR=./obj
+PROJECT_NAME=libgeneClass.a
 
 # Nothing should have to be changed after this.
 VPATH=UTIL:IO:IO/Parser:IO/Writer
@@ -21,7 +22,7 @@ OBJECTS += $(PARSER_DIR)/uParser.o $(PARSER_DIR)/uParserBase.o $(PARSER_DIR)/uPa
 OBJECTS += $(PARSER_DIR)/uParserSam.o $(PARSER_DIR)/uParserBed.o $(PARSER_DIR)/uParserCustom.o
 OBJECTS += $(SRC_DIR)/uFormatBase.o $(SRC_DIR)/uGeneException.o $(SRC_DIR)/uRegion.o $(SRC_DIR)/uTags.o
 OBJPROJ = $(addprefix $(OBJ_DIR)/, $(OBJECTS))
-PROJECT = ../libs/libgeneClass.a
+PROJECT = ../libs/$(PROJECT_NAME)
 
 CFLAGS  = -O3 -std=c++11 
 INCLUDES = -I$(UTIL_DIR) -I$(BOOST_DIR)
@@ -46,6 +47,10 @@ install:
 	cp $(WRITER_DIR)/*.h $(INCLUDE_DIR)/$(WRITER_DIR)
 	cp $(PARSER_DIR)/*.h $(INCLUDE_DIR)/$(PARSER_DIR)
 	cp $(UTIL_DIR)/*.h $(INCLUDE_DIR)/$(UTIL_DIR)
+
+uninstall:
+	rm $(DESTDIR)/$(PROJECT_NAME)
+	rm -rf $(INCLUDE_DIR)
 
 samples: 
 	mkdir -p $(SAMPLE_DIR)/bin
