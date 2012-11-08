@@ -1,45 +1,56 @@
+GXX?=g++
+
 UTIL_DIR=./utility
 IO_DIR=./IO
 WRITER_DIR=./IO/Writer
 PARSER_DIR=./IO/Parser
 SRC_DIR=.
 BOOST_DIR=./boost-include
-GXX?=g++
 DESTDIR=/usr/lib
-
+INCLUDE_DIR=/usr/include/NGS
 SAMPLE_DIR=./sample-src
+OBJ_DIR=./obj
+PROJECT_NAME=libgeneClass.a
 
-PROJECT = ../libs/libgeneClass.a
-
-SOURCE = $(UTIL_DIR)/utility.cpp
-SOURCE += $(IO_DIR)/uHeader.cpp $(IO_DIR)/uToken.cpp 
-SOURCE += $(WRITER_DIR)/uWriter.cpp $(WRITER_DIR)/uWriterBase.cpp $(WRITER_DIR)/uWriterBed.cpp 
-SOURCE += $(WRITER_DIR)/uWriterBed4.cpp $(WRITER_DIR)/uWriterBed6.cpp $(WRITER_DIR)/uWriterCustom.cpp
-SOURCE += $(PARSER_DIR)/uParser.cpp $(PARSER_DIR)/uParserBase.cpp $(PARSER_DIR)/uParserWig.cpp 
-SOURCE += $(PARSER_DIR)/uParserSam.cpp $(PARSER_DIR)/uParserBed.cpp $(PARSER_DIR)/uParserCustom.cpp
-SOURCE += $(SRC_DIR)/uFormatBase.cpp $(SRC_DIR)/uGeneException.cpp $(SRC_DIR)/uRegion.cpp $(SRC_DIR)/uTags.cpp
-OBJECTS = $(SOURCE:.cpp=.o)
+# Nothing should have to be changed after this.
+VPATH=UTIL:IO:IO/Parser:IO/Writer
+OBJECTS = $(UTIL_DIR)/utility.o
+OBJECTS += $(IO_DIR)/uHeader.o $(IO_DIR)/uToken.o 
+OBJECTS += $(WRITER_DIR)/uWriter.o $(WRITER_DIR)/uWriterBase.o $(WRITER_DIR)/uWriterBed.o 
+OBJECTS += $(WRITER_DIR)/uWriterBed4.o $(WRITER_DIR)/uWriterBed6.o $(WRITER_DIR)/uWriterCustom.o
+OBJECTS += $(PARSER_DIR)/uParser.o $(PARSER_DIR)/uParserBase.o $(PARSER_DIR)/uParserWig.o 
+OBJECTS += $(PARSER_DIR)/uParserSam.o $(PARSER_DIR)/uParserBed.o $(PARSER_DIR)/uParserCustom.o
+OBJECTS += $(SRC_DIR)/uFormatBase.o $(SRC_DIR)/uGeneException.o $(SRC_DIR)/uRegion.o $(SRC_DIR)/uTags.o
+OBJPROJ = $(addprefix $(OBJ_DIR)/, $(OBJECTS))
+PROJECT = ../libs/$(PROJECT_NAME)
 
 CFLAGS  = -O3 -std=c++11 
 INCLUDES = -I$(UTIL_DIR) -I$(BOOST_DIR)
 
-$(PROJECT): $(OBJECTS)
-	ar -r -s $(PROJECT) $(OBJECTS)
+$(shell mkdir -p $(OBJ_DIR)/$(WRITER_DIR))
+$(shell mkdir -p $(OBJ_DIR)/$(PARSER_DIR))
+$(shell mkdir -p $(OBJ_DIR)/$(UTIL_DIR))
 
-%.o: %.cpp
+$(PROJECT): $(OBJPROJ)
+	ar -r -s $(PROJECT) $(OBJPROJ)
+
+$(OBJ_DIR)/%.o: %.cpp
 	$(GXX) -c $(CFLAGS) $(INCLUDES) -c -o $@ $<
 
-$(UTIL_DIR)/%.o: $(UTIL_DIR)/%.cpp
-	$(GXX) -c $(CFLAGS) $(INCLUDES) -c -o $@ $<
+install:
+	cp $(PROJECT) $(DESTDIR)
+	mkdir -p $(INCLUDE_DIR)/$(WRITER_DIR)
+	mkdir -p $(INCLUDE_DIR)/$(PARSER_DIR)
+	mkdir -p $(INCLUDE_DIR)/$(UTIL_DIR)
+	cp $(SRC_DIR)/*.h $(INCLUDE_DIR)
+	cp $(IO_DIR)/*.h $(INCLUDE_DIR)/$(IO_DIR)
+	cp $(WRITER_DIR)/*.h $(INCLUDE_DIR)/$(WRITER_DIR)
+	cp $(PARSER_DIR)/*.h $(INCLUDE_DIR)/$(PARSER_DIR)
+	cp $(UTIL_DIR)/*.h $(INCLUDE_DIR)/$(UTIL_DIR)
 
-$(IO_DIR)/%.o: $(IO_DIR)/%.cpp
-	$(GXX) -c $(CFLAGS) $(INCLUDES) -c -o $@ $<
-
-$(WRITER_DIR)/%.o: $(WRITER_DIR)/%.cpp
-	$(GXX) -c $(CFLAGS) $(INCLUDES) -c -o $@ $<
-
-$(PARSER_DIR)/%.o: $(PARSER_DIR)/%.cpp
-	$(GXX) -c $(CFLAGS) $(INCLUDES) -c o $@ $<
+uninstall:
+	rm $(DESTDIR)/$(PROJECT_NAME)
+	rm -rf $(INCLUDE_DIR)
 
 samples: 
 	mkdir -p $(SAMPLE_DIR)/bin
@@ -47,5 +58,6 @@ samples:
 	$(SAMPLE_DIR)/DTools/DTools.cpp -o $(SAMPLE_DIR)/DTools/DTools.o 
 	$(GXX) -o $(SAMPLE_DIR)/bin/DTools $(SAMPLE_DIR)/DTools/DTools.o $(PROJECT)
 
+.PHONY : clean
 clean: 
-	rm *.o $(IO_DIR)/*.o $(WRITER_DIR)/*.o $(PARSER_DIR)/*.o $(PROJECT)
+	rm $(OBJPROJ) $(PROJECT)
