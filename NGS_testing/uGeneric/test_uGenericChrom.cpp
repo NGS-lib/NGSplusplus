@@ -1,7 +1,5 @@
 
-#include "uFormats.h"
-#include "uTags.h"
-#include "uRegion.h"
+#include "NGS++.h"
 #include <iostream>
 #include <string>
 #include <fstream>
@@ -10,7 +8,6 @@
 #include <thread>
 #include <random>
 #include <string.h>
-#include "utility/utility.h"
 #include <time.h>
 #include "gtest.h"
 using namespace NGS;

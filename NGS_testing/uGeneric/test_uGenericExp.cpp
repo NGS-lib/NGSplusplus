@@ -1,4 +1,3 @@
-#include "uRegion.h"
 #include <iostream>
 #include <string>
 #include <fstream>
@@ -7,7 +6,7 @@
 #include <thread>
 #include <random>
 #include <string.h>
-#include "utility/utility.h"
+#include "NGS++.h"
 #include <time.h>
 #include <functional>
 #include "gtest.h"

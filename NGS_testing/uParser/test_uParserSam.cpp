@@ -3,7 +3,7 @@
 #include <string>
 #include <sstream>
 
-#include "IO/Parser/uParser.h"
+#include "NGS++.h"
 
 using namespace std;
 using namespace NGS;

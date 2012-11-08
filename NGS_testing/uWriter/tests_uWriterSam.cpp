@@ -1,7 +1,7 @@
 #include <gtest/gtest.h>
 #include <string>
 #include <sstream>
-#include "IO/Writer/uWriter.h"
+#include "NGS++.h"
 #include "tests_Writer_Fixtures.h"
 
 using namespace std;

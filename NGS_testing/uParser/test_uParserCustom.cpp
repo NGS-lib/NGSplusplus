@@ -1,7 +1,7 @@
 #include <gtest/gtest.h>
 #include <string>
 #include <sstream>
-#include "IO/Parser/uParser.h"
+#include "NGS++.h"
 #include "fixtures.h"
 
 using namespace std;

@@ -7,7 +7,7 @@
 /**< To test private member directly, changed private for public */
 //#define private public
 //#include "IO/Parser/uParser.h" // TODO: When the new parser will be functional, we will change it
-#include "IO/Parser/uParser.h"
+#include "NGS++.h"
 
 using namespace std;
 using namespace NGS;

@@ -1,5 +1,5 @@
 #include <gtest/gtest.h>
-#include "IO/uToken.h"
+#include "NGS++.h"
 #include <string>
 #include <sstream>
 

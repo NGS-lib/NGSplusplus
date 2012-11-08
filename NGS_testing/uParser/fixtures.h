@@ -4,8 +4,8 @@
 //TODO : Split tests by type of file??
 /**< To test private member directly, changed private for public */
 //#define private public
-#include "IO/Parser/uParser.h" 
-//#include "uParser.h"
+#include "NGS++.h"
+
 
 using namespace std;
 using namespace NGS;

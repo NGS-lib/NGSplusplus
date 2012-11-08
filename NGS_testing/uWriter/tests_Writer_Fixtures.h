@@ -2,7 +2,7 @@
 #include <vector>
 #include <string>
 #include <sstream>
-#include "IO/Writer/uWriter.h"
+#include "NGS++.h"
 
 using namespace std;
 using namespace NGS;
