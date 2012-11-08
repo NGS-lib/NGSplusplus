@@ -46,6 +46,6 @@ samples:
 	$(SAMPLE_DIR)/DTools/DTools.cpp -o $(SAMPLE_DIR)/DTools/DTools.o 
 	$(GXX) -o $(SAMPLE_DIR)/bin/DTools $(SAMPLE_DIR)/DTools/DTools.o $(PROJECT)
 
-PHONY : clean
+.PHONY : clean
 clean: 
 	rm $(OBJPROJ) $(PROJECT)
