@@ -7,10 +7,12 @@ PARSER_DIR=./IO/Parser
 SRC_DIR=.
 BOOST_DIR=./boost-include
 DESTDIR=/usr/lib
+INCLUDE_DIR=/usr/include
 SAMPLE_DIR=./sample-src
 OBJ_DIR=./obj
 VPATH=UTIL:IO:IO/Parser:IO/Writer
 
+# Nothing should have to be changed after this.
 OBJECTS = $(UTIL_DIR)/utility.o
 OBJECTS += $(IO_DIR)/uHeader.o $(IO_DIR)/uToken.o 
 OBJECTS += $(WRITER_DIR)/uWriter.o $(WRITER_DIR)/uWriterBase.o $(WRITER_DIR)/uWriterBed.o 
@@ -33,6 +35,10 @@ $(PROJECT): $(OBJPROJ)
 
 $(OBJ_DIR)/%.o: %.cpp
 	$(GXX) -c $(CFLAGS) $(INCLUDES) -c -o $@ $<
+
+install:
+	cp $(PROJECT) $(DESTDIR)
+	cp $(SRC_DIR)/*.h $(IO_DIR)/*.h $(WRITER_DIR)/*.h $(PARSER_DIR)/*.h $(INCLUDE_DIR)
 
 samples: 
 	mkdir -p $(SAMPLE_DIR)/bin
