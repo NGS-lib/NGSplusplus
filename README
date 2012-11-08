@@ -1,1 +1,24 @@
-FIRST GIT COMMIT
+To compile library:
+cd NGS
+make
+
+If your default g++ is not version 4.7 or higher, you can compile with an alternate compiler 
+(in this example, it's named g++-4.7):
+cd NGS
+make GXX="g++-4.7"
+
+To install library (this will copy the library to /usr/lib and add headers in /usr/include):
+cd NGS
+make install
+
+To remove intermediate files (*.o) and library from current directory:
+cd NGS
+make clean
+
+To compile sample code:
+cd NGS
+make samples
+
+To uninstall library (this will remove the library from /usr/lib and remove headers from /usr/include):
+cd NGS
+make uninstall
