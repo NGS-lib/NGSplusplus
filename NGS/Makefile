@@ -11,6 +11,7 @@ INCLUDE_DIR=/usr/include/NGS
 SAMPLE_DIR=./sample-src
 OBJ_DIR=./obj
 PROJECT_NAME=libgeneClass.a
+PROJECT_DIR=../libs
 
 # Nothing should have to be changed after this.
 VPATH=UTIL:IO:IO/Parser:IO/Writer
@@ -22,7 +23,7 @@ OBJECTS += $(PARSER_DIR)/uParser.o $(PARSER_DIR)/uParserBase.o $(PARSER_DIR)/uPa
 OBJECTS += $(PARSER_DIR)/uParserSam.o $(PARSER_DIR)/uParserBed.o $(PARSER_DIR)/uParserCustom.o
 OBJECTS += $(SRC_DIR)/uFormatBase.o $(SRC_DIR)/uGeneException.o $(SRC_DIR)/uRegion.o $(SRC_DIR)/uTags.o
 OBJPROJ = $(addprefix $(OBJ_DIR)/, $(OBJECTS))
-PROJECT = ../libs/$(PROJECT_NAME)
+PROJECT = $(PROJECT_DIR)/$(PROJECT_NAME)
 
 CFLAGS  = -O3 -std=c++11 
 INCLUDES = -I$(UTIL_DIR) -I$(BOOST_DIR)
@@ -32,6 +33,7 @@ $(shell mkdir -p $(OBJ_DIR)/$(PARSER_DIR))
 $(shell mkdir -p $(OBJ_DIR)/$(UTIL_DIR))
 
 $(PROJECT): $(OBJPROJ)
+	mkdir -p $(PROJECT_DIR)
 	ar -r -s $(PROJECT) $(OBJPROJ)
 
 $(OBJ_DIR)/%.o: %.cpp
