@@ -49,6 +49,7 @@ install:
 	cp $(WRITER_DIR)/*.h $(INCLUDE_DIR)/$(WRITER_DIR)
 	cp $(PARSER_DIR)/*.h $(INCLUDE_DIR)/$(PARSER_DIR)
 	cp $(UTIL_DIR)/*.h $(INCLUDE_DIR)/$(UTIL_DIR)
+	cp -r $(BOOST_DIR) $(INCLUDE_DIR)
 
 uninstall:
 	rm $(DESTDIR)/$(PROJECT_NAME)
