@@ -4,7 +4,7 @@
 #include <iostream>
 #include <string>
 #include <stdexcept>
-#include "boost/exception/all.hpp"
+#include "boost-include/boost/exception/all.hpp"
 #include <vector>
 
 namespace NGS {
