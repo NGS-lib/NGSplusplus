@@ -100,8 +100,7 @@ public:
             if (pToken.isParamSet(token_param::STRAND))
                 setStrand(pToken.getParam(token_param::STRAND).at(0));
             if ((pToken.isParamSet(token_param::SCORE))&&(pToken.getParam(token_param::SCORE)!="." ) )  {
-                //auto arg =pToken.getParam(token_param::SCORE) ;
-                setScore(std::stof (pToken.getParam(token_param::SCORE) ) );
+                    setScore(std::stof (pToken.getParam(token_param::SCORE) ) );
                 }
         }
         catch(ugene_exception_base &e)

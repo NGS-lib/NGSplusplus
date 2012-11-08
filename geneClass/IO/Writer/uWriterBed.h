@@ -4,13 +4,12 @@
 #include "uWriterBase.h"
 #include <iostream>
 #include <fstream>
-#include "../NGS++.h"
 
-namespace NGS 
+namespace NGS
 {
 
-class uWriterBed : public uWriterBase 
-{ 
+class uWriterBed : public uWriterBase
+{
 public:
     /** \brief Empty constructor (call object with init through factory instead)
       */

@@ -285,10 +285,14 @@ public:
       * \return A collection containing all the chromosomes for which the predicate is true
       */
     template<class UnaryPredicate>
-    NGSExpMap getSpecificChroms(UnaryPredicate pred) const
+    auto getSpecificChroms(UnaryPredicate pred) const->decltype(ExpMap)
+   // NGSExpMap getSpecificChroms(UnaryPredicate pred) const
     {
-        NGSExpMap copyColl;
-        copy_if(std::begin(ExpMap), std::end(ExpMap), std::inserter(copyColl, std::begin(copyColl)), [&pred](const NGSExpPair& element)
+//         auto begin()->decltype(ExpMap.begin()){return ExpMap.begin();};
+
+       // NGSExpMap copyColl;
+        decltype(ExpMap) copyColl;
+        copy_if(std::begin(ExpMap), std::end(ExpMap), std::inserter(copyColl, std::begin(copyColl)), [&pred]( const typename decltype(ExpMap)::value_type& element)
         {
             return pred(element.second);
         });

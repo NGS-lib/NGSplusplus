@@ -4,12 +4,11 @@
 #include "uWriterBed.h"
 #include <iostream>
 #include <fstream>
-#include "../NGS++.h"
 
-namespace NGS 
+namespace NGS
 {
 
-class uWriterBed6 : public uWriterBed 
+class uWriterBed6 : public uWriterBed
 {
 public:
     /** \brief Empty constructor (call object with init through factory instead)
