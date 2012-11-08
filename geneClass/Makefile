@@ -6,6 +6,7 @@ SRC_DIR=.
 BOOST_DIR=./boost-include
 GXX?=g++
 DESTDIR=/usr/lib
+VPATH=UTIL:IO:IO/Parser:IO/Writer
 
 SAMPLE_DIR=./sample-src
 
@@ -28,18 +29,6 @@ $(PROJECT): $(OBJECTS)
 
 %.o: %.cpp
 	$(GXX) -c $(CFLAGS) $(INCLUDES) -c -o $@ $<
-
-$(UTIL_DIR)/%.o: $(UTIL_DIR)/%.cpp
-	$(GXX) -c $(CFLAGS) $(INCLUDES) -c -o $@ $<
-
-$(IO_DIR)/%.o: $(IO_DIR)/%.cpp
-	$(GXX) -c $(CFLAGS) $(INCLUDES) -c -o $@ $<
-
-$(WRITER_DIR)/%.o: $(WRITER_DIR)/%.cpp
-	$(GXX) -c $(CFLAGS) $(INCLUDES) -c -o $@ $<
-
-$(PARSER_DIR)/%.o: $(PARSER_DIR)/%.cpp
-	$(GXX) -c $(CFLAGS) $(INCLUDES) -c o $@ $<
 
 samples: 
 	mkdir -p $(SAMPLE_DIR)/bin
