@@ -9,7 +9,6 @@
 namespace NGS {
 typedef uGenericNGSExperiment<uGenericNGSChrom<uGenericNGS>,uGenericNGS> GenExp;
 
-
 /*
 
 

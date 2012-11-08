@@ -1,18 +1,9 @@
 /**< All the includes */
 #include "utility/utility.h"
-
 #include "IO/uToken.h"
 #include "IO/uHeader.h"
-
-//#include "uFormatChrom.h"
-//#include "uFunctions.h"
-//#include "uGeneRef.h"
-//#include "uFormatExperiment.h"
-//#include "uGene.h"
-#include "uRegion.h"
-//#include "uFormatBase.h"
-//#include "uFormats.h"
-#include "uGeneException.h"
 #include "IO/Parser/uParser.h"
+#include "uRegion.h"
+#include "uFormats.h"
+#include "uGeneException.h"
 #include "uTags.h"
-
