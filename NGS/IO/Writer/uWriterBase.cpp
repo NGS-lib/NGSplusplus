@@ -21,7 +21,7 @@ void uWriterBase::init(const std::string& filename) {
 	if (filename.size() == 0) {
 		throw std::runtime_error("Filename must be longer than 0");
 	}
-	std::ofstream* ofs = new std::ofstream(filename.c_str(), std::ofstream::in);
+	std::ofstream* ofs = new std::ofstream(filename.c_str(), std::ofstream::out);
 	if (!ofs->is_open())
 	{
 		std::string error = "Error opening file: " + filename;
