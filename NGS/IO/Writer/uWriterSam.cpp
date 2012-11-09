@@ -67,7 +67,6 @@ void uWriterSam::writeToken(const uToken& token) {
 	catch(param_not_found& e) {
 		throw e;
 	}
-	*m_pOstream << std::endl;
 }
  /** \brief True if found in header list or no header list
   *
