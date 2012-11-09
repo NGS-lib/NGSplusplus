@@ -21,15 +21,14 @@ void uWriterBase::init(const std::string& filename) {
 	if (filename.size() == 0) {
 		throw std::runtime_error("Filename must be longer than 0");
 	}
-	std::filebuf fb;
-	fb.open (filename.c_str(),std::ios::out);
-	if (!fb.is_open()) {
+	std::ofstream* ofs = new std::ofstream(filename.c_str(), std::ofstream::in);
+	if (!ofs->is_open())
+	{
 		std::string error = "Error opening file: " + filename;
 		throw std::runtime_error(error.c_str());
 	}
 	else {
-		std::ostream* os = new std::ostream(&fb);
-		m_pOstream = os;
+		m_pOstream = ofs;
 	}
 	m_dynamicStream = true;
 }
