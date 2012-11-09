@@ -46,6 +46,7 @@ install:
 	mkdir -p $(INCLUDE_DIR)/$(PARSER_DIR)
 	mkdir -p $(INCLUDE_DIR)/$(UTIL_DIR)
 	cp $(SRC_DIR)/*.h $(INCLUDE_DIR)
+	cp $(SRC_DIR)/../*.h $(INCLUDE_DIR)/..
 	cp $(IO_DIR)/*.h $(INCLUDE_DIR)/$(IO_DIR)
 	cp $(WRITER_DIR)/*.h $(INCLUDE_DIR)/$(WRITER_DIR)
 	cp $(PARSER_DIR)/*.h $(INCLUDE_DIR)/$(PARSER_DIR)
@@ -54,6 +55,7 @@ install:
 
 uninstall:
 	rm $(DESTDIR)/$(PROJECT_NAME)
+	rm $(INCLUDE_DIR)/../NGS++.h
 	rm -rf $(INCLUDE_DIR)
 
 .PHONY : clean
