@@ -24,7 +24,7 @@ void uParserBase::init(const std::string& filename, bool header)
     if (!ifs->is_open())
     {
         std::string error = "Error opening file: " + filename;
-        throw std::runtime_error(error.c_str());
+        throw  std::runtime_error(error.c_str());
     }
     else
     {

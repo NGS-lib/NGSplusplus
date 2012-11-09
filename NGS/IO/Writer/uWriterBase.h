@@ -59,7 +59,9 @@ struct uWriterBaseFactory
         map_type::iterator it = getMap()->find(s);
         if(it == getMap()->end())
     {
-            return nullptr;
+
+        throw uWriter_invalid_type_instance()<<string_error("Asked for unregistered type: "+s+" in Writer, failling");
+
         }
         return std::shared_ptr<uWriterBase>(it->second());
     }
