@@ -1,0 +1,333 @@
+/home/local/USHERBROOKE/nora2001/Work/class/NGS/uTags.cpp:990: Warning: no matching class member found for
+  void NGS::uTagsExperiment::writeToBed(ostream &out) const
+Possible candidates:
+  void NGS::uTagsExperiment::writeToBed(std::ostream &out) const 
+/home/local/USHERBROOKE/nora2001/Work/class/NGS/uTags.cpp:1060: Warning: no uniquely matching class member found for
+  void NGS::uTagsExperiment::setChromSize(string chrom, int size)
+Possible candidates:
+  void NGS::uTagsExperiment::setChromSize(std::string chrom, int size) at line 334 of file /home/local/USHERBROOKE/nora2001/Work/class/NGS/uTags.h
+/home/local/USHERBROOKE/nora2001/Work/class/NGS/uTags.cpp:638: Warning: Found unknown command `\SQ'
+/home/local/USHERBROOKE/nora2001/Work/class/NGS/uTags.cpp:700: Warning: Found unknown command `\doto'
+/home/local/USHERBROOKE/nora2001/Work/class/NGS/uTags.cpp:45: Warning: argument 'chr' of command @param is not found in the argument list of NGS::uTags::uTags(std::string pchr, int start, int end, StrandDir pstrand=StrandDir::FORWARD)
+/home/local/USHERBROOKE/nora2001/Work/class/NGS/uTags.cpp:45: Warning: The following parameters of NGS::uTags::uTags(std::string pchr, int start, int end, StrandDir pstrand=StrandDir::FORWARD) are not documented:
+  parameter 'pchr'
+  parameter 'pstrand'
+/home/local/USHERBROOKE/nora2001/Work/class/NGS/uTags.cpp:96: Warning: argument 'UTags' of command @param is not found in the argument list of NGS::uTags::uTags(const uTags &copy_from)
+/home/local/USHERBROOKE/nora2001/Work/class/NGS/uTags.cpp:96: Warning: The following parameters of NGS::uTags::uTags(const uTags &copy_from) are not documented:
+  parameter 'copy_from'
+/home/local/USHERBROOKE/nora2001/Work/class/NGS/uTags.cpp:140: Warning: argument 'uTags' of command @param is not found in the argument list of NGS::uTags::operator=(uTags const &assign_from)
+/home/local/USHERBROOKE/nora2001/Work/class/NGS/uTags.cpp:140: Warning: The following parameters of NGS::uTags::operator=(uTags const &assign_from) are not documented:
+  parameter 'assign_from'
+/home/local/USHERBROOKE/nora2001/Work/class/NGS/uTags.cpp:638: Warning: Found unknown command `\SQ'
+/home/local/USHERBROOKE/nora2001/Work/class/NGS/uTags.cpp:700: Warning: Found unknown command `\doto'
+/home/local/USHERBROOKE/nora2001/Work/class/NGS/uTags.cpp:700: Warning: Found unknown command `\doto'
+/home/local/USHERBROOKE/nora2001/Work/class/NGS/uTags.cpp:638: Warning: Found unknown command `\SQ'
+/home/local/USHERBROOKE/nora2001/Work/class/NGS/uFormatExperiment.h:347: Warning: argument 'unary_op' of command @param is not found in the argument list of NGS::uGenericNGSExperiment< _CHROM_, _BASE_ >::applyOnAllChroms(const UnaryFunction f) const
+/home/local/USHERBROOKE/nora2001/Work/class/NGS/uFormatExperiment.h:347: Warning: The following parameters of NGS::uGenericNGSExperiment::applyOnAllChroms(const UnaryFunction f) const are not documented:
+  parameter 'f'
+/home/local/USHERBROOKE/nora2001/Work/class/NGS/uFormatExperiment.h:302: Warning: argument 'unary_op' of command @param is not found in the argument list of NGS::uGenericNGSExperiment< _CHROM_, _BASE_ >::applyOnAllChroms(UnaryFunction f)
+/home/local/USHERBROOKE/nora2001/Work/class/NGS/uFormatExperiment.h:302: Warning: The following parameters of NGS::uGenericNGSExperiment::applyOnAllChroms(UnaryFunction f) are not documented:
+  parameter 'f'
+/home/local/USHERBROOKE/nora2001/Work/class/NGS/uFormatExperiment.h:325: Warning: argument 'unary_op' of command @param is not found in the argument list of NGS::uGenericNGSExperiment< _CHROM_, _BASE_ >::applyOnOneChrom(UnaryFunction f, const std::string &chr)
+/home/local/USHERBROOKE/nora2001/Work/class/NGS/uFormatExperiment.h:325: Warning: The following parameters of NGS::uGenericNGSExperiment::applyOnOneChrom(UnaryFunction f, const std::string &chr) are not documented:
+  parameter 'f'
+  parameter 'chr'
+/home/local/USHERBROOKE/nora2001/Work/class/NGS/uFormatExperiment.h:392: Warning: argument 'unary_op' of command @param is not found in the argument list of NGS::uGenericNGSExperiment< _CHROM_, _BASE_ >::applyOnSites(UnaryFunction f)
+/home/local/USHERBROOKE/nora2001/Work/class/NGS/uFormatExperiment.h:392: Warning: The following parameters of NGS::uGenericNGSExperiment::applyOnSites(UnaryFunction f) are not documented:
+  parameter 'f'
+/home/local/USHERBROOKE/nora2001/Work/class/NGS/uFormatExperiment.h:250: Warning: The following parameters of NGS::uGenericNGSExperiment::computeOnOneChrom(UnaryOperation unary_op, const std::string &chr) const are not documented:
+  parameter 'chr'
+/home/local/USHERBROOKE/nora2001/Work/class/NGS/uFormatExperiment.h:404: Warning: argument 'p' of command @param is not found in the argument list of NGS::uGenericNGSExperiment< _CHROM_, _BASE_ >::countChromsWithProperty(UnaryPredicate pred) const
+/home/local/USHERBROOKE/nora2001/Work/class/NGS/uFormatExperiment.h:404: Warning: The following parameters of NGS::uGenericNGSExperiment::countChromsWithProperty(UnaryPredicate pred) const are not documented:
+  parameter 'pred'
+/home/local/USHERBROOKE/nora2001/Work/class/NGS/uFormatExperiment.h:748: Warning: argument 'std' of command @param is not found in the argument list of NGS::uGenericNGSExperiment< _CHROM_, _BASE_ >::findPrecedingSite(std::string chr, int position) const
+/home/local/USHERBROOKE/nora2001/Work/class/NGS/uFormatExperiment.h:748: Warning: argument 'string' of command @param is not found in the argument list of NGS::uGenericNGSExperiment< _CHROM_, _BASE_ >::findPrecedingSite(std::string chr, int position) const
+/home/local/USHERBROOKE/nora2001/Work/class/NGS/uFormatExperiment.h:748: Warning: argument 'int' of command @param is not found in the argument list of NGS::uGenericNGSExperiment< _CHROM_, _BASE_ >::findPrecedingSite(std::string chr, int position) const
+/home/local/USHERBROOKE/nora2001/Work/class/NGS/uFormatExperiment.h:748: Warning: The following parameters of NGS::uGenericNGSExperiment::findPrecedingSite(std::string chr, int position) const are not documented:
+  parameter 'chr'
+  parameter 'position'
+/home/local/USHERBROOKE/nora2001/Work/class/NGS/uFormatExperiment.h:957: Warning: argument 'uGenericNGSExperiment' of command @param is not found in the argument list of NGS::uGenericNGSExperiment< _CHROM_, _BASE_ >::getOverlapping(uGenericNGSChrom< _BASEPAR_ > &compareChrom, OverlapType type=OverlapType::OVERLAP_PARTIAL)
+/home/local/USHERBROOKE/nora2001/Work/class/NGS/uFormatExperiment.h:957: Warning: The following parameters of NGS::uGenericNGSExperiment::getOverlapping(uGenericNGSChrom< _BASEPAR_ > &compareChrom, OverlapType type=OverlapType::OVERLAP_PARTIAL) are not documented:
+  parameter 'compareChrom'
+/home/local/USHERBROOKE/nora2001/Work/class/NGS/uFormatExperiment.h:913: Warning: argument 'uGenericNGSExperiment' of command @param is not found in the argument list of NGS::uGenericNGSExperiment< _CHROM_, _BASE_ >::getOverlapping(uGenericNGSExperiment< _CHROMPAR_, _BASEPAR_ > &compareExp, OverlapType type=OverlapType::OVERLAP_PARTIAL)
+/home/local/USHERBROOKE/nora2001/Work/class/NGS/uFormatExperiment.h:913: Warning: The following parameters of NGS::uGenericNGSExperiment::getOverlapping(uGenericNGSExperiment< _CHROMPAR_, _BASEPAR_ > &compareExp, OverlapType type=OverlapType::OVERLAP_PARTIAL) are not documented:
+  parameter 'compareExp'
+/home/local/USHERBROOKE/nora2001/Work/class/NGS/uFormatExperiment.h:275: Warning: argument 'p' of command @param is not found in the argument list of NGS::uGenericNGSExperiment< _CHROM_, _BASE_ >::getSpecificChroms(UnaryPredicate pred) const
+/home/local/USHERBROOKE/nora2001/Work/class/NGS/uFormatExperiment.h:275: Warning: The following parameters of NGS::uGenericNGSExperiment::getSpecificChroms(UnaryPredicate pred) const are not documented:
+  parameter 'pred'
+/home/local/USHERBROOKE/nora2001/Work/class/NGS/uFormatExperiment.h:580: Warning: argument 'stream' of command @param is not found in the argument list of NGS::uGenericNGSExperiment< _CHROM_, _BASE_ >::loadWithParser(std::ifstream &pStream, std::string pType)
+/home/local/USHERBROOKE/nora2001/Work/class/NGS/uFormatExperiment.h:580: Warning: The following parameters of NGS::uGenericNGSExperiment::loadWithParser(std::ifstream &pStream, std::string pType) are not documented:
+  parameter 'pStream'
+  parameter 'pType'
+/home/local/USHERBROOKE/nora2001/Work/class/NGS/uFormatExperiment.h:697: Warning: The following parameters of NGS::uGenericNGSExperiment::sortSites(Compare comp, std::function< float(const _BASE_ *)> getStart_funct=nullptr, std::function< float(const _BASE_ *)> getEnd_funct=nullptr) are not documented:
+  parameter 'getStart_funct'
+  parameter 'getEnd_funct'
+/home/local/USHERBROOKE/nora2001/Work/class/NGS/IO/Writer/uWriterCustom.cpp:17: Warning: argument 'const' of command @param is not found in the argument list of NGS::uWriterCustom::writeToken(const uToken &token)
+/home/local/USHERBROOKE/nora2001/Work/class/NGS/IO/Writer/uWriterCustom.cpp:17: Warning: The following parameters of NGS::uWriterCustom::writeToken(const uToken &token) are not documented:
+  parameter 'token'
+/home/local/USHERBROOKE/nora2001/Work/class/NGS/uFormatBase.cpp:241: Warning: argument 'const' of command @param is not found in the argument list of NGS::uGenericNGS::divideIntoBinofSize(const int N, const SplitType type=SplitType::STRICT)
+/home/local/USHERBROOKE/nora2001/Work/class/NGS/uFormatBase.cpp:241: Warning: The following parameters of NGS::uGenericNGS::divideIntoBinofSize(const int N, const SplitType type=SplitType::STRICT) are not documented:
+  parameter 'type'
+/home/local/USHERBROOKE/nora2001/Work/class/NGS/uFormatBase.cpp:159: Warning: The following parameters of NGS::uGenericNGS::divideIntoNBin(const int N, const SplitType ptype=SplitType::STRICT) are not documented:
+  parameter 'ptype'
+/home/local/USHERBROOKE/nora2001/Work/class/NGS/uFormatBase.cpp:114: Warning: The following parameters of NGS::uGenericNGS::doesOverlap(uGenericNGS other, OverlapType type=OverlapType::OVERLAP_PARTIAL) const are not documented:
+  parameter 'type'
+/home/local/USHERBROOKE/nora2001/Work/class/NGS/uFormatBase.cpp:339: Warning: argument 'int' of command @param is not found in the argument list of NGS::uGenericNGS::getScore(int p_Pos) const
+/home/local/USHERBROOKE/nora2001/Work/class/NGS/uFormatBase.cpp:339: Warning: The following parameters of NGS::uGenericNGS::getScore(int p_Pos) const are not documented:
+  parameter 'p_Pos'
+/home/local/USHERBROOKE/nora2001/Work/class/NGS/uFormatBase.cpp:325: Warning: argument 'float' of command @param is not found in the argument list of NGS::uGenericNGS::setScore(float p_score, int p_Pos)
+/home/local/USHERBROOKE/nora2001/Work/class/NGS/uFormatBase.cpp:325: Warning: argument 'int' of command @param is not found in the argument list of NGS::uGenericNGS::setScore(float p_score, int p_Pos)
+/home/local/USHERBROOKE/nora2001/Work/class/NGS/uFormatBase.cpp:325: Warning: The following parameters of NGS::uGenericNGS::setScore(float p_score, int p_Pos) are not documented:
+  parameter 'p_score'
+  parameter 'p_Pos'
+/home/local/USHERBROOKE/nora2001/Work/class/NGS/IO/Writer/uWriterWig.cpp:4: Warning: argument 'const' of command @param is not found in the argument list of NGS::uWriterWig::writeToken(const uToken &token)
+/home/local/USHERBROOKE/nora2001/Work/class/NGS/IO/Writer/uWriterWig.cpp:4: Warning: The following parameters of NGS::uWriterWig::writeToken(const uToken &token) are not documented:
+  parameter 'token'
+/home/local/USHERBROOKE/nora2001/Work/class/NGS/uFormatChrom.h:295: Warning: argument 'unary_op' of command @param is not found in the argument list of NGS::uGenericNGSChrom< _BASE_ >::applyOnAllSites(UnaryOperation f)
+/home/local/USHERBROOKE/nora2001/Work/class/NGS/uFormatChrom.h:295: Warning: The following parameters of NGS::uGenericNGSChrom::applyOnAllSites(UnaryOperation f) are not documented:
+  parameter 'f'
+/home/local/USHERBROOKE/nora2001/Work/class/NGS/uFormatChrom.h:241: Warning: argument 'p' of command @param is not found in the argument list of NGS::uGenericNGSChrom< _BASE_ >::getSpecificSites(UnaryPredicate pred) const
+/home/local/USHERBROOKE/nora2001/Work/class/NGS/uFormatChrom.h:241: Warning: The following parameters of NGS::uGenericNGSChrom::getSpecificSites(UnaryPredicate pred) const are not documented:
+  parameter 'pred'
+/home/local/USHERBROOKE/nora2001/Work/class/NGS/uFormatChrom.h:356: Warning: The following parameters of NGS::uGenericNGSChrom::sortSites(Compare comp, std::function< float(const _BASE_ *)> getStart_funct=nullptr, std::function< float(const _BASE_ *)> getEnd_funct=nullptr) are not documented:
+  parameter 'getStart_funct'
+  parameter 'getEnd_funct'
+/home/local/USHERBROOKE/nora2001/Work/class/NGS/IO/Writer/uWriterBed4.cpp:4: Warning: argument 'const' of command @param is not found in the argument list of NGS::uWriterBed4::writeToken(const uToken &token)
+/home/local/USHERBROOKE/nora2001/Work/class/NGS/IO/Writer/uWriterBed4.cpp:4: Warning: The following parameters of NGS::uWriterBed4::writeToken(const uToken &token) are not documented:
+  parameter 'token'
+/home/local/USHERBROOKE/nora2001/Work/class/NGS/IO/Parser/uParserCustom.cpp:51: Warning: argument 'std' of command @param is not found in the argument list of NGS::uParserCustom::init(std::istream *stream, const std::vector< std::string > &fieldsNames, char delimiter='\t')
+/home/local/USHERBROOKE/nora2001/Work/class/NGS/IO/Parser/uParserCustom.cpp:51: Warning: argument 'istream' of command @param is not found in the argument list of NGS::uParserCustom::init(std::istream *stream, const std::vector< std::string > &fieldsNames, char delimiter='\t')
+/home/local/USHERBROOKE/nora2001/Work/class/NGS/IO/Parser/uParserCustom.cpp:51: Warning: argument 'const' of command @param is not found in the argument list of NGS::uParserCustom::init(std::istream *stream, const std::vector< std::string > &fieldsNames, char delimiter='\t')
+/home/local/USHERBROOKE/nora2001/Work/class/NGS/IO/Parser/uParserCustom.cpp:51: Warning: argument 'char' of command @param is not found in the argument list of NGS::uParserCustom::init(std::istream *stream, const std::vector< std::string > &fieldsNames, char delimiter='\t')
+/home/local/USHERBROOKE/nora2001/Work/class/NGS/IO/Parser/uParserCustom.cpp:51: Warning: The following parameters of NGS::uParserCustom::init(std::istream *stream, const std::vector< std::string > &fieldsNames, char delimiter='\t') are not documented:
+  parameter 'stream'
+  parameter 'fieldsNames'
+  parameter 'delimiter'
+/home/local/USHERBROOKE/nora2001/Work/class/NGS/IO/Parser/uParserCustom.cpp:30: Warning: argument 'const' of command @param is not found in the argument list of NGS::uParserCustom::init(const std::string &filename, const std::vector< std::string > &fieldsNames, char delimiter='\t')
+/home/local/USHERBROOKE/nora2001/Work/class/NGS/IO/Parser/uParserCustom.cpp:30: Warning: argument 'const' of command @param is not found in the argument list of NGS::uParserCustom::init(const std::string &filename, const std::vector< std::string > &fieldsNames, char delimiter='\t')
+/home/local/USHERBROOKE/nora2001/Work/class/NGS/IO/Parser/uParserCustom.cpp:30: Warning: argument 'char' of command @param is not found in the argument list of NGS::uParserCustom::init(const std::string &filename, const std::vector< std::string > &fieldsNames, char delimiter='\t')
+/home/local/USHERBROOKE/nora2001/Work/class/NGS/IO/Parser/uParserCustom.cpp:30: Warning: The following parameters of NGS::uParserCustom::init(const std::string &filename, const std::vector< std::string > &fieldsNames, char delimiter='\t') are not documented:
+  parameter 'filename'
+  parameter 'fieldsNames'
+  parameter 'delimiter'
+/home/local/USHERBROOKE/nora2001/Work/class/NGS/IO/Parser/uParserWig.h:75: Warning: argument 'const' of command @param is not found in the argument list of NGS::uParserWig::init(const std::string &filename, bool header=false) inherited from member init at line 17 in file /home/local/USHERBROOKE/nora2001/Work/class/NGS/IO/Parser/uParserBase.cpp
+/home/local/USHERBROOKE/nora2001/Work/class/NGS/IO/Parser/uParserWig.h:75: Warning: argument 'bool' of command @param is not found in the argument list of NGS::uParserWig::init(const std::string &filename, bool header=false) inherited from member init at line 17 in file /home/local/USHERBROOKE/nora2001/Work/class/NGS/IO/Parser/uParserBase.cpp
+/home/local/USHERBROOKE/nora2001/Work/class/NGS/IO/Parser/uParserWig.h:75: Warning: The following parameters of NGS::uParserWig::init(const std::string &filename, bool header=false) are not documented:
+  parameter 'filename'
+  parameter 'header'
+/home/local/USHERBROOKE/nora2001/Work/class/NGS/IO/Writer/uWriterBed6.cpp:4: Warning: argument 'const' of command @param is not found in the argument list of NGS::uWriterBed6::writeToken(const uToken &token)
+/home/local/USHERBROOKE/nora2001/Work/class/NGS/IO/Writer/uWriterBed6.cpp:4: Warning: The following parameters of NGS::uWriterBed6::writeToken(const uToken &token) are not documented:
+  parameter 'token'
+/home/local/USHERBROOKE/nora2001/Work/class/NGS/uRegion.cpp:34: Warning: argument 'uGenericNGS' of command @param is not found in the argument list of NGS::uRegion::uRegion(uGenericNGS otherNGS)
+/home/local/USHERBROOKE/nora2001/Work/class/NGS/uRegion.cpp:34: Warning: The following parameters of NGS::uRegion::uRegion(uGenericNGS otherNGS) are not documented:
+  parameter 'otherNGS'
+/home/local/USHERBROOKE/nora2001/Work/class/NGS/uRegion.cpp:49: Warning: argument 'uToken' of command @param is not found in the argument list of NGS::uRegion::uRegion(uToken pToken)
+/home/local/USHERBROOKE/nora2001/Work/class/NGS/uRegion.cpp:49: Warning: The following parameters of NGS::uRegion::uRegion(uToken pToken) are not documented:
+  parameter 'pToken'
+/home/local/USHERBROOKE/nora2001/Work/class/NGS/uRegion.cpp:244: Warning: argument 'uTagsChrom' of command @param is not found in the argument list of NGS::uRegionChrom::measureDensityOverlap(uTagsChrom &chromtoComp, const OverlapType pOverlap=OverlapType::OVERLAP_PARTIAL)
+/home/local/USHERBROOKE/nora2001/Work/class/NGS/uRegion.cpp:244: Warning: argument 'const' of command @param is not found in the argument list of NGS::uRegionChrom::measureDensityOverlap(uTagsChrom &chromtoComp, const OverlapType pOverlap=OverlapType::OVERLAP_PARTIAL)
+/home/local/USHERBROOKE/nora2001/Work/class/NGS/uRegion.cpp:244: Warning: The following parameters of NGS::uRegionChrom::measureDensityOverlap(uTagsChrom &chromtoComp, const OverlapType pOverlap=OverlapType::OVERLAP_PARTIAL) are not documented:
+  parameter 'chromtoComp'
+  parameter 'pOverlap'
+/home/local/USHERBROOKE/nora2001/Work/class/NGS/uRegion.cpp:229: Warning: argument 'uGenericNGSChrom' of command @param is not found in the argument list of NGS::uRegionChrom::measureDensityOverlap(uGenericNGSChrom< uGenericNGS > &chromtoComp, const OverlapType pOverlap=OverlapType::OVERLAP_PARTIAL)
+/home/local/USHERBROOKE/nora2001/Work/class/NGS/uRegion.cpp:229: Warning: argument 'OverlapType' of command @param is not found in the argument list of NGS::uRegionChrom::measureDensityOverlap(uGenericNGSChrom< uGenericNGS > &chromtoComp, const OverlapType pOverlap=OverlapType::OVERLAP_PARTIAL)
+/home/local/USHERBROOKE/nora2001/Work/class/NGS/uRegion.cpp:229: Warning: The following parameters of NGS::uRegionChrom::measureDensityOverlap(uGenericNGSChrom< uGenericNGS > &chromtoComp, const OverlapType pOverlap=OverlapType::OVERLAP_PARTIAL) are not documented:
+  parameter 'chromtoComp'
+  parameter 'pOverlap'
+/home/local/USHERBROOKE/nora2001/Work/class/NGS/uRegion.cpp:257: Warning: argument 'uGenericNGSExperiment' of command @param is not found in the argument list of NGS::uRegionChrom::measureDensityOverlap(uGenericNGSExperiment< uGenericNGSChrom< uGenericNGS >, uGenericNGS > &expToCompare, OverlapType pOverlap=OverlapType::OVERLAP_PARTIAL)
+/home/local/USHERBROOKE/nora2001/Work/class/NGS/uRegion.cpp:257: Warning: argument 'OverlapType' of command @param is not found in the argument list of NGS::uRegionChrom::measureDensityOverlap(uGenericNGSExperiment< uGenericNGSChrom< uGenericNGS >, uGenericNGS > &expToCompare, OverlapType pOverlap=OverlapType::OVERLAP_PARTIAL)
+/home/local/USHERBROOKE/nora2001/Work/class/NGS/uRegion.cpp:257: Warning: The following parameters of NGS::uRegionChrom::measureDensityOverlap(uGenericNGSExperiment< uGenericNGSChrom< uGenericNGS >, uGenericNGS > &expToCompare, OverlapType pOverlap=OverlapType::OVERLAP_PARTIAL) are not documented:
+  parameter 'expToCompare'
+  parameter 'pOverlap'
+/home/local/USHERBROOKE/nora2001/Work/class/NGS/uRegion.cpp:573: Warning: argument 'std' of command @param is not found in the argument list of NGS::uRegionChrom::writeAll(std::ostream &out)
+/home/local/USHERBROOKE/nora2001/Work/class/NGS/uRegion.cpp:573: Warning: argument 'ostream' of command @param is not found in the argument list of NGS::uRegionChrom::writeAll(std::ostream &out)
+/home/local/USHERBROOKE/nora2001/Work/class/NGS/uRegion.cpp:573: Warning: The following parameters of NGS::uRegionChrom::writeAll(std::ostream &out) are not documented:
+  parameter 'out'
+/home/local/USHERBROOKE/nora2001/Work/class/NGS/uRegion.cpp:606: Warning: argument 'std' of command @param is not found in the argument list of NGS::uRegionChrom::writeDensityAsTab(std::ostream &out)
+/home/local/USHERBROOKE/nora2001/Work/class/NGS/uRegion.cpp:606: Warning: argument 'ostream' of command @param is not found in the argument list of NGS::uRegionChrom::writeDensityAsTab(std::ostream &out)
+/home/local/USHERBROOKE/nora2001/Work/class/NGS/uRegion.cpp:606: Warning: The following parameters of NGS::uRegionChrom::writeDensityAsTab(std::ostream &out) are not documented:
+  parameter 'out'
+/home/local/USHERBROOKE/nora2001/Work/class/NGS/uRegion.cpp:536: Warning: argument 'out' of command @param is not found in the argument list of NGS::uRegionExperiment::generateSignal(uTagsExperiment &expToComp)
+/home/local/USHERBROOKE/nora2001/Work/class/NGS/uRegion.cpp:536: Warning: The following parameters of NGS::uRegionExperiment::generateSignal(uTagsExperiment &expToComp) are not documented:
+  parameter 'expToComp'
+/home/local/USHERBROOKE/nora2001/Work/class/NGS/uRegion.cpp:619: Warning: argument 'std' of command @param is not found in the argument list of NGS::uRegionExperiment::loadFromWig(std::ifstream &inputStream)
+/home/local/USHERBROOKE/nora2001/Work/class/NGS/uRegion.cpp:619: Warning: argument 'ifstream' of command @param is not found in the argument list of NGS::uRegionExperiment::loadFromWig(std::ifstream &inputStream)
+/home/local/USHERBROOKE/nora2001/Work/class/NGS/uRegion.cpp:619: Warning: The following parameters of NGS::uRegionExperiment::loadFromWig(std::ifstream &inputStream) are not documented:
+  parameter 'inputStream'
+/home/local/USHERBROOKE/nora2001/Work/class/NGS/uRegion.cpp:199: Warning: argument 'uTagsExperiment' of command @param is not found in the argument list of NGS::uRegionExperiment::measureDensityOverlap(uTagsExperiment &expToComp, const OverlapType poverlap=OverlapType::OVERLAP_PARTIAL)
+/home/local/USHERBROOKE/nora2001/Work/class/NGS/uRegion.cpp:199: Warning: argument 'const' of command @param is not found in the argument list of NGS::uRegionExperiment::measureDensityOverlap(uTagsExperiment &expToComp, const OverlapType poverlap=OverlapType::OVERLAP_PARTIAL)
+/home/local/USHERBROOKE/nora2001/Work/class/NGS/uRegion.cpp:199: Warning: The following parameters of NGS::uRegionExperiment::measureDensityOverlap(uTagsExperiment &expToComp, const OverlapType poverlap=OverlapType::OVERLAP_PARTIAL) are not documented:
+  parameter 'expToComp'
+  parameter 'poverlap'
+/home/local/USHERBROOKE/nora2001/Work/class/NGS/uRegion.cpp:182: Warning: argument 'uGenericNGSExperiment' of command @param is not found in the argument list of NGS::uRegionExperiment::measureDensityOverlap(uGenericNGSExperiment< uGenericNGSChrom< uGenericNGS >, uGenericNGS > &expToComp, const OverlapType poverlap=OverlapType::OVERLAP_PARTIAL)
+/home/local/USHERBROOKE/nora2001/Work/class/NGS/uRegion.cpp:182: Warning: argument 'OverlapType' of command @param is not found in the argument list of NGS::uRegionExperiment::measureDensityOverlap(uGenericNGSExperiment< uGenericNGSChrom< uGenericNGS >, uGenericNGS > &expToComp, const OverlapType poverlap=OverlapType::OVERLAP_PARTIAL)
+/home/local/USHERBROOKE/nora2001/Work/class/NGS/uRegion.cpp:182: Warning: The following parameters of NGS::uRegionExperiment::measureDensityOverlap(uGenericNGSExperiment< uGenericNGSChrom< uGenericNGS >, uGenericNGS > &expToComp, const OverlapType poverlap=OverlapType::OVERLAP_PARTIAL) are not documented:
+  parameter 'expToComp'
+  parameter 'poverlap'
+/home/local/USHERBROOKE/nora2001/Work/class/NGS/uRegion.cpp:584: Warning: argument 'std' of command @param is not found in the argument list of NGS::uRegionExperiment::writeAll(std::ostream &out)
+/home/local/USHERBROOKE/nora2001/Work/class/NGS/uRegion.cpp:584: Warning: argument 'ostream' of command @param is not found in the argument list of NGS::uRegionExperiment::writeAll(std::ostream &out)
+/home/local/USHERBROOKE/nora2001/Work/class/NGS/uRegion.cpp:584: Warning: The following parameters of NGS::uRegionExperiment::writeAll(std::ostream &out) are not documented:
+  parameter 'out'
+/home/local/USHERBROOKE/nora2001/Work/class/NGS/uRegion.cpp:595: Warning: argument 'std' of command @param is not found in the argument list of NGS::uRegionExperiment::writeDensityAsTab(std::ostream &out)
+/home/local/USHERBROOKE/nora2001/Work/class/NGS/uRegion.cpp:595: Warning: argument 'ostream' of command @param is not found in the argument list of NGS::uRegionExperiment::writeDensityAsTab(std::ostream &out)
+/home/local/USHERBROOKE/nora2001/Work/class/NGS/uRegion.cpp:595: Warning: The following parameters of NGS::uRegionExperiment::writeDensityAsTab(std::ostream &out) are not documented:
+  parameter 'out'
+/home/local/USHERBROOKE/nora2001/Work/class/NGS/IO/Writer/uWriterBase.cpp:37: Warning: argument 'std' of command @param is not found in the argument list of NGS::uWriterBase::init(std::ostream *os)
+/home/local/USHERBROOKE/nora2001/Work/class/NGS/IO/Writer/uWriterBase.cpp:37: Warning: argument 'ostream' of command @param is not found in the argument list of NGS::uWriterBase::init(std::ostream *os)
+/home/local/USHERBROOKE/nora2001/Work/class/NGS/IO/Writer/uWriterBase.cpp:37: Warning: The following parameters of NGS::uWriterBase::init(std::ostream *os) are not documented:
+  parameter 'os'
+/home/local/USHERBROOKE/nora2001/Work/class/NGS/IO/Writer/uWriterBase.cpp:17: Warning: argument 'const' of command @param is not found in the argument list of NGS::uWriterBase::init(const std::string &filename)
+/home/local/USHERBROOKE/nora2001/Work/class/NGS/IO/Writer/uWriterBase.cpp:17: Warning: The following parameters of NGS::uWriterBase::init(const std::string &filename) are not documented:
+  parameter 'filename'
+/home/local/USHERBROOKE/nora2001/Work/class/NGS/IO/Writer/uWriterBase.cpp:53: Warning: argument 'const' of command @param is not found in the argument list of NGS::uWriterBase::printString(const std::string &str)
+/home/local/USHERBROOKE/nora2001/Work/class/NGS/IO/Writer/uWriterBase.cpp:53: Warning: The following parameters of NGS::uWriterBase::printString(const std::string &str) are not documented:
+  parameter 'str'
+/home/local/USHERBROOKE/nora2001/Work/class/NGS/IO/Parser/uParserBed.cpp:31: Warning: argument 'std' of command @param is not found in the argument list of NGS::uParserBed::init(std::istream *stream, bool header=false)
+/home/local/USHERBROOKE/nora2001/Work/class/NGS/IO/Parser/uParserBed.cpp:31: Warning: argument 'iostream' of command @param is not found in the argument list of NGS::uParserBed::init(std::istream *stream, bool header=false)
+/home/local/USHERBROOKE/nora2001/Work/class/NGS/IO/Parser/uParserBed.cpp:31: Warning: argument 'bool' of command @param is not found in the argument list of NGS::uParserBed::init(std::istream *stream, bool header=false)
+/home/local/USHERBROOKE/nora2001/Work/class/NGS/IO/Parser/uParserBed.cpp:31: Warning: The following parameters of NGS::uParserBed::init(std::istream *stream, bool header=false) are not documented:
+  parameter 'stream'
+  parameter 'header'
+/home/local/USHERBROOKE/nora2001/Work/class/NGS/IO/Parser/uParserBed.cpp:16: Warning: argument 'const' of command @param is not found in the argument list of NGS::uParserBed::init(const std::string &filename, bool header=false)
+/home/local/USHERBROOKE/nora2001/Work/class/NGS/IO/Parser/uParserBed.cpp:16: Warning: argument 'bool' of command @param is not found in the argument list of NGS::uParserBed::init(const std::string &filename, bool header=false)
+/home/local/USHERBROOKE/nora2001/Work/class/NGS/IO/Parser/uParserBed.cpp:16: Warning: The following parameters of NGS::uParserBed::init(const std::string &filename, bool header=false) are not documented:
+  parameter 'filename'
+  parameter 'header'
+/home/local/USHERBROOKE/nora2001/Work/class/NGS/IO/Parser/uParser.cpp:7: Warning: argument 'const' of command @param is not found in the argument list of NGS::uParser::uParser(const std::string &filename, const std::string &type, bool header=false)
+/home/local/USHERBROOKE/nora2001/Work/class/NGS/IO/Parser/uParser.cpp:7: Warning: argument 'const' of command @param is not found in the argument list of NGS::uParser::uParser(const std::string &filename, const std::string &type, bool header=false)
+/home/local/USHERBROOKE/nora2001/Work/class/NGS/IO/Parser/uParser.cpp:7: Warning: argument 'bool' of command @param is not found in the argument list of NGS::uParser::uParser(const std::string &filename, const std::string &type, bool header=false)
+/home/local/USHERBROOKE/nora2001/Work/class/NGS/IO/Parser/uParser.cpp:7: Warning: The following parameters of NGS::uParser::uParser(const std::string &filename, const std::string &type, bool header=false) are not documented:
+  parameter 'filename'
+  parameter 'type'
+  parameter 'header'
+/home/local/USHERBROOKE/nora2001/Work/class/NGS/IO/Parser/uParser.cpp:29: Warning: argument 'std' of command @param is not found in the argument list of NGS::uParser::uParser(std::istream *stream, const std::string &type, bool header=false)
+/home/local/USHERBROOKE/nora2001/Work/class/NGS/IO/Parser/uParser.cpp:29: Warning: argument 'iostream' of command @param is not found in the argument list of NGS::uParser::uParser(std::istream *stream, const std::string &type, bool header=false)
+/home/local/USHERBROOKE/nora2001/Work/class/NGS/IO/Parser/uParser.cpp:29: Warning: argument 'const' of command @param is not found in the argument list of NGS::uParser::uParser(std::istream *stream, const std::string &type, bool header=false)
+/home/local/USHERBROOKE/nora2001/Work/class/NGS/IO/Parser/uParser.cpp:29: Warning: argument 'bool' of command @param is not found in the argument list of NGS::uParser::uParser(std::istream *stream, const std::string &type, bool header=false)
+/home/local/USHERBROOKE/nora2001/Work/class/NGS/IO/Parser/uParser.cpp:29: Warning: The following parameters of NGS::uParser::uParser(std::istream *stream, const std::string &type, bool header=false) are not documented:
+  parameter 'stream'
+  parameter 'type'
+  parameter 'header'
+/home/local/USHERBROOKE/nora2001/Work/class/NGS/IO/Parser/uParser.cpp:43: Warning: argument 'const' of command @param is not found in the argument list of NGS::uParser::uParser(const std::string &filename, const std::vector< std::string > &fieldsNames, char delimiter='\t')
+/home/local/USHERBROOKE/nora2001/Work/class/NGS/IO/Parser/uParser.cpp:43: Warning: argument 'const' of command @param is not found in the argument list of NGS::uParser::uParser(const std::string &filename, const std::vector< std::string > &fieldsNames, char delimiter='\t')
+/home/local/USHERBROOKE/nora2001/Work/class/NGS/IO/Parser/uParser.cpp:43: Warning: argument 'bool' of command @param is not found in the argument list of NGS::uParser::uParser(const std::string &filename, const std::vector< std::string > &fieldsNames, char delimiter='\t')
+/home/local/USHERBROOKE/nora2001/Work/class/NGS/IO/Parser/uParser.cpp:43: Warning: The following parameters of NGS::uParser::uParser(const std::string &filename, const std::vector< std::string > &fieldsNames, char delimiter='\t') are not documented:
+  parameter 'filename'
+  parameter 'fieldsNames'
+  parameter 'delimiter'
+/home/local/USHERBROOKE/nora2001/Work/class/NGS/IO/Parser/uParser.cpp:57: Warning: argument 'std' of command @param is not found in the argument list of NGS::uParser::uParser(std::istream *stream, const std::vector< std::string > &fieldsNames, char delimiter='\t')
+/home/local/USHERBROOKE/nora2001/Work/class/NGS/IO/Parser/uParser.cpp:57: Warning: argument 'iostream' of command @param is not found in the argument list of NGS::uParser::uParser(std::istream *stream, const std::vector< std::string > &fieldsNames, char delimiter='\t')
+/home/local/USHERBROOKE/nora2001/Work/class/NGS/IO/Parser/uParser.cpp:57: Warning: argument 'const' of command @param is not found in the argument list of NGS::uParser::uParser(std::istream *stream, const std::vector< std::string > &fieldsNames, char delimiter='\t')
+/home/local/USHERBROOKE/nora2001/Work/class/NGS/IO/Parser/uParser.cpp:57: Warning: argument 'bool' of command @param is not found in the argument list of NGS::uParser::uParser(std::istream *stream, const std::vector< std::string > &fieldsNames, char delimiter='\t')
+/home/local/USHERBROOKE/nora2001/Work/class/NGS/IO/Parser/uParser.cpp:57: Warning: The following parameters of NGS::uParser::uParser(std::istream *stream, const std::vector< std::string > &fieldsNames, char delimiter='\t') are not documented:
+  parameter 'stream'
+  parameter 'fieldsNames'
+  parameter 'delimiter'
+/home/local/USHERBROOKE/nora2001/Work/class/NGS/IO/Parser/uParser.h:39: Warning: argument 'header_param' of command @param is not found in the argument list of NGS::uParser::isHeaderParamSet(const header_param &name) const
+/home/local/USHERBROOKE/nora2001/Work/class/NGS/IO/Parser/uParser.h:39: Warning: The following parameters of NGS::uParser::isHeaderParamSet(const header_param &name) const are not documented:
+  parameter 'name'
+/home/local/USHERBROOKE/nora2001/Work/class/NGS/IO/uToken.cpp:5: Warning: argument 'istream' of command @param is not found in the argument list of NGS::uToken::uToken(std::istream &paramList, bool customValues=false)
+/home/local/USHERBROOKE/nora2001/Work/class/NGS/IO/uToken.cpp:5: Warning: Unsupported xml/html tag <token_param> found
+/home/local/USHERBROOKE/nora2001/Work/class/NGS/IO/uToken.cpp:5: Warning: Found unknown command `\t'
+/home/local/USHERBROOKE/nora2001/Work/class/NGS/IO/uToken.cpp:5: Warning: Unsupported xml/html tag <token_param> found
+/home/local/USHERBROOKE/nora2001/Work/class/NGS/IO/uToken.cpp:5: Warning: Found unknown command `\t'
+/home/local/USHERBROOKE/nora2001/Work/class/NGS/IO/uToken.cpp:5: Warning: The following parameters of NGS::uToken::uToken(std::istream &paramList, bool customValues=false) are not documented:
+  parameter 'paramList'
+  parameter 'customValues'
+/home/local/USHERBROOKE/nora2001/Work/class/NGS/IO/uToken.h:39: Warning: argument 'const' of command @param is not found in the argument list of NGS::uToken::checkParam(const std::string &param)
+/home/local/USHERBROOKE/nora2001/Work/class/NGS/IO/uToken.h:39: Warning: The following parameters of NGS::uToken::checkParam(const std::string &param) are not documented:
+  parameter 'param'
+/home/local/USHERBROOKE/nora2001/Work/class/NGS/IO/uToken.cpp:101: Warning: argument 'const' of command @param is not found in the argument list of NGS::uToken::getParam(const std::string &name) const
+/home/local/USHERBROOKE/nora2001/Work/class/NGS/IO/uToken.cpp:101: Warning: The following parameters of NGS::uToken::getParam(const std::string &name) const are not documented:
+  parameter 'name'
+/home/local/USHERBROOKE/nora2001/Work/class/NGS/IO/uToken.cpp:82: Warning: argument 'token_param' of command @param is not found in the argument list of NGS::uToken::getParam(token_param name) const
+/home/local/USHERBROOKE/nora2001/Work/class/NGS/IO/uToken.cpp:82: Warning: argument 'token_param' of command @param is not found in the argument list of NGS::uToken::getParam(token_param name) const
+/home/local/USHERBROOKE/nora2001/Work/class/NGS/IO/uToken.cpp:82: Warning: The following parameters of NGS::uToken::getParam(token_param name) const are not documented:
+  parameter 'name'
+/home/local/USHERBROOKE/nora2001/Work/class/NGS/IO/uToken.cpp:178: Warning: argument 'const' of command @param is not found in the argument list of NGS::uToken::isParamSet(const std::string &name) const
+/home/local/USHERBROOKE/nora2001/Work/class/NGS/IO/uToken.cpp:178: Warning: The following parameters of NGS::uToken::isParamSet(const std::string &name) const are not documented:
+  parameter 'name'
+/home/local/USHERBROOKE/nora2001/Work/class/NGS/IO/uToken.cpp:169: Warning: argument 'const' of command @param is not found in the argument list of NGS::uToken::isParamSet(const token_param &name) const
+/home/local/USHERBROOKE/nora2001/Work/class/NGS/IO/uToken.cpp:169: Warning: The following parameters of NGS::uToken::isParamSet(const token_param &name) const are not documented:
+  parameter 'name'
+/home/local/USHERBROOKE/nora2001/Work/class/NGS/IO/Parser/uParserBase.cpp:36: Warning: argument 'std' of command @param is not found in the argument list of NGS::uParserBase::init(std::istream *stream, bool header=false)
+/home/local/USHERBROOKE/nora2001/Work/class/NGS/IO/Parser/uParserBase.cpp:36: Warning: argument 'iostream' of command @param is not found in the argument list of NGS::uParserBase::init(std::istream *stream, bool header=false)
+/home/local/USHERBROOKE/nora2001/Work/class/NGS/IO/Parser/uParserBase.cpp:36: Warning: argument 'bool' of command @param is not found in the argument list of NGS::uParserBase::init(std::istream *stream, bool header=false)
+/home/local/USHERBROOKE/nora2001/Work/class/NGS/IO/Parser/uParserBase.cpp:36: Warning: The following parameters of NGS::uParserBase::init(std::istream *stream, bool header=false) are not documented:
+  parameter 'stream'
+  parameter 'header'
+/home/local/USHERBROOKE/nora2001/Work/class/NGS/IO/Parser/uParserBase.cpp:17: Warning: argument 'const' of command @param is not found in the argument list of NGS::uParserBase::init(const std::string &filename, bool header=false)
+/home/local/USHERBROOKE/nora2001/Work/class/NGS/IO/Parser/uParserBase.cpp:17: Warning: argument 'bool' of command @param is not found in the argument list of NGS::uParserBase::init(const std::string &filename, bool header=false)
+/home/local/USHERBROOKE/nora2001/Work/class/NGS/IO/Parser/uParserBase.cpp:17: Warning: The following parameters of NGS::uParserBase::init(const std::string &filename, bool header=false) are not documented:
+  parameter 'filename'
+  parameter 'header'
+/home/local/USHERBROOKE/nora2001/Work/class/NGS/IO/Parser/uParserBase.h:42: Warning: argument 'header_param' of command @param is not found in the argument list of NGS::uParserBase::isHeaderParamSet(const header_param &name) const
+/home/local/USHERBROOKE/nora2001/Work/class/NGS/IO/Parser/uParserBase.h:42: Warning: The following parameters of NGS::uParserBase::isHeaderParamSet(const header_param &name) const are not documented:
+  parameter 'name'
+/home/local/USHERBROOKE/nora2001/Work/class/NGS/IO/Writer/uWriter.cpp:6: Warning: argument 'const' of command @param is not found in the argument list of NGS::uWriter::uWriter(const std::string &filename, const std::string &type)
+/home/local/USHERBROOKE/nora2001/Work/class/NGS/IO/Writer/uWriter.cpp:6: Warning: argument 'const' of command @param is not found in the argument list of NGS::uWriter::uWriter(const std::string &filename, const std::string &type)
+/home/local/USHERBROOKE/nora2001/Work/class/NGS/IO/Writer/uWriter.cpp:6: Warning: The following parameters of NGS::uWriter::uWriter(const std::string &filename, const std::string &type) are not documented:
+  parameter 'filename'
+  parameter 'type'
+/home/local/USHERBROOKE/nora2001/Work/class/NGS/IO/Writer/uWriter.cpp:24: Warning: argument 'std' of command @param is not found in the argument list of NGS::uWriter::uWriter(std::ostream *os, const std::string &type)
+/home/local/USHERBROOKE/nora2001/Work/class/NGS/IO/Writer/uWriter.cpp:24: Warning: argument 'ostream' of command @param is not found in the argument list of NGS::uWriter::uWriter(std::ostream *os, const std::string &type)
+/home/local/USHERBROOKE/nora2001/Work/class/NGS/IO/Writer/uWriter.cpp:24: Warning: argument 'const' of command @param is not found in the argument list of NGS::uWriter::uWriter(std::ostream *os, const std::string &type)
+/home/local/USHERBROOKE/nora2001/Work/class/NGS/IO/Writer/uWriter.cpp:24: Warning: The following parameters of NGS::uWriter::uWriter(std::ostream *os, const std::string &type) are not documented:
+  parameter 'os'
+  parameter 'type'
+/home/local/USHERBROOKE/nora2001/Work/class/NGS/IO/Writer/uWriter.cpp:35: Warning: argument 'const' of command @param is not found in the argument list of NGS::uWriter::uWriter(const std::string &filename, const std::vector< std::string > &fieldsNames, char delimiter='\t')
+/home/local/USHERBROOKE/nora2001/Work/class/NGS/IO/Writer/uWriter.cpp:35: Warning: argument 'const' of command @param is not found in the argument list of NGS::uWriter::uWriter(const std::string &filename, const std::vector< std::string > &fieldsNames, char delimiter='\t')
+/home/local/USHERBROOKE/nora2001/Work/class/NGS/IO/Writer/uWriter.cpp:35: Warning: argument 'const' of command @param is not found in the argument list of NGS::uWriter::uWriter(const std::string &filename, const std::vector< std::string > &fieldsNames, char delimiter='\t')
+/home/local/USHERBROOKE/nora2001/Work/class/NGS/IO/Writer/uWriter.cpp:35: Warning: The following parameters of NGS::uWriter::uWriter(const std::string &filename, const std::vector< std::string > &fieldsNames, char delimiter='\t') are not documented:
+  parameter 'filename'
+  parameter 'fieldsNames'
+  parameter 'delimiter'
+/home/local/USHERBROOKE/nora2001/Work/class/NGS/IO/Writer/uWriter.cpp:56: Warning: argument 'std' of command @param is not found in the argument list of NGS::uWriter::uWriter(std::ostream *os, const std::vector< std::string > &fieldsNames, char delimiter='\t')
+/home/local/USHERBROOKE/nora2001/Work/class/NGS/IO/Writer/uWriter.cpp:56: Warning: argument 'ostream' of command @param is not found in the argument list of NGS::uWriter::uWriter(std::ostream *os, const std::vector< std::string > &fieldsNames, char delimiter='\t')
+/home/local/USHERBROOKE/nora2001/Work/class/NGS/IO/Writer/uWriter.cpp:56: Warning: argument 'const' of command @param is not found in the argument list of NGS::uWriter::uWriter(std::ostream *os, const std::vector< std::string > &fieldsNames, char delimiter='\t')
+/home/local/USHERBROOKE/nora2001/Work/class/NGS/IO/Writer/uWriter.cpp:56: Warning: argument 'const' of command @param is not found in the argument list of NGS::uWriter::uWriter(std::ostream *os, const std::vector< std::string > &fieldsNames, char delimiter='\t')
+/home/local/USHERBROOKE/nora2001/Work/class/NGS/IO/Writer/uWriter.cpp:56: Warning: The following parameters of NGS::uWriter::uWriter(std::ostream *os, const std::vector< std::string > &fieldsNames, char delimiter='\t') are not documented:
+  parameter 'os'
+  parameter 'fieldsNames'
+  parameter 'delimiter'
+/home/local/USHERBROOKE/nora2001/Work/class/NGS/IO/Writer/uWriter.cpp:78: Warning: argument 'const' of command @param is not found in the argument list of NGS::uWriter::printString(const std::string &str)
+/home/local/USHERBROOKE/nora2001/Work/class/NGS/IO/Writer/uWriter.cpp:78: Warning: The following parameters of NGS::uWriter::printString(const std::string &str) are not documented:
+  parameter 'str'
+/home/local/USHERBROOKE/nora2001/Work/class/NGS/IO/Writer/uWriter.cpp:97: Warning: argument 'param' of command @param is not found in the argument list of NGS::uWriter::writeHeader()
+/home/local/USHERBROOKE/nora2001/Work/class/NGS/IO/Writer/uWriter.cpp:97: Warning: argument 'value' of command @param is not found in the argument list of NGS::uWriter::writeHeader()
+/home/local/USHERBROOKE/nora2001/Work/class/NGS/IO/Writer/uWriter.cpp:70: Warning: argument 'const' of command @param is not found in the argument list of NGS::uWriter::writeToken(const uToken &token)
+/home/local/USHERBROOKE/nora2001/Work/class/NGS/IO/Writer/uWriter.cpp:70: Warning: The following parameters of NGS::uWriter::writeToken(const uToken &token) are not documented:
+  parameter 'token'
+/home/local/USHERBROOKE/nora2001/Work/class/NGS/IO/Writer/uWriterBed.cpp:6: Warning: argument 'const' of command @param is not found in the argument list of NGS::uWriterBed::writeToken(const uToken &token)
+/home/local/USHERBROOKE/nora2001/Work/class/NGS/IO/Writer/uWriterBed.cpp:6: Warning: The following parameters of NGS::uWriterBed::writeToken(const uToken &token) are not documented:
+  parameter 'token'
+/home/local/USHERBROOKE/nora2001/Work/class/NGS/IO/uHeader.cpp:5: Warning: argument 'header_param' of command @param is not found in the argument list of NGS::uHeader::uHeader()
+/home/local/USHERBROOKE/nora2001/Work/class/NGS/IO/uHeader.cpp:118: Warning: argument 'const' of command @param is not found in the argument list of NGS::uHeader::_addToParam(const header_param &name, const std::string &value)
+/home/local/USHERBROOKE/nora2001/Work/class/NGS/IO/uHeader.cpp:118: Warning: argument 'const' of command @param is not found in the argument list of NGS::uHeader::_addToParam(const header_param &name, const std::string &value)
+/home/local/USHERBROOKE/nora2001/Work/class/NGS/IO/uHeader.cpp:118: Warning: The following parameters of NGS::uHeader::_addToParam(const header_param &name, const std::string &value) are not documented:
+  parameter 'name'
+  parameter 'value'
+/home/local/USHERBROOKE/nora2001/Work/class/NGS/IO/uHeader.cpp:99: Warning: argument 'const' of command @param is not found in the argument list of NGS::uHeader::_setParam(const header_param &name, const std::string &value)
+/home/local/USHERBROOKE/nora2001/Work/class/NGS/IO/uHeader.cpp:99: Warning: argument 'const' of command @param is not found in the argument list of NGS::uHeader::_setParam(const header_param &name, const std::string &value)
+/home/local/USHERBROOKE/nora2001/Work/class/NGS/IO/uHeader.cpp:99: Warning: The following parameters of NGS::uHeader::_setParam(const header_param &name, const std::string &value) are not documented:
+  parameter 'name'
+  parameter 'value'
+/home/local/USHERBROOKE/nora2001/Work/class/NGS/IO/uHeader.h:51: Warning: argument 'const' of command @param is not found in the argument list of NGS::uHeader::checkParam(const std::string &param)
+/home/local/USHERBROOKE/nora2001/Work/class/NGS/IO/uHeader.h:51: Warning: The following parameters of NGS::uHeader::checkParam(const std::string &param) are not documented:
+  parameter 'param'
+/home/local/USHERBROOKE/nora2001/Work/class/NGS/IO/uHeader.cpp:40: Warning: argument 'header_param' of command @param is not found in the argument list of NGS::uHeader::getParam(header_param name) const
+/home/local/USHERBROOKE/nora2001/Work/class/NGS/IO/uHeader.cpp:40: Warning: The following parameters of NGS::uHeader::getParam(header_param name) const are not documented:
+  parameter 'name'
+/home/local/USHERBROOKE/nora2001/Work/class/NGS/IO/uHeader.cpp:19: Warning: argument 'header_param' of command @param is not found in the argument list of NGS::uHeader::getParamVector(header_param name) const
+/home/local/USHERBROOKE/nora2001/Work/class/NGS/IO/uHeader.cpp:19: Warning: argument 'header_param' of command @param is not found in the argument list of NGS::uHeader::getParamVector(header_param name) const
+/home/local/USHERBROOKE/nora2001/Work/class/NGS/IO/uHeader.cpp:19: Warning: The following parameters of NGS::uHeader::getParamVector(header_param name) const are not documented:
+  parameter 'name'
+/home/local/USHERBROOKE/nora2001/Work/class/NGS/IO/uHeader.h:45: Warning: argument 'header_param' of command @param is not found in the argument list of NGS::uHeader::isParamSet(const header_param &name) const
+/home/local/USHERBROOKE/nora2001/Work/class/NGS/IO/uHeader.h:45: Warning: The following parameters of NGS::uHeader::isParamSet(const header_param &name) const are not documented:
+  parameter 'name'
+/home/local/USHERBROOKE/nora2001/Work/class/NGS/IO/uHeader.h:28: Warning: argument 'const' of command @param is not found in the argument list of NGS::uHeader::setUnformatedHeader(const std::string &unformatedHeader)
+/home/local/USHERBROOKE/nora2001/Work/class/NGS/IO/uHeader.h:28: Warning: The following parameters of NGS::uHeader::setUnformatedHeader(const std::string &unformatedHeader) are not documented:
+  parameter 'unformatedHeader'
+/home/local/USHERBROOKE/nora2001/Work/class/NGS/IO/Writer/uWriterSam.cpp:5: Warning: argument 'const' of command @param is not found in the argument list of NGS::uWriterSam::writeToken(const uToken &token)
+/home/local/USHERBROOKE/nora2001/Work/class/NGS/IO/Writer/uWriterSam.cpp:5: Warning: The following parameters of NGS::uWriterSam::writeToken(const uToken &token) are not documented:
+  parameter 'token'
