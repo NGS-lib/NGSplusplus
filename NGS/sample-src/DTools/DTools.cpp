@@ -5,7 +5,7 @@
 #include <vector>
 #include <cmath>
 #include <functional>
-#include "uTags.h"
+#include "NGS++.h"
 
 using namespace std;
 using namespace NGS;
