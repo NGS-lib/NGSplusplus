@@ -19,6 +19,7 @@ OBJECTS = $(UTIL_DIR)/utility.o
 OBJECTS += $(IO_DIR)/uHeader.o $(IO_DIR)/uToken.o 
 OBJECTS += $(WRITER_DIR)/uWriter.o $(WRITER_DIR)/uWriterBase.o $(WRITER_DIR)/uWriterBed.o 
 OBJECTS += $(WRITER_DIR)/uWriterBed4.o $(WRITER_DIR)/uWriterBed6.o $(WRITER_DIR)/uWriterCustom.o
+OBJECTS += $(WRITER_DIR)/uWriterSam.o $(WRITER_DIR)/uWriterWig.o 
 OBJECTS += $(PARSER_DIR)/uParser.o $(PARSER_DIR)/uParserBase.o $(PARSER_DIR)/uParserWig.o 
 OBJECTS += $(PARSER_DIR)/uParserSam.o $(PARSER_DIR)/uParserBed.o $(PARSER_DIR)/uParserCustom.o
 OBJECTS += $(SRC_DIR)/uFormatBase.o $(SRC_DIR)/uGeneException.o $(SRC_DIR)/uRegion.o $(SRC_DIR)/uTags.o
