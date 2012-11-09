@@ -56,12 +56,6 @@ uninstall:
 	rm $(DESTDIR)/$(PROJECT_NAME)
 	rm -rf $(INCLUDE_DIR)
 
-samples: 
-	mkdir -p $(SAMPLE_DIR)/bin
-	$(GXX) -Wall -fexceptions -std=c++11 -pg -g -I $(SRC_DIR) -I $(SRC_DIR)/boost-include -c \
-	$(SAMPLE_DIR)/DTools/DTools.cpp -o $(SAMPLE_DIR)/DTools/DTools.o 
-	$(GXX) -o $(SAMPLE_DIR)/bin/DTools $(SAMPLE_DIR)/DTools/DTools.o $(PROJECT)
-
 .PHONY : clean
 clean: 
 	rm $(OBJPROJ) $(PROJECT)
