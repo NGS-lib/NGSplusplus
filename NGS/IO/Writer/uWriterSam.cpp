@@ -17,7 +17,7 @@ void uWriterSam::writeToken(const uToken& token) {
         std::string Tlen="0";
         std::string chr="*";
         std::string end_pos;
-        std::string PHREDQual;
+        std::string PHREDQual="*";
         std::string seq_name="*";
         std::string qual="0";
         std::string seq="*";
