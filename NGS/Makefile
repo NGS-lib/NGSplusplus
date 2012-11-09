@@ -54,8 +54,8 @@ install:
 	cp -r $(BOOST_DIR) $(INCLUDE_DIR)
 
 uninstall:
-	rm $(DESTDIR)/$(PROJECT_NAME)
-	rm $(INCLUDE_DIR)/../NGS++.h
+	rm -f $(DESTDIR)/$(PROJECT_NAME)
+	rm -f $(INCLUDE_DIR)/../NGS++.h
 	rm -rf $(INCLUDE_DIR)
 
 .PHONY : clean
