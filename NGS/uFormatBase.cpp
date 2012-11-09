@@ -3,7 +3,6 @@
 #include <vector>
 #include "uFormatBase.h"
 #include <cassert>
-#include "utility/utility.h"
 #include <limits>
 namespace NGS {
 /** \brief Increase size of the element. Coordinates can go no lower then 0,
