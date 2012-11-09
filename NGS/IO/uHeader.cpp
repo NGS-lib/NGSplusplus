@@ -166,7 +166,6 @@ void uHeader::_postProcessParam(const header_param& name, std::string& value) {
  */
 
 bool uHeader::_validateParam(header_param name, const std::string& value) {
-   // std::cout << "validating call" <<std::endl;
    if (validate_func_map.count(name))
         return validate_func_map[name](this,value);
     else

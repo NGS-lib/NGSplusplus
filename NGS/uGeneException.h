@@ -23,7 +23,6 @@ typedef boost::error_info<struct skip_regions,std::vector<uRegion>> skipped_regi
 struct ugene_exception_base : virtual std::exception, virtual boost::exception
 {};
 
-
 struct elem_throw : virtual ugene_exception_base{};
 struct skipped_elem_throw : virtual elem_throw{};
 struct construct_elem_throw : virtual elem_throw{};
