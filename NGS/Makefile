@@ -10,7 +10,7 @@ DESTDIR=/usr/lib
 INCLUDE_DIR=/usr/include/NGS
 SAMPLE_DIR=./sample-src
 OBJ_DIR=./obj
-PROJECT_NAME=libgeneClass.a
+PROJECT_NAME=libNGS.a
 PROJECT_DIR=../libs
 
 # Nothing should have to be changed after this.
