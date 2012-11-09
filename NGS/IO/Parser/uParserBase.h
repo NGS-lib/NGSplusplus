@@ -61,11 +61,8 @@ struct uParserBaseFactory {
     static std::shared_ptr<uParserBase> createInstance(std::string const& s) {
         parser_map_type::iterator it = getParserMap()->find(s);
 
-      //  std::cout << getParserMap()->size() <<std::endl;
-       //  parser_map_type::iterator temp= getParserMap()->begin();
-      //   std::cout << it->first <<std::endl;
         if(it == getParserMap()->end()){
-            throw uParser_exception_base()<<string_error("Asked for unregistered type, failling");
+            throw uParser_exception_base()<<string_error("Asked for unregistered type: "+s+" in Parser, failling");
         }
       //  std::cerr << "Returning" <<std::endl;
         return std::shared_ptr<uParserBase>(it->second());

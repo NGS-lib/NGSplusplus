@@ -4,7 +4,7 @@
 #include <iostream>
 #include <string>
 #include <stdexcept>
-#include "boost/exception/all.hpp"
+#include "boost-include/boost/exception/all.hpp"
 #include <vector>
 
 namespace NGS {
@@ -48,6 +48,7 @@ struct param_not_found : virtual invalid_uToken_throw{};
 
  /**< uParser Exceptions */
 struct uParser_exception_base : virtual ugene_exception_base{};
+struct uParser_invalid_type_instance : virtual uParser_exception_base{};
 struct uParser_invalid_header : virtual uParser_exception_base{};
 struct end_of_file_throw : virtual uParser_exception_base{};
 struct uParser_missing_mandatory_values : virtual uParser_exception_base{};
@@ -65,6 +66,7 @@ struct invalid_header_param_throw : virtual uParser_exception_base{};
 
 /**< uWrite exception */
 struct uWriter_exception_base : virtual ugene_exception_base{};
+struct uWriter_invalid_type_instance : virtual uWriter_exception_base{};
 struct no_fields_names : virtual uWriter_exception_base{};
 struct uWriter_missing_mandatory_header : virtual uWriter_exception_base{};
 // Util functions
