@@ -27,7 +27,6 @@ TEST_F(TestsBedWriter, WriteToken_SixValidValuesBed6) {
 	string expected = "chr1\t1\t21\tab00001\t111\t+\n";
 	ASSERT_TRUE(m_pOssBed6->str().find(expected) != string::npos);
 }
-
 TEST_F(TestsBedWriter, WriteToken_NoScoreValueBed6) {
 	string expected = "chr1\t1\t21\tab00001\t.\t+\n";
 	ASSERT_TRUE(m_pOssBed6->str().find(expected) != string::npos);
