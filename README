@@ -11,6 +11,8 @@ If you are running Ubuntu 12.04 or Linux Mint 13, the following will install gcc
 If you are not on either of these systems, it is quite likely you can find a repository with the binaries available with a minimal amount of search. Otherwise, instructions on how to build the latest gcc are available on the gcc website ( http://gcc.gnu.org/install/build.html )
 
 -----------------------
+Install:
+-----------------------
 
 To compile library:
 cd NGS
@@ -25,14 +27,27 @@ To install library (this will copy the library to /usr/lib and add headers in /u
 cd NGS
 make install
 
-To remove intermediate files (*.o) and library from current directory:
-cd NGS
-make clean
-
 To compile sample code:
 cd NGS
 make samples
 
+-----------------------
+Uninstall
+-----------------------
+
+If you wish to remove library and intermediate files (*.o) from current directory:
+cd ..
+make clean
+
 To uninstall library (this will remove the library from /usr/lib and remove headers from /usr/include):
 cd NGS
 make uninstall
+
+-----------------------
+Web pages
+-----------------------
+Main page:
+http://info.usherbrooke.ca/Prospectus/projets/ngs
+
+Wiki:
+https://github.com/NGS-lib/NGSplusplus/wiki
