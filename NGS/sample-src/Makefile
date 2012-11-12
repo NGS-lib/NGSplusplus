@@ -22,7 +22,7 @@ $(shell mkdir -p $(OBJ_DIR))
 
 all: ./DTools/DTools.cpp
 	$(GXX) -c $(CFLAGS) $(INCLUDES) -c -o $(OBJ_DIR)/DTools.o ./DTools/DTools.cpp
-	$(GXX) -o $(TARGET_DTOOLS) -l$(LIB_DIR)/NGS
+	$(GXX) -o $(TARGET_DTOOLS) -l$(LIB_DIR)/libNGS.a
 
 .PHONY : clean
 clean: 
