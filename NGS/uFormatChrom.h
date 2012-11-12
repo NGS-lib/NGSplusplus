@@ -378,7 +378,10 @@ public:
             {
                 this->m_isSorted=true;
                 sortGetStart=getStart_funct;
-                sortGetEnd= getEnd_funct;
+                if (getEnd_funct==nullptr)
+                      sortGetEnd=sortGetStart;
+                else
+                    sortGetEnd= getEnd_funct;
                 m_comptFunc=comp;
 
                 return std::sort(std::begin(VecSites), std::end(VecSites), comp);
