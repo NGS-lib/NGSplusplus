@@ -1,0 +1,13 @@
+Before building these code examples, make sur you have built the NGS++ library in its default folders.
+
+Code samples can be build, running 
+
+make
+
+If you need to specify the compiler, the syntax is 
+
+make GXX="g++-4.7"
+
+
+Executables will be in the /bin directory
+
