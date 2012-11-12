@@ -13,7 +13,7 @@ namespace NGS {
 /**< List of param is hard coded as strongly typed enum for extra safety. */
 /**< This list has to be updated for every new param */
 // TODO: Add param as they are needed. Remove TMP when there is one valid param, it's there to avoid compiling error.
-enum class header_param { CHR, CHR_SIZE };
+enum class header_param { CHR, CHR_SIZE,STEP_SIZE };
 
 /**< uHeader class, to keep track of information in header, formated or not */
 // TODO: Data validation?
@@ -55,7 +55,9 @@ public:
     static inline bool checkParam(const std::string& param) { //TODO
 
         return (param == "CHR"
-             || param == "CHR_SIZE" );
+             || param == "CHR_SIZE"
+             || param == "CHR_SIZE"
+              );
     }
 
 private:
@@ -73,9 +75,11 @@ private:
     bool _noValidate(const std::string& value)const {return true;};
     void _noPost(std::string) {};
 
-    /**< Sam file parameters */
+    /**< Chromosome header parameters */
     bool _validateChrSize(const std::string& sizeString)const;
     bool _validateChrList(const std::string& chrString)const;
+    /**< Wig */
+    bool _valideStepSize(const std::string& sizeString)const;
 }; // End of class Header
 
 
@@ -86,6 +90,7 @@ inline std::ostream & operator<<(std::ostream& Str, header_param name) {
     switch (name) {
     case header_param::CHR : return Str << "CHR";
     case header_param::CHR_SIZE : return Str << "CHR_SIZE";
+    case header_param::STEP_SIZE : return Str << "STEP_SIZE";
     default: return Str << (int) name;
     }
 }
@@ -94,6 +99,7 @@ inline std::ostream & operator<<(std::ostream& Str, header_param name) {
 inline std::string& operator<<(std::string& Str, header_param name) {
     switch (name) {
     case header_param::CHR : return Str+="CHR";
+    case header_param::STEP_SIZE : return Str+="STEP_SIZE";
     case header_param::CHR_SIZE : return Str+="CHR_SIZE";
     default: return Str;
     }
@@ -104,6 +110,7 @@ inline std::istream& operator>>(std::istream &is, header_param& name) {
     is >> header;
     if (header == "CHR") name = header_param::CHR;
     else if (header == "CHR_SIZE") name = header_param::CHR_SIZE;
+    else if (header == "STEP_SIZE") name = header_param::STEP_SIZE;
     else {
         invalid_header_param_throw e;
         e << string_error(header);

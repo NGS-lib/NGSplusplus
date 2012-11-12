@@ -229,6 +229,9 @@ void uToken::_postProcessParam(const token_param& name, const std::string& value
         break;
     case token_param::SCORE:
         break;
+    case token_param::DENSITY:
+        break;
+
     default:
         break;
     }
@@ -270,6 +273,8 @@ bool uToken::_validateParam(const token_param& name, const std::string& value) c
         return true;
     case token_param::SCORE:
          return _scoreIsValid(value);
+    case token_param::DENSITY:
+
 
     default:
         return false;

@@ -11,6 +11,7 @@ namespace NGS {
 class uRegion;
 class uTags;
 class uGenericNGS;
+class uToken;
 
 typedef boost::error_info<struct string_info,std::string> string_error;
 typedef boost::error_info<struct region_info,uRegion> region_error;
@@ -36,6 +37,8 @@ struct uExp_operation_throw : virtual uChrom_operation_throw{};
 
 
 
+/**< To pass a token*/
+typedef boost::error_info<struct token_info,uToken> token_error;
 /**< uToken Exceptions */
 struct uToken_exception_base : virtual ugene_exception_base{};
 struct invalid_uToken_throw : virtual uToken_exception_base{};
@@ -63,10 +66,13 @@ struct uParser_invalid_Sam_line : virtual uParser_invalid_line{};
 
 struct invalid_header_param_throw : virtual uParser_exception_base{};
 
+
+
 /**< uWrite exception */
 struct uWriter_exception_base : virtual ugene_exception_base{};
 struct uWriter_invalid_type_instance : virtual uWriter_exception_base{};
 struct no_fields_names : virtual uWriter_exception_base{};
+struct uWriter_missing_mandatory_param : virtual uWriter_exception_base{};
 struct uWriter_missing_mandatory_header : virtual uWriter_exception_base{};
 // Util functions
 static inline void addStringError(ugene_exception_base & e, const std::string & err){

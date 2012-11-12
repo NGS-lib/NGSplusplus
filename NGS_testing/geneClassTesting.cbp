@@ -19,11 +19,11 @@
 					<Add option="-g" />
 					<Add option="-lpthread" />
 					<Add option="-DDEBUG" />
-					<Add directory="../geneClass" />
+					<Add directory="../../class" />
 					<Add directory="../../geneTools/include/gtest" />
 					<Add directory="../../geneTools/include/gtest/include" />
 					<Add directory="../../geneTools/include/gtest/include/gtest/internal" />
-					<Add directory="../geneClass/boost-include" />
+					<Add directory="../NGS/boost-include" />
 					<Add directory="../../geneTools/include/gtest/include/gtest" />
 					<Add directory="../../geneTools/include/gnuplot-cpp" />
 				</Compiler>
@@ -40,17 +40,17 @@
 				<Option object_output="obj/Release/" />
 				<Option type="1" />
 				<Option compiler="gcc" />
-				<Option parameters="--gtest_filter=*SORTEXP*" />
+				<Option parameters="--gtest_filter=*" />
 				<Compiler>
 					<Add option="-O2" />
 					<Add option="-std=c++11" />
 					<Add option="-fopenmp" />
 					<Add option="-lpthread" />
-					<Add directory="../geneClass" />
+					<Add directory="../../class" />
 					<Add directory="../../geneTools/include/gtest" />
 					<Add directory="../../geneTools/include/gtest/include" />
 					<Add directory="../../geneTools/include/gtest/include/gtest/internal" />
-					<Add directory="../geneClass/boost-include" />
+					<Add directory="../NGS/boost-include" />
 					<Add directory="../../geneTools/include/gtest/include/gtest" />
 					<Add directory="../../geneTools/include/gnuplot-cpp" />
 				</Compiler>
@@ -78,6 +78,7 @@
 			<Add option="-static-libgcc" />
 			<Add option="-static-libstdc++" />
 		</Linker>
+		<Unit filename="../NGS++.h" />
 		<Unit filename="main.cpp" />
 		<Unit filename="uGeneric/test_uGeneric.cpp" />
 		<Unit filename="uGeneric/test_uGenericChrom.cpp" />

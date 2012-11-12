@@ -11,9 +11,12 @@ uHeader::uHeader()
     /**< Validate functions */
     validate_func_map[header_param::CHR]= &uHeader::_validateChrList;
     validate_func_map[header_param::CHR_SIZE]=&uHeader::_validateChrSize;
+    validate_func_map[header_param::STEP_SIZE]=&uHeader::_valideStepSize;
+
     /**< Post processing function */
     post_func_map[header_param::CHR]=&uHeader::_noPost;
     post_func_map[header_param::CHR_SIZE]=&uHeader::_noPost;
+
  }
 
 /** \brief Return a vector containing the list of the values for a given parameter.
@@ -58,6 +61,28 @@ std::string uHeader::getParam(header_param name) const
     }
 }
 
+
+bool uHeader::_valideStepSize(const std::string& sizeString) const
+{
+    try {
+        long long int value = std::stoll(sizeString);
+        /**< Chr size must be above 0 */
+        if (value <= 0)
+            return false;
+        return true;
+    }
+    catch(...){
+        return false;
+    }
+};
+
+
+/** \brief Returns true if a given reference size is larger then 0
+ *
+ * \param sizeString const std::string& Value to check, must be convertable to int
+ * \return bool
+ *
+ */
 bool uHeader::_validateChrSize(const std::string& sizeString) const
 {
     try {
@@ -75,7 +100,7 @@ bool uHeader::_validateChrSize(const std::string& sizeString) const
 
 bool uHeader::_validateChrList(const std::string& chrString)const
 {
-    /**< Make sur our name is unique */
+    /**< Make sure our name is unique */
     if (isParamSet(header_param::CHR))
     {
        auto listVector = getParamVector(header_param::CHR);
@@ -113,6 +138,7 @@ void uHeader::_setParam(const header_param& name, const std::string& value)
         throw invalid_header_param_throw()<<string_error(errMsg);
     }
     m_params[name].at(0) = value;
+//     _postProcessParam(name,value);
 }
 
 /** \brief Add a param to the vector of that param
@@ -130,6 +156,7 @@ void uHeader::_addToParam(const header_param& name, const std::string& value)
         throw invalid_header_param_throw()<<string_error(errMsg);
     }
     m_params[name].push_back(value);
+//    _postProcessParam(name,value);
 }
 
 
