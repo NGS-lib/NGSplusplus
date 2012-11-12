@@ -28,19 +28,17 @@ cd NGS
 make install
 
 To compile sample code:
-cd NGS
+cd sample-src 
 make samples
 
 -----------------------
 Uninstall
 -----------------------
 
-If you wish to remove library and intermediate files (*.o) from current directory:
-cd ..
+If you wish to remove library and intermediate files (*.o) from git directory, in NGSplusplus/NGS/ type:
 make clean
 
-To uninstall library (this will remove the library from /usr/lib and remove headers from /usr/include):
-cd NGS
+To uninstall library (this will remove the library from /usr/lib and remove headers from /usr/include), in NGSplusplus/NGS/ type:
 make uninstall
 
 -----------------------
