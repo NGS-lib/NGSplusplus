@@ -15,7 +15,7 @@ namespace NGS
 /**< This list has to be updated for every new param */
 enum class token_param
 {
-    CHR, START_POS, END_POS, STRAND, MAP_SCORE, PHRED_SCORE, CIGAR, SEQUENCE, SEQ_NAME, FLAGS ,SCORE
+    CHR, START_POS, END_POS, STRAND, MAP_SCORE, PHRED_SCORE, CIGAR, SEQUENCE, SEQ_NAME, FLAGS ,SCORE,DENSITY
 };
 
 
@@ -52,6 +52,7 @@ public:
                 || param == "SEQUENCE"
                 || param == "SEQ_NAME"
                 || param == "FLAGS"
+                || param == "DENSITY"
                 || param == "SCORE");
     }
 
@@ -125,6 +126,8 @@ inline std::ostream & operator<<(std::ostream& Str, token_param name)
         return Str << "FLAGS";
     case token_param::SCORE:
         return Str <<"SCORE";
+    case token_param::DENSITY:
+        return Str <<"DENSITY";
     default:
         return Str << (int) name;
     }
@@ -145,6 +148,7 @@ inline std::istream& operator>>(std::istream &is, token_param& name)
     else if (token == "SEQ_NAME") name = token_param::SEQ_NAME;
     else if (token == "FLAGS") name = token_param::FLAGS;
     else if (token == "SCORE") name = token_param::SCORE;
+    else if (token == "DENSITY") name = token_param::DENSITY;
     else
     {
         invalid_token_param_throw e;

@@ -707,7 +707,11 @@ void uGenericNGSExperiment<_CHROM_, _BASE_>::sortSites(Compare comp,std::functio
     try
     {
         sortGetStart=getStart_funct;
-        sortGetEnd= getEnd_funct;
+        if (getEnd_funct==nullptr)
+            sortGetEnd=sortGetStart;
+        else
+            sortGetEnd= getEnd_funct;
+
         m_comptFunc=comp;
         /**< AS there are two SorSites functions, we must specify this rather clunky signature so it knows what overload to use */
         auto sortfunct=std::bind( (void(_CHROM_::*)(Compare,std::function<float(const _BASE_*)>,std::function<float(const _BASE_*)>))

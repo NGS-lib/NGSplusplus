@@ -11,12 +11,13 @@ public:
 	  */
 	uWriterWig() {}
 	void writeToken(const uToken& token);
-
+    void setValueType(const token_param type);
 private:
 	static DerivedRegister<uWriterWig> reg;
     bool chrValidate(const std::string& chr);
-    int span=0;
-
+    int m_span=0;
+    std::string m_chr="";
+    token_param m_scoreType=token_param::SCORE;
 
 }; // End of class uWriterBed4
 

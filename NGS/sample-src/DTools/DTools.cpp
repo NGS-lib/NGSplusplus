@@ -5,7 +5,7 @@
 #include <vector>
 #include <cmath>
 #include <functional>
-#include "uTags.h"
+#include "NGS++.h"
 
 using namespace std;
 using namespace NGS;
@@ -29,11 +29,8 @@ void writeDensityFromFile(const uTagsChrom& tagChrom, std::ostream& out);
 int main(int argc, char* argv[])
 {
    string firstArg="";
-    if (argc>1)
-        firstArg=argv[1];
 
-    if (firstArg=="densityFromSam")
-        densityFromFile(argc, argv);
+    densityFromFile(argc, argv);
 
     return 0;
 }

@@ -1,3 +1,19 @@
+The main goals of NGS++ is one of data manipulation and interface transparency. We aim to make it as easy as possible to manipulate NGS datasets via an intuitive format parsing and writing interface and a transparent internal format that allows the user to easily define there own functions. We specifically do not offer an exhaustive toolbox of analysis tools, focusing instead on offering a robust, intuitive interface that allows to developer to easily define his own functions as needed.
+
+Before building the library, it is necessary to have available a C++ compiler that supports the C++11 standard. While several options are available, we suggest using GCC 4.7.0 and the following section includes instructions on how to obtain it on certain distributions.
+  
+If you are running Ubuntu 12.04 or Linux Mint 13, the following will install gcc 4.7
+
+    sudo add-apt-repository ppa:ubuntu-toolchain-r/test 
+    sudo apt-get update
+    sudo apt-get install gcc-4.7 g++-4.7
+
+If you are not on either of these systems, it is quite likely you can find a repository with the binaries available with a minimal amount of search. Otherwise, instructions on how to build the latest gcc are available on the gcc website ( http://gcc.gnu.org/install/build.html )
+
+-----------------------
+Install:
+-----------------------
+
 To compile library:
 cd NGS
 make
@@ -11,14 +27,25 @@ To install library (this will copy the library to /usr/lib and add headers in /u
 cd NGS
 make install
 
-To remove intermediate files (*.o) and library from current directory:
-cd NGS
-make clean
-
 To compile sample code:
-cd NGS
+cd sample-src 
 make samples
 
-To uninstall library (this will remove the library from /usr/lib and remove headers from /usr/include):
-cd NGS
+-----------------------
+Uninstall
+-----------------------
+
+If you wish to remove library and intermediate files (*.o) from git directory, in NGSplusplus/NGS/ type:
+make clean
+
+To uninstall library (this will remove the library from /usr/lib and remove headers from /usr/include), in NGSplusplus/NGS/ type:
 make uninstall
+
+-----------------------
+Web pages
+-----------------------
+Main page:
+http://info.usherbrooke.ca/Prospectus/projets/ngs
+
+Wiki:
+https://github.com/NGS-lib/NGSplusplus/wiki

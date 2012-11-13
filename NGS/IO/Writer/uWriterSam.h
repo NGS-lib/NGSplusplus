@@ -12,11 +12,11 @@ public:
 	  */
 	uWriterSam() {}
 	void writeToken(const uToken& token);
-
+    void writeHeader();
 private:
 	static DerivedRegister<uWriterSam> reg;
     bool chrValidate(const std::string& chr);
-
+    bool hasStarted=false;
 
 
 }; // End of class uWriterBed4

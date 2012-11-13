@@ -3,8 +3,36 @@
 
 namespace NGS {
 using namespace std;
+
+/** \brief Queries our header object and if the appropriate information is there, write the reference sizes
+ *  Also output a mostly meaningless @HQ h
+ * \return void
+ *
+ */
+void uWriterSam::writeHeader(){
+    const string TAB="\t";
+    const string SN="SN:";
+    const string SQ="LN:";
+    /**< Write Version number and sort guarantee */
+    *m_pOstream<<"@HD    VN:1.0  SO:unknown"<<std::endl;
+  if (m_headerData.isParamSet(header_param::CHR))
+    {
+        auto chrVector=m_headerData.getParamVector(header_param::CHR);
+        auto chrLenghts= m_headerData.getParamVector(header_param::CHR_SIZE);
+
+        /**< Write every header */
+        for (int i=0; i<chrVector.size();i++)
+            {
+                *m_pOstream<<"@SQ"<<TAB<<SN<<chrVector.at(i)<<TAB<<SQ<<chrLenghts.at(i)<<std::endl;
+
+            }
+    }
+    *m_pOstream;
+}
+
 /** \brief Print the values of a token in SAM format in current file
   * \param const uToken& token: the token to print.
+  * \brief Note, we allow an element to map outside of the reference, has there is some contradiction in how tools manage this.
   */
 void uWriterSam::writeToken(const uToken& token) {
 	try {
@@ -28,7 +56,7 @@ void uWriterSam::writeToken(const uToken& token) {
 			chr = token.getParam(token_param::CHR);
 		}
 		if(chrValidate(chr)==false)
-            throw uWriter_missing_mandatory_header()<<string_error("Sam entry has non-corresponding RNAME");
+            throw uWriter_missing_mandatory_header()<<string_error("Sam entry has no-corresponding RNAME");
 
         if (token.isParamSet(token_param::START_POS)) {
 			start_pos = token.getParam(token_param::START_POS);
@@ -66,6 +94,9 @@ void uWriterSam::writeToken(const uToken& token) {
 	}
 	catch(param_not_found& e) {
 		throw e;
+	}
+    catch(...) {
+		throw ;
 	}
 }
  /** \brief True if found in header list or no header list
