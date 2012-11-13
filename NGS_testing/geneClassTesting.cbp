@@ -40,7 +40,7 @@
 				<Option object_output="obj/Release/" />
 				<Option type="1" />
 				<Option compiler="gcc" />
-				<Option parameters="--gtest_filter=*" />
+				<Option parameters="--gtest_filter=*WriteValid*" />
 				<Compiler>
 					<Add option="-O2" />
 					<Add option="-std=c++11" />
@@ -96,6 +96,7 @@
 		<Unit filename="uWriter/tests_uWriterBed.cpp" />
 		<Unit filename="uWriter/tests_uWriterCustom.cpp" />
 		<Unit filename="uWriter/tests_uWriterSam.cpp" />
+		<Unit filename="uWriter/tests_uWriterWig.cpp" />
 		<Unit filename="utility/utilityTest.cpp" />
 		<Extensions>
 			<code_completion />
