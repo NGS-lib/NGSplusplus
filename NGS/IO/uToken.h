@@ -15,7 +15,7 @@ namespace NGS
 /**< This list has to be updated for every new param */
 enum class token_param
 {
-    CHR, START_POS, END_POS, STRAND, MAP_SCORE, PHRED_SCORE, CIGAR, SEQUENCE, SEQ_NAME, FLAGS ,SCORE,DENSITY
+    CHR, START_POS, END_POS, STRAND, MAP_SCORE, PHRED_SCORE, CIGAR, SEQUENCE, SEQ_NAME, FLAGS ,SCORE,DENSITY,FEATURE_NAME,SOURCE,PHASE,EXTRA
 };
 
 
@@ -53,7 +53,12 @@ public:
                 || param == "SEQ_NAME"
                 || param == "FLAGS"
                 || param == "DENSITY"
-                || param == "SCORE");
+                || param == "SCORE"
+                || param == "FEATURE_NAME"
+                || param == "SOURCE"
+                || param == "PHASE"
+                || param == "EXTRA"
+                );
     }
 
 private:
@@ -128,6 +133,16 @@ inline std::ostream & operator<<(std::ostream& Str, token_param name)
         return Str <<"SCORE";
     case token_param::DENSITY:
         return Str <<"DENSITY";
+    case token_param::FEATURE_NAME:
+        return Str <<"FEATURE_NAME";
+     case token_param::PHASE:
+        return Str <<"PHASE";
+     case token_param::SOURCE:
+        return Str <<"SOURCE";
+     case token_param::EXTRA:
+        return Str <<"EXTRA";
+
+
     default:
         return Str << (int) name;
     }
@@ -149,6 +164,10 @@ inline std::istream& operator>>(std::istream &is, token_param& name)
     else if (token == "FLAGS") name = token_param::FLAGS;
     else if (token == "SCORE") name = token_param::SCORE;
     else if (token == "DENSITY") name = token_param::DENSITY;
+    else if (token == "FEATURE_NAME") name = token_param::FEATURE_NAME;
+    else if (token == "PHASE") name = token_param::PHASE;
+    else if (token == "SOURCE") name = token_param::SOURCE;
+    else if (token == "EXTRA") name = token_param::SOURCE;
     else
     {
         invalid_token_param_throw e;

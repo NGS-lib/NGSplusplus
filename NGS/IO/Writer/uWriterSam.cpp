@@ -21,13 +21,13 @@ void uWriterSam::writeHeader(){
         auto chrLenghts= m_headerData.getParamVector(header_param::CHR_SIZE);
 
         /**< Write every header */
-        for (int i=0; i<chrVector.size();i++)
+        for (unsigned int i=0; i<chrVector.size();i++)
             {
                 *m_pOstream<<"@SQ"<<TAB<<SN<<chrVector.at(i)<<TAB<<SQ<<chrLenghts.at(i)<<std::endl;
 
             }
     }
-    *m_pOstream;
+
 }
 
 /** \brief Print the values of a token in SAM format in current file

@@ -274,7 +274,15 @@ bool uToken::_validateParam(const token_param& name, const std::string& value) c
     case token_param::SCORE:
          return _scoreIsValid(value);
     case token_param::DENSITY:
-
+        return true;
+    case token_param::SOURCE:
+        return true;
+    case token_param::PHASE:
+        return true;
+    case token_param::FEATURE_NAME:
+        return true;
+        case token_param::EXTRA:
+        return true;
 
     default:
         return false;
@@ -296,21 +304,16 @@ void uToken::_validateToken()
 
 void uToken::_checkMandatoryValues() const
 {
-    std::string str_chr = getParam(token_param::CHR);
     std::string str_start_pos = getParam(token_param::START_POS);
     std::string str_end_pos = getParam(token_param::END_POS);
-    if (str_chr.size() == 0 || str_start_pos.size() == 0 || str_end_pos.size() == 0)
+    if (str_start_pos.size() == 0 || str_end_pos.size() == 0)
     {
-        std::string error = "CHR, START_POS and END_POS are mandatory.\n";
-        error += "CHR: " + str_chr + "\n";
+        std::string error = " START_POS and END_POS are mandatory.\n";
         error += "START_POS: " + str_end_pos + "\n";
         error += "END_POS: " + str_start_pos + "\n";
         _throwInvalidToken(error);
     }
 }
-
-
-
 
 void uToken::_validateStartEnd() const
 {
@@ -574,6 +577,15 @@ bool uToken::_cigarIsValid(const std::string& value) const
 
 bool uToken::_scoreIsValid(const std::string& value) const
 {
+//TODO replace, do not use try catch as flow control tool
+    try {
+        float test=std::stof(value);
+        return true;
+    }
+    catch(...)
+    {
+    }
+
     return true;
 }
 

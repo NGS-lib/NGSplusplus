@@ -25,6 +25,7 @@ private:
     void _getTokenInfoFromGFFString(std::string line, std::stringstream& token_infos);
     static DerivedParserRegister<uParserGFF> reg;
     boost::xpressive::sregex GFFRegex;
+    const std::string GFFregString="(\\w+)\t(\\w+)\t(\\w+)\t(\\d+)\t(\\d+)\t([-+]?[0-9]*\\.?[0-9]+|.)\t(\\+|\\-|\\.)\t([012])(?:\t(.+))?";
 };
 
 } // End of namespace NGS

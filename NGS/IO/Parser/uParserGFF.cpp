@@ -28,7 +28,7 @@ void uParserGFF::init(const std::string& filename, bool header)
     m_delimiter = '\t';
 
     /**< GFF regex */
-    sregex GFFRegex = sregex::compile("(\\w+)\t(\\w+)\t(\\w+)\t(\\d+)\t(\\d+)\t([-+]?[0-9]*\\.?[0-9]+)\t(\\+|\\-|\\.)\t([012])(?:\t(.+))?") ;
+     sregex GFFRegex = sregex::compile(GFFregString) ;
 }
 
 /** \brief Initialize the uParserGFF object (set stream and parse header).
@@ -39,7 +39,7 @@ void uParserGFF::init(std::istream* stream, bool header)
 {
     uParserBase::init(stream, header);
     /**< GFF regex */
-    sregex GFFRegex = sregex::compile("(\\w+)\t(\\w+)\t(\\w+)\t(\\d+)\t(\\d+)\t([-+]?[0-9]*\\.?[0-9]+)\t(\\+|\\-|\\.)\t([012])(?:\t(.+))?") ;
+     sregex GFFRegex = sregex::compile(GFFregString) ;
 }
 
 /** \brief Produce a token with next entry in the file/stream.
@@ -85,26 +85,36 @@ void uParserGFF::_getTokenInfoFromGFFString(std::string line, std::stringstream&
     /**< So minor post-regex validation needed */
     /**< This would be more efficient with a static regex, but preserving Perl syntax makes it "easier" to read */
     smatch what;
+     boost::xpressive::sregex GFFRegex2=sregex::compile(GFFregString) ;
 
-    if( regex_match( line, what, GFFRegex ) )
+
+	//std::string test("SEQ1\tEMBL\tsplice5\t172\t173\t.\t+\t.");
+
+     sregex GFFRegex3 = sregex::compile("^([\\w_-]+)\t([\\w_-]+)\t([\\w_-]+)\t(\\d+)\t(\\d+)\t([-+]?[0-9]*\\.?[0-9]+|.)\t(\\+|\\-|\\.)\t([012\\.])(?:\t(.+))?") ;
+    if( regex_match( line, what, GFFRegex3 ) )
     {
         /**< Preset according to GFF2 format */
-        token_infos << "SEQ_NAME\t" << what[0] << "\n";
-        token_infos << "SOURCE\t" << what[1] << "\n";
-        token_infos << "FEATURE_NAME\t" << what[2] << "\n";
-        token_infos << "START_POS\t" << what[3] << "\n";
-        token_infos << "END_POS\t" <<  what[4] << "\n";
-        token_infos << "SCORE\t" << what[5] << "\n";
-        /**< GFF considered a '.' to mean no info or not relevant. We simply do not stock it */
+
+        /**< According to GFF specification, the first value is "SEQNAME". Howeverm, practical use for most people is using it as chrom.
+        /**< As such, the assignation of what[1] is subject to change */
+
+        token_infos << "SEQ_NAME\t" << what[1] << "\n";
+        token_infos << "SOURCE\t" << what[2] << "\n";
+        token_infos << "FEATURE_NAME\t" << what[3] << "\n";
+        token_infos << "START_POS\t" << what[4] << "\n";
+        token_infos << "END_POS\t" <<  what[5] << "\n";
         if ( what[6]!=".")
-            token_infos << "STRAND\t" << what[6] << "\n";
-
-        token_infos << "PHASE\t" << what[7] << "\n";
-        token_infos << "EXTRA\t" << what[8] << "\n";
+            token_infos << "SCORE\t" << what[6] << "\n";
+        /**< GFF considered a '.' to mean no info or not relevant. We simply do not stock it */
+        if ( what[7]!=".")
+            token_infos << "STRAND\t" << what[7] << "\n";
+        token_infos << "PHASE\t" << what[8] << "\n";
+        if (what[9].matched)
+            token_infos << "EXTRA\t" << what[9] << "\n";
     }
-    else
+    else{
         throw uParser_invalid_GFF_line()<<string_error("GFF line, failling validation. Line is:\n"+line);
-
+    }
 
 }
 
