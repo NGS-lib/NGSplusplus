@@ -280,10 +280,11 @@ bool uToken::_validateParam(const token_param& name, const std::string& value) c
     case token_param::PHASE:
         return true;
     case token_param::FEATURE_NAME:
-        return true;
+	return true;
         case token_param::EXTRA:
-        return true;
-
+	return true;
+	case token_param::TEMPLATE_LENGHT:
+		return true;
     default:
         return false;
     }
@@ -579,7 +580,7 @@ bool uToken::_scoreIsValid(const std::string& value) const
 {
 //TODO replace, do not use try catch as flow control tool
     try {
-        float test=std::stof(value);
+        std::stof(value);
         return true;
     }
     catch(...)

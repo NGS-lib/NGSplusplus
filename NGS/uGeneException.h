@@ -68,6 +68,10 @@ struct uParser_invalid_Sam_header : virtual uParser_invalid_header{};
 struct uParser_invalid_Sam_line : virtual uParser_invalid_line{};
 /**< GFF Parser exception */
 struct uParser_invalid_GFF_line : virtual uParser_invalid_line{};
+/**< GTF Parser exception */
+struct uParser_invalid_GTF_line : virtual uParser_invalid_line{};
+/**<  BedGraph exceptions*/
+struct uParser_invalid_BedGraph_line : virtual uParser_invalid_line{};
 
 /**< uHeader Exceptions */
 

@@ -18,14 +18,12 @@ public :
     virtual void init(const std::string& filename, bool header = false);
     virtual void init(std::istream* stream, bool header = false);
     uToken getNextEntry();
-protected:
-    char m_delimiter = '\t';
 
 private:
-    void _getTokenInfoFromGFFString(std::string line, std::stringstream& token_infos);
+    void _getTokenInfoFromGFFString(const std::string & line, std::stringstream& token_infos);
     static DerivedParserRegister<uParserGFF> reg;
     boost::xpressive::sregex GFFRegex;
-    const std::string GFFregString="(\\w+)\t(\\w+)\t(\\w+)\t(\\d+)\t(\\d+)\t([-+]?[0-9]*\\.?[0-9]+|.)\t(\\+|\\-|\\.)\t([012])(?:\t(.+))?";
+    const std::string GFFregString="^([\\w_-]+)\t([\\w_-]+)\t([\\w_-]+)\t(\\d+)\t(\\d+)\t([-+]?[0-9]*\\.?[0-9]+|.)\t(\\+|\\-|\\.)\t([012\\.])(?:\t(.+))?";
 };
 
 } // End of namespace NGS

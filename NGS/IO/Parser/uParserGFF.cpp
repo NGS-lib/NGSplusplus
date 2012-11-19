@@ -25,10 +25,8 @@ void uParserGFF::init(const std::string& filename, bool header)
 {
     uParserBase::init(filename, header);
 
-    m_delimiter = '\t';
-
     /**< GFF regex */
-     sregex GFFRegex = sregex::compile(GFFregString) ;
+     GFFRegex = sregex::compile(GFFregString) ;
 }
 
 /** \brief Initialize the uParserGFF object (set stream and parse header).
@@ -39,8 +37,11 @@ void uParserGFF::init(std::istream* stream, bool header)
 {
     uParserBase::init(stream, header);
     /**< GFF regex */
-     sregex GFFRegex = sregex::compile(GFFregString) ;
+     GFFRegex = sregex::compile(GFFregString) ;
 }
+
+
+
 
 /** \brief Produce a token with next entry in the file/stream.
  * \return uToken containing the infos of the next entry.
@@ -78,24 +79,15 @@ uToken uParserGFF::getNextEntry()
     abort();
 }
 
-void uParserGFF::_getTokenInfoFromGFFString(std::string line, std::stringstream& token_infos)
+void uParserGFF::_getTokenInfoFromGFFString(const std::string & line, std::stringstream& token_infos)
 {
-    /**< Matchin GFF 2 format, to following */
-    /**< string string string int int float +/-/. int  */
-    /**< So minor post-regex validation needed */
     /**< This would be more efficient with a static regex, but preserving Perl syntax makes it "easier" to read */
     smatch what;
-     boost::xpressive::sregex GFFRegex2=sregex::compile(GFFregString) ;
-
-
-	//std::string test("SEQ1\tEMBL\tsplice5\t172\t173\t.\t+\t.");
-
-     sregex GFFRegex3 = sregex::compile("^([\\w_-]+)\t([\\w_-]+)\t([\\w_-]+)\t(\\d+)\t(\\d+)\t([-+]?[0-9]*\\.?[0-9]+|.)\t(\\+|\\-|\\.)\t([012\\.])(?:\t(.+))?") ;
-    if( regex_match( line, what, GFFRegex3 ) )
+    if( regex_match( line, what, GFFRegex ) )
     {
         /**< Preset according to GFF2 format */
 
-        /**< According to GFF specification, the first value is "SEQNAME". Howeverm, practical use for most people is using it as chrom.
+        /**< According to GFF specification, the first value is "SEQNAME". Howeverm, practical use for most people is using it as chrom.  */
         /**< As such, the assignation of what[1] is subject to change */
 
         token_infos << "SEQ_NAME\t" << what[1] << "\n";
@@ -115,7 +107,6 @@ void uParserGFF::_getTokenInfoFromGFFString(std::string line, std::stringstream&
     else{
         throw uParser_invalid_GFF_line()<<string_error("GFF line, failling validation. Line is:\n"+line);
     }
-
 }
 
 

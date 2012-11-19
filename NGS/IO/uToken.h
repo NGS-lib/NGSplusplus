@@ -15,7 +15,7 @@ namespace NGS
 /**< This list has to be updated for every new param */
 enum class token_param
 {
-    CHR, START_POS, END_POS, STRAND, MAP_SCORE, PHRED_SCORE, CIGAR, SEQUENCE, SEQ_NAME, FLAGS ,SCORE,DENSITY,FEATURE_NAME,SOURCE,PHASE,EXTRA
+    CHR, START_POS, END_POS, STRAND, MAP_SCORE, PHRED_SCORE, CIGAR, SEQUENCE, SEQ_NAME, FLAGS ,SCORE,DENSITY,FEATURE_NAME,SOURCE,PHASE,EXTRA,TEMPLATE_LENGHT
 };
 
 
@@ -58,6 +58,7 @@ public:
                 || param == "SOURCE"
                 || param == "PHASE"
                 || param == "EXTRA"
+				|| param == "TEMPLATE_LENGHT"
                 );
     }
 
@@ -141,7 +142,8 @@ inline std::ostream & operator<<(std::ostream& Str, token_param name)
         return Str <<"SOURCE";
      case token_param::EXTRA:
         return Str <<"EXTRA";
-
+	case token_param::TEMPLATE_LENGHT:
+        return Str <<"TEMPLATE_LENGHT";
 
     default:
         return Str << (int) name;
@@ -167,7 +169,8 @@ inline std::istream& operator>>(std::istream &is, token_param& name)
     else if (token == "FEATURE_NAME") name = token_param::FEATURE_NAME;
     else if (token == "PHASE") name = token_param::PHASE;
     else if (token == "SOURCE") name = token_param::SOURCE;
-    else if (token == "EXTRA") name = token_param::SOURCE;
+    else if (token == "EXTRA") name = token_param::EXTRA;
+	else if (token == "TEMPLATE_LENGHT") name = token_param::TEMPLATE_LENGHT;
     else
     {
         invalid_token_param_throw e;
