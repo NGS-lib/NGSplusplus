@@ -1,7 +1,6 @@
 #include "uParserSam.h"
 #include "../utility/utility.h"
 #include <sstream>
-using namespace std;
 
 namespace NGS
 {
@@ -9,8 +8,13 @@ namespace NGS
 using namespace boost::xpressive;
 /** \brief Default empty constructor
  */
-uParserSam::uParserSam(): uParserBase()
+uParserSam::uParserSam()
+:s10(10)
+,s11(11)
+,s12(12)
+,uParserBase()
 {
+
 }
 
 /** \brief Default empty destructor
@@ -31,7 +35,7 @@ void uParserSam::init(const std::string& filename, bool header )
     uParserBase::init(filename, header);
     _parseHeader();
 
-    SAMRegex= sregex::compile(SamRegString) ;
+
 }
 
 /** \brief Called when created, reads from stream and parses Sam file header, loading mandatory info
@@ -45,7 +49,7 @@ void uParserSam::init(std::istream* stream, bool header )
 {
     uParserBase::init(stream, header);
     _parseHeader();
-    SAMRegex= sregex::compile(SamRegString) ;
+
 }
 
 /**< Old parsing code, preserved for now */
@@ -135,9 +139,9 @@ uToken uParserSam::getNextEntry()
 		//TODO Replace dynamic regex with static
         std::string strLine;
         std::getline(*m_pIostream, strLine);
-		smatch what;
 		std::stringstream token_infos;
-        if( regex_match( strLine, what, SAMRegex ) )
+		/**< For readibility sake, macro or split this up. */
+        if( regex_match( strLine, what, staticSam ) )
         {
             token_infos << "SEQ_NAME\t" << what[1] << "\n";
             token_infos << "FLAGS\t" <<  what[2] << "\n";
@@ -191,17 +195,17 @@ void uParserSam::_parseHeader()
         Infostream >>temp;
 
         /**< Header line */
-        if (temp.find("@HD")!=string::npos)
+        if (temp.find("@HD")!=std::string::npos)
         {
 
-            string data;
-            string format,sortType;
+            std::string data;
+            std::string format,sortType;
             bool VN=false, SORT=false;
             while (!Infostream.eof())
             {
                 Infostream >>data;
                 /**< Format Version */
-                if (data.find("VN:")!=string::npos)
+                if (data.find("VN:")!=std::string::npos)
                 {
                     if (VN)
                         throw uParser_invalid_Sam_header()<<string_error("Multiple VN tags in @HD line: \n"+lineString);
@@ -210,7 +214,7 @@ void uParserSam::_parseHeader()
                     format=data;
                 }
                 /**< Sorting order */
-                else if (data.find("SO:")!=string::npos)
+                else if (data.find("SO:")!=std::string::npos)
                 {
                     if (SORT)
                         throw uParser_invalid_Sam_header()<<string_error("Multiple SO tags in @HD line: \n"+lineString);
@@ -227,27 +231,27 @@ void uParserSam::_parseHeader()
 
 
         }
-        else if (temp.find("@RG")!=string::npos)
+        else if (temp.find("@RG")!=std::string::npos)
         {
 
         }
-        else if (temp.find("@PG")!=string::npos)
+        else if (temp.find("@PG")!=std::string::npos)
         {
 
         }
         /**< Reference sequence dictionnary line */
-        else if (temp.find("@SQ")!=string::npos)
+        else if (temp.find("@SQ")!=std::string::npos)
         {
-            string data;
-            string chrom;
-            string REF,AssID,MD5,Species,URI;
+            std::string data;
+            std::string chrom;
+            std::string REF,AssID,MD5,Species,URI;
             long long int refSeqlenght;
             bool SN=false, LN=false, AS=false, M5=false, SP=false, UR=false;
             while (!(Infostream.eof()))
             {
                 Infostream >> data;
                 /**< Reference sequence name */
-                if (data.find("SN:")!=string::npos)
+                if (data.find("SN:")!=std::string::npos)
                 {
                     if (SN)
                         throw uParser_invalid_Sam_header()<<string_error("Multiple SN tag in @SQ header, failling: \n"+lineString);
@@ -256,7 +260,7 @@ void uParserSam::_parseHeader()
                     chrom=data;
                 }
                 /**< Reference sequence lenght */
-                else if (data.find("LN:")!=string::npos)
+                else if (data.find("LN:")!=std::string::npos)
                 {
                     if (LN)
                         throw uParser_invalid_Sam_header()<<string_error("Multiple LN tag in @SQ header, failling: \n"+lineString);
@@ -264,7 +268,7 @@ void uParserSam::_parseHeader()
                     data.erase(0,3);
                     refSeqlenght=std::stoll(data);
                 }
-                else if (data.find("AS:")!=string::npos)
+                else if (data.find("AS:")!=std::string::npos)
                 {
                     if (AS)
                         throw uParser_invalid_Sam_header()<<string_error("Multiple AS tag in @SQ header, failling: \n"+lineString);
@@ -272,7 +276,7 @@ void uParserSam::_parseHeader()
                     data.erase(0,3);
                     AssID=data;
                 }
-                else if (data.find("M5:")!=string::npos)
+                else if (data.find("M5:")!=std::string::npos)
                 {
                     if (M5)
                         throw uParser_invalid_Sam_header()<<string_error("Multiple M5 tag in @SQ header, failling: \n"+lineString);
@@ -280,7 +284,7 @@ void uParserSam::_parseHeader()
                     data.erase(0,3);
                     MD5=data;
                 }
-                else if (data.find("SP:")!=string::npos)
+                else if (data.find("SP:")!=std::string::npos)
                 {
                     if (SP)
                         throw uParser_invalid_Sam_header()<<string_error("Multiple SP tag in @SQ header, failling: \n"+lineString);
@@ -288,7 +292,7 @@ void uParserSam::_parseHeader()
                     data.erase(0,3);
                     Species=data;
                 }
-                else if (data.find("UR:")!=string::npos)
+                else if (data.find("UR:")!=std::string::npos)
                 {
                     if (UR)
                         throw uParser_invalid_Sam_header()<<string_error("Multiple UR tag in @SQ header, failling: \n"+lineString);
@@ -312,7 +316,6 @@ void uParserSam::_parseHeader()
     }
 
 }
-
 DerivedParserRegister<uParserSam> uParserSam::reg("SAM");
 
 }
