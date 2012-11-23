@@ -12,7 +12,7 @@
 				<Option object_output="obj/Debug/" />
 				<Option type="1" />
 				<Option compiler="gcc" />
-				<Option parameters="--gtest_filter=*" />
+				<Option parameters="--gtest_filter=*Correctly*" />
 				<Compiler>
 					<Add option="-std=c++11" />
 					<Add option="-pg" />
@@ -40,7 +40,7 @@
 				<Option object_output="obj/Release/" />
 				<Option type="1" />
 				<Option compiler="gcc" />
-				<Option parameters="--gtest_filter=*WriteValid*" />
+				<Option parameters="--gtest_filter=*Correct*" />
 				<Compiler>
 					<Add option="-O2" />
 					<Add option="-std=c++11" />
@@ -87,6 +87,7 @@
 		<Unit filename="uParser/test_uParser.cpp" />
 		<Unit filename="uParser/test_uParserBed.cpp" />
 		<Unit filename="uParser/test_uParserCustom.cpp" />
+		<Unit filename="uParser/test_uParserGFF.cpp" />
 		<Unit filename="uParser/test_uParserSam.cpp" />
 		<Unit filename="uParser/test_uParserWig.cpp" />
 		<Unit filename="uTags/uTagTests.cpp" />
@@ -95,6 +96,7 @@
 		<Unit filename="uWriter/tests_uWriter.cpp" />
 		<Unit filename="uWriter/tests_uWriterBed.cpp" />
 		<Unit filename="uWriter/tests_uWriterCustom.cpp" />
+		<Unit filename="uWriter/tests_uWriterGFF.cpp" />
 		<Unit filename="uWriter/tests_uWriterSam.cpp" />
 		<Unit filename="uWriter/tests_uWriterWig.cpp" />
 		<Unit filename="utility/utilityTest.cpp" />

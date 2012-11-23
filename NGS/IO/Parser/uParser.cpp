@@ -17,7 +17,6 @@ uParser::uParser(const std::string& filename, const std::string & type, bool hea
     {
         m_pParserBase=myFact.createInstance(type);
         m_pParserBase->init(filename, header);
-
     }
     catch(...)
     {

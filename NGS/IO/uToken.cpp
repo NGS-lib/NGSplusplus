@@ -2,12 +2,18 @@
 #include "../utility/utility.h"
 namespace NGS {
 
+
+uToken::uToken()
+{
+}
+
+
 /** \brief uToken constructor.
  * \param istream& paramList: a stream containing all the parameters in the format: <token_param>\t<value>\n<token_param>\t<value>\n...
  * \exception invalid_value_throw when using a valid token param, but with an incorrect value (i.e.: a negative value for END_POS)
  * \exception invalid_uToken_throw when the token is in an invalid state, even if all the value are valid by themselves (i.e.: START_POS > END_POS)
  */
-uToken::uToken(std::istream& paramList, bool customValues)
+uToken::uToken(std::istream& paramList, bool customValues, bool validate)
 {
     m_customValues = customValues;
     char line[1024];
@@ -40,13 +46,17 @@ uToken::uToken(std::istream& paramList, bool customValues)
         /**< Fetch value */
         if (custom == false)
         {
-            try
-            {
-                _setParam(name, value);
-            }
-            catch (invalid_value_throw& e)
-            {
-                throw e;
+        	if (validate==false)
+        		_setParamNoValidate(name,value);
+        	else {
+				try
+				{
+					_setParam(name, value);
+				}
+				catch (invalid_value_throw& e)
+				{
+					throw e;
+				}
             }
         }
         else
@@ -61,7 +71,8 @@ uToken::uToken(std::istream& paramList, bool customValues)
     /**< Check if uToken is in a valid state  */
     try
     {
-        _validateToken();
+    	if (validate)
+       	 _validateToken();
     }
     catch (invalid_uToken_throw& e)
     {
@@ -104,6 +115,7 @@ std::string uToken::getParam(token_param name) const
  */
 std::string uToken::getParam(const std::string& name) const
 {
+
     try
     {
         token_param tokenName = _convertStringToTokenParam(name);
@@ -131,6 +143,12 @@ std::string uToken::getParam(const std::string& name) const
         addStringError(e, error);
         throw e;
     }
+}
+
+void uToken::_setParamNoValidate(const token_param& name, const std::string& value)
+{
+	m_params[name] = value;
+	 _postProcessParam(name, value);
 }
 
 /** \brief Set a param only if it's format is valid

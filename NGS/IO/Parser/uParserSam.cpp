@@ -139,20 +139,30 @@ uToken uParserSam::getNextEntry()
 		//TODO Replace dynamic regex with static
         std::string strLine;
         std::getline(*m_pIostream, strLine);
-		std::stringstream token_infos;
+		//std::stringstream token_infos;
 		/**< For readibility sake, macro or split this up. */
+		uToken ourToken;
         if( regex_match( strLine, what, staticSam ) )
         {
-            token_infos << "SEQ_NAME\t" << what[1] << "\n";
-            token_infos << "FLAGS\t" <<  what[2] << "\n";
-            token_infos << "CHR\t" << what[3] << "\n";
-			token_infos << "START_POS\t" << what[4] << "\n";
-			token_infos << "MAP_SCORE\t" << what[5] << "\n";
-			token_infos << "CIGAR\t" << what[6] << "\n";
-			token_infos << "TEMPLATE_LENGHT\t" << what[9] << "\n";
+			ourToken._setParamNoValidate(token_param::SEQ_NAME, what[1]);
+			ourToken._setParamNoValidate(token_param::FLAGS, what[2]);
+			ourToken._setParamNoValidate(token_param::CHR, what[3]);
+			ourToken._setParamNoValidate(token_param::START_POS, what[4]);
+			ourToken._setParamNoValidate(token_param::MAP_SCORE, what[5]);
+			ourToken._setParamNoValidate(token_param::CIGAR, what[6]);
+			ourToken._setParamNoValidate(token_param::TEMPLATE_LENGHT, what[9]);
+			ourToken._setParamNoValidate(token_param::SEQUENCE, what[10]);
+			ourToken._setParamNoValidate(token_param::PHRED_SCORE, what[11]);
+       //     token_infos << "SEQ_NAME\t" << what[1] << "\n";
+       //     token_infos << "FLAGS\t" <<  what[2] << "\n";
+       //     token_infos << "CHR\t" << what[3] << "\n";
+		//	token_infos << "START_POS\t" << what[4] << "\n";
+		//	token_infos << "MAP_SCORE\t" << what[5] << "\n";
+		//	token_infos << "CIGAR\t" << what[6] << "\n";
+		//	token_infos << "TEMPLATE_LENGHT\t" << what[9] << "\n";
 			/**< Skip RNEXT and PNEXT and Template Lenght */
-            token_infos << "SEQUENCE\t" << what[10] << "\n";
-          	token_infos << "PHRED_SCORE\t" << what[11] << "\n";
+      //      token_infos << "SEQUENCE\t" << what[10] << "\n";
+      //    	token_infos << "PHRED_SCORE\t" << what[11] << "\n";
         }
         else
         {
@@ -161,9 +171,10 @@ uToken uParserSam::getNextEntry()
         std::string strand="+";
         if (utility::querySamFlag(std::stoi(what[2]),SamQuery::SEQ_REV_STRAND))
             strand="-";
-		token_infos << "STRAND\t" << strand << "\n";
-
-		return uToken(token_infos);
+		ourToken._setParamNoValidate(token_param::STRAND, strand);
+		//token_infos << "STRAND\t" << strand << "\n";
+		return ourToken;
+		//return uToken(token_infos,false,false);
         }
 catch(invalid_uToken_throw& e)
 {

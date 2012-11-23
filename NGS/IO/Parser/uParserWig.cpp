@@ -1,5 +1,5 @@
 #include "uParserWig.h"
-
+#include "../../utility/utility.h"
 namespace NGS
 {
 
@@ -22,16 +22,23 @@ void uParserWig::init(const std::string& filename, bool header )
     else
     {
         m_pIostream = ifs;
-	m_dynamicStream = true;
-         char line[4096];
-    if (m_pIostream->getline(line, 4096))
+		m_dynamicStream = true;
+        std::string line;
+    if (std::getline(*m_pIostream,line))
     {
-        std::stringstream ss;
-        ss << line;
+		utility::GetTokens(m_tokens,line);
+        std::string cur_token=m_tokens.at(0);
 
-        std::string cur_token;
-        ss>>cur_token;
-
+		/**< Track line, get next one, then fail if not valid */
+		if(cur_token=="track"){
+			if (std::getline(*m_pIostream,line))
+				{
+					utility::GetTokens(m_tokens,line);
+					cur_token=m_tokens.at(0);
+				}
+			else
+				throw uParser_missing_mandatory_header()<<string_error("Missing header in wiggle file \n");
+		}
         if((cur_token=="variableStep")||(cur_token=="fixedStep"))
         {
             if (m_pIostream->eof())
@@ -39,11 +46,11 @@ void uParserWig::init(const std::string& filename, bool header )
            try {
             if (cur_token=="variableStep")
             {
-                _processVariabledWigLine(ss);
+                _processVariabledWigLine(m_tokens);
             }
             else
             {
-                _processFixedWigLine(ss);
+                _processFixedWigLine(m_tokens);
             }
             }
             catch(uParser_missing_mandatory_values &e){
@@ -51,24 +58,35 @@ void uParserWig::init(const std::string& filename, bool header )
             }
         }
         else
-            throw uParser_missing_mandatory_header()<<string_error("Missing header in wiggle file \n");
+			throw uParser_missing_mandatory_header()<<string_error("Missing header in wiggle file \n");
 
         }
     }
 
 }
-void uParserWig::init(std::iostream* stream, bool header )
+void uParserWig::init(std::istream* stream, bool header )
 {
     m_pIostream = stream;
     m_dynamicStream = false;
-      char line[4096];
-    if (m_pIostream->getline(line, 4096))
+     std::string line;
+    if (std::getline(*m_pIostream,line))
     {
-        std::stringstream ss;
-        ss << line;
+     //  std::stringstream ss;
+//        ss << line;
 
-        std::string cur_token;
-        ss>>cur_token;
+     //   ss>>cur_token;
+		utility::GetTokens(m_tokens,line);
+        std::string cur_token=m_tokens.at(0);
+
+		if(cur_token=="track"){
+			if (std::getline(*m_pIostream,line))
+				{
+					utility::GetTokens(m_tokens,line);
+					cur_token=m_tokens.at(0);
+				}
+			else
+				throw uParser_missing_mandatory_header()<<string_error("Missing header in wiggle file \n");
+		}
 
         if((cur_token=="variableStep")||(cur_token=="fixedStep"))
         {
@@ -77,11 +95,11 @@ void uParserWig::init(std::iostream* stream, bool header )
            try {
             if (cur_token=="variableStep")
             {
-                _processVariabledWigLine(ss);
+                _processVariabledWigLine(m_tokens);
             }
             else
             {
-                _processFixedWigLine(ss);
+                _processFixedWigLine(m_tokens);
             }
             }
             catch(uParser_missing_mandatory_values &e){
@@ -93,7 +111,6 @@ void uParserWig::init(std::iostream* stream, bool header )
 
         }
 }
-
 
 uToken uParserWig::getNextEntry()
 {
@@ -102,26 +119,27 @@ uToken uParserWig::getNextEntry()
         {
             while(foundToken==false)
             {
-                char line[4096];
-                if (m_pIostream->getline(line, 4096))
+               // char line[4096];
+                std::string line;
+                if (std::getline(*m_pIostream,line))
                 {
-                    std::stringstream ss;
-                    ss << line;
+                   // std::stringstream ss;
+                  //  ss << line;
+                 //   std::string cur_token;
+                  //  ss>>cur_token;
+                    utility::GetTokens(m_tokens,line);
 
-                    std::string cur_token;
-                    ss>>cur_token;
-
-                    if((cur_token=="variableStep")||(cur_token=="fixedStep"))
+                    if((m_tokens.at(0)=="variableStep")||(m_tokens.at(0)=="fixedStep"))
                     {
                         if (m_pIostream->eof())
                             throw end_of_file_throw()<<string_error("Badly formed wig file, track definition line with no entries following \n");
-                        if (cur_token=="variableStep")
+                        if (m_tokens.at(0)=="variableStep")
                         {
-                            _processVariabledWigLine(ss);
+                            _processVariabledWigLine(m_tokens);
                         }
                         else
                         {
-                            _processFixedWigLine(ss);
+                            _processFixedWigLine(m_tokens);
                         }
                         //Process next line
                     }
@@ -131,6 +149,7 @@ uToken uParserWig::getNextEntry()
                         int end_pos;
                         int start_pos =0;
                         float score=0.0f;
+                        int scorePos=0;
                       //  std::cerr << "Getting info " <<std::endl;
                         switch (m_Info.getStepType())
                         {
@@ -138,31 +157,41 @@ uToken uParserWig::getNextEntry()
                             throw uParser_missing_mandatory_values()<<string_error("No declaraction line in Wig, error parsing \n");
                             break;
                         case  wigInformation::stepType::FIXED:
-                            if (!ss.eof())
+                            //if (!ss.eof())
+                            if(m_tokens.size()>1)
                                 throw uParser_invalid_line()<<string_error("Invalid line in file \n");
 
                             start_pos=m_Info.getCurPos();
-                            score=stof(cur_token);
+                            scorePos=0;
+                            score=stof(m_tokens.at(scorePos));
                             end_pos= start_pos+m_Info.getSpan();
                             m_Info.setCurPos(start_pos+m_Info.getStep());
                             break;
                         case   wigInformation::stepType::VARIABLE:
-                            start_pos=stoi(cur_token);
-                            ss >> cur_token;
-                            score=stof(cur_token);
+                            start_pos=stoi(m_tokens.at(0));
+                            //ss >> cur_token;
+							scorePos=1;
+                            score=stof(m_tokens.at(scorePos));
                             end_pos= start_pos+m_Info.getSpan();
-                            if (!ss.eof())
+                            //if (!ss.eof())
+                            if(m_tokens.size()>2)
                                 throw uParser_invalid_line()<<string_error("Invalid line in file \n");
 
                             break;
                         }
-                        std::stringstream token_infos;
-                        token_infos << "CHR\t" << m_Info.getChrom() << "\n";
-                        token_infos << "START_POS\t" << start_pos << "\n";
-                        token_infos << "END_POS\t" << end_pos << "\n";
-                        token_infos << "SCORE\t" << score << "\n";
+                    //    std::stringstream token_infos;
+                        uToken ourToken;
+                        ourToken._setParamNoValidate(token_param::CHR,m_Info.getChrom());
+						ourToken._setParamNoValidate(token_param::START_POS,std::to_string(start_pos));
+						ourToken._setParamNoValidate(token_param::END_POS,std::to_string(end_pos));
+						ourToken._setParamNoValidate(token_param::SCORE,m_tokens.at(scorePos));
+//                        token_infos << "CHR\t" << m_Info.getChrom() << "\n";
+//                        token_infos << "START_POS\t" << start_pos << "\n";
+//                        token_infos << "END_POS\t" << end_pos << "\n";
+//                        token_infos << "SCORE\t" << score << "\n";
                         foundToken=true;
-                        return uToken(token_infos);
+                       // return uToken(token_infos, false,false);
+                        return ourToken;
                     }
                 }
                 else
@@ -198,7 +227,7 @@ uToken uParserWig::getNextEntry()
 /** \brief Private function to process a Fixed track definition line in a wig file. Sets m_Info details
  * \return
  */
-void uParserWig::_processFixedWigLine(std::stringstream & curSStream)
+void uParserWig::_processFixedWigLine(std::vector<std::string> & curSStream)
 {
     const std::string SPANSYMBOL="span=";
     const std::string STEPSYMBOL="step=";
@@ -208,12 +237,12 @@ void uParserWig::_processFixedWigLine(std::stringstream & curSStream)
     std::string chrom, strstart, strsspan;
     int curStart;
     /**< Chrom */
-    curSStream >> chrom;
+     chrom=curSStream.at(1);
     if (chrom.find(CHROMSYMBOL)==std::string::npos)
         throw uParser_missing_mandatory_values()<<string_error("Missing chrom value in wig track definition");
     chrom=chrom.substr(chrom.find(CHROMSYMBOL)+CHROMSYMBOL.size());
     /**< Start */
-    curSStream>>strstart;
+    strstart=curSStream.at(2);
     if (strstart.find(STARTSYMBOL)==std::string::npos)
         throw uParser_missing_mandatory_values()<<string_error("Missing start value in wig track definition");;
 
@@ -221,22 +250,23 @@ void uParserWig::_processFixedWigLine(std::stringstream & curSStream)
     curStart=stoi(strstart);
     /**< Step */
     std::string step;
-    curSStream >>step;
+    if ( curSStream.size()>3)
+    	step = curSStream.at(3);
     //Format definition is not sure if step is mandatory, so we will pretend it is not...
     int curStep=1;
     if (step.size())
     {
         if (step.find(STEPSYMBOL)==std::string::npos)
-            throw  uParser_missing_mandatory_values()<<string_error("Missing step value in wig track definition");;;
+            throw  uParser_missing_mandatory_values()<<string_error("Missing step value in wig track definition");
 
         step=step.substr(step.find(STEPSYMBOL)+STEPSYMBOL.size());
-
         curStep=stoi(step);
     }
     /**< Optional Span parameter */
     int curSpan=1;
     std::string span;
-    curSStream>>span;
+    if ( curSStream.size()>4)
+    	span = curSStream.at(4);
     if(span.size())
     {
         /**< If not, fail again*/
@@ -258,7 +288,7 @@ void uParserWig::_processFixedWigLine(std::stringstream & curSStream)
     m_Info.setCurPos(curStart);
 }
 
-void uParserWig::_processVariabledWigLine(std::stringstream & curSStream)
+void uParserWig::_processVariabledWigLine(std::vector<std::string> & curSStream)
 {
     const std::string SPANSYMBOL="span=";
     const std::string CHROMSYMBOL="chrom=";
@@ -267,14 +297,14 @@ void uParserWig::_processVariabledWigLine(std::stringstream & curSStream)
     std::string span;
     int curSpan=0;
     /**< Chrom tag */
-    curSStream>> chrom;
+	chrom=curSStream.at(1);
     /**< If invalid chrom header */
     if (!(chrom.size())||((chrom.find(CHROMSYMBOL)==std::string::npos)))
         throw uParser_missing_mandatory_values()<<string_error("invalid Track definition line in wig file, failling \n");
     chrom=chrom.substr(chrom.find(CHROMSYMBOL)+CHROMSYMBOL.size());
     /**< Optional Span parameter */
     curSpan=1;
-    curSStream >> span;
+    span=curSStream.at(2);
     if(span.size())
     {
         /**< If good, yay, if not, fail again*/
@@ -290,6 +320,7 @@ void uParserWig::_processVariabledWigLine(std::stringstream & curSStream)
     m_Info.setChrom(chrom);
     m_Info.setSpan(curSpan);
 }
+
 
 DerivedParserRegister<uParserWig> uParserWig::reg("WIG");
 

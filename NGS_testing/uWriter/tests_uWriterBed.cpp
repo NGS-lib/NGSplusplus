@@ -6,7 +6,6 @@
 
 using namespace std;
 using namespace NGS;
-
 /*
  * Tests for the function:
  *		void writeToken(const uToken& token);
@@ -20,6 +19,7 @@ using namespace NGS;
  */
 TEST_F(TestsBedWriter, WriteToken_FourValidValuesBed4) {
 	string expected = "chr1\t1\t21\tab00001\n";
+	//cout << m_pOssBed4->str();
 	ASSERT_TRUE(m_pOssBed4->str().find(expected) != string::npos);
 }
 

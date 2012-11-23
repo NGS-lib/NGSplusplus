@@ -368,7 +368,7 @@ public:
     }
 
 
-    /** \brief Transform site of the EXP by applying a certain function
+    /** \brief Transform the sites of the EXP by applying a certain function
       *
       * This function take a pointer to a function to transform;
       * this function pointer can either be a) the name of a function
@@ -400,6 +400,65 @@ public:
         });
         return f;
     }
+
+
+/** \brief load data from Parser, convert to unitary and execute the given function. Does -not- necessarily add to EXP
+ *
+ * \param stream std::ifstream& file to load from
+ * \return void
+ *
+ */
+template<class UnaryFunction>
+void loadWithParserAndRun(std::ifstream& pStream, std::string pType, UnaryFunction f , int pBlockSize=0)
+{
+    try {
+    std::istream& refStream = pStream;
+    uParser Curparser(&refStream, pType);
+
+    while(!Curparser.eof()){
+        int curLoaded=0;
+        std::vector<uToken> loadedTokens;
+            /**< Load a block of data */
+            while ((curLoaded<pBlockSize)&&(!Curparser.eof()))
+            {
+                loadedTokens.push_back(Curparser.getNextEntry());
+            }
+            /**< Operate */
+            for(const uToken & curToken:loadedTokens)
+            {
+                f( (_BASE_)(curToken) );
+            }
+        }
+    }
+    catch(...)
+    { throw; }
+}
+
+template<class UnaryFunction>
+ void loadWithParserAndRun(std::string filepath, std::string pType, UnaryFunction f  ,int pBlockSize=0)
+{
+    try {
+    uParser Curparser(filepath, pType);
+    while(!Curparser.eof()){
+        int curLoaded=0;
+        std::vector<uToken> loadedTokens;
+            /**< Load a block of data */
+            while ((curLoaded<pBlockSize)&&(!Curparser.eof()))
+            {
+                loadedTokens.push_back(Curparser.getNextEntry());
+            }
+            /**< Operate */
+            for(const uToken & curToken:loadedTokens)
+            {
+                f( (_BASE_)(curToken) );
+            }
+        }
+    }
+    catch(...)
+    { throw; }
+}
+
+
 
     /** \brief Count the chromosomes for which a certain predicate is true
       *
@@ -595,23 +654,16 @@ template<typename _CHROM_, typename _BASE_>
     }
     catch(...)
     { throw; }
+    inferChrSize();
 }
 
 template<typename _CHROM_, typename _BASE_>
 void uGenericNGSExperiment<_CHROM_, _BASE_>::loadWithParser(std::string filepath, std::string pType)
 {
     uParser ourParser(filepath, pType);
-   // auto chrList=ourParser.getHeaderParamVector(header_param::CHR);
-   // auto chrSizes=ourParser.getHeaderParamVector(header_param::CHR_SIZE);
 try {
-//        std::cerr << "name and size are :" <<chrList.at(i) <<" "<<chrSizes.at(i)<<std::endl;
-   // for (int i=0; i<(int)chrList.size();i++){
-   //     this->setChromSize(chrList.at(i), std::stoi(chrSizes.at(i)));
-   // }
-
-    while (ourParser.eof()==false){
-        auto Token =ourParser.getNextEntry();
-        this->addSite((Token));
+        while (ourParser.eof()==false){
+            this->addSite((ourParser.getNextEntry()));
     }
 }
 catch (...)
@@ -619,8 +671,9 @@ catch (...)
         throw;
     }
     inferChrSize();
-
 }
+
+
 
 
 /** \brief Write our data as a legal bed file, filling only the first three columns

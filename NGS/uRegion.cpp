@@ -53,7 +53,10 @@ catch(construct_elem_throw &e)
    */
   uRegion::uRegion(uToken pToken)try :uGenericNGS(pToken){
 
-  }
+  	 if (pToken.isParamSet(token_param::DENSITY))
+                setDensity(std::stof(pToken.getParam(token_param::DENSITY)));
+
+}
 catch(construct_elem_throw &e)
 {
     addStringError(e,"Throwing in uRegion(uToken)");

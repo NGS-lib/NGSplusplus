@@ -21,13 +21,13 @@ TEST(newParserWig, CorrectlyFormatedVariableWIG) {
 	EXPECT_EQ(Token.getParam(token_param::CHR), "chr19");
 	EXPECT_EQ(Token.getParam(token_param::START_POS), "49304701");
 	EXPECT_EQ(Token.getParam(token_param::END_POS), std::to_string(49304701+150));
-	EXPECT_EQ(Token.getParam(token_param::SCORE), "10");
+	EXPECT_FLOAT_EQ(std::stof(Token.getParam(token_param::SCORE)), 10.0f);
 	Token = ourParser.getNextEntry();
 	count++;
 	EXPECT_EQ(Token.getParam(token_param::CHR), "chr19");
 	EXPECT_EQ(Token.getParam(token_param::START_POS), "49304901");
 	EXPECT_EQ(Token.getParam(token_param::END_POS), std::to_string(49304901+150));
-	EXPECT_EQ(Token.getParam(token_param::SCORE), "12.5");
+	EXPECT_FLOAT_EQ(std::stof(Token.getParam(token_param::SCORE)), 12.5f);
 	//ASSERT_EQ(Token.getParam(token_param::STRAND), "+");
 EXPECT_NO_THROW(
 	while(!(ourParser.eof())){
@@ -116,6 +116,7 @@ EXPECT_ANY_THROW(
 );
 
 }
+
 
 TEST(newParserWig, incorrectLines) {
     uParser ourParser("../data/WIG/incorrect.wig", "WIG");

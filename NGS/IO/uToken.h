@@ -25,11 +25,14 @@ enum class token_param
 class uToken
 {
 public:
-    uToken(std::istream& paramList, bool customValues = false);
+    uToken(std::istream& paramList, bool customValues = false, bool validate=true);
+	uToken();
+
     /** \brief Fetch a param. Throw param_not_found if the param does not exist.
      * \param token_param& name: the name of the param we wish to get.
      */
     //TODO Does this throw correctly?
+
     std::string getParam(token_param name) const;
     std::string getParam(const std::string& name) const;
     bool isParamSet(const token_param& name) const;
@@ -63,9 +66,12 @@ public:
     }
 
 private:
+	 void _setParamNoValidate(const token_param& name, const std::string& value);
     std::map<token_param, std::string> m_params= {};
     bool m_customValues = false;
     std::map<std::string, std::string> m_customParams= {};
+
+
     void _setParam(const token_param& name, const std::string& value);
     void _setParamCustom(const std::string& name, const std::string& value);
 
@@ -103,6 +109,13 @@ private:
 
     std::string _convertTokenParamToString(const token_param& token) const;
     token_param _convertStringToTokenParam(const std::string& name) const;
+
+
+    /**< OUr support formats have access to the Token */
+
+	friend class uParserBase;
+	friend class uParserSam;
+	friend class uParserWig;
 }; // End of class Token
 
 /**< Overloading of stream operator for token_param */

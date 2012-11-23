@@ -56,6 +56,11 @@ static std::string concatStringInt(std::string ourstring, int ourInt, bool conca
 static float getSd(const std::vector<float> & ourVec, const float & mean);
 static float gaussianSim(float x1, float x2, float sd);
 static float getMean(const std::vector<float> & ourVec);
+
+static void  GetNextToken( std::string& container, size_t& from,const std::string & line );
+static void  GetTokens(std::vector<std::string>& tokens, const std::string & line );
+/**< Tokenizer functions */
+
 //static void debug_string(std::string input_string);
 
 
@@ -127,6 +132,36 @@ protected:
     std::string m_token="";
     std::string m_delimiters;
 };
+
+/**< More Tokenizer options */
+/**< Courtesy of code from Sourceforce, adapted */
+/**< This is mildly more efficient then returning it, as we can reuse the potential memory allocated to the vector */
+
+inline static void  GetTokens(std::vector<std::string>& tokens, const std::string & line )
+{
+ tokens.clear();
+ std:: string buff;
+
+ size_t from = 0;
+ while( from < line.length() )
+ {
+  GetNextToken( buff, from,line );
+  tokens.push_back( buff );
+ }
+}
+/**< Hardcoded delimiters are blank space, tab and return (not neewline) */
+inline static void  GetNextToken( std::string& container, size_t& from,const std::string & line )
+{
+ size_t to = from;
+ while( from != line.length() && ( line[from] == ' ' || line[from] == '\t' || line[from] == '\r' ) )
+  from++;
+ to = from + 1;
+ while( to != line.length() && line[to] != ' ' && line[to] != '\t' && line[to] != '\r' )
+  to++;
+ container = line.substr( from, to - from );
+ from = to;
+}
+
 
 
 /** \brief Wrapper functions, opens a given path with the stream. Checks if valid and returns error if invalid path
@@ -693,5 +728,8 @@ static inline float hausdorffTwoRegions(const std::vector<float> &  vectorA, con
 
 
 }
+
+
+
 
 #endif // UTILITY_H_INCLUDED
