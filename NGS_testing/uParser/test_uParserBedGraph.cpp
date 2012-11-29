@@ -12,7 +12,6 @@ TEST(parserOpenBedgraph, openFile) {
     EXPECT_NO_THROW(uParser ourParser("../data/bedgraph/Small10K.bedgraph", "BEDGRAPH"));
 }
 
-
 TEST(parserOpenBedgraph, fileCount) {
     const int numTokens=1000;
     uParser ourParser("../data/bedgraph/Small10K.bedgraph", "BEDGRAPH");

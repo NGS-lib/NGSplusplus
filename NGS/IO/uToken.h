@@ -18,6 +18,10 @@ enum class token_param
     CHR, START_POS, END_POS, STRAND, MAP_SCORE, PHRED_SCORE, CIGAR, SEQUENCE, SEQ_NAME, FLAGS ,SCORE,DENSITY,FEATURE_NAME,SOURCE,PHASE,EXTRA,TEMPLATE_LENGHT
 };
 
+enum class validate_type
+{
+    VALIDATE, NO_VALIDATE
+};
 
 /**< uToken class, to bridge parser and the library's class */
 /**< This is the class that takes care of data validation */
@@ -25,7 +29,7 @@ enum class token_param
 class uToken
 {
 public:
-    uToken(std::istream& paramList, bool customValues = false, bool validate=true);
+    uToken(std::istream& paramList, bool customValues = false, validate_type validate=validate_type::VALIDATE );
 	uToken();
 
     /** \brief Fetch a param. Throw param_not_found if the param does not exist.
