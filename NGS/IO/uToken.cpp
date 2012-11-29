@@ -7,8 +7,6 @@ namespace NGS
 uToken::uToken()
 {
 }
-
-
 /** \brief uToken constructor.
  * \param istream& paramList: a stream containing all the parameters in the format: <token_param>\t<value>\n<token_param>\t<value>\n...
  * \exception invalid_value_throw when using a valid token param, but with an incorrect value (i.e.: a negative value for END_POS)
@@ -84,7 +82,7 @@ uToken::uToken(std::istream& paramList, bool customValues, validate_type validat
     /**< Check if uToken is in a valid state  */
     try
     {
-        if (validate)
+        if (validate==validate_type::VALIDATE)
             _validateToken();
     }
     catch (invalid_uToken_throw& e)
