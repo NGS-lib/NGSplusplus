@@ -10,6 +10,8 @@ If you are running Ubuntu 12.04 or Linux Mint 13, the following will install gcc
 
 If you are not on either of these systems, it is quite likely you can find a repository with the binaries available with a minimal amount of search. Otherwise, instructions on how to build the latest gcc are available on the gcc website ( http://gcc.gnu.org/install/build.html )
 
+Important changes will be documented in the CHANGELOG file.
+
 -----------------------
 Install:
 -----------------------
