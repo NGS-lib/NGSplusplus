@@ -502,16 +502,12 @@ static inline std::string clean_WString(const std::string & input_string)
     return return_string;
 }
 
-
-static inline bool is_posnumber(const std::string& s)
-{
-    return !s.empty() && std::find_if(s.begin(),
-        s.end(), [](char c) { return !std::isdigit(c); }) == s.end();
+    static inline bool is_posnumber(const std::string& s)
+    {
+        return !s.empty() && std::find_if(s.begin(),
+            s.end(), [](char c) { return !std::isdigit(c); }) == s.end();
+    }
 }
-
-
-}
-
 
 /**< Clustering contains odd and ends, distance measures and such */
 namespace clustering

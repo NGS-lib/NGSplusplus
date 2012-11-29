@@ -623,8 +623,8 @@ void uGenericNGSExperiment<_CHROM_, _BASE_>::removeSite(std::string chr, int pos
     }
 }
 
-/** \brief load basic data from a tab delimited file, throw away the result.
- *
+/** \brief load basic data from a tab delimited file, throw away the rest.
+ *          DEPRECATED
  * \param stream std::ifstream& file to load from
  * \return void
  *
@@ -680,7 +680,7 @@ catch (...)
 
 
 /** \brief Write our data as a legal bed file, filling only the first three columns
- *
+ *          DEPRECATED
  * \param out std::ofstream& stream to write to
  * \return void
  *
@@ -867,13 +867,7 @@ _BASE_ uGenericNGSExperiment<_CHROM_,_BASE_>::getSite(typename std::vector<_BASE
     return tempChrom->getSite( posItr);
 }
 
-
-
-
-
-
 /** \brief Return a Chrom containing only the sites that overlap the given chr
- *
  *
  * \param chr std::string
  * \param start int
@@ -900,6 +894,7 @@ _CHROM_ uGenericNGSExperiment<_CHROM_,_BASE_>::getSubset(std::string chr, float 
  * \return uGenericNGSExperiment<_CHROM_,_BASE_> Experiment containing the sites in there appropriate Chroms
  *
  */
+
  template<typename _CHROM_, typename _BASE_>
 uGenericNGSExperiment<_CHROM_,_BASE_> uGenericNGSExperiment<_CHROM_,_BASE_>::getDistinct(uGenericNGSExperiment &compareExp, OverlapType options)
 {

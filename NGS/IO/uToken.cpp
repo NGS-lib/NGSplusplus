@@ -14,7 +14,6 @@ uToken::uToken()
  */
 uToken::uToken(std::istream& paramList, bool customValues, validate_type validate)
 {
-
     m_customValues = customValues;
     char line[1024];
     bool custom = false;

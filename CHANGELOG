@@ -1,0 +1,23 @@
+29 - 11 -2012
+
+*** New features ***
+- Support for bedGraph format, Parser and Writer
+- Support for GFF format, Parser and Writer
+- Support for GTF format, Parser and Writer
+
+*** Feature updates ***
+
+- SAM/WIG Parser, substantial speed improvement
+- Interface to load and operate on data members without keeping the elements, via loadWithParserAndRun() in uGenericNGSExperiment
+
+
+*** Bug Fixes ***
+
+- Certain subset functions, where returning base class rather then current class. Fixed.
+
+
+*** Misc ***
+
+- Parser having obtained maturity, deprecated loading functions will be removed by the next stable release.
+- Added xpressive from Boost to the library, regex now supported.
+- Considering removing access to private iterators.

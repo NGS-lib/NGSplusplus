@@ -58,7 +58,6 @@ TEST(TestsWigWrite, WriteValid) {
 
 TEST(TestsWigWrite, ParseBedWriteWig)
 {
-
     std::ostream& coutStream=std::cout;
     uParser Parser("../data/BED/header.bed", "BED", true);
     uWriter wigWrite(&coutStream,"WIG");
@@ -69,7 +68,6 @@ TEST(TestsWigWrite, ParseBedWriteWig)
 
 TEST(TestsWigWrite, ParseSamWriteWig)
 {
-
     std::ostream& coutStream=std::cout;
     uParser ourParser("../data/SAM/fiveCountValid.sam", "SAM");
     uWriter wigWrite(&coutStream,"WIG");
