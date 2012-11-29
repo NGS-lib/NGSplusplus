@@ -44,6 +44,12 @@ To uninstall library (this will remove the library from /usr/lib and remove head
 make uninstall
 
 -----------------------
+Stable version download:
+-----------------------
+Changes in the master branch passed all the unit tests but are still considered experimental. Tags are used to denote stable version:
+https://github.com/NGS-lib/NGSplusplus/tags
+
+-----------------------
 Web pages
 -----------------------
 Main page:
