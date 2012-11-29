@@ -12,7 +12,7 @@ uTags::uTags():uGenericNGS()
 }
 
 /**< From uTokens */
-uTags::uTags(uToken pToken)try:uGenericNGS(pToken){
+uTags::uTags(const uToken & pToken)try:uGenericNGS(pToken){
 
 if (pToken.isParamSet(token_param::CIGAR))
     setCigar(pToken.getParam(token_param::CIGAR));
@@ -30,7 +30,7 @@ catch(ugene_exception_base &e)
         #ifdef DEBUG
         std::cerr << "Error in uGenericNGS(uToken)." <<std::endl;
         #endif
-        e<<generic_error(*this);
+        e<<tag_error(*this);
         throw e;
 }
 
@@ -830,8 +830,6 @@ void uTagsExperiment::loadFromSam(std::ifstream& curStream, bool minimal)
 
                 }
                 count++;
-                if (count%2000000==0)
-                    cerr << count <<endl;
             }
         }
     }

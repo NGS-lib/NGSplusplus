@@ -107,10 +107,10 @@ void uParserBed::_convertLineToTokenInfosBed(char* line, std::stringstream& toke
     {
         score = _getNextEntry(line_cpy);
         strand = _getNextEntry(line_cpy);
-        //If not a valid float, will fail, then continue
-        //This is not ideal, we should not be using an exception as control flow
-       // stof(score);
-        token_infos << "SCORE\t" << score << "\n";
+
+        /**< if ., information not available, we do not stock */
+        if (score!=".")
+            token_infos << "SCORE\t" << score << "\n";
         token_infos << "STRAND\t" << strand << "\n";
     }
 }

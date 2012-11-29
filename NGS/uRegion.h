@@ -22,7 +22,7 @@ class uRegion : public uGenericNGS
         virtual ~uRegion();
 
         std::string getIdent() const {return ident;};
-
+		void setDensity(float pDensity) {density=pDensity ;};
         float getDensity() const {return density;};
         void setCount(int ucount) {count=ucount;};
         int getCount()const {return count;};

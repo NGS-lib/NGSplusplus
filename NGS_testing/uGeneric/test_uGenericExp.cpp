@@ -70,6 +70,22 @@ TEST_F(TestExp, GETSUBSET){
 
 }
 
+
+TEST_F(TestExp, GETSUBSETLARGE){
+
+    uExpTest.addSite(uGenericNGS("chr1", 180000050, 180500000 ));
+    uExpTest.addSite(uGenericNGS("chr1", 180050000, 180500000));
+    uExpTest.addSite(uGenericNGS("chr1", 180550000, 180900000));
+    uExpTest.addSite(uGenericNGS("chr1", 5, 25, 0.7f));
+    uExpTest.addSite(uGenericNGS("chr1", 5, 25, 0.7f));
+
+    uExpTest.sortSites();
+    auto resultChrom=uExpTest.getSubset("chr1",180000000,181000000);
+    EXPECT_EQ(resultChrom.count(), 3);
+
+}
+
+
 TEST_F(TestExp, GETSUBSETCUSTOM){
 
   auto comp=[](const uGenericNGS & item1, const uGenericNGS & item2){

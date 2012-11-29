@@ -22,7 +22,6 @@ TEST_F(TestSamWriter, WriteToken_ValidSam) {
 
 TEST(TestSamWriter_NoF, WriteValidHeader) {
     /**< Initialize streams */
-   //  std::ostream & outFile = ((outputPath.size()!=0) ? outputOS : std::cout);
 
     auto m_pOssSAM = new ostringstream(ostringstream::out);
     /**< Initialize writers */

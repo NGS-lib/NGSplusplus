@@ -73,15 +73,16 @@ public :
     uParserWig();
     ~uParserWig();
     virtual void init(const std::string& filename, bool header = false);
-    virtual void init(std::iostream* stream, bool header = false);
+    virtual void init(std::istream* stream, bool header = false);
 
     virtual uToken getNextEntry();
 
 private:
     static DerivedParserRegister<uParserWig> reg;
     wigInformation m_Info;
-    void _processFixedWigLine(std::stringstream & curSStream);
-    void _processVariabledWigLine(std::stringstream & curSStream);
+    void _processFixedWigLine(std::vector<std::string> & curSStream);
+    void _processVariabledWigLine(std::vector<std::string> & curSStream);
+	std::vector<std::string> m_tokens;
 };
 
 }

@@ -21,13 +21,13 @@ TEST(newParserWig, CorrectlyFormatedVariableWIG) {
 	EXPECT_EQ(Token.getParam(token_param::CHR), "chr19");
 	EXPECT_EQ(Token.getParam(token_param::START_POS), "49304701");
 	EXPECT_EQ(Token.getParam(token_param::END_POS), std::to_string(49304701+150));
-	EXPECT_EQ(Token.getParam(token_param::SCORE), "10");
+	EXPECT_FLOAT_EQ(std::stof(Token.getParam(token_param::SCORE)), 10.0f);
 	Token = ourParser.getNextEntry();
 	count++;
 	EXPECT_EQ(Token.getParam(token_param::CHR), "chr19");
 	EXPECT_EQ(Token.getParam(token_param::START_POS), "49304901");
 	EXPECT_EQ(Token.getParam(token_param::END_POS), std::to_string(49304901+150));
-	EXPECT_EQ(Token.getParam(token_param::SCORE), "12.5");
+	EXPECT_FLOAT_EQ(std::stof(Token.getParam(token_param::SCORE)), 12.5f);
 	//ASSERT_EQ(Token.getParam(token_param::STRAND), "+");
 EXPECT_NO_THROW(
 	while(!(ourParser.eof())){
@@ -78,7 +78,7 @@ TEST(newParserWig, CorrectFormatBoth) {
     const int STEP=300;
     vector<int> compareStart{49304701,49304901,49305401,49305601,49305901,49306081,49306301,49306691,49307871,49307401,49307401+STEP,49307401+STEP*2,49307401+STEP*3,49307401+STEP*4,49307401+STEP*5,49307401+STEP*6,49307401+STEP*7,49307401+STEP*8,49307401+STEP*9};
    // vector<int> compareEnd{}
-    vector<float> comparescores{10.0,12.5,15.0,17.5,20.0,17.5,15.0,12.5,10.0,1000,900,800,700,600,500,400,300,200,100};
+    vector<float> comparescores{10.0,12.5,15.0,17.5,20.0,17.5,15.0,12.5,10.0,12.3,8,2,4.2,5,9,2,30,25,12};
     vector<float> scores;
     vector<int> starts;
 EXPECT_NO_THROW(
@@ -116,6 +116,7 @@ EXPECT_ANY_THROW(
 );
 
 }
+
 
 TEST(newParserWig, incorrectLines) {
     uParser ourParser("../data/WIG/incorrect.wig", "WIG");

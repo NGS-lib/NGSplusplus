@@ -60,6 +60,32 @@ public:
 	vector<uToken> m_vTokens;
 };
 
+
+
+class TestGFFWriter: public ::testing::Test {
+public:
+	TestGFFWriter() {
+		/**< Initialize streams */
+        m_pOssGFF = new ostringstream(ostringstream::out);
+		/**< Initialize writers */
+		uWriter writerGFF(m_pOssGFF, "GFF");
+		/**< Write tokens */
+		validTokens tokens;
+		for (size_t i = 0; i < tokens.m_vTokens.size(); i++) {
+			writerGFF.writeToken(tokens.m_vTokens[i]);
+		}
+	}
+	~TestGFFWriter() {
+		delete m_pOssGFF;
+		m_pOssGFF = nullptr;
+
+	}
+	ostringstream* m_pOssGFF = nullptr;
+};
+
+
+
+
 class TestSamWriter: public ::testing::Test {
 public:
 	TestSamWriter() {

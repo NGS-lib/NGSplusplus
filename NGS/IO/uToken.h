@@ -15,9 +15,13 @@ namespace NGS
 /**< This list has to be updated for every new param */
 enum class token_param
 {
-    CHR, START_POS, END_POS, STRAND, MAP_SCORE, PHRED_SCORE, CIGAR, SEQUENCE, SEQ_NAME, FLAGS ,SCORE,DENSITY
+    CHR, START_POS, END_POS, STRAND, MAP_SCORE, PHRED_SCORE, CIGAR, SEQUENCE, SEQ_NAME, FLAGS ,SCORE,DENSITY,FEATURE_NAME,SOURCE,PHASE,EXTRA,TEMPLATE_LENGHT
 };
 
+enum class validate_type
+{
+    VALIDATE, NO_VALIDATE
+};
 
 /**< uToken class, to bridge parser and the library's class */
 /**< This is the class that takes care of data validation */
@@ -25,11 +29,14 @@ enum class token_param
 class uToken
 {
 public:
-    uToken(std::istream& paramList, bool customValues = false);
+    uToken(std::istream& paramList, bool customValues = false, validate_type validate=validate_type::VALIDATE );
+	uToken();
+
     /** \brief Fetch a param. Throw param_not_found if the param does not exist.
      * \param token_param& name: the name of the param we wish to get.
      */
     //TODO Does this throw correctly?
+
     std::string getParam(token_param name) const;
     std::string getParam(const std::string& name) const;
     bool isParamSet(const token_param& name) const;
@@ -53,13 +60,22 @@ public:
                 || param == "SEQ_NAME"
                 || param == "FLAGS"
                 || param == "DENSITY"
-                || param == "SCORE");
+                || param == "SCORE"
+                || param == "FEATURE_NAME"
+                || param == "SOURCE"
+                || param == "PHASE"
+                || param == "EXTRA"
+				|| param == "TEMPLATE_LENGHT"
+                );
     }
 
 private:
+	 void _setParamNoValidate(const token_param& name, const std::string& value);
     std::map<token_param, std::string> m_params= {};
     bool m_customValues = false;
     std::map<std::string, std::string> m_customParams= {};
+
+
     void _setParam(const token_param& name, const std::string& value);
     void _setParamCustom(const std::string& name, const std::string& value);
 
@@ -97,6 +113,15 @@ private:
 
     std::string _convertTokenParamToString(const token_param& token) const;
     token_param _convertStringToTokenParam(const std::string& name) const;
+
+
+    /**< OUr support formats have access to the Token as they validate themselves */
+
+	friend class uParserBase;
+	friend class uParserSam;
+	friend class uParserWig;
+	friend class uParserGFF;
+	friend class uParserBedGraph;
 }; // End of class Token
 
 /**< Overloading of stream operator for token_param */
@@ -128,6 +153,17 @@ inline std::ostream & operator<<(std::ostream& Str, token_param name)
         return Str <<"SCORE";
     case token_param::DENSITY:
         return Str <<"DENSITY";
+    case token_param::FEATURE_NAME:
+        return Str <<"FEATURE_NAME";
+     case token_param::PHASE:
+        return Str <<"PHASE";
+     case token_param::SOURCE:
+        return Str <<"SOURCE";
+     case token_param::EXTRA:
+        return Str <<"EXTRA";
+	case token_param::TEMPLATE_LENGHT:
+        return Str <<"TEMPLATE_LENGHT";
+
     default:
         return Str << (int) name;
     }
@@ -149,6 +185,11 @@ inline std::istream& operator>>(std::istream &is, token_param& name)
     else if (token == "FLAGS") name = token_param::FLAGS;
     else if (token == "SCORE") name = token_param::SCORE;
     else if (token == "DENSITY") name = token_param::DENSITY;
+    else if (token == "FEATURE_NAME") name = token_param::FEATURE_NAME;
+    else if (token == "PHASE") name = token_param::PHASE;
+    else if (token == "SOURCE") name = token_param::SOURCE;
+    else if (token == "EXTRA") name = token_param::EXTRA;
+	else if (token == "TEMPLATE_LENGHT") name = token_param::TEMPLATE_LENGHT;
     else
     {
         invalid_token_param_throw e;

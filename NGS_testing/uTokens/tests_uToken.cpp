@@ -45,7 +45,7 @@ using namespace NGS;
 
 TEST(uTokenConstructor, MandatoryArgumentsOnly) {
 	stringstream ss;
-	ss << "CHR\tchr1\n" << "START_POS\t1\n" << "END_POS\t21\n";
+	ss << "START_POS\t1\n" << "END_POS\t21\n";
 	ASSERT_NO_THROW(uToken Token(ss));
 }
 
@@ -125,10 +125,10 @@ TEST(uTokenConstructor, Invalid_param_token) {
 	ASSERT_THROW(uToken Token(ss), uToken_exception_base);
 }
 
-TEST(uTokenConstructor, MissingMandatoryArgument_CHR) {
+TEST(uTokenConstructor, Missing_CHR) {
 	stringstream ss;
 	ss << "START_POS\t1\n" << "END_POS\t21\n";
-	ASSERT_THROW(uToken Token(ss), invalid_uToken_throw);
+	ASSERT_NO_THROW(uToken Token(ss));
 }
 
 TEST(uTokenConstructor, MissingMandatoryArgument_START_POS) {

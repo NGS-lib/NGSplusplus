@@ -12,6 +12,8 @@ class uRegion;
 class uTags;
 class uGenericNGS;
 class uToken;
+enum class token_param;
+
 
 typedef boost::error_info<struct string_info,std::string> string_error;
 typedef boost::error_info<struct region_info,uRegion> region_error;
@@ -39,13 +41,16 @@ struct uExp_operation_throw : virtual uChrom_operation_throw{};
 
 /**< To pass a token*/
 typedef boost::error_info<struct token_info,uToken> token_error;
+/**< To pass one or more param type */
+typedef boost::error_info<struct token_param_info,token_param> token_param_error;
+
+
 /**< uToken Exceptions */
 struct uToken_exception_base : virtual ugene_exception_base{};
 struct invalid_uToken_throw : virtual uToken_exception_base{};
 struct invalid_token_param_throw : virtual uToken_exception_base{};
 struct invalid_value_throw : virtual uToken_exception_base{};
 struct param_not_found : virtual invalid_uToken_throw{};
-
 
 
  /**< uParser Exceptions */
@@ -61,11 +66,16 @@ struct uParserBed_invalid_number_of_columns : virtual uParser_exception_base{};
 /**< Sam Parser exception */
 struct uParser_invalid_Sam_header : virtual uParser_invalid_header{};
 struct uParser_invalid_Sam_line : virtual uParser_invalid_line{};
+/**< GFF Parser exception */
+struct uParser_invalid_GFF_line : virtual uParser_invalid_line{};
+/**< GTF Parser exception */
+struct uParser_invalid_GTF_line : virtual uParser_invalid_line{};
+/**<  BedGraph exceptions*/
+struct uParser_invalid_BedGraph_line : virtual uParser_invalid_line{};
 
 /**< uHeader Exceptions */
 
 struct invalid_header_param_throw : virtual uParser_exception_base{};
-
 
 
 /**< uWrite exception */
@@ -74,6 +84,7 @@ struct uWriter_invalid_type_instance : virtual uWriter_exception_base{};
 struct no_fields_names : virtual uWriter_exception_base{};
 struct uWriter_missing_mandatory_param : virtual uWriter_exception_base{};
 struct uWriter_missing_mandatory_header : virtual uWriter_exception_base{};
+
 // Util functions
 static inline void addStringError(ugene_exception_base & e, const std::string & err){
 	std::string trace;

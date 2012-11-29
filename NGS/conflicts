@@ -1,0 +1,9 @@
+#       both modified:      IO/Writer/uWriterSam.cpp
+#       both modified:      IO/Writer/uWriterWig.cpp
+#       both modified:      IO/uToken.cpp
+#       both modified:      IO/uToken.h
+#       both modified:      Makefile
+#       both modified:      uGeneException.h
+#       both modified:      ../NGS_testing/geneClassTesting.cbp
+#       added by them:      ../NGS_testing/uParser/uTagTests.cpp
+#       both modified:      ../NGS_testing/uWriter/tests_uWriterSam.cpp

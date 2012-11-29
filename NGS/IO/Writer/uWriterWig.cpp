@@ -20,7 +20,7 @@ void uWriterWig::setValueType(const token_param type){
    */
   void uWriterWig::writeToken(const uToken& token) {
  	try {
-       if   ((token.isParamSet(token_param::CHR))&&(token.isParamSet(token_param::START_POS))&&(token.isParamSet(token_param::END_POS)) )
+       if  ((token.isParamSet(token_param::CHR))&&(token.isParamSet(token_param::START_POS))&&(token.isParamSet(token_param::END_POS)) )
            {
                 long long int ourstart= std::stoll(token.getParam(token_param::START_POS));
                 long long int ourend= std::stoll(token.getParam(token_param::END_POS));

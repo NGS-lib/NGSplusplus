@@ -368,7 +368,7 @@ public:
     }
 
 
-    /** \brief Transform site of the EXP by applying a certain function
+    /** \brief Transform the sites of the EXP by applying a certain function
       *
       * This function take a pointer to a function to transform;
       * this function pointer can either be a) the name of a function
@@ -400,6 +400,68 @@ public:
         });
         return f;
     }
+
+
+/** \brief load data from Parser, convert to unitary and execute the given function. Does -not- necessarily add to EXP
+ *
+ * \param stream std::ifstream& file to load from
+ * \return void
+ *
+ */
+template<class UnaryFunction>
+void loadWithParserAndRun(std::ifstream& pStream, std::string pType, UnaryFunction f , int pBlockSize=1)
+{
+    try {
+    std::istream& refStream = pStream;
+    uParser Curparser(&refStream, pType);
+    std::vector<uToken> loadedTokens;
+    loadedTokens.resize(pBlockSize);
+    while(!Curparser.eof()){
+        int curLoaded=0;
+            /**< Load a block of data */
+            while ((curLoaded<pBlockSize)&&(!Curparser.eof()))
+            {
+                loadedTokens.push_back(Curparser.getNextEntry());
+                curLoaded++;
+            }
+            /**< Operate */
+            for(const uToken & curToken:loadedTokens)
+            {
+                f( (_BASE_)(curToken) );
+            }
+        }
+    }
+    catch(...)
+    { throw; }
+}
+
+template<class UnaryFunction>
+void loadWithParserAndRun(std::string filepath, std::string pType, UnaryFunction f, int pBlockSize=1)
+{
+    try {
+    uParser Curparser(filepath, pType);
+    std::vector<uToken> loadedTokens;
+    loadedTokens.resize(pBlockSize);
+    while(!Curparser.eof()){
+        int curLoaded=0;
+            /**< Load a block of data */
+            while ((curLoaded<pBlockSize)&&(!Curparser.eof()))
+            {
+                loadedTokens.at(curLoaded)=(Curparser.getNextEntry());
+                curLoaded++;
+            }
+            /**< Operate */
+            for(const uToken & curToken:loadedTokens)
+            {
+                f( (_BASE_)(curToken) );
+            }
+        }
+    }
+    catch(...)
+    { throw; }
+}
+
+
 
     /** \brief Count the chromosomes for which a certain predicate is true
       *
@@ -561,8 +623,8 @@ void uGenericNGSExperiment<_CHROM_, _BASE_>::removeSite(std::string chr, int pos
     }
 }
 
-/** \brief load basic data from a tab delimited file, throw away the result.
- *
+/** \brief load basic data from a tab delimited file, throw away the rest.
+ *          DEPRECATED
  * \param stream std::ifstream& file to load from
  * \return void
  *
@@ -595,23 +657,16 @@ template<typename _CHROM_, typename _BASE_>
     }
     catch(...)
     { throw; }
+    inferChrSize();
 }
 
 template<typename _CHROM_, typename _BASE_>
 void uGenericNGSExperiment<_CHROM_, _BASE_>::loadWithParser(std::string filepath, std::string pType)
 {
     uParser ourParser(filepath, pType);
-   // auto chrList=ourParser.getHeaderParamVector(header_param::CHR);
-   // auto chrSizes=ourParser.getHeaderParamVector(header_param::CHR_SIZE);
 try {
-//        std::cerr << "name and size are :" <<chrList.at(i) <<" "<<chrSizes.at(i)<<std::endl;
-   // for (int i=0; i<(int)chrList.size();i++){
-   //     this->setChromSize(chrList.at(i), std::stoi(chrSizes.at(i)));
-   // }
-
-    while (ourParser.eof()==false){
-        auto Token =ourParser.getNextEntry();
-        this->addSite((Token));
+        while (ourParser.eof()==false){
+            this->addSite((ourParser.getNextEntry()));
     }
 }
 catch (...)
@@ -619,12 +674,13 @@ catch (...)
         throw;
     }
     inferChrSize();
-
 }
 
 
+
+
 /** \brief Write our data as a legal bed file, filling only the first three columns
- *
+ *          DEPRECATED
  * \param out std::ofstream& stream to write to
  * \return void
  *
@@ -811,13 +867,7 @@ _BASE_ uGenericNGSExperiment<_CHROM_,_BASE_>::getSite(typename std::vector<_BASE
     return tempChrom->getSite( posItr);
 }
 
-
-
-
-
-
 /** \brief Return a Chrom containing only the sites that overlap the given chr
- *
  *
  * \param chr std::string
  * \param start int
@@ -844,6 +894,7 @@ _CHROM_ uGenericNGSExperiment<_CHROM_,_BASE_>::getSubset(std::string chr, float 
  * \return uGenericNGSExperiment<_CHROM_,_BASE_> Experiment containing the sites in there appropriate Chroms
  *
  */
+
  template<typename _CHROM_, typename _BASE_>
 uGenericNGSExperiment<_CHROM_,_BASE_> uGenericNGSExperiment<_CHROM_,_BASE_>::getDistinct(uGenericNGSExperiment &compareExp, OverlapType options)
 {
