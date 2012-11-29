@@ -1,5 +1,5 @@
 #include "../../utility/utility.h"
-#include "uParserBedgraph.h"
+#include "uParserBedGraph.h"
 namespace NGS
 {
 
