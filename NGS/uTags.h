@@ -40,7 +40,7 @@ public:
 
     uTags();
     uTags(uGenericNGS otherItem);
-    uTags(uToken pToken);
+    uTags(const uToken & pToken);
     uTags(std::string pchr, int start, int end, StrandDir pstrand=StrandDir::FORWARD);
     uTags(const uTags& copy_from);
     uTags& operator=  (uTags const& assign_from);

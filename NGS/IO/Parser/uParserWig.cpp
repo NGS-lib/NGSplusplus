@@ -123,12 +123,8 @@ uToken uParserWig::getNextEntry()
                 std::string line;
                 if (std::getline(*m_pIostream,line))
                 {
-                   // std::stringstream ss;
-                  //  ss << line;
-                 //   std::string cur_token;
-                  //  ss>>cur_token;
-                    utility::GetTokens(m_tokens,line);
 
+                    utility::GetTokens(m_tokens,line);
                     if((m_tokens.at(0)=="variableStep")||(m_tokens.at(0)=="fixedStep"))
                     {
                         if (m_pIostream->eof())
@@ -179,18 +175,14 @@ uToken uParserWig::getNextEntry()
 
                             break;
                         }
-                    //    std::stringstream token_infos;
                         uToken ourToken;
                         ourToken._setParamNoValidate(token_param::CHR,m_Info.getChrom());
 						ourToken._setParamNoValidate(token_param::START_POS,std::to_string(start_pos));
 						ourToken._setParamNoValidate(token_param::END_POS,std::to_string(end_pos));
 						ourToken._setParamNoValidate(token_param::SCORE,m_tokens.at(scorePos));
-//                        token_infos << "CHR\t" << m_Info.getChrom() << "\n";
-//                        token_infos << "START_POS\t" << start_pos << "\n";
-//                        token_infos << "END_POS\t" << end_pos << "\n";
-//                        token_infos << "SCORE\t" << score << "\n";
+
                         foundToken=true;
-                       // return uToken(token_infos, false,false);
+
                         return ourToken;
                     }
                 }

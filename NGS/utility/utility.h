@@ -53,16 +53,14 @@ static bool isRegionAInsideRegionB( int A1, int A2, int B1, int B2 );
 static std::vector<float> quartilesofVector(std::vector<float> inputVector);
 static std::string concatStringInt(std::string ourstring, int ourInt, bool concatstringleft=true);
 /**< Minor statistics */
-static float getSd(const std::vector<float> & ourVec, const float & mean);
+static float getSd( std::vector<float>  ourVec, const float & mean);
 static float gaussianSim(float x1, float x2, float sd);
 static float getMean(const std::vector<float> & ourVec);
-
+/**< Tokenizer functions */
 static void  GetNextToken( std::string& container, size_t& from,const std::string & line );
 static void  GetTokens(std::vector<std::string>& tokens, const std::string & line );
-/**< Tokenizer functions */
-
-//static void debug_string(std::string input_string);
-
+/**< Format tests */
+static bool is_posnumber(const std::string& s);
 
 /** \brief Check and return if a specified sam flag is set from a received sam flag (int)
  *
@@ -267,7 +265,8 @@ inline static bool checkOverlap(int X1, int X2, int Y1, int Y2)
  * \param Y2 int Point 2 of Y
  * \return Size of overlap segment, can be 0
  *
- */inline static int overlapCount(int X1, int X2, int Y1, int Y2)
+ */
+ inline static int overlapCount(int X1, int X2, int Y1, int Y2)
 {
 
     int overlap=0;
@@ -346,23 +345,22 @@ inline static float getMean(const std::vector<float> & ourVec)
  * \return float Returned standard deviation
  *
  */
-inline static float getSd(const std::vector<float> & ourVec, const float & mean)
+inline static float getSd(std::vector<float> ourVec, const float & mean)
 {
     float sumsq, sd;
     sumsq=0;
     sd=0;
-    std::vector<float> deviations;
 
-    for (auto floatit=ourVec.begin(); floatit < ourVec.end(); floatit++ )
+    for (float & floatVal:ourVec )
     {
-        deviations.push_back(*floatit-mean);
+       floatVal=(floatVal-mean);
     }
-    for (auto floatit=deviations.begin(); floatit < deviations.end(); floatit++ )
+    for (auto floatit=ourVec.begin(); floatit < ourVec.end(); floatit++ )
     {
         *floatit=(pow(*floatit,2));
         sumsq+=*floatit;
     }
-    sd = sumsq/(deviations.size()-1);
+    sd = sumsq/(ourVec.size()-1);
     sd= sqrt(sd);
 
     return sd;
@@ -400,6 +398,7 @@ inline static std::vector<float> quartilesofVector(std::vector<float> inputVecto
     std::vector<float> returnVector;
     int q1, med, q3;
     //quartile positions.
+
     q1=inputVector.size()*0.25;
     med=inputVector.size()*0.5;
     q3=inputVector.size()*0.75;
@@ -503,8 +502,15 @@ static inline std::string clean_WString(const std::string & input_string)
     return return_string;
 }
 
+
+static inline bool is_posnumber(const std::string& s)
+{
+    return !s.empty() && std::find_if(s.begin(),
+        s.end(), [](char c) { return !std::isdigit(c); }) == s.end();
 }
 
+
+}
 
 
 /**< Clustering contains odd and ends, distance measures and such */

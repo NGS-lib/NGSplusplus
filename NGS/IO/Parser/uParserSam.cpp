@@ -9,14 +9,13 @@ using namespace boost::xpressive;
 /** \brief Default empty constructor
  */
 uParserSam::uParserSam()
-:s10(10)
+:uParserBase()
+,s10(10)
 ,s11(11)
 ,s12(12)
-,uParserBase()
 {
 
 }
-
 /** \brief Default empty destructor
  */
 uParserSam::~uParserSam()

@@ -111,11 +111,13 @@ private:
     token_param _convertStringToTokenParam(const std::string& name) const;
 
 
-    /**< OUr support formats have access to the Token */
+    /**< OUr support formats have access to the Token as they validate themselves */
 
 	friend class uParserBase;
 	friend class uParserSam;
 	friend class uParserWig;
+	friend class uParserGFF;
+	friend class uParserBedGraph;
 }; // End of class Token
 
 /**< Overloading of stream operator for token_param */

@@ -73,7 +73,6 @@ uToken uParserBedGraph::_getTokenFromBedGraphString(const std::string & line)
         if (!(utility::is_posnumber(m_tokens.at(1) ))&&(utility::is_posnumber(m_tokens.at(2)))&&(m_tokens.size()==4))
             throw;
         m_tokens.at(3).c_str();;
-
         uToken ourToken;
         ourToken._setParamNoValidate(token_param::CHR,m_tokens.at(0));
         ourToken._setParamNoValidate(token_param::START_POS,m_tokens.at(1));

@@ -409,19 +409,20 @@ public:
  *
  */
 template<class UnaryFunction>
-void loadWithParserAndRun(std::ifstream& pStream, std::string pType, UnaryFunction f , int pBlockSize=0)
+void loadWithParserAndRun(std::ifstream& pStream, std::string pType, UnaryFunction f , int pBlockSize=1)
 {
     try {
     std::istream& refStream = pStream;
     uParser Curparser(&refStream, pType);
-
+    std::vector<uToken> loadedTokens;
+    loadedTokens.resize(pBlockSize);
     while(!Curparser.eof()){
         int curLoaded=0;
-        std::vector<uToken> loadedTokens;
             /**< Load a block of data */
             while ((curLoaded<pBlockSize)&&(!Curparser.eof()))
             {
                 loadedTokens.push_back(Curparser.getNextEntry());
+                curLoaded++;
             }
             /**< Operate */
             for(const uToken & curToken:loadedTokens)
@@ -435,17 +436,19 @@ void loadWithParserAndRun(std::ifstream& pStream, std::string pType, UnaryFuncti
 }
 
 template<class UnaryFunction>
- void loadWithParserAndRun(std::string filepath, std::string pType, UnaryFunction f  ,int pBlockSize=0)
+void loadWithParserAndRun(std::string filepath, std::string pType, UnaryFunction f, int pBlockSize=1)
 {
     try {
     uParser Curparser(filepath, pType);
+    std::vector<uToken> loadedTokens;
+    loadedTokens.resize(pBlockSize);
     while(!Curparser.eof()){
         int curLoaded=0;
-        std::vector<uToken> loadedTokens;
             /**< Load a block of data */
             while ((curLoaded<pBlockSize)&&(!Curparser.eof()))
             {
-                loadedTokens.push_back(Curparser.getNextEntry());
+                loadedTokens.at(curLoaded)=(Curparser.getNextEntry());
+                curLoaded++;
             }
             /**< Operate */
             for(const uToken & curToken:loadedTokens)

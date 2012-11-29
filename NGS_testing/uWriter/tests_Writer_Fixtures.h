@@ -66,9 +66,9 @@ class TestGFFWriter: public ::testing::Test {
 public:
 	TestGFFWriter() {
 		/**< Initialize streams */
-        m_pOssSAM = new ostringstream(ostringstream::out);
+        m_pOssGFF = new ostringstream(ostringstream::out);
 		/**< Initialize writers */
-		uWriter writerGFF(m_pOssSAM, "GFF");
+		uWriter writerGFF(m_pOssGFF, "GFF");
 		/**< Write tokens */
 		validTokens tokens;
 		for (size_t i = 0; i < tokens.m_vTokens.size(); i++) {
@@ -76,11 +76,11 @@ public:
 		}
 	}
 	~TestGFFWriter() {
-		delete m_pOssSAM;
-		m_pOssSAM = nullptr;
+		delete m_pOssGFF;
+		m_pOssGFF = nullptr;
 
 	}
-	ostringstream* m_pOssSAM = nullptr;
+	ostringstream* m_pOssGFF = nullptr;
 };
 
 
