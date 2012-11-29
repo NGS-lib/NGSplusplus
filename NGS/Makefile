@@ -62,4 +62,4 @@ uninstall:
 
 .PHONY : clean
 clean: 
-	rm $(OBJPROJ) $(PROJECT)
+	rm -f $(OBJPROJ) $(PROJECT)
