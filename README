@@ -8,6 +8,14 @@ If you are running Ubuntu 12.04 or Linux Mint 13, the following will install gcc
     sudo apt-get update
     sudo apt-get install gcc-4.7 g++-4.7
 
+If you are running openSUSE 12.2, the following will install make and gcc 4.7
+    sudo zypper update
+    sudo zypper install make
+    sudo zypper install gcc-c++
+
+Note: For older version of openSUSE, the previous commands may install an older version of gcc. In this case, you can install the latest version with this command
+    sudo install gcc47-c++
+
 If you are not on either of these systems, it is quite likely you can find a repository with the binaries available with a minimal amount of search. Otherwise, instructions on how to build the latest gcc are available on the gcc website ( http://gcc.gnu.org/install/build.html )
 
 Important changes will be documented in the CHANGELOG file.
@@ -22,11 +30,9 @@ make
 
 If your default g++ is not version 4.7 or higher, you can compile with an alternate compiler 
 (in this example, it's named g++-4.7):
-cd NGS
 make GXX="g++-4.7"
 
 To install library (this will copy the library to /usr/lib and add headers in /usr/include):
-cd NGS
 make install
 
 To compile sample code:
