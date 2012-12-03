@@ -92,10 +92,6 @@ uToken::uToken(std::istream& paramList, bool customValues, validate_type validat
 }
 
 
-
-
-
-
 /** \brief Copy assignment operator
  */
 uToken& uToken::operator=(uToken const& assign_from)
@@ -471,7 +467,7 @@ bool uToken::_posIsValid(const std::string& value) const
     /**< Check if the value is a long int greater than 0 */
     long int pos = 0;
     ss >> pos;
-    if (pos <= 0)
+    if (pos < 0)
     {
         return false;
     }

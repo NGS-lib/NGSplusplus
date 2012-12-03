@@ -8,7 +8,7 @@
 #include <parallel/numeric>
 #include <functional>
 namespace NGS {
-template<typename _BASE_>
+template<class _SELF_, typename _BASE_>
 class uGenericNGSChrom
 {
     static_assert(
@@ -78,7 +78,7 @@ protected:
     unsigned long long maxSiteSize() const;
     unsigned long long sumSiteSize() const;
 
-    template<typename S, typename R> friend class uGenericNGSExperiment;
+    template<class L, typename S, typename R> friend class uGenericNGSExperiment;
 
 public:
 
@@ -109,14 +109,14 @@ public:
 
 
     template <class T2>
-    uGenericNGSChrom<_BASE_> getOverlapping(uGenericNGSChrom<T2> &compareExp,OverlapType overlap=OverlapType::OVERLAP_PARTIAL) const;
+    _SELF_ getOverlapping(uGenericNGSChrom<T2> &compareExp,OverlapType overlap=OverlapType::OVERLAP_PARTIAL) const;
     template <class T2>
-    uGenericNGSChrom<_BASE_> getNotOverlapping(uGenericNGSChrom<T2> &compareExp,OverlapType overlap=OverlapType::OVERLAP_PARTIAL) const;
-    uGenericNGSChrom<_BASE_> getDistinct(std::string chr, int start, int end, OverlapType options=OverlapType::OVERLAP_PARTIAL);
+    _SELF_ getNotOverlapping(uGenericNGSChrom<T2> &compareExp,OverlapType overlap=OverlapType::OVERLAP_PARTIAL) const;
+    _SELF_ getDistinct(std::string chr, int start, int end, OverlapType options=OverlapType::OVERLAP_PARTIAL);
 
     /**< Functions to manipulate generically ranges of our elements */
-    uGenericNGSChrom<_BASE_> getSubset(float start, float end, OverlapType overlap=OverlapType::OVERLAP_PARTIAL) const;
-    uGenericNGSChrom<_BASE_> removeSubset(float start, float end, OverlapType overlap=OverlapType::OVERLAP_PARTIAL);
+    _SELF_ getSubset(float start, float end, OverlapType overlap=OverlapType::OVERLAP_PARTIAL) const;
+    _SELF_ removeSubset(float start, float end, OverlapType overlap=OverlapType::OVERLAP_PARTIAL);
 
     void addSite( _BASE_ newSite);
     int getSubsetCount(float start, float end, OverlapType overlap=OverlapType::OVERLAP_PARTIAL)const;

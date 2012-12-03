@@ -8,7 +8,21 @@
 namespace NGS {
 //_BASE_ is our Tags, _CHROM_ our Chrom structure.
 enum class ReadMode{ DEFAULT, GRADUAL };
-template<typename _CHROM_, typename _BASE_>
+
+
+/**<
+
+Explanation on _SELF_
+This is a simple implementation of the curiosly reoccuring template (CRT)
+Note that applying it to our entire class does contribute to code bloat
+as functions that do not need to know there type, will still generate a seperate instation
+for each data type.
+
+Potentially, we could derived a parent class where we place the version that do not require _SELF_
+
+However, while this would reduce code size, it would complexify an already somewhat complex hiearchy.
+ */
+template<class _SELF_, typename _CHROM_, typename _BASE_>
 class uGenericNGSExperiment
 {
     /**< Can be used to make sure EXP, chrom both use appropriate base */
@@ -141,20 +155,20 @@ public:
 
     void writeAsBedFile(std::ostream& out)const;
 
-    template<typename _CHROMPAR_, typename _BASEPAR_>
-    uGenericNGSExperiment getOverlapping(uGenericNGSExperiment<_CHROMPAR_,_BASEPAR_> &compareExp, OverlapType type=OverlapType::OVERLAP_PARTIAL);
+    template<class _SELFPAR_, typename _CHROMPAR_, typename _BASEPAR_>
+    _SELF_ getOverlapping(uGenericNGSExperiment<_SELFPAR_, _CHROMPAR_,_BASEPAR_> &compareExp, OverlapType type=OverlapType::OVERLAP_PARTIAL);
     template<typename _BASEPAR_>
-    uGenericNGSExperiment getOverlapping(uGenericNGSChrom<_BASEPAR_> &compareExp, OverlapType type=OverlapType::OVERLAP_PARTIAL);
-    uGenericNGSExperiment getOverlapping(std::string chr, int start, int end, OverlapType type=OverlapType::OVERLAP_PARTIAL);
+    _SELF_ getOverlapping(uGenericNGSChrom<_BASEPAR_> &compareExp, OverlapType type=OverlapType::OVERLAP_PARTIAL);
+    _SELF_ getOverlapping(std::string chr, int start, int end, OverlapType type=OverlapType::OVERLAP_PARTIAL);
 
 
     /**< Temp */
     void printChromSortStatus()const;
 
-    uGenericNGSExperiment getDistinct(uGenericNGSExperiment &compareExp, OverlapType type=OverlapType::OVERLAP_PARTIAL);
-    uGenericNGSExperiment getDistinct(_CHROM_ &compareChr, OverlapType type=OverlapType::OVERLAP_PARTIAL);
-    uGenericNGSExperiment getDistinct(std::string chr, int start, int end, OverlapType type=OverlapType::OVERLAP_PARTIAL);
-    uGenericNGSExperiment getDistinct(_BASE_ elem,  OverlapType options);
+    _SELF_ getDistinct(uGenericNGSExperiment &compareExp, OverlapType type=OverlapType::OVERLAP_PARTIAL);
+    _SELF_ getDistinct(_CHROM_ &compareChr, OverlapType type=OverlapType::OVERLAP_PARTIAL);
+    _SELF_ getDistinct(std::string chr, int start, int end, OverlapType type=OverlapType::OVERLAP_PARTIAL);
+    _SELF_ getDistinct(_BASE_ elem,  OverlapType options);
     /**<  ok from here*/
 
 
@@ -567,8 +581,8 @@ void loadWithParserAndRun(std::string filepath, std::string pType, UnaryFunction
 };
 
 //Start uGenericNGSExperiment
-template<typename _CHROM_, typename _BASE_>
-void uGenericNGSExperiment<_CHROM_, _BASE_>::addSite(const _BASE_ & newSite)
+template<class _SELF_, typename _CHROM_, typename _BASE_>
+void uGenericNGSExperiment<_SELF_,_CHROM_, _BASE_>::addSite(const _BASE_ & newSite)
 {
 
     try {
@@ -587,8 +601,8 @@ void uGenericNGSExperiment<_CHROM_, _BASE_>::addSite(const _BASE_ & newSite)
     }
 }
 
-template<typename _CHROM_, typename _BASE_>
-void uGenericNGSExperiment<_CHROM_, _BASE_>::inferChrSize(){
+template<class _SELF_, typename _CHROM_, typename _BASE_>
+void uGenericNGSExperiment<_SELF_,_CHROM_, _BASE_>::inferChrSize(){
     applyOnAllChroms(std::mem_fun_ref(static_cast<void (_CHROM_::*)()>(&_CHROM_::inferChrSize)));
    //applyOnAllChroms(std::bind(static_cast<void (_CHROM_::*)()>(&_CHROM_::inferChrSize)));
 }
@@ -601,8 +615,8 @@ void uGenericNGSExperiment<_CHROM_, _BASE_>::inferChrSize(){
  * \return void uGenericNGSExperiment<_CHROM_,
  *
  */
-template<typename _CHROM_, typename _BASE_>
-void uGenericNGSExperiment<_CHROM_, _BASE_>::removeSite(std::string chr, int position)
+template<class _SELF_, typename _CHROM_, typename _BASE_>
+void uGenericNGSExperiment<_SELF_,_CHROM_, _BASE_>::removeSite(std::string chr, int position)
 {
     _CHROM_* tempChrom;
     tempChrom=&(ExpMap[chr]);
@@ -629,8 +643,8 @@ void uGenericNGSExperiment<_CHROM_, _BASE_>::removeSite(std::string chr, int pos
  * \return void
  *
  */
-template<typename _CHROM_, typename _BASE_>
- void uGenericNGSExperiment<_CHROM_, _BASE_>::loadFromTabFile(std::ifstream& stream)
+template<class _SELF_, typename _CHROM_, typename _BASE_>
+ void uGenericNGSExperiment<_SELF_,_CHROM_, _BASE_>::loadFromTabFile(std::ifstream& stream)
 {
     std::string tempString;
     while(!std::getline(stream, tempString).eof())
@@ -645,8 +659,8 @@ template<typename _CHROM_, typename _BASE_>
  * \return void
  *
  */
-template<typename _CHROM_, typename _BASE_>
- void uGenericNGSExperiment<_CHROM_, _BASE_>::loadWithParser(std::ifstream& pStream, std::string pType)
+template<class _SELF_, typename _CHROM_, typename _BASE_>
+ void uGenericNGSExperiment<_SELF_,_CHROM_, _BASE_>::loadWithParser(std::ifstream& pStream, std::string pType)
 {
     try {
     std::istream& refStream = pStream;
@@ -660,8 +674,8 @@ template<typename _CHROM_, typename _BASE_>
     inferChrSize();
 }
 
-template<typename _CHROM_, typename _BASE_>
-void uGenericNGSExperiment<_CHROM_, _BASE_>::loadWithParser(std::string filepath, std::string pType)
+template<class _SELF_, typename _CHROM_, typename _BASE_>
+void uGenericNGSExperiment<_SELF_,_CHROM_, _BASE_>::loadWithParser(std::string filepath, std::string pType)
 {
     uParser ourParser(filepath, pType);
 try {
@@ -685,8 +699,8 @@ catch (...)
  * \return void
  *
  */
-template<typename _CHROM_, typename _BASE_>
-void uGenericNGSExperiment<_CHROM_, _BASE_>::writeAsBedFile(std::ostream& out) const
+template<class _SELF_, typename _CHROM_, typename _BASE_>
+void uGenericNGSExperiment<_SELF_,_CHROM_, _BASE_>::writeAsBedFile(std::ostream& out) const
 {
     applyOnAllChroms(bind2nd(mem_fun_ref(&_CHROM_::outputBedFormat), out));
 }
@@ -697,8 +711,8 @@ void uGenericNGSExperiment<_CHROM_, _BASE_>::writeAsBedFile(std::ostream& out) c
  * \return int : Number of elements
  *
  */
-template<typename _CHROM_, typename _BASE_>
-long long uGenericNGSExperiment<_CHROM_, _BASE_>::count() const
+template<class _SELF_, typename _CHROM_, typename _BASE_>
+long long uGenericNGSExperiment<_SELF_,_CHROM_, _BASE_>::count() const
 {
     return accumulateChromsInfo([](long long partialSum, _CHROM_ chrom) {return partialSum + chrom.count();}, 0LL);
 }
@@ -712,8 +726,8 @@ long long uGenericNGSExperiment<_CHROM_, _BASE_>::count() const
  * \return int
  *
  */
-template<typename _CHROM_, typename _BASE_>
-int uGenericNGSExperiment<_CHROM_,_BASE_>::getSubsetCount(const std::string & chr, const float start, const float end, OverlapType overlap)
+template<class _SELF_, typename _CHROM_, typename _BASE_>
+int uGenericNGSExperiment<_SELF_,_CHROM_, _BASE_>::getSubsetCount(const std::string & chr, const float start, const float end, OverlapType overlap)
 {
     int count=0;
     typename NGSExpMap::iterator iterMap;
@@ -727,8 +741,8 @@ int uGenericNGSExperiment<_CHROM_,_BASE_>::getSubsetCount(const std::string & ch
 }
 
 //TODO Deprecate or make general
-template<typename _CHROM_, typename _BASE_>
-int uGenericNGSExperiment<_CHROM_,_BASE_>::getSubsetCount(const uGenericNGS & subsetReg, const OverlapType overlap)
+template<class _SELF_, typename _CHROM_, typename _BASE_>
+int uGenericNGSExperiment<_SELF_,_CHROM_, _BASE_>::getSubsetCount(const uGenericNGS & subsetReg, const OverlapType overlap)
 {
 
     int count=0;
@@ -744,10 +758,10 @@ int uGenericNGSExperiment<_CHROM_,_BASE_>::getSubsetCount(const uGenericNGS & su
  * \return void uGenericNGSExperiment<_CHROM_,
  *
  */
-template<typename _CHROM_, typename _BASE_>
-void uGenericNGSExperiment<_CHROM_, _BASE_>::sortSites()
+template<class _SELF_, typename _CHROM_, typename _BASE_>
+void uGenericNGSExperiment<_SELF_,_CHROM_, _BASE_>::sortSites()
 {
-   sortSites(uGenericNGSExperiment<_CHROM_, _BASE_>::compareStart,&_BASE_::getStart,&_BASE_::getEnd);
+   sortSites(uGenericNGSExperiment<_SELF_,_CHROM_, _BASE_>::compareStart,&_BASE_::getStart,&_BASE_::getEnd);
 }
 
   /** \brief Sort the sites vector by applying a certain comparison
@@ -756,9 +770,9 @@ void uGenericNGSExperiment<_CHROM_, _BASE_>::sortSites()
       * \param comp Compare : Binary comparison operation to perform on the sites collection
       * \return void
       */
-template<typename _CHROM_, typename _BASE_>
+template<class _SELF_, typename _CHROM_, typename _BASE_>
 template<typename Compare>
-void uGenericNGSExperiment<_CHROM_, _BASE_>::sortSites(Compare comp,std::function<float(const _BASE_*)> getStart_funct,std::function<float(const _BASE_*)> getEnd_funct)
+void uGenericNGSExperiment<_SELF_,_CHROM_, _BASE_>::sortSites(Compare comp,std::function<float(const _BASE_*)> getStart_funct,std::function<float(const _BASE_*)> getEnd_funct)
 {
     try
     {
@@ -782,12 +796,12 @@ void uGenericNGSExperiment<_CHROM_, _BASE_>::sortSites(Compare comp,std::functio
 }
 
 
-template<typename _CHROM_, typename _BASE_>
+template<class _SELF_, typename _CHROM_, typename _BASE_>
 /** \brief Returns false if at least one chrom is unsorted
  *
  * \return bool true if the experiment is sorted
  */
-bool uGenericNGSExperiment<_CHROM_, _BASE_>::isSorted()const{
+bool uGenericNGSExperiment<_SELF_,_CHROM_, _BASE_>::isSorted()const{
         bool sorted=true;
         applyOnAllChroms([&](_CHROM_& chrom){
                          if (chrom.isSorted(m_comptFunc)==false)
@@ -797,8 +811,8 @@ bool uGenericNGSExperiment<_CHROM_, _BASE_>::isSorted()const{
     return sorted;
 }
 
-template<typename _CHROM_, typename _BASE_>
-void uGenericNGSExperiment<_CHROM_,_BASE_>::printChromSortStatus()const
+template<class _SELF_, typename _CHROM_, typename _BASE_>
+void uGenericNGSExperiment<_SELF_,_CHROM_, _BASE_>::printChromSortStatus()const
 {
      for( auto it = this->begin(); it!=this->end(); it++){
             std::cerr << it->second.getChr() << " is sorted  " <<   it->second.getSortedStatus() <<std::endl;
@@ -813,8 +827,8 @@ void uGenericNGSExperiment<_CHROM_,_BASE_>::printChromSortStatus()const
  * \return Iterator pointing to value or nullptr if invalid chr.
  *
  */
-template<typename _CHROM_, typename _BASE_>
-typename std::vector<_BASE_>::const_iterator uGenericNGSExperiment<_CHROM_,_BASE_>::findPrecedingSite(std::string chr, int position)const
+template<class _SELF_, typename _CHROM_, typename _BASE_>
+typename std::vector<_BASE_>::const_iterator uGenericNGSExperiment<_SELF_,_CHROM_, _BASE_>::findPrecedingSite(std::string chr, int position)const
 {
     typename NGSExpMap::iterator iterMap;
     _CHROM_* tempChrom;
@@ -825,8 +839,8 @@ typename std::vector<_BASE_>::const_iterator uGenericNGSExperiment<_CHROM_,_BASE
         }
 return nullptr;
 }
-template<typename _CHROM_, typename _BASE_>
-typename std::vector<_BASE_>::const_iterator uGenericNGSExperiment<_CHROM_,_BASE_>::findNextSite(std::string chr, int position)const
+template<class _SELF_, typename _CHROM_, typename _BASE_>
+typename std::vector<_BASE_>::const_iterator uGenericNGSExperiment<_SELF_,_CHROM_, _BASE_>::findNextSite(std::string chr, int position)const
 {
     typename NGSExpMap::iterator iterMap;
     _CHROM_* tempChrom;
@@ -845,8 +859,8 @@ return nullptr;
  * \return _BASE_
  *
  */
-template<typename _CHROM_, typename _BASE_>
-_BASE_ uGenericNGSExperiment<_CHROM_,_BASE_>::getSite(std::string chr, int position)const
+template<class _SELF_, typename _CHROM_, typename _BASE_>
+_BASE_ uGenericNGSExperiment<_SELF_,_CHROM_, _BASE_>::getSite(std::string chr, int position)const
 {
     typename NGSExpMap::iterator iterMap;
     _CHROM_* tempChrom;
@@ -856,8 +870,8 @@ _BASE_ uGenericNGSExperiment<_CHROM_,_BASE_>::getSite(std::string chr, int posit
     return tempChrom->getSite( chr,position);
 }
 
-template<typename _CHROM_, typename _BASE_>
-_BASE_ uGenericNGSExperiment<_CHROM_,_BASE_>::getSite(typename std::vector<_BASE_>::const_iterator posItr)const
+template<class _SELF_, typename _CHROM_, typename _BASE_>
+_BASE_ uGenericNGSExperiment<_SELF_,_CHROM_, _BASE_>::getSite(typename std::vector<_BASE_>::const_iterator posItr)const
 {
     typename NGSExpMap::iterator iterMap;
     _CHROM_* tempChrom;
@@ -876,8 +890,8 @@ _BASE_ uGenericNGSExperiment<_CHROM_,_BASE_>::getSite(typename std::vector<_BASE
  * \return _CHROM_
  *
  */
- template<typename _CHROM_, typename _BASE_>
-_CHROM_ uGenericNGSExperiment<_CHROM_,_BASE_>::getSubset(std::string chr, float start, float end, OverlapType options)
+ template<class _SELF_, typename _CHROM_, typename _BASE_>
+_CHROM_ uGenericNGSExperiment<_SELF_,_CHROM_, _BASE_>::getSubset(std::string chr, float start, float end, OverlapType options)
 {
    if (ExpMap.count(chr)==0)
       return _CHROM_();
@@ -895,12 +909,12 @@ _CHROM_ uGenericNGSExperiment<_CHROM_,_BASE_>::getSubset(std::string chr, float 
  *
  */
 
- template<typename _CHROM_, typename _BASE_>
-uGenericNGSExperiment<_CHROM_,_BASE_> uGenericNGSExperiment<_CHROM_,_BASE_>::getDistinct(uGenericNGSExperiment &compareExp, OverlapType options)
+ template<class _SELF_, typename _CHROM_, typename _BASE_>
+_SELF_ uGenericNGSExperiment<_SELF_,_CHROM_, _BASE_>::getDistinct(uGenericNGSExperiment &compareExp, OverlapType options)
 {
     typename NGSExpMap::iterator iterMap;
     _CHROM_* pChrom;
-    uGenericNGSExperiment<_CHROM_,_BASE_> returnExp;
+    _SELF_ returnExp;
     for (iterMap = ExpMap.begin(); iterMap != ExpMap.end(); iterMap++)
     {
         pChrom = compareExp.getpChrom(iterMap->first);
@@ -909,12 +923,12 @@ uGenericNGSExperiment<_CHROM_,_BASE_> uGenericNGSExperiment<_CHROM_,_BASE_>::get
     return returnExp;
 }
 
-template<typename _CHROM_, typename _BASE_>
-uGenericNGSExperiment<_CHROM_,_BASE_> uGenericNGSExperiment<_CHROM_,_BASE_>::getDistinct(_CHROM_ &compareChr, OverlapType options)
+template<class _SELF_, typename _CHROM_, typename _BASE_>
+_SELF_ uGenericNGSExperiment<_SELF_,_CHROM_, _BASE_>::getDistinct(_CHROM_ &compareChr, OverlapType options)
 {
 
     _CHROM_* pChrom;
-    uGenericNGSExperiment<_CHROM_,_BASE_> returnExp;
+    _SELF_ returnExp;
     if (ExpMap.count(compareChr.getChr()) ){
         _CHROM_* tempChrom=&(ExpMap[compareChr.getChr()]);
         returnExp.combine(tempChrom->getDistinct(compareChr));
@@ -922,21 +936,21 @@ uGenericNGSExperiment<_CHROM_,_BASE_> uGenericNGSExperiment<_CHROM_,_BASE_>::get
     return returnExp;
 }
 
-template<typename _CHROM_, typename _BASE_>
-uGenericNGSExperiment<_CHROM_,_BASE_> uGenericNGSExperiment<_CHROM_,_BASE_>::getDistinct(_BASE_ elem,  OverlapType options)
+template<class _SELF_, typename _CHROM_, typename _BASE_>
+_SELF_ uGenericNGSExperiment<_SELF_,_CHROM_, _BASE_>::getDistinct(_BASE_ elem,  OverlapType options)
 {
     typename NGSExpMap::iterator iterMap;
-    uGenericNGSExperiment<_CHROM_,_BASE_> returnExp;
+    _SELF_ returnExp;
     _CHROM_* tempChrom=&(ExpMap[elem.getChr()]);
 
     return getDistinct(elem.getChr(),elem.getStart(),elem.getEnd(),options);
 }
 
-template<typename _CHROM_, typename _BASE_>
-uGenericNGSExperiment<_CHROM_,_BASE_> uGenericNGSExperiment<_CHROM_,_BASE_>::getDistinct(std::string chr, int start, int end,  OverlapType options)
+template<class _SELF_, typename _CHROM_, typename _BASE_>
+_SELF_ uGenericNGSExperiment<_SELF_,_CHROM_, _BASE_>::getDistinct(std::string chr, int start, int end,  OverlapType options)
 {
     typename NGSExpMap::iterator iterMap;
-    uGenericNGSExperiment<_CHROM_,_BASE_> returnExp;
+    _SELF_ returnExp;
     _CHROM_* tempChrom=&(ExpMap[chr]);
 
     returnExp.combine(tempChrom->second.getDistinct(chr, start, end) );
@@ -951,8 +965,8 @@ uGenericNGSExperiment<_CHROM_,_BASE_> uGenericNGSExperiment<_CHROM_,_BASE_>::get
  * \return void
  *
  */
-template<typename _CHROM_, typename _BASE_>
-void uGenericNGSExperiment<_CHROM_,_BASE_>::combine(const _CHROM_ & inputChrom)
+template<class _SELF_, typename _CHROM_, typename _BASE_>
+void uGenericNGSExperiment<_SELF_,_CHROM_, _BASE_>::combine(const _CHROM_ & inputChrom)
 {
     //TODO remove const ref to allow move semantics?
     _CHROM_* currentChrom;
@@ -972,13 +986,13 @@ void uGenericNGSExperiment<_CHROM_,_BASE_>::combine(const _CHROM_ & inputChrom)
  * \return uGenericNGSExperiment<_CHROM_,_BASE_> Experiment containing all elements from THIS that overlap with parameter.
  *
  */
-template<typename _CHROM_, typename _BASE_>
-template<typename _CHROMPAR_, typename _BASEPAR_>
-uGenericNGSExperiment<_CHROM_,_BASE_> uGenericNGSExperiment<_CHROM_,_BASE_>::getOverlapping(uGenericNGSExperiment<_CHROMPAR_,_BASEPAR_> &compareExp, OverlapType type)
+template<class _SELF_, typename _CHROM_, typename _BASE_>
+template<typename _SELFPAR_, typename _CHROMPAR_, typename _BASEPAR_>
+_SELF_ uGenericNGSExperiment<_SELF_,_CHROM_,_BASE_>::getOverlapping(uGenericNGSExperiment<_SELFPAR_, _CHROMPAR_,_BASEPAR_> &compareExp, OverlapType type)
 {
     typename NGSExpMap::iterator iterMap;
     _CHROM_* pChrom;
-    uGenericNGSExperiment<_CHROM_,_BASE_> returnExp;
+    _SELF_ returnExp;
     for (iterMap = ExpMap.begin(); iterMap != ExpMap.end(); iterMap++)
     {
         pChrom = compareExp.getpChrom(iterMap->first);
@@ -987,7 +1001,7 @@ uGenericNGSExperiment<_CHROM_,_BASE_> uGenericNGSExperiment<_CHROM_,_BASE_>::get
     return returnExp;
 }
 
-template<typename _CHROM_, typename _BASE_>
+template<class _SELF_, typename _CHROM_, typename _BASE_>
 template<typename _BASEPAR_>
 /** \brief Same as above, but compare a chrom rather then EXP
  *
@@ -996,10 +1010,10 @@ template<typename _BASEPAR_>
  * \return uGenericNGSExperiment<_CHROM_,_BASE_> Experiment containing all elements from THIS that overlap with parameter.
  *
  */
- uGenericNGSExperiment<_CHROM_,_BASE_> uGenericNGSExperiment<_CHROM_,_BASE_>::getOverlapping(uGenericNGSChrom<_BASEPAR_> &compareChrom, OverlapType type)
+ _SELF_ uGenericNGSExperiment<_SELF_, _CHROM_,_BASE_>::getOverlapping(uGenericNGSChrom<_BASEPAR_> &compareChrom, OverlapType type)
 {
     try{
-    uGenericNGSExperiment<_CHROM_,_BASE_> tempExp;
+    _SELF_ tempExp;
 
     tempExp.combine(compareChrom);
     return getOverlapping(tempExp,type);
@@ -1010,8 +1024,8 @@ template<typename _BASEPAR_>
     }
 }
 /**< See above, but using fixed positions */
-template<typename _CHROM_, typename _BASE_>
-uGenericNGSExperiment<_CHROM_,_BASE_> uGenericNGSExperiment<_CHROM_,_BASE_>::getOverlapping(std::string chr, int start, int end, OverlapType type)
+template<class _SELF_, typename _CHROM_, typename _BASE_>
+_SELF_ uGenericNGSExperiment<_SELF_,_CHROM_,_BASE_>::getOverlapping(std::string chr, int start, int end, OverlapType type)
 {
     try {
     uGenericNGSChrom<_BASE_> tempChrom;
@@ -1035,8 +1049,8 @@ uGenericNGSExperiment<_CHROM_,_BASE_> uGenericNGSExperiment<_CHROM_,_BASE_>::get
  * \return void
  *
  */
-template<typename _CHROM_, typename _BASE_>
-void uGenericNGSExperiment<_CHROM_,_BASE_>::divideItemsIntoNBins(int N, SplitType type)
+template<class _SELF_, typename _CHROM_, typename _BASE_>
+void uGenericNGSExperiment<_SELF_,_CHROM_,_BASE_>::divideItemsIntoNBins(int N, SplitType type)
 {
     try
     {
@@ -1062,8 +1076,8 @@ for( auto& x : ExpMap)
  * \return void
  *
  */
-template<typename _CHROM_, typename _BASE_>
-void uGenericNGSExperiment<_CHROM_,_BASE_>::divideItemsIntoBinofSize(int N, SplitType type)
+template<class _SELF_, typename _CHROM_, typename _BASE_>
+void uGenericNGSExperiment<_SELF_,_CHROM_,_BASE_>::divideItemsIntoBinofSize(int N, SplitType type)
 {
     try
     {

@@ -12,11 +12,13 @@ class uRegion;
 class uTags;
 class uGenericNGS;
 class uToken;
+class uBasicNGS;
 enum class token_param;
 
 
 typedef boost::error_info<struct string_info,std::string> string_error;
 typedef boost::error_info<struct region_info,uRegion> region_error;
+typedef boost::error_info<struct basic_info,uBasicNGS> basic_error;
 typedef boost::error_info<struct tag_info,uTags> tag_error;
 typedef boost::error_info<struct generic_info,uGenericNGS> generic_error;
 typedef boost::error_info<struct skip_tags,std::vector<uTags>> skipped_tags;

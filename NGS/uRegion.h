@@ -10,6 +10,9 @@
 namespace NGS {
 class uToken;
 class uParser;
+class uBasicNGS;
+class uBasicNGSChrom;
+class uBasicNGSExperiment;
 class uRegion : public uGenericNGS
 {
     public:
@@ -29,8 +32,6 @@ class uRegion : public uGenericNGS
         void setSignal(int i, float value);
         void setSignal(std::vector<float>);
         std::vector<float> getSignal();
-
-
 
 
         void writeSignal(std::ostream& out) const;
@@ -58,18 +59,24 @@ class uRegionExperiment;
 class uRegionChrom :  public uGenericNGSChrom<uRegion>
 {
     public:
-     void measureDensityOverlap(uGenericNGSExperiment<uGenericNGSChrom<uGenericNGS>,uGenericNGS>& expToComp , OverlapType=OverlapType::OVERLAP_PARTIAL);
-     void measureDensityOverlap(uGenericNGSChrom<uGenericNGS>& chromtoComp, const OverlapType=OverlapType::OVERLAP_PARTIAL);
-     void measureDensityOverlap(uTagsChrom& chromtoComp, const OverlapType=OverlapType::OVERLAP_PARTIAL);
+
+     void measureDensityOverlap(const  uGenericNGSChrom<uGenericNGS>& chromtoComp, const OverlapType=OverlapType::OVERLAP_PARTIAL);
+     void measureDensityOverlap(const  uTagsChrom& chromtoComp, const OverlapType=OverlapType::OVERLAP_PARTIAL);
+     void measureDensityOverlap(const  uRegionChrom& chromtoComp, const OverlapType=OverlapType::OVERLAP_PARTIAL);
+     void measureDensityOverlap(const  uBasicNGSChrom& chromtoComp, const OverlapType=OverlapType::OVERLAP_PARTIAL);
+
+
+     void generateSignal(const uRegionChrom & chromToComp);
+     void generateSignal(const uTagsChrom & chromToComp);
+     void generateSignal(const uBasicNGSChrom & chromToComp);
+
      void writeDensityAsTab(std::ostream& out);
-     void generateSignal(uTagsExperiment& expToComp);
      void writeAll(std::ostream& out);
      void writeSignal(std::ostream& out);
-     void generateSignal(const uRegionExperiment & expToComp);
-     void generateSignal(const uRegionChrom & chromToComp);
+
 };
 
-class uRegionExperiment: public uGenericNGSExperiment<uRegionChrom, uRegion>{
+class uRegionExperiment: public uGenericNGSExperiment<uRegionExperiment,uRegionChrom, uRegion>{
      public:
 
 
@@ -77,10 +84,17 @@ class uRegionExperiment: public uGenericNGSExperiment<uRegionChrom, uRegion>{
     uRegionExperiment(const uRegionExperiment&) = default;
     uRegionExperiment()=default;
 
-    void measureDensityOverlap(uGenericNGSExperiment<uGenericNGSChrom<uGenericNGS>, uGenericNGS>& expToComp, const OverlapType=OverlapType::OVERLAP_PARTIAL);
-    void measureDensityOverlap(uTagsExperiment& expToComp, const OverlapType poverlap=OverlapType::OVERLAP_PARTIAL);
-    void generateSignal(uTagsExperiment& expToComp);
+
+    void measureDensityOverlap(const uTagsExperiment& expToComp, const OverlapType poverlap=OverlapType::OVERLAP_PARTIAL);
+    void measureDensityOverlap(const uRegionExperiment& expToComp, const OverlapType poverlap=OverlapType::OVERLAP_PARTIAL);
+    void measureDensityOverlap(const uBasicNGSExperiment& expToComp, const OverlapType poverlap=OverlapType::OVERLAP_PARTIAL);
+
+
+
+    void generateSignal(const uTagsExperiment& expToComp);
     void generateSignal(const uRegionExperiment & expToComp);
+    void generateSignal(const uBasicNGSExperiment & expToComp);
+
     void writeDensityAsTab(std::ostream& out);
     void writeAll(std::ostream& out);
     void writeSignal(std::ostream& out);

@@ -318,7 +318,7 @@ public:
 
 // TODO: Lot's of code that should move to parser?
 /**< Our complete tag experiment */
-class uTagsExperiment: public uGenericNGSExperiment<uTagsChrom, uTags>
+class uTagsExperiment: public uGenericNGSExperiment<uTagsExperiment,uTagsChrom, uTags>
 {
 
 private:
