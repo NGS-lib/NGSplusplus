@@ -89,7 +89,6 @@ public:
 
     uGenericNGS()
     {};
-
     uGenericNGS(const uToken & pToken):chr(pToken.getParam(token_param::CHR))
     {
         try

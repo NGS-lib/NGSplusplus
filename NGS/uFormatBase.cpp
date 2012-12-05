@@ -319,7 +319,7 @@ std::vector<uGenericNGS> uGenericNGS::divideIntoBinofSize(const int N, const Spl
     }
 
     return returnVec;
-};
+}
 /**< A score is an arbitray value set that can be used later */
 /** \brief Set the score of a contig. Note that this involves resizing the vector, so settting arbitrarily large score counts can bust your memory
  * \param float p_score: the score to set

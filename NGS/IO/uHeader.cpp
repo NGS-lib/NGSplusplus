@@ -74,7 +74,7 @@ bool uHeader::_valideStepSize(const std::string& sizeString) const
     catch(...){
         return false;
     }
-};
+}
 
 
 /** \brief Returns true if a given reference size is larger then 0
@@ -95,7 +95,7 @@ bool uHeader::_validateChrSize(const std::string& sizeString) const
     catch(...){
         return false;
     }
-};
+}
 
 
 bool uHeader::_validateChrList(const std::string& chrString)const

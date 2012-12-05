@@ -5,9 +5,13 @@
 
 //
 
-namespace NGS {
+namespace NGS
+{
 //_BASE_ is our Tags, _CHROM_ our Chrom structure.
-enum class ReadMode{ DEFAULT, GRADUAL };
+enum class ReadMode
+{
+    DEFAULT, GRADUAL
+};
 
 
 /**<
@@ -27,7 +31,7 @@ class uGenericNGSExperiment
 {
     /**< Can be used to make sure EXP, chrom both use appropriate base */
     static_assert(
-        std::is_convertible<_CHROM_, uGenericNGSChrom<_BASE_>>::value,
+        std::is_convertible<_CHROM_, uGenericNGSChrom<_CHROM_,_BASE_>>::value,
         "Both types do not use the same underlying data structures"
     );
 
@@ -76,31 +80,38 @@ protected:
     std::function<bool(const _BASE_ &item1, const _BASE_ &item2)> m_comptFunc=compareStart;
 
     void removeSite(std::string chr,int position);
-
     void inferChrSize();
 
 
 public:
 
-    virtual ~uGenericNGSExperiment(){};
-    uGenericNGSExperiment& operator=(const uGenericNGSExperiment& copFrom);
-    uGenericNGSExperiment(const uGenericNGSExperiment&);
+    virtual ~uGenericNGSExperiment() {};
+    uGenericNGSExperiment& operator=(const uGenericNGSExperiment& copFrom)=default;
+    uGenericNGSExperiment(const uGenericNGSExperiment&)=default;
 
-    auto begin()->decltype(ExpMap.begin()){return ExpMap.begin();};
-    auto end()->decltype(ExpMap.end()){return ExpMap.end();};
+    auto begin()->decltype(ExpMap.begin())
+    {
+        return ExpMap.begin();
+    };
+    auto end()->decltype(ExpMap.end())
+    {
+        return ExpMap.end();
+    };
 
-    auto begin()const->decltype(ExpMap.cbegin()){return ExpMap.cbegin();};
-    auto end()const->decltype(ExpMap.cend()){return ExpMap.cend();};
-
-    _CHROM_ getSubset(std::string chr, float start, float end, OverlapType options=OverlapType::OVERLAP_PARTIAL);
-   // _CHROM_ getDistinct(std::string chr, int start, int end, OverlapType options=OverlapType::OVERLAP_PARTIAL);
-
-    //Should we be publicy allowing the turn of a pointer to our internal structure? I would assume not..
+    auto begin()const->decltype(ExpMap.cbegin())
+    {
+        return ExpMap.cbegin();
+    };
+    auto end()const->decltype(ExpMap.cend())
+    {
+        return ExpMap.cend();
+    };
 
     _CHROM_ getChrom(const std::string & chrom) const
     {
-        if (ExpMap.count(chrom)==0){
-           throw ugene_operation_throw()<<string_error("Requested non-existent Chrom from Exp in getChrom(), value : " +chrom);
+        if (ExpMap.count(chrom)==0)
+        {
+            throw ugene_operation_throw()<<string_error("Requested non-existent Chrom from Exp in getChrom(), value : " +chrom);
         }
         return  ExpMap.find(chrom)->second;;
     };
@@ -108,8 +119,9 @@ public:
 
     const _CHROM_* getpChrom(const std::string & chrom) const
     {
-        if (ExpMap.count(chrom)==0){
-           throw ugene_operation_throw()<<string_error("Required pointer to non-existent Chrom from Exp in getpChrom(), value : " +chrom);
+        if (ExpMap.count(chrom)==0)
+        {
+            throw ugene_operation_throw()<<string_error("Required pointer to non-existent Chrom from Exp in getpChrom(), value : " +chrom);
         }
         const auto refer=&(ExpMap.find(chrom)->second);
         return (refer);
@@ -157,22 +169,23 @@ public:
 
     template<class _SELFPAR_, typename _CHROMPAR_, typename _BASEPAR_>
     _SELF_ getOverlapping(uGenericNGSExperiment<_SELFPAR_, _CHROMPAR_,_BASEPAR_> &compareExp, OverlapType type=OverlapType::OVERLAP_PARTIAL);
-    template<typename _BASEPAR_>
-    _SELF_ getOverlapping(uGenericNGSChrom<_BASEPAR_> &compareExp, OverlapType type=OverlapType::OVERLAP_PARTIAL);
+    template<class _SELFPAR_,typename _BASEPAR_>
+    _SELF_ getOverlapping(uGenericNGSChrom<_SELFPAR_,_BASEPAR_> &compareExp, OverlapType type=OverlapType::OVERLAP_PARTIAL);
     _SELF_ getOverlapping(std::string chr, int start, int end, OverlapType type=OverlapType::OVERLAP_PARTIAL);
 
-
-    /**< Temp */
     void printChromSortStatus()const;
 
-    _SELF_ getDistinct(uGenericNGSExperiment &compareExp, OverlapType type=OverlapType::OVERLAP_PARTIAL);
+
+     _CHROM_ getSubset(std::string chr, float start, float end, OverlapType options=OverlapType::OVERLAP_PARTIAL);
+    _SELF_ getDistinct( uGenericNGSExperiment &compareExp, OverlapType type=OverlapType::OVERLAP_PARTIAL);
     _SELF_ getDistinct(_CHROM_ &compareChr, OverlapType type=OverlapType::OVERLAP_PARTIAL);
-    _SELF_ getDistinct(std::string chr, int start, int end, OverlapType type=OverlapType::OVERLAP_PARTIAL);
-    _SELF_ getDistinct(_BASE_ elem,  OverlapType options);
+    _SELF_ getDistinct( std::string chr, float start, float end, OverlapType type=OverlapType::OVERLAP_PARTIAL);
+    _SELF_ getDistinct(_BASE_ elem,  OverlapType options=OverlapType::OVERLAP_PARTIAL);
     /**<  ok from here*/
 
 
-    void setChrSize(std::string chr, int chrSize){
+    void setChrSize(std::string chr, int chrSize)
+    {
         ExpMap[chr].setChromSize(chrSize);
     };
     int getChrSize(std::string chr)
@@ -194,19 +207,20 @@ public:
      *
      */
     template<class UnaryPredicate>
-    void removeSpecificSites(UnaryPredicate pred){
-    try
+    void removeSpecificSites(UnaryPredicate pred)
+    {
+        try
         {
-        for(auto& x : ExpMap)
+            for(auto& x : ExpMap)
             {
                 x.second.removeSpecificSites(pred);
             }
         }
         catch(uChrom_operation_throw &e)
         {
-            #ifdef DEBUG
+#ifdef DEBUG
             std::cerr << "Failed in divideItemsIntoBinofSize"<<std::endl;
-            #endif
+#endif
             throw uExp_operation_throw()<<string_error("Throwing while trying to call removeSpecificSites() on all chroms");
         }
 
@@ -277,7 +291,8 @@ public:
     auto computeOnOneChrom(UnaryOperation unary_op, const std::string & chr) const -> std::map<std::string, decltype(unary_op(_CHROM_()))>
     {
         std::map<std::string, decltype(unary_op(_CHROM_()))> results;
-       if (ExpMap.count(chr)){
+        if (ExpMap.count(chr))
+        {
             transform(std::begin(ExpMap), std::end(ExpMap), std::inserter(results, begin(results)), [&unary_op](NGSExpPair element)
             {
                 return make_pair(element.first, unary_op(element.second));
@@ -300,11 +315,11 @@ public:
       */
     template<class UnaryPredicate>
     auto getSpecificChroms(UnaryPredicate pred) const->decltype(ExpMap)
-   // NGSExpMap getSpecificChroms(UnaryPredicate pred) const
+    // NGSExpMap getSpecificChroms(UnaryPredicate pred) const
     {
 //         auto begin()->decltype(ExpMap.begin()){return ExpMap.begin();};
 
-       // NGSExpMap copyColl;
+        // NGSExpMap copyColl;
         decltype(ExpMap) copyColl;
         copy_if(std::begin(ExpMap), std::end(ExpMap), std::inserter(copyColl, std::begin(copyColl)), [&pred]( const typename decltype(ExpMap)::value_type& element)
         {
@@ -352,9 +367,11 @@ public:
     template<class UnaryFunction>
     UnaryFunction applyOnOneChrom(UnaryFunction f, const std::string & chr)
     {
-        if (ExpMap.count(chr)){
+        if (ExpMap.count(chr))
+        {
             auto & elem = ExpMap[chr];
-            f(elem);}
+            f(elem);
+        }
         return f;
     }
 
@@ -403,7 +420,7 @@ public:
         });
         return f;
     }
-     /**< Const version of its equivalent */
+    /**< Const version of its equivalent */
     template<class UnaryFunction>
     UnaryFunction applyOnSites(const UnaryFunction f)const
     {
@@ -416,64 +433,72 @@ public:
     }
 
 
-/** \brief load data from Parser, convert to unitary and execute the given function. Does -not- necessarily add to EXP
- *
- * \param stream std::ifstream& file to load from
- * \return void
- *
- */
-template<class UnaryFunction>
-void loadWithParserAndRun(std::ifstream& pStream, std::string pType, UnaryFunction f , int pBlockSize=1)
-{
-    try {
-    std::istream& refStream = pStream;
-    uParser Curparser(&refStream, pType);
-    std::vector<uToken> loadedTokens;
-    loadedTokens.resize(pBlockSize);
-    while(!Curparser.eof()){
-        int curLoaded=0;
-            /**< Load a block of data */
-            while ((curLoaded<pBlockSize)&&(!Curparser.eof()))
+    /** \brief load data from Parser, convert to unitary and execute the given function. Does -not- necessarily add to EXP
+     *
+     * \param stream std::ifstream& file to load from
+     * \return void
+     *
+     */
+    template<class UnaryFunction>
+    void loadWithParserAndRun(std::ifstream& pStream, std::string pType, UnaryFunction f , int pBlockSize=1)
+    {
+        try
+        {
+            std::istream& refStream = pStream;
+            uParser Curparser(&refStream, pType);
+            std::vector<uToken> loadedTokens;
+            loadedTokens.resize(pBlockSize);
+            while(!Curparser.eof())
             {
-                loadedTokens.push_back(Curparser.getNextEntry());
-                curLoaded++;
-            }
-            /**< Operate */
-            for(const uToken & curToken:loadedTokens)
-            {
-                f( (_BASE_)(curToken) );
+                int curLoaded=0;
+                /**< Load a block of data */
+                while ((curLoaded<pBlockSize)&&(!Curparser.eof()))
+                {
+                    loadedTokens.push_back(Curparser.getNextEntry());
+                    curLoaded++;
+                }
+                /**< Operate */
+                for(const uToken & curToken:loadedTokens)
+                {
+                    f( (_BASE_)(curToken) );
+                }
             }
         }
+        catch(...)
+        {
+            throw;
+        }
     }
-    catch(...)
-    { throw; }
-}
 
-template<class UnaryFunction>
-void loadWithParserAndRun(std::string filepath, std::string pType, UnaryFunction f, int pBlockSize=1)
-{
-    try {
-    uParser Curparser(filepath, pType);
-    std::vector<uToken> loadedTokens;
-    loadedTokens.resize(pBlockSize);
-    while(!Curparser.eof()){
-        int curLoaded=0;
-            /**< Load a block of data */
-            while ((curLoaded<pBlockSize)&&(!Curparser.eof()))
+    template<class UnaryFunction>
+    void loadWithParserAndRun(std::string filepath, std::string pType, UnaryFunction f, int pBlockSize=1)
+    {
+        try
+        {
+            uParser Curparser(filepath, pType);
+            std::vector<uToken> loadedTokens;
+            loadedTokens.resize(pBlockSize);
+            while(!Curparser.eof())
             {
-                loadedTokens.at(curLoaded)=(Curparser.getNextEntry());
-                curLoaded++;
-            }
-            /**< Operate */
-            for(const uToken & curToken:loadedTokens)
-            {
-                f( (_BASE_)(curToken) );
+                int curLoaded=0;
+                /**< Load a block of data */
+                while ((curLoaded<pBlockSize)&&(!Curparser.eof()))
+                {
+                    loadedTokens.at(curLoaded)=(Curparser.getNextEntry());
+                    curLoaded++;
+                }
+                /**< Operate */
+                for(const uToken & curToken:loadedTokens)
+                {
+                    f( (_BASE_)(curToken) );
+                }
             }
         }
+        catch(...)
+        {
+            throw;
+        }
     }
-    catch(...)
-    { throw; }
-}
 
 
 
@@ -567,44 +592,49 @@ void loadWithParserAndRun(std::string filepath, std::string pType, UnaryFunction
     }
     /**< End STL wrappers */
 
-  uGenericNGSExperiment():op_mode(ReadMode::DEFAULT) {};
+    uGenericNGSExperiment():op_mode(ReadMode::DEFAULT) {};
 
-    //TODO Move to protect or private, should not be public
     _CHROM_* getpChrom(const std::string & chrom)
     {
-        if (ExpMap.count(chrom)==0){
-           throw ugene_operation_throw()<<string_error("Required pointer to non-existent Chrom from Exp in getpChrom(), value : " +chrom);
+        if (ExpMap.count(chrom)==0)
+        {
+            throw ugene_operation_throw()<<string_error("Required pointer to non-existent Chrom from Exp in getpChrom(), value : " +chrom);
         }
         return &(ExpMap[chrom]);
     };
 
 };
 
+
+
+
 //Start uGenericNGSExperiment
 template<class _SELF_, typename _CHROM_, typename _BASE_>
 void uGenericNGSExperiment<_SELF_,_CHROM_, _BASE_>::addSite(const _BASE_ & newSite)
 {
 
-    try {
-    _CHROM_* ptempChrom;
+    try
+    {
+        _CHROM_* ptempChrom;
 
-    ptempChrom=&(ExpMap[newSite.getChr()]);
-    ptempChrom->setChr(newSite.getChr());
-    ptempChrom->addSite(newSite);
+        ptempChrom=&(ExpMap[newSite.getChr()]);
+        ptempChrom->setChr(newSite.getChr());
+        ptempChrom->addSite(newSite);
     }
     catch(std::exception & e)
     {
-          #ifdef DEBUG
-          std::cerr << "Catching and re-throwing in uFormatExp::addSite()" <<std::endl;
-          #endif
+#ifdef DEBUG
+        std::cerr << "Catching and re-throwing in uFormatExp::addSite()" <<std::endl;
+#endif
         throw e;
     }
 }
 
 template<class _SELF_, typename _CHROM_, typename _BASE_>
-void uGenericNGSExperiment<_SELF_,_CHROM_, _BASE_>::inferChrSize(){
+void uGenericNGSExperiment<_SELF_,_CHROM_, _BASE_>::inferChrSize()
+{
     applyOnAllChroms(std::mem_fun_ref(static_cast<void (_CHROM_::*)()>(&_CHROM_::inferChrSize)));
-   //applyOnAllChroms(std::bind(static_cast<void (_CHROM_::*)()>(&_CHROM_::inferChrSize)));
+    //applyOnAllChroms(std::bind(static_cast<void (_CHROM_::*)()>(&_CHROM_::inferChrSize)));
 }
 
 
@@ -644,12 +674,12 @@ void uGenericNGSExperiment<_SELF_,_CHROM_, _BASE_>::removeSite(std::string chr, 
  *
  */
 template<class _SELF_, typename _CHROM_, typename _BASE_>
- void uGenericNGSExperiment<_SELF_,_CHROM_, _BASE_>::loadFromTabFile(std::ifstream& stream)
+void uGenericNGSExperiment<_SELF_,_CHROM_, _BASE_>::loadFromTabFile(std::ifstream& stream)
 {
     std::string tempString;
     while(!std::getline(stream, tempString).eof())
     {
-       addSite( static_cast<_BASE_>(factory::makeNGSfromTabString(tempString)));
+        addSite( static_cast<_BASE_>(factory::makeNGSfromTabString(tempString)));
     }
 }
 
@@ -660,17 +690,21 @@ template<class _SELF_, typename _CHROM_, typename _BASE_>
  *
  */
 template<class _SELF_, typename _CHROM_, typename _BASE_>
- void uGenericNGSExperiment<_SELF_,_CHROM_, _BASE_>::loadWithParser(std::ifstream& pStream, std::string pType)
+void uGenericNGSExperiment<_SELF_,_CHROM_, _BASE_>::loadWithParser(std::ifstream& pStream, std::string pType)
 {
-    try {
-    std::istream& refStream = pStream;
-    uParser Curparser(&refStream, pType);
-    while(!Curparser.eof()){
-        addSite(Curparser.getNextEntry());
+    try
+    {
+        std::istream& refStream = pStream;
+        uParser Curparser(&refStream, pType);
+        while(!Curparser.eof())
+        {
+            addSite(Curparser.getNextEntry());
         }
     }
     catch(...)
-    { throw; }
+    {
+        throw;
+    }
     inferChrSize();
 }
 
@@ -678,12 +712,14 @@ template<class _SELF_, typename _CHROM_, typename _BASE_>
 void uGenericNGSExperiment<_SELF_,_CHROM_, _BASE_>::loadWithParser(std::string filepath, std::string pType)
 {
     uParser ourParser(filepath, pType);
-try {
-        while (ourParser.eof()==false){
+    try
+    {
+        while (ourParser.eof()==false)
+        {
             this->addSite((ourParser.getNextEntry()));
+        }
     }
-}
-catch (...)
+    catch (...)
     {
         throw;
     }
@@ -714,7 +750,10 @@ void uGenericNGSExperiment<_SELF_,_CHROM_, _BASE_>::writeAsBedFile(std::ostream&
 template<class _SELF_, typename _CHROM_, typename _BASE_>
 long long uGenericNGSExperiment<_SELF_,_CHROM_, _BASE_>::count() const
 {
-    return accumulateChromsInfo([](long long partialSum, _CHROM_ chrom) {return partialSum + chrom.count();}, 0LL);
+    return accumulateChromsInfo([](long long partialSum, _CHROM_ chrom)
+    {
+        return partialSum + chrom.count();
+    }, 0LL);
 }
 
 /** \brief Return overlap of a specific position for a specific map
@@ -761,15 +800,15 @@ int uGenericNGSExperiment<_SELF_,_CHROM_, _BASE_>::getSubsetCount(const uGeneric
 template<class _SELF_, typename _CHROM_, typename _BASE_>
 void uGenericNGSExperiment<_SELF_,_CHROM_, _BASE_>::sortSites()
 {
-   sortSites(uGenericNGSExperiment<_SELF_,_CHROM_, _BASE_>::compareStart,&_BASE_::getStart,&_BASE_::getEnd);
+    sortSites(uGenericNGSExperiment<_SELF_,_CHROM_, _BASE_>::compareStart,&_BASE_::getStart,&_BASE_::getEnd);
 }
 
-  /** \brief Sort the sites vector by applying a certain comparison
-      *      See documention on Chrom version for indepth comments
-      *
-      * \param comp Compare : Binary comparison operation to perform on the sites collection
-      * \return void
-      */
+/** \brief Sort the sites vector by applying a certain comparison
+    *      See documention on Chrom version for indepth comments
+    *
+    * \param comp Compare : Binary comparison operation to perform on the sites collection
+    * \return void
+    */
 template<class _SELF_, typename _CHROM_, typename _BASE_>
 template<typename Compare>
 void uGenericNGSExperiment<_SELF_,_CHROM_, _BASE_>::sortSites(Compare comp,std::function<float(const _BASE_*)> getStart_funct,std::function<float(const _BASE_*)> getEnd_funct)
@@ -785,9 +824,9 @@ void uGenericNGSExperiment<_SELF_,_CHROM_, _BASE_>::sortSites(Compare comp,std::
         m_comptFunc=comp;
         /**< AS there are two SorSites functions, we must specify this rather clunky signature so it knows what overload to use */
         auto sortfunct=std::bind( (void(_CHROM_::*)(Compare,std::function<float(const _BASE_*)>,std::function<float(const _BASE_*)>))
-                                 &_CHROM_::sortSites,std::placeholders::_1, comp,getStart_funct,getEnd_funct);
+                                  &_CHROM_::sortSites,std::placeholders::_1, comp,getStart_funct,getEnd_funct);
         applyOnAllChroms(sortfunct );
-       // return std::sort(std::begin(VecSites), std::end(VecSites), comp);
+        // return std::sort(std::begin(VecSites), std::end(VecSites), comp);
     }
     catch(std::exception &e)
     {
@@ -801,12 +840,14 @@ template<class _SELF_, typename _CHROM_, typename _BASE_>
  *
  * \return bool true if the experiment is sorted
  */
-bool uGenericNGSExperiment<_SELF_,_CHROM_, _BASE_>::isSorted()const{
-        bool sorted=true;
-        applyOnAllChroms([&](_CHROM_& chrom){
-                         if (chrom.isSorted(m_comptFunc)==false)
-                         sorted=false;
-                         });
+bool uGenericNGSExperiment<_SELF_,_CHROM_, _BASE_>::isSorted()const
+{
+    bool sorted=true;
+    applyOnAllChroms([&](_CHROM_& chrom)
+    {
+        if (chrom.isSorted(m_comptFunc)==false)
+            sorted=false;
+    });
 
     return sorted;
 }
@@ -814,8 +855,9 @@ bool uGenericNGSExperiment<_SELF_,_CHROM_, _BASE_>::isSorted()const{
 template<class _SELF_, typename _CHROM_, typename _BASE_>
 void uGenericNGSExperiment<_SELF_,_CHROM_, _BASE_>::printChromSortStatus()const
 {
-     for( auto it = this->begin(); it!=this->end(); it++){
-            std::cerr << it->second.getChr() << " is sorted  " <<   it->second.getSortedStatus() <<std::endl;
+    for( auto it = this->begin(); it!=this->end(); it++)
+    {
+        std::cerr << it->second.getChr() << " is sorted  " <<   it->second.getSortedStatus() <<std::endl;
     }
 }
 
@@ -833,23 +875,23 @@ typename std::vector<_BASE_>::const_iterator uGenericNGSExperiment<_SELF_,_CHROM
     typename NGSExpMap::iterator iterMap;
     _CHROM_* tempChrom;
     if (ExpMap.count(chr))
-        {
-            tempChrom=&(ExpMap[chr]);
-             return tempChrom->findPrecedingSite(position);
-        }
-return nullptr;
+    {
+        tempChrom=&(ExpMap[chr]);
+        return tempChrom->findPrecedingSite(position);
+    }
+    return nullptr;
 }
 template<class _SELF_, typename _CHROM_, typename _BASE_>
 typename std::vector<_BASE_>::const_iterator uGenericNGSExperiment<_SELF_,_CHROM_, _BASE_>::findNextSite(std::string chr, int position)const
 {
     typename NGSExpMap::iterator iterMap;
     _CHROM_* tempChrom;
-     if (ExpMap.count(chr))
-        {
-            tempChrom=&(ExpMap[chr]);
-            return tempChrom->findPrecedingSite(position);
-        }
-return nullptr;
+    if (ExpMap.count(chr))
+    {
+        tempChrom=&(ExpMap[chr]);
+        return tempChrom->findPrecedingSite(position);
+    }
+    return nullptr;
 }
 
 /** \brief Get a specific site from a specific chrom. Overloaded to work with position or an interator, typically got from findPrecedingor findNext
@@ -890,11 +932,11 @@ _BASE_ uGenericNGSExperiment<_SELF_,_CHROM_, _BASE_>::getSite(typename std::vect
  * \return _CHROM_
  *
  */
- template<class _SELF_, typename _CHROM_, typename _BASE_>
+template<class _SELF_, typename _CHROM_, typename _BASE_>
 _CHROM_ uGenericNGSExperiment<_SELF_,_CHROM_, _BASE_>::getSubset(std::string chr, float start, float end, OverlapType options)
 {
-   if (ExpMap.count(chr)==0)
-      return _CHROM_();
+    if (ExpMap.count(chr)==0)
+        return _CHROM_();
 
     return (_CHROM_)ExpMap[chr].getSubset(start,end,options);
 }
@@ -909,7 +951,7 @@ _CHROM_ uGenericNGSExperiment<_SELF_,_CHROM_, _BASE_>::getSubset(std::string chr
  *
  */
 
- template<class _SELF_, typename _CHROM_, typename _BASE_>
+template<class _SELF_, typename _CHROM_, typename _BASE_>
 _SELF_ uGenericNGSExperiment<_SELF_,_CHROM_, _BASE_>::getDistinct(uGenericNGSExperiment &compareExp, OverlapType options)
 {
     typename NGSExpMap::iterator iterMap;
@@ -929,10 +971,11 @@ _SELF_ uGenericNGSExperiment<_SELF_,_CHROM_, _BASE_>::getDistinct(_CHROM_ &compa
 
     _CHROM_* pChrom;
     _SELF_ returnExp;
-    if (ExpMap.count(compareChr.getChr()) ){
+    if (ExpMap.count(compareChr.getChr()) )
+    {
         _CHROM_* tempChrom=&(ExpMap[compareChr.getChr()]);
         returnExp.combine(tempChrom->getDistinct(compareChr));
-        }
+    }
     return returnExp;
 }
 
@@ -947,13 +990,18 @@ _SELF_ uGenericNGSExperiment<_SELF_,_CHROM_, _BASE_>::getDistinct(_BASE_ elem,  
 }
 
 template<class _SELF_, typename _CHROM_, typename _BASE_>
-_SELF_ uGenericNGSExperiment<_SELF_,_CHROM_, _BASE_>::getDistinct(std::string chr, int start, int end,  OverlapType options)
+_SELF_ uGenericNGSExperiment<_SELF_,_CHROM_, _BASE_>::getDistinct(std::string chr, float start, float end,  OverlapType options)
 {
     typename NGSExpMap::iterator iterMap;
     _SELF_ returnExp;
-    _CHROM_* tempChrom=&(ExpMap[chr]);
-
-    returnExp.combine(tempChrom->second.getDistinct(chr, start, end) );
+    for (iterMap = ExpMap.begin(); iterMap != ExpMap.end(); iterMap++)
+    {
+        if (iterMap->first==chr){
+            auto pChrom = this->getpChrom(iterMap->first);
+            returnExp.combine(pChrom->getDistinct(start, end) );
+        }else {
+        returnExp.combine(iterMap->second);}
+    }
     return returnExp;
 }
 
@@ -973,8 +1021,9 @@ void uGenericNGSExperiment<_SELF_,_CHROM_, _BASE_>::combine(const _CHROM_ & inpu
     std::vector<_BASE_> vecData;
 
     currentChrom=&(ExpMap[inputChrom.getChr()]);
-    for(auto itChrom =inputChrom.begin(); itChrom!= inputChrom.end(); itChrom++){
-        currentChrom->addSite(*itChrom);
+    for(auto itChrom =inputChrom.begin(); itChrom!= inputChrom.end(); itChrom++)
+    {
+        currentChrom->addSiteNoCheck(*itChrom);
     }
 }
 
@@ -1002,7 +1051,7 @@ _SELF_ uGenericNGSExperiment<_SELF_,_CHROM_,_BASE_>::getOverlapping(uGenericNGSE
 }
 
 template<class _SELF_, typename _CHROM_, typename _BASE_>
-template<typename _BASEPAR_>
+template<class _SELFPAR_,typename _BASEPAR_>
 /** \brief Same as above, but compare a chrom rather then EXP
  *
  * \param uGenericNGSExperiment compareChrom : Experiment to check for overlaps
@@ -1010,13 +1059,14 @@ template<typename _BASEPAR_>
  * \return uGenericNGSExperiment<_CHROM_,_BASE_> Experiment containing all elements from THIS that overlap with parameter.
  *
  */
- _SELF_ uGenericNGSExperiment<_SELF_, _CHROM_,_BASE_>::getOverlapping(uGenericNGSChrom<_BASEPAR_> &compareChrom, OverlapType type)
+_SELF_ uGenericNGSExperiment<_SELF_, _CHROM_,_BASE_>::getOverlapping(uGenericNGSChrom<_SELFPAR_,_BASEPAR_> &compareChrom, OverlapType type)
 {
-    try{
-    _SELF_ tempExp;
+    try
+    {
+        _SELF_ tempExp;
 
-    tempExp.combine(compareChrom);
-    return getOverlapping(tempExp,type);
+        tempExp.combine(compareChrom);
+        return getOverlapping(tempExp,type);
     }
     catch(std::exception & e)
     {
@@ -1027,15 +1077,17 @@ template<typename _BASEPAR_>
 template<class _SELF_, typename _CHROM_, typename _BASE_>
 _SELF_ uGenericNGSExperiment<_SELF_,_CHROM_,_BASE_>::getOverlapping(std::string chr, int start, int end, OverlapType type)
 {
-    try {
-    uGenericNGSChrom<_BASE_> tempChrom;
+    try
+    {
+        _SELF_ tempChrom;
 
-    auto item= uGenericNGS(chr,start,end);
-    auto castItem= static_cast<_BASE_>(item);
-    tempChrom.addSite(castItem);
-    return getOverlapping(tempChrom, type);
+        auto item= uGenericNGS(chr,start,end);
+        auto castItem= static_cast<_BASE_>(item);
+        tempChrom.addSite(castItem);
+        return getOverlapping(tempChrom, type);
     }
-    catch(std::exception & e){
+    catch(std::exception & e)
+    {
         throw e;
     }
 }
@@ -1054,16 +1106,16 @@ void uGenericNGSExperiment<_SELF_,_CHROM_,_BASE_>::divideItemsIntoNBins(int N, S
 {
     try
     {
-for( auto& x : ExpMap)
+        for( auto& x : ExpMap)
         {
             x.second.divideItemsIntoNBins(N,type);
         }
     }
     catch(uChrom_operation_throw &e)
     {
-        #ifdef DEBUG
+#ifdef DEBUG
         std::cerr << "Failed in divideItemsIntoNBins"<<std::endl;
-        #endif
+#endif
         throw uExp_operation_throw()<<string_error("Throwing while trying to call divideItemsIntoNBins() on all chroms");
     }
 }
@@ -1081,16 +1133,16 @@ void uGenericNGSExperiment<_SELF_,_CHROM_,_BASE_>::divideItemsIntoBinofSize(int 
 {
     try
     {
-    for(auto& x : ExpMap)
+        for(auto& x : ExpMap)
         {
             x.second.divideItemsIntoBinofSize(N,type);
         }
     }
     catch(uChrom_operation_throw &e)
     {
-        #ifdef DEBUG
+#ifdef DEBUG
         std::cerr << "Failed in divideItemsIntoBinofSize"<<std::endl;
-        #endif
+#endif
         throw uExp_operation_throw()<<string_error("Throwing while trying to call divideItemsIntoBinofSize() on all chroms");
     }
 }

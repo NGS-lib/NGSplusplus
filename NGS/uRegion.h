@@ -56,11 +56,11 @@ class uRegion : public uGenericNGS
 
 // TODO: Move read-write to parser and output class?
 class uRegionExperiment;
-class uRegionChrom :  public uGenericNGSChrom<uRegion>
+class uRegionChrom :  public uGenericNGSChrom<uRegionChrom,uRegion>
 {
     public:
 
-     void measureDensityOverlap(const  uGenericNGSChrom<uGenericNGS>& chromtoComp, const OverlapType=OverlapType::OVERLAP_PARTIAL);
+     void measureDensityOverlap(const  uGenericNGSChrom<uGenericNGSChrom,uGenericNGS>& chromtoComp, const OverlapType=OverlapType::OVERLAP_PARTIAL);
      void measureDensityOverlap(const  uTagsChrom& chromtoComp, const OverlapType=OverlapType::OVERLAP_PARTIAL);
      void measureDensityOverlap(const  uRegionChrom& chromtoComp, const OverlapType=OverlapType::OVERLAP_PARTIAL);
      void measureDensityOverlap(const  uBasicNGSChrom& chromtoComp, const OverlapType=OverlapType::OVERLAP_PARTIAL);

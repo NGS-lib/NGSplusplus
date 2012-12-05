@@ -237,60 +237,13 @@ public:
 
 };
 
-//Generator specific to uTags (allow to set the name, temporary (hopefully) fix)
-template <>
-template <class T2>
-uTags uGenericNGSChrom<uTags>::generateRandomSite
-(const int size_,std::mt19937& engine,const uGenericNGSChrom<T2> &exclList, const int sigma, const std::string ID) const
-{
-    //TODO Sanity check here to make sure it is possible to generate the asked for tag.
-    uTags returnTag;
-
-    bool found=false;
-    int size = size_;
-
-    int max = this->getChromSize();
-
-    while (!found)
-    {
-        {
-            uTags temptag;
-            if (sigma!=0)
-            {
-                std::normal_distribution<float> gaussian(size, sigma);
-                size = (int)gaussian(engine);
-            }
-
-            if (size>=1)
-            {
-                int shift = size/2;
-                //Generating our distribution at each call is probably needlesly heavy.. check to optimize this in time.
-                std::uniform_int_distribution<int> unif((shift+1), (max-shift));
-                int center = unif(engine);
-                temptag.setEnd(center+shift);
-                temptag.setStart(center-shift);
-                if ((exclList.getSubset(temptag.getStart(),temptag.getEnd())).count()==0)
-                {
-                    found=true;
-                    returnTag=temptag;
-                    returnTag.setChr(this->getChr());
-                    returnTag.setName(ID);
-
-                }
-            }
-        }
-    }
-
-    return returnTag;
-}
-
 namespace factory
 {
 uTags makeTagfromSamString(std::string samString, bool minimal=false);
 }
 
 
-class uTagsChrom: public uGenericNGSChrom<uTags>
+class uTagsChrom: public uGenericNGSChrom<uTagsChrom,uTags>
 {
 
 private:
@@ -299,12 +252,14 @@ public:
 
     uTagsChrom();
     uTagsChrom(std::string ourChrom);
-    uTagsChrom(uGenericNGSChrom<uTags>);
+    uTagsChrom(uGenericNGSChrom<uTagsChrom,uTags>);
     uTags getTag(int i)
     {
         return VecSites.at(i);
     };
     void matchPE();
+    template<class _OTHER_>
+    uTags generateRandomSite(const int size_,std::mt19937& engine,const _OTHER_ &exclList, const int sigma, const std::string ID) const;
     void writeTrimmedSamToOutput(std::ostream &out, int left, int right);
     void writetoBedCompletePE(std::ostream& out);
     void writeCompletedPESamToOutput(std::ostream &out);
@@ -329,7 +284,6 @@ private:
 public:
     void loadFromSam(std::ifstream& ourStream, bool minimal= false);
     void loadFromSamWithParser(std::string);
-
     void loadSamHeader(std::ifstream& ourStream);
     void writeToBed(std::ostream& out) const;
     void setChromSize(std::string chrom, int size);

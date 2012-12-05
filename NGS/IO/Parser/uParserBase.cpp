@@ -46,7 +46,7 @@ void uParserBase::init(std::istream* stream, bool header)
 
 /** \brief Default constructor.
  */
-uParserBase::uParserBase(){};
+uParserBase::uParserBase(){}
 
 /** \brief Check if we are at the end of the file/stream
  * \return true is we are at the end, otherwise false.

@@ -237,7 +237,7 @@ void uRegionExperiment::writeSignal(std::ostream& out)
  * \return void
  *
  */
-void uRegionChrom::measureDensityOverlap(const uGenericNGSChrom<uGenericNGS>& chromtoComp, const OverlapType pOverlap)
+void uRegionChrom::measureDensityOverlap(const uGenericNGSChrom<uGenericNGSChrom,uGenericNGS>& chromtoComp, const OverlapType pOverlap)
 {
     for (auto it =VecSites.begin(); it!=VecSites.end(); it++ )
     {

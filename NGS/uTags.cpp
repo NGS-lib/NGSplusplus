@@ -534,7 +534,7 @@ try {
 /** \brief Empty constructor for uTagsChrom
  *
  */
-uTagsChrom::uTagsChrom():uGenericNGSChrom<uTags>()
+uTagsChrom::uTagsChrom():uGenericNGSChrom<uTagsChrom,uTags>()
 {
 
 }
@@ -543,7 +543,7 @@ uTagsChrom::uTagsChrom():uGenericNGSChrom<uTags>()
  *
  */
 
-uTagsChrom::uTagsChrom(std::string ourChrom) : uGenericNGSChrom<uTags>(ourChrom)
+uTagsChrom::uTagsChrom(std::string ourChrom) : uGenericNGSChrom<uTagsChrom,uTags>(ourChrom)
 {
 
 }
@@ -553,7 +553,7 @@ uTagsChrom::uTagsChrom(std::string ourChrom) : uGenericNGSChrom<uTags>(ourChrom)
  *
  * \param copyCop : The object to instaciate  from.
  */
-uTagsChrom::uTagsChrom(uGenericNGSChrom<uTags> copyCop)
+uTagsChrom::uTagsChrom(uGenericNGSChrom<uTagsChrom,uTags> copyCop)
 {
     VecSites=copyCop.returnVecData();
     chr= copyCop.getChr();
@@ -768,6 +768,51 @@ std::vector<float> uTagsChrom::getRegionSignal(int start, int end, bool overlap)
     }
     return tempSignal;
 }
+
+template <class _OTHER_>
+uTags uTagsChrom::generateRandomSite
+(const int size_,std::mt19937& engine,const _OTHER_ &exclList, const int sigma, const std::string ID) const
+{
+    //TODO Sanity check here to make sure it is possible to generate the asked for tag.
+    uTags returnTag;
+
+    bool found=false;
+    int size = size_;
+
+    int max = this->getChromSize();
+
+    while (!found)
+    {
+        {
+            uTags temptag;
+            if (sigma!=0)
+            {
+                std::normal_distribution<float> gaussian(size, sigma);
+                size = (int)gaussian(engine);
+            }
+
+            if (size>=1)
+            {
+                int shift = size/2;
+                //Generating our distribution at each call is probably needlesly heavy.. check to optimize this in time.
+                std::uniform_int_distribution<int> unif((shift+1), (max-shift));
+                int center = unif(engine);
+                temptag.setEnd(center+shift);
+                temptag.setStart(center-shift);
+                if ((exclList.getSubset(temptag.getStart(),temptag.getEnd())).count()==0)
+                {
+                    found=true;
+                    returnTag=temptag;
+                    returnTag.setChr(this->getChr());
+                    returnTag.setName(ID);
+                }
+            }
+        }
+    }
+
+    return returnTag;
+}
+
 
 void uTagsExperiment::loadFromSamWithParser(std::string filepath)
 {
