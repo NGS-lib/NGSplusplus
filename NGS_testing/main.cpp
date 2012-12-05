@@ -22,7 +22,7 @@ class uItem : public uGenericNGS{
 
 };
 
-class ourDerivedClass : public uGenericNGSChrom<uGenericNGS> {
+class ourDerivedClass : public uGenericNGSChrom<ourDerivedClass,uGenericNGS> {
 
 public:
   ourDerivedClass():uGenericNGSChrom(){};
@@ -30,7 +30,7 @@ public:
   ourDerivedClass(std::string chrom, long int size):uGenericNGSChrom(chrom,size){};
 };
 
-class ourDerivedExperiment : public uGenericNGSExperiment<ourDerivedClass, uGenericNGS> {
+class ourDerivedExperiment : public uGenericNGSExperiment<ourDerivedExperiment,ourDerivedClass, uGenericNGS> {
 
 };
 

@@ -12,7 +12,7 @@
 #include "gtest.h"
 using namespace NGS;
 
-class ourDerivedClass : public uGenericNGSChrom<uGenericNGS> {
+class ourDerivedClass : public uGenericNGSChrom<ourDerivedClass,uGenericNGS> {
 
 public:
   ourDerivedClass():uGenericNGSChrom(){};
@@ -20,7 +20,7 @@ public:
   ourDerivedClass(std::string chrom, long int size):uGenericNGSChrom(chrom,size){};
 };
 
-class ourDerivedExperiment : public uGenericNGSExperiment<ourDerivedClass, uGenericNGS> {
+class ourDerivedExperiment : public uGenericNGSExperiment<ourDerivedExperiment,ourDerivedClass, uGenericNGS> {
 
 };
 
@@ -30,6 +30,7 @@ class ChromDivide : public testing::Test {
  protected:
 /**< As always, this is inclusive so 100-199 is of size 100 */
   virtual void SetUp() {
+    uChromTestOverlap.setChr("chr1");
     uChromTestOverlap.addSite(uGenericNGS("chr1", 300, 500));
     uChromTestOverlap.addSite(uGenericNGS("chr1", 100, 199));
     uChromTestOverlap.addSite(uGenericNGS("chr1", 100, 299));

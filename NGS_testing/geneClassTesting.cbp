@@ -78,7 +78,6 @@
 			<Add option="-static-libgcc" />
 			<Add option="-static-libstdc++" />
 		</Linker>
-		<Unit filename="../NGS++.h" />
 		<Unit filename="main.cpp" />
 		<Unit filename="uGeneric/test_uGeneric.cpp" />
 		<Unit filename="uGeneric/test_uGenericChrom.cpp" />

@@ -31,11 +31,6 @@ TEST(uTagsTest, 3ParCTR){
 
 TEST(uTagsTest, 3ParCTRMinus){
    EXPECT_ANY_THROW(uTags Utest("chr1", 200, 100));
-  //  EXPECT_EQ("chr1",Utest.getChr());
-  //  EXPECT_EQ(StrandDir::REVERSE,Utest.getStrand());
-  //  EXPECT_FALSE(Utest.isPE());
-  //  EXPECT_EQ(100,Utest.getStart());
-  //  EXPECT_EQ(200,Utest.getEnd());
 }
 
 TEST(uTagsTest, SetGet){
@@ -88,21 +83,86 @@ TEST(uTagsTest, CopyCTR){
     EXPECT_EQ(copyFrom.getChr(), copyTo.getChr());
     EXPECT_EQ(copyFrom.getEnd(), copyTo.getEnd());
     EXPECT_EQ(copyFrom.getCigar(), copyTo.getCigar());
-
-
     copyTo.setChr("chr21");
     EXPECT_NE(copyTo.getChr(),copyFrom.getChr());
-
     copyFilled = copyFrom;
-
     EXPECT_EQ(copyFrom.getName(), copyFilled.getName());
     EXPECT_EQ(copyFrom.getPhred(), copyFilled.getPhred());
     EXPECT_EQ(copyFrom.getSequence(), copyFilled.getSequence());
     EXPECT_EQ(copyFrom.getStart(), copyFilled.getStart());
     EXPECT_EQ(copyFrom.getChr(), copyFilled.getChr());
     EXPECT_EQ(copyFrom.getEnd(), copyFilled.getEnd());
+}
+
+
+
+
+TEST(uTagsChrTest, distinctChrTest)
+{
+    uTagsChrom emptyChrom("chr1");
+    emptyChrom.sortSites();
+    auto chrCopy=emptyChrom.getDistinct(10, 20);
+    EXPECT_EQ(chrCopy.count(), 0);
+
+    emptyChrom.addSite(uTags("chr1",100,200));
+    emptyChrom.addSite(uTags("chr1",300,600));
+    emptyChrom.addSite(uTags("chr1",300,700));
+    emptyChrom.sortSites();
+    std::cerr << emptyChrom.count() <<std::endl;
+    chrCopy=emptyChrom.getDistinct(295, 500);
+    EXPECT_EQ(1,chrCopy.count());
+
+    emptyChrom.addSite(uTags("chr1",300,600));
+    emptyChrom.addSite(uTags("chr1",300,700));
+    emptyChrom.sortSites();
+    chrCopy=emptyChrom.getDistinct(0, 1);
+    EXPECT_EQ(5,chrCopy.count());
+
+
+    uTagsChrom newChrom("chr5");
+    newChrom.addSite(uTags("chr5",800, 1400));
+    newChrom.addSite(uTags("chr5",400, 2000));
+    newChrom.addSite(uTags("chr5",400, 2200));
+    newChrom.addSite(uTags("chr5",1000, 3000));
+    newChrom.sortSites();
+    auto testChrom=newChrom.getDistinct(300, 900);
+     EXPECT_EQ(1,testChrom.count());
 
 }
+
+
+TEST(uTagsExpTest, distinctTest)
+{
+    uTagsExperiment emptyExp;
+  //  emptyExp.sortSites();
+    auto chrCopy=emptyExp.getDistinct("chr1",10, 20);
+    EXPECT_EQ(0,chrCopy.count());
+
+    emptyExp.addSite(uTags("chr5",800, 1400));
+    emptyExp.addSite(uTags("chr2",400, 2000));
+    emptyExp.addSite(uTags("chr5",400, 2200));
+    emptyExp.addSite(uTags("chr5",1000, 3000));
+    emptyExp.sortSites();
+    chrCopy=emptyExp.getDistinct("chr5",300, 900);
+    EXPECT_EQ(2,chrCopy.count());
+    uTagsExperiment newExp;
+    newExp=(emptyExp.getDistinct("chr10",300, 900));
+    EXPECT_EQ(4,newExp.count());
+    newExp=(emptyExp.getDistinct("chr2",100, 800));
+    EXPECT_EQ(3,newExp.count());
+
+}
+
+TEST(uTagsExpTest, derivedSubsetTestEmpty){
+    uTagsExperiment emptyExp;
+    uTagsChrom chromToCopyTo;
+    chromToCopyTo = emptyExp.getSubset("chr1", 10 , 10000);
+
+    EXPECT_EQ(chromToCopyTo.count(), 0);
+}
+
+
+
 
 TEST(factoryTest, uTagsTest){
 
@@ -119,6 +179,5 @@ TEST(factoryTest, uTagsTest){
     minusStrand=factory::makeTagfromSamString("HWI-ST333_0111_FC:6:2202:20769:154221#TAGTCG/3	83	chr21	9719905	15	40M	=	9719985	120	AGCAATTATCTTCACATAAAAACTACACAGAAACTTTCTG	aaacceeegggggiiiiiiiiiihiihihiiiiiiiiiih	X0:i:2	X1:i:57	MD:Z:2G2A27T6	XG:i:0	AM:i:0	NM:i:3	SM:i:0	XM:i:3	XO:i:0	XT:A:R");
 
     EXPECT_EQ(minusStrand.getStrand(),StrandDir::REVERSE);
-
 
 }

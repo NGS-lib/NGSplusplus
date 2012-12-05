@@ -12,7 +12,8 @@
 #include "gtest.h"
 using namespace NGS;
 using namespace std;
-class GeneExp : public uGenericNGSExperiment<uGenericNGSChrom<uGenericNGS>, uGenericNGS> {
+class GeneExp : public uGenericNGSExperiment<GeneExp,uBasicNGSChrom, uBasicNGS> {
+
 
 public:
   GeneExp():uGenericNGSExperiment(){};
@@ -104,33 +105,38 @@ TEST_F(TestExp, GETSUBSETCUSTOM){
 
 TEST(TestExpNOCASE, LOADBED){
 
-    uGenericNGSExperiment<uGenericNGSChrom<uGenericNGS>, uGenericNGS>  testExp;
+   // uGenericNGSExperiment<uGenericNGSChrom<uGenericNGS>, uGenericNGS>  testExp;
+    uBasicNGSExperiment testExp;
     EXPECT_NO_THROW(testExp.loadWithParser("../data/BED/test.bed","BED" ));
 }
 TEST(TestExpNOCASE, LOADWIG){
 
-    uGenericNGSExperiment<uGenericNGSChrom<uGenericNGS>, uGenericNGS>  testExp;
+   // uGenericNGSExperiment<uGenericNGSChrom<uGenericNGS>, uGenericNGS>  testExp;
+     uBasicNGSExperiment testExp;
     EXPECT_NO_THROW(testExp.loadWithParser("../data/WIG/correct.wig","WIG" ));
 }
 TEST(TestExpNOCASE, LOADSAM){
 
-    uGenericNGSExperiment<uGenericNGSChrom<uGenericNGS>, uGenericNGS>  testExp;
+   // uGenericNGSExperiment<uGenericNGSChrom<uGenericNGS>, uGenericNGS>  testExp;
+     uBasicNGSExperiment testExp;
     EXPECT_NO_THROW(testExp.loadWithParser("../data/SAM/fiveCountValid.sam","SAM" ));
 }
 
 TEST(TestExpNOCASE, LOADBEDCOUNT){
 
-    uGenericNGSExperiment<uGenericNGSChrom<uGenericNGS>, uGenericNGS>  testExp;
+   // uGenericNGSExperiment<uGenericNGSChrom<uGenericNGS>, uGenericNGS>  testExp;
+     uBasicNGSExperiment testExp;
     ASSERT_NO_THROW(testExp.loadWithParser("../data/BED/test.bed","BED" ));
     EXPECT_EQ(testExp.count(), 4);
 
-    uGenericNGSChrom<uGenericNGS> tempChr = testExp.getChrom("chr3");
+    uBasicNGSChrom tempChr = testExp.getChrom("chr3");
 
     tempChr.sortSites();
     EXPECT_EQ(  tempChr.getSubset(34511,34541).count() ,1 );
 }
 TEST(TestExpNOCASE, LOADWIGCOUNT){
-    uGenericNGSExperiment<uGenericNGSChrom<uGenericNGS>, uGenericNGS>  testExp;
+    //uGenericNGSExperiment<uGenericNGSChrom<uGenericNGS>, uGenericNGS>  testExp;
+     uBasicNGSExperiment testExp;
     ASSERT_NO_THROW(testExp.loadWithParser("../data/WIG/correct.wig","WIG" ));
     EXPECT_EQ(testExp.count(), 19);
 }
