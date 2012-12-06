@@ -24,7 +24,6 @@ void uWriterSam::writeHeader(){
         for (unsigned int i=0; i<chrVector.size();i++)
             {
                 *m_pOstream<<"@SQ"<<TAB<<SN<<chrVector.at(i)<<TAB<<SQ<<chrLenghts.at(i)<<std::endl;
-
             }
     }
 }

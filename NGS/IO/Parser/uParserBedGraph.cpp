@@ -108,8 +108,11 @@ bool uParserBedGraph::_parseHeader()
     if (std::getline(*m_pIostream, strLine))
     {
         /**< If we could not find track type=bedGraph, store, otherwise discard */
-        if (strLine.find(s_bedGraphHeader)==std::string::npos)
+        if (strLine.find(s_bedGraphHeader)==std::string::npos){
             m_hBuffer << strLine;
+            return false;
+        }
+        return true;
     }
     else
     {

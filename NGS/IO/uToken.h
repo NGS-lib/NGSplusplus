@@ -122,6 +122,7 @@ private:
 	friend class uParserWig;
 	friend class uParserGFF;
 	friend class uParserBedGraph;
+	friend class uParserGTF;
 }; // End of class Token
 
 /**< Overloading of stream operator for token_param */

@@ -413,7 +413,7 @@ inline static std::vector<float> quartilesofVector(std::vector<float> inputVecto
     returnVector.push_back(inputVector.at(q3));
 
     return returnVector;
-};
+}
 
 
 /** \brief Returns quartiles, deprecated , do not use

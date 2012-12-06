@@ -16,33 +16,14 @@ using namespace std;
 
 using namespace NGS;
 
-class uItem : public uGenericNGS{
-
-    int chr;
-
-};
-
-class ourDerivedClass : public uGenericNGSChrom<uGenericNGS> {
-
-public:
-  ourDerivedClass():uGenericNGSChrom(){};
-  ourDerivedClass(std::string chrom):uGenericNGSChrom(chrom){};
-  ourDerivedClass(std::string chrom, long int size):uGenericNGSChrom(chrom,size){};
-};
-
-class ourDerivedExperiment : public uGenericNGSExperiment<ourDerivedClass, uGenericNGS> {
-
-};
-
-
 
 TEST(ExperimentDivide, DIVIDECHROMINTONBIN){
 
-    ourDerivedExperiment ourExp;
-    ourExp.addSite(uGenericNGS("chr21", 100, 199));
-    ourExp.addSite(uGenericNGS("chr22", 100, 199));
-    ourExp.addSite(uGenericNGS("chr23", 100, 199));
-    ourExp.addSite(uGenericNGS("chr24", 100, 199));
+    uBasicNGSExperiment ourExp;
+    ourExp.addSite(uBasicNGS("chr21", 100, 199));
+    ourExp.addSite(uBasicNGS("chr22", 100, 199));
+    ourExp.addSite(uBasicNGS("chr23", 100, 199));
+    ourExp.addSite(uBasicNGS("chr24", 100, 199));
     ourExp.divideItemsIntoNBins(4);
 
     EXPECT_EQ(ourExp.count(),16);
@@ -50,12 +31,12 @@ TEST(ExperimentDivide, DIVIDECHROMINTONBIN){
 TEST(ExperimentDivide, DIVIDECHROMINTOBINOFSIZE){
 
 
-    ourDerivedExperiment ourExp;
+    uBasicNGSExperiment ourExp;
 
-    ourExp.addSite(uGenericNGS("chr21", 100, 199));
-    ourExp.addSite(uGenericNGS("chr22", 100, 199));
-    ourExp.addSite(uGenericNGS("chr23", 100, 199));
-    ourExp.addSite(uGenericNGS("chr24", 100, 199));
+    ourExp.addSite(uBasicNGS("chr21", 100, 199));
+    ourExp.addSite(uBasicNGS("chr22", 100, 199));
+    ourExp.addSite(uBasicNGS("chr23", 100, 199));
+    ourExp.addSite(uBasicNGS("chr24", 100, 199));
     ourExp.divideItemsIntoBinofSize(50);
     EXPECT_EQ(ourExp.count(),8);
 
@@ -65,19 +46,19 @@ TEST(ExperimentDivide, DIVIDECHROMINTOBINOFSIZE){
 
 /**< Testing our base container FUNCTIONS */
 /**< Not that we should never implement this without a derived child, so as such the construction is not accesible */
-TEST(uGenericNGSChromTest, CTR){
+TEST(uBasicNGSChromTest, CTR){
 
-    EXPECT_NO_THROW(ourDerivedClass uChromTest);
-    EXPECT_NO_THROW(ourDerivedClass uChromTest2("chr1"));
-    EXPECT_NO_THROW(ourDerivedClass uChromTest3(""));
+    EXPECT_NO_THROW(uBasicNGSChrom uChromTest);
+    EXPECT_NO_THROW(uBasicNGSChrom uChromTest2("chr1"));
+    EXPECT_NO_THROW(uBasicNGSChrom uChromTest3(""));
 }
-TEST(uGenericNGSChromTest, FUNCTIONS){
+TEST(uBasicNGSChromTest, FUNCTIONS){
 
 
-    ourDerivedClass uChromEmpty;
-    ourDerivedClass uChromChr1("chr1");
-    ourDerivedClass uChromNull("");
-    ourDerivedClass uChromBig("chrBig", SOMENUMBER);
+    uBasicNGSChrom uChromEmpty;
+    uBasicNGSChrom uChromChr1("chr1");
+    uBasicNGSChrom uChromNull("");
+    uBasicNGSChrom uChromBig("chrBig", SOMENUMBER);
 
     EXPECT_EQ(uChromEmpty.getChr() , uChromNull.getChr());
 
@@ -96,10 +77,10 @@ TEST(uGenericNGSChromTest, FUNCTIONS){
 
 
 TEST(factoryTest, uGenericTest){
+   // std::string myline("chr2 400 300");
+  //  EXPECT_ANY_THROW(factory::makeNGSfromTabString(myline));
 
-    EXPECT_ANY_THROW(factory::makeNGSfromTabString("chr2 400 300"));
-
-    uGenericNGS ourTest=factory::makeNGSfromTabString(("chr2 200 300"));
+    uBasicNGS ourTest=factory::makeNGSfromTabString<uBasicNGS>(("chr2 200 300"));
 
     EXPECT_EQ(ourTest.getChr(), "chr2");
     EXPECT_EQ(ourTest.getStart(), 200);
@@ -108,10 +89,10 @@ TEST(factoryTest, uGenericTest){
 
 TEST(writeTest, uGenecExpTest){
 
-   // ourDerivedExperiment testExp;
-   //uGenericNGSExperiment<uGenericNGSChrom<uGenericNGS>,uGenericNGS> testExp;
+   // uBasicNGSExperiment testExp;
+   //uBasicNGSExperiment<uBasicNGSChrom<uBasicNGS>,uBasicNGS> testExp;
     uTagsExperiment textExp;
-    //testExp.addSite(uGenericNGS("chr21", 300, 800));
+    //testExp.addSite(uBasicNGS("chr21", 300, 800));
     textExp.writeAsBedFile(cout);
 
 

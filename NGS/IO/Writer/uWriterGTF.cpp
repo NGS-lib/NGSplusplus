@@ -1,4 +1,4 @@
-#include "uWriterGFF.h"
+#include "uWriterGTF.h"
 namespace NGS
 {
 /** \brief Print the values of a token in GFF format in current file
@@ -6,22 +6,10 @@ namespace NGS
   */
 
 
-/* Note, there are ambiguities in the GFF format. The spec at http://www.sanger.ac.uk/resources/software/gff/spec.html
-describes the first column as
-
-"The name of the sequence. Having an explicit sequence name allows a feature file to be prepared for a data set of multiple sequences.
-Normally the seqname will be the identifier of the sequence in an accompanying fasta format file. An alternative is that <seqname>
-is the identifier for a sequence in a public database, such as an EMBL/Genbank/DDBJ accession number. Which is the case, and which
-file or database to use, should be explained in accompanying information. "
-
-
-However, practically, use tend to set column one as scaffp;d ID ( ex: chromosome ). This same langage is used for GFF3
-
-As such, we write SEQ_NAME in the first column, if available. HOwever, if unavailable, we write CHR in first column.
-
-Note that the GFF3 parsers set CHR as first name always.
+/*
+Practically for now, the onlye difference between this and GFF is that we assign column 1 to CHR rather then SEQ_NAME
  */
-void uWriterGFF::writeToken(const uToken& token)
+void uWriterGTF::writeToken(const uToken& token)
 {
     try
     {
@@ -43,12 +31,12 @@ void uWriterGFF::writeToken(const uToken& token)
 
         if (token.isParamSet(token_param::SCORE))
        	 { score = token.getParam(token_param::SCORE); }
-       	 /**< Practically speaking, most people seem to use the chr as the seqname of a GFF. So if one is not evailable, we use  chr */
-		if (token.isParamSet(token_param::SEQ_NAME))
-       	 { seqname = token.getParam(token_param::SEQ_NAME); }
-		else
+
 		if(token.isParamSet(token_param::CHR))
        		 { seqname = token.getParam(token_param::CHR); }
+        else
+		if (token.isParamSet(token_param::SEQ_NAME))
+            { seqname = token.getParam(token_param::SEQ_NAME); }
 
 		if(token.isParamSet(token_param::FEATURE_NAME))
 			{ feature = token.getParam(token_param::FEATURE_NAME); }
@@ -72,5 +60,5 @@ void uWriterGFF::writeToken(const uToken& token)
         throw e;
     }
 }
-DerivedRegister<uWriterGFF> uWriterGFF::reg("GFF");
+DerivedRegister<uWriterGTF> uWriterGTF::reg("GTF");
 } // End of namespace NGS

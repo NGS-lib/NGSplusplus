@@ -392,172 +392,47 @@ bool uTags::writeTrimmedSamToOutput(std::ostream &out, int left, int right)
     return true;
 }
 
-// TODO: Move to parser?
-namespace factory
-{
-uTags makeTagfromSamString(std::string samString, bool minimal)
-{
-    stringstream Infostream;
-    int size,ourFlag;
-    Infostream.str(samString);
-    string ourChr, ourStart, ourEnd, ourName;
-    string phre, cig, seq;
-    string temp,tempname;
-    /**< Read name */
-try {
-    if (!minimal)
-    {
-        Infostream>> tempname;
-        if (tempname.find("/")!=string::npos)
-        {
-            tempname.erase(tempname.find("/"));
-        }
-        ourName=tempname;
-    }
-    else
-        Infostream>>temp;
-
-    /**< Read flag */
-    Infostream>>ourFlag;
-    Infostream>>ourChr;
-
-    //returnTag.setChr(ourChr);
-
-    Infostream>>ourStart;
-
-    int mapScore;
-    Infostream>>mapScore;
-    /**< Cigar */
-    Infostream>>cig;
-
-    /**<  Parse Cigar here */
-    /**< Find first letter , read number before, repeat */
-    /**< Easier with Regex,  but what the hell */
-    int curPos=0;
-    string substr;
-    size=0;
-    for (unsigned int i=0; i< cig.size(); i++)
-    {
-        /**< If isAlpha then check previous numbers */
-        if (isalpha(cig.at(i)))
-        {
-            /**< If a count value */
-            char temp;
-            temp = cig.at(i);
-            if ((temp=='M')||(temp=='I')||(temp=='S')||(temp=='X')||(temp=='+'))
-            {
-                substr= cig.substr(curPos, (i-curPos));
-                size+= atoi(substr.c_str());
-            }
-            curPos=(i+1);
-        }
-    }
-
- //   ourEnd=(std::stoi(ourStart)+(size-1));
-    uTags returnTag(ourChr,std::stoi(ourStart),std::stoi(ourStart)+(size-1) );
-    returnTag.setName(ourName);
-    returnTag.setFlag(ourFlag);
-    returnTag.setMapQual(mapScore);
-    /**< name of next mate */
-    Infostream>>temp;
-    /**< Pos of next mate */
-    Infostream>>temp;
-    /**< Template lenght for PE readas */
-    int PELenght;
-    Infostream>>PELenght;
-    PELenght= abs(PELenght);
-   // cerr << "PeLenght is" <<
-    /**< Sequence */
-    Infostream>>seq;
-    /**< Pred score of every position. */
-    Infostream>>phre;
-    /**< Sam flag */
-    /**< StrongType this */
-     if (ourFlag&0x10)
-         returnTag.setStrand(StrandDir::REVERSE);// ='-';
-     else
-         returnTag.setStrand(StrandDir::FORWARD);// ='+'; */
-    if (ourFlag&0x4)
-        returnTag.setMapped(false);
-    else
-        returnTag.setMapped(true);
-
-    /**< PE validation */
-    /**< If PE and mate is aligned */
-    if ((ourFlag&0x1)&&(ourFlag&0x2))
-    {
-        returnTag.setPELenght(PELenght);
-    }
-    else
-    {
-        returnTag.setPELenght(0);
-    }
-//    pMate = NULL;
-    /**< if we want to keep, we store, otherwise scope will erase our data */
-    if (!minimal)
-    {
-        returnTag.setPhred(phre) ;
-
-        returnTag.setCigar(cig);
-    }
-    /**< Move semantics */
-    return returnTag;
-
-}
-	catch(elem_throw & e)
-	{
-	    string trace;
-	     #ifdef DEBUG
-                 cerr << "catching in factory on elem_throw" <<endl;
-        #endif
-
-	  if (std::string const * ste =boost::get_error_info<string_error>(e) )
-			trace=*ste;
-
-	   e << string_error(trace+"Failling in factory:makeTagfromSamString constructor,  on string \n"+samString);
-	  throw e;
-	}
-	catch(...)
-	{
-                #ifdef DEBUG
-                     cerr << "catching in factory on general throw" <<endl;
-        #endif
-
-	    elem_throw e;
-	    e << string_error("we threw in makeTagfromSamString trying the next string \n"+samString);
-	    throw e;
-	}
-
-}
-} // End of namespace factory
-
-/** \brief Empty constructor for uTagsChrom
- *
- */
-uTagsChrom::uTagsChrom():uGenericNGSChrom<uTags>()
-{
-
-}
-
-/** \brief Constructor thats sets the chrom used by the class
- *
- */
-
-uTagsChrom::uTagsChrom(std::string ourChrom) : uGenericNGSChrom<uTags>(ourChrom)
-{
-
-}
-
-// TODO: is it complete?
-/** \brief Copy constructor ( well not really ). Not complete?
+/** \brief Copy constructor
  *
  * \param copyCop : The object to instaciate  from.
  */
-uTagsChrom::uTagsChrom(uGenericNGSChrom<uTags> copyCop)
+uTagsChrom::uTagsChrom(const uGenericNGSChrom<uTagsChrom,uTags> & copyCop)
 {
     VecSites=copyCop.returnVecData();
     chr= copyCop.getChr();
+    m_isSorted=copyCop.getSortedStatus();
+    sortGetStart=copyCop.getStartFunct();
+    sortGetEnd=copyCop.getEndFunct();
+    m_comptFunc=copyCop.getCompFunct();
+    chromSize=copyCop.getChromSize();
 }
+
+uTagsChrom::uTagsChrom(const uTagsChrom& initFrom){
+
+    VecSites=initFrom.returnVecData();
+    chr= initFrom.getChr();
+    m_isSorted=initFrom.m_isSorted;
+    sortGetStart=initFrom.sortGetStart;
+    sortGetEnd=initFrom.sortGetEnd;
+    m_comptFunc=initFrom.m_comptFunc;
+    chromSize=initFrom.chromSize;
+
+}
+
+uTagsChrom& uTagsChrom::operator=(const uTagsChrom& copFrom)
+{
+    VecSites=copFrom.returnVecData();
+    chr= copFrom.getChr();
+    m_isSorted=copFrom.m_isSorted;
+    sortGetStart=copFrom.sortGetStart;
+    sortGetEnd=copFrom.sortGetEnd;
+    m_comptFunc=copFrom.m_comptFunc;
+    chromSize=copFrom.chromSize;
+
+    return *this;
+}
+
+
 
 /** \brief Output the chrom to bed format
  *
@@ -664,37 +539,6 @@ void uTagsChrom::writeSamToOutput(std::ostream &out) const
 
 }
 
-/** \brief For PE data, find the mate of ever tag and associate there pointers. Structure subject to change
- *
- */
- //TODO remove this?
-void uTagsChrom::matchPE()
-{
-    std::vector<uTags>::iterator iterVec;
-    std::vector<uTags>::iterator innerVec;
-
-    string current, next;
-
-    for (iterVec = VecSites.begin() ; iterVec!= VecSites.end(); iterVec++)
-    {
-
-        if (iterVec->getMate()==NULL)
-            for (innerVec = (iterVec +1) ; innerVec< VecSites.end(); ++innerVec)
-            {
-                current= iterVec->getName();
-                next = innerVec->getName();
-                if (iterVec->getName()==innerVec->getName() )
-                {
-                    /**< Assign pointer and complement */
-                    iterVec->setMate(&(*innerVec));
-
-                    innerVec->setMate(&(*iterVec));
-
-                    break;
-                }
-            }
-    }
-}
 //TODO Re-write this
 /** \brief For a given start and end on this Chromosome, return the it's continuous density signal
  * \doto Use our standard overlap function
@@ -768,6 +612,51 @@ std::vector<float> uTagsChrom::getRegionSignal(int start, int end, bool overlap)
     }
     return tempSignal;
 }
+
+template <class _OTHER_>
+uTags uTagsChrom::generateRandomSite
+(const int size_,std::mt19937& engine,const _OTHER_ &exclList, const int sigma, const std::string ID) const
+{
+    //TODO Sanity check here to make sure it is possible to generate the asked for tag.
+    uTags returnTag;
+
+    bool found=false;
+    int size = size_;
+
+    int max = this->getChromSize();
+
+    while (!found)
+    {
+        {
+            uTags temptag;
+            if (sigma!=0)
+            {
+                std::normal_distribution<float> gaussian(size, sigma);
+                size = (int)gaussian(engine);
+            }
+
+            if (size>=1)
+            {
+                int shift = size/2;
+                //Generating our distribution at each call is probably needlesly heavy.. check to optimize this in time.
+                std::uniform_int_distribution<int> unif((shift+1), (max-shift));
+                int center = unif(engine);
+                temptag.setEnd(center+shift);
+                temptag.setStart(center-shift);
+                if ((exclList.getSubset(temptag.getStart(),temptag.getEnd())).count()==0)
+                {
+                    found=true;
+                    returnTag=temptag;
+                    returnTag.setChr(this->getChr());
+                    returnTag.setName(ID);
+                }
+            }
+        }
+    }
+
+    return returnTag;
+}
+
 
 void uTagsExperiment::loadFromSamWithParser(std::string filepath)
 {
@@ -1109,3 +998,143 @@ void uTagsExperiment::writeTrimmedSamToOutput(std::ostream &out, int left, int r
     }
 }
 } // End of namespace NGS
+
+
+// TODO: Move to parser?
+namespace factory
+{
+NGS::uTags makeTagfromSamString(std::string samString, bool minimal)
+{
+    std::stringstream Infostream;
+    int size,ourFlag;
+    Infostream.str(samString);
+    std::string ourChr, ourStart, ourEnd, ourName;
+    std::string phre, cig, seq;
+    std::string temp,tempname;
+    /**< Read name */
+try {
+    if (!minimal)
+    {
+        Infostream>> tempname;
+        if (tempname.find("/")!=std::string::npos)
+        {
+            tempname.erase(tempname.find("/"));
+        }
+        ourName=tempname;
+    }
+    else
+        Infostream>>temp;
+
+    /**< Read flag */
+    Infostream>>ourFlag;
+    Infostream>>ourChr;
+
+    //returnTag.setChr(ourChr);
+
+    Infostream>>ourStart;
+
+    int mapScore;
+    Infostream>>mapScore;
+    /**< Cigar */
+    Infostream>>cig;
+
+    /**<  Parse Cigar here */
+    /**< Find first letter , read number before, repeat */
+    /**< Easier with Regex,  but what the hell */
+    int curPos=0;
+    std::string substr;
+    size=0;
+    for (unsigned int i=0; i< cig.size(); i++)
+    {
+        /**< If isAlpha then check previous numbers */
+        if (isalpha(cig.at(i)))
+        {
+            /**< If a count value */
+            char temp;
+            temp = cig.at(i);
+            if ((temp=='M')||(temp=='I')||(temp=='S')||(temp=='X')||(temp=='+'))
+            {
+                substr= cig.substr(curPos, (i-curPos));
+                size+= atoi(substr.c_str());
+            }
+            curPos=(i+1);
+        }
+    }
+
+ //   ourEnd=(std::stoi(ourStart)+(size-1));
+    NGS::uTags returnTag(ourChr,std::stoi(ourStart),std::stoi(ourStart)+(size-1) );
+    returnTag.setName(ourName);
+    returnTag.setFlag(ourFlag);
+    returnTag.setMapQual(mapScore);
+    /**< name of next mate */
+    Infostream>>temp;
+    /**< Pos of next mate */
+    Infostream>>temp;
+    /**< Template lenght for PE readas */
+    int PELenght;
+    Infostream>>PELenght;
+    PELenght= abs(PELenght);
+   // cerr << "PeLenght is" <<
+    /**< Sequence */
+    Infostream>>seq;
+    /**< Pred score of every position. */
+    Infostream>>phre;
+    /**< Sam flag */
+    /**< StrongType this */
+     if (ourFlag&0x10)
+         returnTag.setStrand(NGS::StrandDir::REVERSE);// ='-';
+     else
+         returnTag.setStrand(NGS::StrandDir::FORWARD);// ='+'; */
+    if (ourFlag&0x4)
+        returnTag.setMapped(false);
+    else
+        returnTag.setMapped(true);
+
+    /**< PE validation */
+    /**< If PE and mate is aligned */
+    if ((ourFlag&0x1)&&(ourFlag&0x2))
+    {
+        returnTag.setPELenght(PELenght);
+    }
+    else
+    {
+        returnTag.setPELenght(0);
+    }
+//    pMate = NULL;
+    /**< if we want to keep, we store, otherwise scope will erase our data */
+    if (!minimal)
+    {
+        returnTag.setPhred(phre) ;
+
+        returnTag.setCigar(cig);
+    }
+    /**< Move semantics */
+    return returnTag;
+
+}
+	catch(NGS::elem_throw & e)
+	{
+	    std::string trace;
+	     #ifdef DEBUG
+                 cerr << "catching in factory on elem_throw" <<endl;
+        #endif
+
+	  if (std::string const * ste =boost::get_error_info<NGS::string_error>(e) )
+			trace=*ste;
+
+	   e << NGS::string_error(trace+"Failling in factory:makeTagfromSamString constructor,  on string \n"+samString);
+	  throw e;
+	}
+	catch(...)
+	{
+                #ifdef DEBUG
+                     cerr << "catching in factory on general throw" <<endl;
+        #endif
+
+	    NGS::elem_throw e;
+	    e << NGS::string_error("we threw in makeTagfromSamString trying the next string \n"+samString);
+	    throw e;
+	}
+
+}
+}

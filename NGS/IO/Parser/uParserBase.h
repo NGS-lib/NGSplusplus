@@ -10,6 +10,7 @@
 #include <iostream>
 #include <algorithm>
 #include <fstream>
+#include <sstream>
 #include "../uToken.h"
 #include "../../uGeneException.h"
 #include "../uHeader.h"

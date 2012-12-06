@@ -1,21 +1,21 @@
 #include "uWriter.h"
 
-namespace NGS 
+namespace NGS
 {
 
 /** \brief Constructor with filename.
   * \param const std::string& filename: name of the file to write output.
   * \param const std::string& type: Type of file to write output (i.e: Bed, Sam, etc...).
   */
-uWriter::uWriter(const std::string& filename, const std::string& type) 
+uWriter::uWriter(const std::string& filename, const std::string& type)
 {
     uWriterBaseFactory myFactory;
     m_pWriterBase = myFactory.createInstance(type);
-    try 
+    try
     {
         m_pWriterBase->init(filename);
     }
-    catch (std::runtime_error& e) 
+    catch (std::runtime_error& e)
     {
         throw e;
     }
@@ -25,7 +25,7 @@ uWriter::uWriter(const std::string& filename, const std::string& type)
   * \param std::ostream* os: stream to write output.
   * \param const std::string& type: Type of file to write output (i.e: Bed, Sam, etc...).
   */
-uWriter::uWriter(std::ostream* os, const std::string& type) 
+uWriter::uWriter(std::ostream* os, const std::string& type)
 {
     uWriterBaseFactory myFactory;
     m_pWriterBase = myFactory.createInstance(type);
@@ -37,15 +37,15 @@ uWriter::uWriter(std::ostream* os, const std::string& type)
   * \param const std::vector<std::string>& fieldsNames: Vector containing the name of every fields (columns). In correct order.
   * \param const std::string& type: Type of file to write output (i.e: Bed, Sam, etc...).
   */
-uWriter::uWriter(const std::string& filename, const std::vector<std::string>& fieldsNames, char delimiter) 
+uWriter::uWriter(const std::string& filename, const std::vector<std::string>& fieldsNames, char delimiter)
 {
     uWriterBaseFactory myFactory;
     m_pWriterBase = myFactory.createInstance("CUSTOM");
-    try 
+    try
     {
         m_pWriterBase->init(filename);
     }
-    catch (std::runtime_error& e) 
+    catch (std::runtime_error& e)
     {
         throw e;
     }
@@ -58,7 +58,7 @@ uWriter::uWriter(const std::string& filename, const std::vector<std::string>& fi
   * \param const std::vector<std::string>& fieldsNames: Vector containing the name of every fields (columns). In correct order.
   * \param const std::string& type: Type of file to write output (i.e: Bed, Sam, etc...).
   */
-uWriter::uWriter(std::ostream* os, const std::vector<std::string>& fieldsNames, char delimiter) 
+uWriter::uWriter(std::ostream* os, const std::vector<std::string>& fieldsNames, char delimiter)
 {
     uWriterBaseFactory myFactory;
     m_pWriterBase = myFactory.createInstance("CUSTOM");
@@ -70,7 +70,7 @@ uWriter::uWriter(std::ostream* os, const std::vector<std::string>& fieldsNames, 
 /** \brief Print the information of the token in the desired format.
   * \param const uToken& token: The token to print.
   */
-void uWriter::writeToken(const uToken& token) 
+void uWriter::writeToken(const uToken& token)
 {
     m_pWriterBase->writeToken(token);
 }
@@ -78,7 +78,7 @@ void uWriter::writeToken(const uToken& token)
 /** \brief Print an unformated string.
   * \param const std::string& str: the string to write to the file or stream.
   */
-void uWriter::printString(const std::string& str) 
+void uWriter::printString(const std::string& str)
 {
     m_pWriterBase->printString(str);
 }
@@ -105,4 +105,4 @@ void uWriter::writeHeader(){
     m_pWriterBase->writeHeader();
 }
 
-}; // End of namespace NGS
+} // End of namespace NGS

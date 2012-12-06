@@ -7,7 +7,7 @@
 #include "uFormatExperiment.h"
 
 namespace NGS {
-typedef uGenericNGSExperiment<uGenericNGSChrom<uGenericNGS>,uGenericNGS> GenExp;
+//typedef uGenericNGSExperiment<uGenericNGSExperiment,uGenericNGSChrom<uGenericNGS>,uGenericNGS> GenExp;
 
 /*
 

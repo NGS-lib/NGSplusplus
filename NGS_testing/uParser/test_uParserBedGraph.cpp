@@ -21,5 +21,4 @@ TEST(parserOpenBedgraph, fileCount) {
         countTok ++;
     }
     EXPECT_EQ(countTok,numTokens);
-
 }

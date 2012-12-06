@@ -36,8 +36,8 @@ private:
 	boost::xpressive::smatch what;
 	boost::xpressive::mark_tag s10;
 	boost::xpressive::mark_tag s11;
-	boost::xpressive::mark_tag s12;
 
+	boost::xpressive::mark_tag s12;
 	boost::xpressive::sregex staticSam= boost::xpressive::bos >>(boost::xpressive::s1 =(boost::xpressive::repeat<1,255>(boost::xpressive::set[ boost::xpressive::range('!','?') | boost::xpressive::range('A','~') ]) ) )>>"\t">>(boost::xpressive::s2 =(+boost::xpressive::_d ))>>"\t">>
 	(boost::xpressive::s3=('*'|boost::xpressive::set[boost::xpressive::range('!','(')|')'|boost::xpressive::range('+','<')|boost::xpressive::range('>','~')]>>*boost::xpressive::set[boost::xpressive::range('!','~')] ))
 	>>"\t">>(boost::xpressive::s4 =(+boost::xpressive::_d ))>>"\t">>(boost::xpressive::s5 =(+boost::xpressive::_d ))>>"\t">>
