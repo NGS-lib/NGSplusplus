@@ -24,7 +24,7 @@ OBJECTS += $(WRITER_DIR)/uWriterGFF.o
 OBJECTS += $(PARSER_DIR)/uParser.o $(PARSER_DIR)/uParserBase.o $(PARSER_DIR)/uParserWig.o 
 OBJECTS += $(PARSER_DIR)/uParserSam.o $(PARSER_DIR)/uParserBed.o $(PARSER_DIR)/uParserCustom.o
 OBJECTS += $(PARSER_DIR)/uParserBedGraph.o $(PARSER_DIR)/uParserGTF.o $(PARSER_DIR)/uParserGFF.o
-OBJECTS += $(SRC_DIR)/uFormatBase.o $(SRC_DIR)/uRegion.o $(SRC_DIR)/uTags.o
+OBJECTS += $(SRC_DIR)/uBaseNGS.o $(SRC_DIR)/uRegion.o $(SRC_DIR)/uTags.o
 OBJPROJ = $(addprefix $(OBJ_DIR)/, $(OBJECTS))
 PROJECT = $(PROJECT_DIR)/$(PROJECT_NAME)
 
