@@ -17,7 +17,7 @@ TARGET_CTOOLS=ConversionTool
 
 # Nothing should have to be changed after this.
 CFLAGS  = -O3 -std=c++11 
-INCLUDES = -I$(UTIL_DIR) -I$(BOOST_DIR)
+INCLUDES = -I$(BOOST_DIR) -I$(INCLUDE_DIR)
 
 $(shell mkdir -p $(DESTDIR))
 $(shell mkdir -p $(OBJ_DIR))
