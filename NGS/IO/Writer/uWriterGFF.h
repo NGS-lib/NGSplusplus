@@ -16,7 +16,6 @@ public:
 	void writeToken(const uToken& token);
 private:
 	static DerivedRegister<uWriterGFF> reg;
-    bool chrValidate(const std::string& chr);
     bool hasStarted=false;
 
 }; // End of class uWriterBed4
