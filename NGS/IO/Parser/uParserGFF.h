@@ -23,7 +23,7 @@ private:
     uToken _getTokenFromGFFString(const std::string & line);
     static DerivedParserRegister<uParserGFF> reg;
     boost::xpressive::sregex GFFRegex;
-    const std::string GFFregString="^([\\w_-]+)\t([\\w_-]+)\t([\\w_-]+)\t(\\d+)\t(\\d+)\t([-+]?[0-9]*\\.?[0-9]+|.)\t(\\+|\\-|\\.)\t([012\\.])(?:\t(.+))?";
+    const std::string GFFregString="^(\\.|[\\w_-]+)\t(\\.|[\\w_-]+)\t(\\.|[\\w_-]+)\t(\\d+)\t(\\d+)\t([-+]?[0-9]*\\.?[0-9]+|.)\t(\\+|\\-|\\.)\t([012\\.])(?:\t(.+))?";
 };
 
 } // End of namespace NGS

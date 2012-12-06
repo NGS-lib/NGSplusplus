@@ -45,23 +45,12 @@ void uParserGTF::init(std::istream* stream, bool header)
  */
 uToken uParserGTF::getNextEntry()
 {
-    std::string strLine;
+  std::string strLine;
    // char line[4096];
     //if (m_pIostream->getline(strLine))
     if (std::getline(*m_pIostream, strLine))
     {
-        /**< We start by fetching the infos from the line */
-        std::stringstream token_infos;
-        _getTokenInfoFromGTFString(strLine, token_infos);
-        /**< We try to create a token with the infos that were fetched from the line */
-        try
-        {
-            return uToken(token_infos);
-        }
-        catch(invalid_uToken_throw& e)
-        {
-            throw e;
-        }
+        return _getTokenInfoFromGTFString(strLine);
     }
     else
     {
@@ -72,39 +61,47 @@ uToken uParserGTF::getNextEntry()
         e << string_error("Reached end of file.");
         throw e;
     }
-    std::cerr <<"Fatal error in getNextEntry() from GTF parser, should not reach here." <<std::endl;
+    std::cerr <<"Fatal error in getNextEntry() from GFF parser, should not reach here." <<std::endl;
     abort();
 }
 
-void uParserGTF::_getTokenInfoFromGTFString(std::string line, std::stringstream& token_infos)
+uToken uParserGTF::_getTokenInfoFromGTFString(const std::string& line)
 {
 
-    /**< This would be more efficient with a static regex, but preserving Perl syntax makes it "easier" to read */
-    smatch what;
+   smatch what;
     if( regex_match( line, what, GTFRegex ) )
     {
-        /**< Preset according to GTF2 format */
-
-        /**< According to GTF specification, the first value is "SEQNAME". Howeverm, practical use for most people is using it as chrom. */
-        /**< As such, the assignation of what[1] is subject to change */
-
-        token_infos << "SEQ_NAME\t" << what[1] << "\n";
-        token_infos << "SOURCE\t" << what[2] << "\n";
-        token_infos << "FEATURE_NAME\t" << what[3] << "\n";
-        token_infos << "START_POS\t" << what[4] << "\n";
-        token_infos << "END_POS\t" <<  what[5] << "\n";
-        /**< GTF considered a '.' to mean no info or not relevant. We simply do not stock it */
+        /**< Preset according to GTF format */
+        uToken ourToken;
+        if ( what[1]!=".")
+        ourToken._setParamNoValidate(token_param::CHR, what[1]);
+       // token_infos << "SEQ_NAME\t" << what[1] << "\n";
+        if ( what[2]!=".")
+        ourToken._setParamNoValidate(token_param::SOURCE, what[2]);
+      //  token_infos << "SOURCE\t" << what[2] << "\n";
+       if ( what[3]!=".")
+        ourToken._setParamNoValidate(token_param::FEATURE_NAME, what[3]);
+       // token_infos << "FEATURE_NAME\t" << what[3] << "\n";
+        ourToken._setParamNoValidate(token_param::START_POS, what[4]);
+       // token_infos << "START_POS\t" << what[4] << "\n";
+       ourToken._setParamNoValidate(token_param::END_POS, what[5]);
+       // token_infos << "END_POS\t" <<  what[5] << "\n";
         if ( what[6]!=".")
-            token_infos << "SCORE\t" << what[6] << "\n";
-
+             ourToken._setParamNoValidate(token_param::SCORE, what[6]);
+            //token_infos << "SCORE\t" << what[6] << "\n";
+        /**< GFF considered a '.' to mean no info or not relevant. We simply do not stock it */
         if ( what[7]!=".")
-            token_infos << "STRAND\t" << what[7] << "\n";
-        token_infos << "PHASE\t" << what[8] << "\n";
+            ourToken._setParamNoValidate(token_param::STRAND, what[7]);
+           // token_infos << "STRAND\t" << what[7] << "\n";
+             ourToken._setParamNoValidate(token_param::PHASE, what[8]);
+        //token_infos << "PHASE\t" << what[8] << "\n";
         if (what[9].matched)
-            token_infos << "EXTRA\t" << what[9] << "\n";
+             ourToken._setParamNoValidate(token_param::EXTRA, what[9]);
+            //token_infos << "EXTRA\t" << what[9] << "\n";
+        return ourToken;
     }
     else{
-        throw uParser_invalid_GTF_line()<<string_error("GTF line, failling validation. Line is:\n"+line);
+        throw uParser_invalid_GFF_line()<<string_error("GFF line, failling validation. Line is:\n"+line);
     }
 
 }

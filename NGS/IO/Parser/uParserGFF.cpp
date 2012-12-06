@@ -95,10 +95,13 @@ uToken uParserGFF::_getTokenFromGFFString(const std::string & line)
         uToken ourToken;
         /**< According to GFF specification, the first value is "SEQNAME". Howeverm, practical use for most people is using it as chrom.  */
         /**< As such, the assignation of what[1] is subject to change */
+        if ( what[1]!=".")
         ourToken._setParamNoValidate(token_param::SEQ_NAME, what[1]);
        // token_infos << "SEQ_NAME\t" << what[1] << "\n";
+        if ( what[2]!=".")
         ourToken._setParamNoValidate(token_param::SOURCE, what[2]);
       //  token_infos << "SOURCE\t" << what[2] << "\n";
+       if ( what[3]!=".")
         ourToken._setParamNoValidate(token_param::FEATURE_NAME, what[3]);
        // token_infos << "FEATURE_NAME\t" << what[3] << "\n";
         ourToken._setParamNoValidate(token_param::START_POS, what[4]);
@@ -112,9 +115,9 @@ uToken uParserGFF::_getTokenFromGFFString(const std::string & line)
         if ( what[7]!=".")
             ourToken._setParamNoValidate(token_param::STRAND, what[7]);
            // token_infos << "STRAND\t" << what[7] << "\n";
-             ourToken._setParamNoValidate(token_param::PHASE, what[8]);
+        if ( what[8]!=".")
+            ourToken._setParamNoValidate(token_param::PHASE, what[8]);
         //token_infos << "PHASE\t" << what[8] << "\n";
-
         if (what[9].matched)
              ourToken._setParamNoValidate(token_param::EXTRA, what[9]);
             //token_infos << "EXTRA\t" << what[9] << "\n";

@@ -14,31 +14,31 @@ using namespace std;
 
 #define SOMENUMBER 102343
 using namespace NGS;
-/**< Testing our parent unitary uGenericNGS */
-TEST(uGenericNGSTest, DefaultCTr){
- uGenericNGS uTest;
+/**< Testing our parent unitary uBasicNGS */
+TEST(uBasicNGSTest, DefaultCTr){
+ uBasicNGS uTest;
  EXPECT_EQ(0, uTest.getStart());
  EXPECT_EQ(0, uTest.getEnd());
  EXPECT_EQ("",uTest.getChr());
  EXPECT_EQ(StrandDir::FORWARD,uTest.getStrand());
 }
 
-TEST(uGenericNGSTest, 3CTR){
- uGenericNGS uTest("chr1", 100, 200);
+TEST(uBasicNGSTest, 3CTR){
+ uBasicNGS uTest("chr1", 100, 200);
  EXPECT_EQ(100,uTest.getStart());
  EXPECT_EQ(200, uTest.getEnd());
  EXPECT_EQ("chr1", uTest.getChr());
 }
-TEST(uGenericNGSTest, INVCTR){
- EXPECT_ANY_THROW(uGenericNGS uTestInv("chr1",200,100));
+TEST(uBasicNGSTest, INVCTR){
+ EXPECT_ANY_THROW(uBasicNGS uTestInv("chr1",200,100));
 }
-TEST(uGenericNGSTest, NOCHRCTR){
- EXPECT_NO_THROW(uGenericNGS uTestEmpty("", 100, 200));
+TEST(uBasicNGSTest, NOCHRCTR){
+ EXPECT_NO_THROW(uBasicNGS uTestEmpty("", 100, 200));
 }
-TEST(uGenericNGSTest, GETSET){
+TEST(uBasicNGSTest, GETSET){
 
     {
-        uGenericNGS uTest("chr1", 100, 200,StrandDir::REVERSE);
+        uBasicNGS uTest("chr1", 100, 200,StrandDir::REVERSE);
         /**< Illegal Start */
         EXPECT_ANY_THROW(uTest.setStart(-10));
         EXPECT_ANY_THROW(uTest.setStart(250));
@@ -60,9 +60,9 @@ TEST(uGenericNGSTest, GETSET){
         EXPECT_TRUE(uTest.isReverse());
     }
  }
-TEST(uGenericNGSTest, GETSETINV)
+TEST(uBasicNGSTest, GETSETINV)
 {
-    uGenericNGS uTest("chr1", 150, 200);
+    uBasicNGS uTest("chr1", 150, 200);
 
     /**< Illegal end */
     EXPECT_ANY_THROW(uTest.setEnd(-10));
@@ -80,8 +80,8 @@ TEST(uGenericNGSTest, GETSETINV)
     uTest.setChr("chr2");
     EXPECT_EQ("chr2",uTest.getChr());
 
-    uGenericNGS uTestnew("chr1", 100, 200);
-    uGenericNGS uEmpty;
+    uBasicNGS uTestnew("chr1", 100, 200);
+    uBasicNGS uEmpty;
 
     EXPECT_EQ(101, uTestnew.getLenght());
 
@@ -90,15 +90,15 @@ TEST(uGenericNGSTest, GETSETINV)
 
 }
 
-TEST(uGenericNGSTest,EXTEND){
-    uGenericNGS uTest("chr1", 100, 200);
+TEST(uBasicNGSTest,EXTEND){
+    uBasicNGS uTest("chr1", 100, 200);
     uTest.extendSite(100);
     EXPECT_EQ(0, uTest.getStart());
     EXPECT_EQ(300, uTest.getEnd());
     uTest.extendSite(50);
     EXPECT_EQ(0, uTest.getStart());
     EXPECT_EQ(350, uTest.getEnd());
-    uGenericNGS uTestExtend("chr1", 500, 600);
+    uBasicNGS uTestExtend("chr1", 500, 600);
     uTestExtend.extendSite(0, 200);
     EXPECT_EQ(500, uTestExtend.getStart());
     EXPECT_EQ(800, uTestExtend.getEnd());
@@ -107,15 +107,15 @@ TEST(uGenericNGSTest,EXTEND){
     EXPECT_ANY_THROW(uTest.extendSite(100,-100));
 
 }
-TEST(uGenericNGSTest,TRIM){
-    uGenericNGS uTest("chr1", 100, 200);
+TEST(uBasicNGSTest,TRIM){
+    uBasicNGS uTest("chr1", 100, 200);
     uTest.trimSites(50);
     EXPECT_EQ(150, uTest.getStart());
     EXPECT_EQ(150, uTest.getEnd());
     EXPECT_ANY_THROW(uTest.trimSites(50));
     EXPECT_ANY_THROW(uTest.trimSites(-50));
 
-    uGenericNGS uTestTrim2("chr1", 200, 600);
+    uBasicNGS uTestTrim2("chr1", 200, 600);
     uTestTrim2.trimSites(50,100);
     EXPECT_EQ(250, uTestTrim2.getStart());
     EXPECT_EQ(500, uTestTrim2.getEnd());
@@ -123,16 +123,16 @@ TEST(uGenericNGSTest,TRIM){
     EXPECT_ANY_THROW(uTest.trimSites(100,-100));
 }
 
-TEST(uGenericNGSTest, OVERLAP){
+TEST(uBasicNGSTest, OVERLAP){
 
-     uGenericNGS uTest("chr1", 100, 200);
-     uGenericNGS uTestSame("chr1",100, 200);
-     uGenericNGS uTestOverlap1R("chr1", 200, 201);
-     uGenericNGS uTestOverlapNot("chr1", 300, 305);
-     uGenericNGS uTestOverlapiL("chr1", 99, 100);
-     uGenericNGS uTestOverlapDifChr("chr2", 100, 200);
+     uBasicNGS uTest("chr1", 100, 200);
+     uBasicNGS uTestSame("chr1",100, 200);
+     uBasicNGS uTestOverlap1R("chr1", 200, 201);
+     uBasicNGS uTestOverlapNot("chr1", 300, 305);
+     uBasicNGS uTestOverlapiL("chr1", 99, 100);
+     uBasicNGS uTestOverlapDifChr("chr2", 100, 200);
      uTags uTestOverlapPoly("chr1", 100, 200);
-     uGenericNGS uTestEmpty;
+     uBasicNGS uTestEmpty;
      uRegion uTestOverlapPolyempty;
     EXPECT_TRUE( uTest.doesOverlap(uTestSame));
     EXPECT_TRUE( uTest.doesOverlap(uTestOverlap1R));
@@ -146,17 +146,17 @@ TEST(uGenericNGSTest, OVERLAP){
     EXPECT_FALSE (uTest.doesOverlap(uTestOverlapDifChr));
 }
 
-TEST(uGenericNGSTest, DIVIDEINTOBIN){
+TEST(uBasicNGSTest, DIVIDEINTOBIN){
 
-    uGenericNGS uTest("chr1", 100, 119);
+    uBasicNGS uTest("chr1", 100, 119);
 
-    EXPECT_ANY_THROW(vector<uGenericNGS> ourVector= uTest.divideIntoNBin(3));
+    EXPECT_ANY_THROW(vector<uBasicNGS> ourVector= uTest.divideIntoNBin(3));
 
-    vector<uGenericNGS> TestVector= uTest.divideIntoNBin(3, SplitType::IGNORE);
+    vector<uBasicNGS> TestVector= uTest.divideIntoNBin(3, SplitType::IGNORE);
 
     EXPECT_EQ( (int)TestVector.size(),3);
 
-    for(uGenericNGS x : TestVector)
+    for(uBasicNGS x : TestVector)
         EXPECT_EQ( x.getLenght(), 6);
 
     EXPECT_EQ( TestVector.at(0).getStart(), 100);
@@ -182,25 +182,25 @@ TEST(uGenericNGSTest, DIVIDEINTOBIN){
     EXPECT_EQ( TestVector.at(2).getEnd(), 119);
 }
 
-TEST(uGenericNGSTest, DIVIDEINTOBINOFSIZESTRICT){
+TEST(uBasicNGSTest, DIVIDEINTOBINOFSIZESTRICT){
 
-    uGenericNGS uTest("chr1", 100, 119);
+    uBasicNGS uTest("chr1", 100, 119);
 
-    EXPECT_ANY_THROW(vector<uGenericNGS> ourVector= uTest.divideIntoBinofSize(7));
+    EXPECT_ANY_THROW(vector<uBasicNGS> ourVector= uTest.divideIntoBinofSize(7));
 
-    vector<uGenericNGS> ourVector= uTest.divideIntoBinofSize(5);
-    for(uGenericNGS x : ourVector)
+    vector<uBasicNGS> ourVector= uTest.divideIntoBinofSize(5);
+    for(uBasicNGS x : ourVector)
         EXPECT_EQ( x.getLenght(), 5);
 }
 
-TEST(uGenericNGSTest, DIVIDEINTOBINOFSIZEIGNORE){
+TEST(uBasicNGSTest, DIVIDEINTOBINOFSIZEIGNORE){
 
-    uGenericNGS uTest("chr1", 100, 119);
-    vector<uGenericNGS> TestVector= uTest.divideIntoBinofSize(7, SplitType::IGNORE);
+    uBasicNGS uTest("chr1", 100, 119);
+    vector<uBasicNGS> TestVector= uTest.divideIntoBinofSize(7, SplitType::IGNORE);
 
     EXPECT_EQ( (int)TestVector.size(),2);
 
-    for(uGenericNGS x : TestVector)
+    for(uBasicNGS x : TestVector)
         EXPECT_EQ( x.getLenght(), 7);
 
     EXPECT_EQ( TestVector.at(0).getStart(), 100);
@@ -209,10 +209,10 @@ TEST(uGenericNGSTest, DIVIDEINTOBINOFSIZEIGNORE){
     EXPECT_EQ( TestVector.at(1).getEnd(), 113);
 
 }
-TEST(uGenericNGSTest, DIVIDEINTOBINOFSIZEADD){
-   uGenericNGS uTest("chr1", 100, 119);
+TEST(uBasicNGSTest, DIVIDEINTOBINOFSIZEADD){
+   uBasicNGS uTest("chr1", 100, 119);
 
-    vector<uGenericNGS> TestVector= uTest.divideIntoBinofSize(7, SplitType::ADD);
+    vector<uBasicNGS> TestVector= uTest.divideIntoBinofSize(7, SplitType::ADD);
     EXPECT_EQ( (int)TestVector.size(), 3);
     EXPECT_EQ( TestVector.at(2).getLenght(), 6);
     EXPECT_EQ( TestVector.at(2).getStart(), 114);
@@ -222,10 +222,10 @@ TEST(uGenericNGSTest, DIVIDEINTOBINOFSIZEADD){
     EXPECT_EQ( (int)TestVector.size(), 2);
 
 }
-TEST(uGenericNGSTest, DIVIDEINTOBINOFSIZEEXTEND){
-   uGenericNGS uTest("chr1", 100, 119);
+TEST(uBasicNGSTest, DIVIDEINTOBINOFSIZEEXTEND){
+   uBasicNGS uTest("chr1", 100, 119);
 
-    vector<uGenericNGS> TestVector= uTest.divideIntoBinofSize(7, SplitType::EXTEND);
+    vector<uBasicNGS> TestVector= uTest.divideIntoBinofSize(7, SplitType::EXTEND);
     EXPECT_EQ( (int)TestVector.size(), 2);
     EXPECT_EQ( TestVector.at(1).getLenght(), 13);
     EXPECT_EQ( TestVector.at(1).getStart(), 107);
