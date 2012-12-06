@@ -1,0 +1,3 @@
+This directory contains the unitary tests for the NGS++ library. The tests are meant to be built and executed using the gtest unit testing library. Complete documentation on how to install and run this testing framework is available at the projet website.
+
+http://code.google.com/p/googletest/
