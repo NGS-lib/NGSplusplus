@@ -180,6 +180,48 @@ void uRegion::writeRegion(std::ostream& out) const
     out << getChr()<<"\t" << getStart() << "\t"<< getEnd() << "\t" << getCount() <<   std::endl;
 }
 
+/**< Chrom constructors */
+
+
+
+
+
+    uRegionChrom::uRegionChrom(const uGenericNGSChrom<uRegionChrom,uRegion> & copyCop)
+    {
+        VecSites=copyCop.returnVecData();
+        chr= copyCop.getChr();
+        m_isSorted=copyCop.getSortedStatus();
+        sortGetStart=copyCop.getStartFunct();
+        sortGetEnd=copyCop.getEndFunct();
+        m_comptFunc=copyCop.getCompFunct();
+        chromSize=copyCop.getChromSize();
+    }
+    uRegionChrom::uRegionChrom(const uRegionChrom& initFrom){
+
+        VecSites=initFrom.returnVecData();
+        chr= initFrom.getChr();
+        m_isSorted=initFrom.m_isSorted;
+        sortGetStart=initFrom.sortGetStart;
+        sortGetEnd=initFrom.sortGetEnd;
+        m_comptFunc=initFrom.m_comptFunc;
+        chromSize=initFrom.chromSize;
+
+    }
+    uRegionChrom& uRegionChrom::operator=(const uRegionChrom& copFrom)
+    {
+
+        VecSites=copFrom.returnVecData();
+        chr= copFrom.getChr();
+        m_isSorted=copFrom.m_isSorted;
+        sortGetStart=copFrom.sortGetStart;
+        sortGetEnd=copFrom.sortGetEnd;
+        m_comptFunc=copFrom.m_comptFunc;
+        chromSize=copFrom.chromSize;
+
+        return *this;
+    }
+
+
 
 //TODO Once implement, this needs to use our Transform wrapper
 /** \brief Set the density scores for our exp versus another one
@@ -190,6 +232,7 @@ void uRegion::writeRegion(std::ostream& out) const
  * \return void
  *
  */
+
 void uRegionExperiment::measureDensityOverlap(const uRegionExperiment& expToComp, const OverlapType poverlap)
 {
     for (auto it =ExpMap.begin(); it!=ExpMap.end(); it++ )
@@ -237,13 +280,7 @@ void uRegionExperiment::writeSignal(std::ostream& out)
  * \return void
  *
  */
-void uRegionChrom::measureDensityOverlap(const uGenericNGSChrom<uGenericNGSChrom,uGenericNGS>& chromtoComp, const OverlapType pOverlap)
-{
-    for (auto it =VecSites.begin(); it!=VecSites.end(); it++ )
-    {
-        it->setCount((chromtoComp.getSubsetCount(it->getStart(), it->getEnd(),pOverlap)));
-    }
-}
+
 void uRegionChrom::measureDensityOverlap( const uBasicNGSChrom& chromtoComp, const OverlapType pOverlap)
 {
     for (auto it =VecSites.begin(); it!=VecSites.end(); it++ )
@@ -300,7 +337,7 @@ try
             }
             catch (...)
             {
-                throw elem_throw() << tag_error(Elem);
+                throw elem_throw() << region_error(Elem);
             }
         }
                                );
@@ -368,7 +405,7 @@ try
     {
         densityValues.resize(chromToComp.getChromSize());
         trace += ("Starting apply on All Sites (uRegion) \n");
-        vector<uRegion> failRegionVec;
+        vector<uTags> failTagVec;
         chromToComp.applyOnAllSites([&] (const uTags & Elem)
         {
             try
@@ -382,7 +419,7 @@ try
                 else
                 {
                     /**< Keep log of invalid Regions */
-                    failRegionVec.push_back(Elem);
+                    failTagVec.push_back(Elem);
                 }
             }
             catch (...)
@@ -391,6 +428,7 @@ try
             }
         }
                                );
+         vector<uRegion> failRegionVec;
         trace += ("Starting apply on All Sites (Uregion) \n");
         this->applyOnAllSites( [&] (uRegion& Elem)
         {
@@ -419,11 +457,13 @@ try
                 throw elem_throw() << region_error(Elem);
             }
         } );
-        if (failRegionVec.size())
+        if (( failRegionVec.size())||(failTagVec.size()))
         {
             skipped_elem_throw e;
             if (failRegionVec.size())
                 e <<skipped_regions(failRegionVec);
+            if (failTagVec.size())
+                e <<skipped_tags(failTagVec);
             e << string_error(trace);
             throw e;
         }
@@ -456,11 +496,10 @@ void uRegionChrom::generateSignal(const uBasicNGSChrom& chrToComp)
 
     try
     {
-        //auto pTag =expToComp.getpChrom(this->getChr());
         densityValues.resize(chrToComp.getChromSize());
         trace += ("Starting apply on All Sites (Utags) \n");
-        vector<uTags> failTagvec;
-        (chrToComp).applyOnAllSites([&] (const uTags & Elem)
+        vector<uBasicNGS> failBasicvec;
+        (chrToComp).applyOnAllSites([&] (const uBasicNGS & Elem)
         {
             try
             {
@@ -473,15 +512,15 @@ void uRegionChrom::generateSignal(const uBasicNGSChrom& chrToComp)
                 else
                 {
                     /**< Keep log of invalid tags */
-                    failTagvec.push_back(Elem);
+                    failBasicvec.push_back(Elem);
                 }
             }
             catch (...)
             {
-                throw elem_throw() << tag_error(Elem);
+                throw elem_throw() << basic_error(Elem);
             }
         }
-                               );
+    );
         trace += ("Starting apply on All Sites (Uregion) \n");
         vector<uRegion> failRegionVec;
         this->applyOnAllSites( [&] (uRegion& Elem)
@@ -510,11 +549,11 @@ void uRegionChrom::generateSignal(const uBasicNGSChrom& chrToComp)
             }
         } );
 
-        if (failTagvec.size() || (failRegionVec.size()))
+        if (failBasicvec.size() || (failRegionVec.size()))
         {
             skipped_elem_throw e;
-            if (failTagvec.size())
-                e <<skipped_tags(failTagvec);
+            if (failBasicvec.size())
+                e <<skipped_Basic(failBasicvec);
             if (failRegionVec.size())
                 e <<skipped_regions(failRegionVec);
             e << string_error(trace);
@@ -585,7 +624,7 @@ void uRegionExperiment::generateSignal(const uTagsExperiment& expToComp)
 }
  void uRegionExperiment::generateSignal(const uRegionExperiment & expToComp){
 
- vector<uRegion> skipTagvec;
+ vector<uTags> skipTagvec;
  vector<uRegion> skipRegioNvec;
 
 for(auto& chrom : ExpMap)
@@ -611,14 +650,14 @@ for(auto& chrom : ExpMap)
         {
             skipped_elem_throw e;
             if (skipTagvec.size())
-                e <<skipped_regions(skipTagvec);
+                e <<skipped_tags(skipTagvec);
             if (skipRegioNvec.size())
                 e <<skipped_regions(skipRegioNvec);
             throw e;
         }
  }
  void uRegionExperiment::generateSignal(const uBasicNGSExperiment & expToComp){
- vector<uRegion> skipTagvec;
+ vector<uBasicNGS> skipBasic;
  vector<uRegion> skipRegioNvec;
 for(auto& chrom : ExpMap)
     {
@@ -628,9 +667,9 @@ for(auto& chrom : ExpMap)
         }
         catch(skipped_elem_throw & e)
         {
-            if (vector<uTags> const * vecU =boost::get_error_info<skipped_tags>(e) )
+            if (vector<uBasicNGS> const * vecU =boost::get_error_info<skipped_Basic>(e) )
                 {
-                  skipTagvec.insert( skipTagvec.end(), vecU->begin(), vecU->end() );
+                  skipBasic.insert( skipBasic.end(), vecU->begin(), vecU->end() );
                 }
                if (vector<uRegion> const * vecR =boost::get_error_info<skipped_regions>(e) )
                {
@@ -638,12 +677,12 @@ for(auto& chrom : ExpMap)
                }
         }
     }
-/**< Log errors */
- if ( (skipTagvec.size()>0) || (skipRegioNvec.size()>0))
+/**< Log skipBasic */
+ if ( (skipBasic.size()>0) || (skipRegioNvec.size()>0))
         {
             skipped_elem_throw e;
-            if (skipTagvec.size())
-                e <<skipped_regions(skipTagvec);
+            if (skipBasic.size())
+                e <<skipped_Basic(skipBasic);
             if (skipRegioNvec.size())
                 e <<skipped_regions(skipRegioNvec);
             throw e;

@@ -177,10 +177,8 @@ public:
 
 
      _CHROM_ getSubset(std::string chr, float start, float end, OverlapType options=OverlapType::OVERLAP_PARTIAL);
-    _SELF_ getDistinct( uGenericNGSExperiment &compareExp, OverlapType type=OverlapType::OVERLAP_PARTIAL);
-    _SELF_ getDistinct(_CHROM_ &compareChr, OverlapType type=OverlapType::OVERLAP_PARTIAL);
-    _SELF_ getDistinct( std::string chr, float start, float end, OverlapType type=OverlapType::OVERLAP_PARTIAL);
-    _SELF_ getDistinct(_BASE_ elem,  OverlapType options=OverlapType::OVERLAP_PARTIAL);
+     _SELF_ getDistinct( std::string chr, float start, float end, OverlapType type=OverlapType::OVERLAP_PARTIAL);
+
     /**<  ok from here*/
 
 
@@ -194,7 +192,7 @@ public:
     };
 
     int getSubsetCount(const std::string & chr, const float start, const float end, const OverlapType overlap=OverlapType::OVERLAP_PARTIAL);
-    int getSubsetCount(const uGenericNGS & subsetReg, const OverlapType overlap=OverlapType::OVERLAP_PARTIAL);
+    int getSubsetCount(const _BASE_ & subsetReg, const OverlapType overlap=OverlapType::OVERLAP_PARTIAL);
 
     void divideItemsIntoBinofSize(int N, SplitType type=SplitType::STRICT);
     void divideItemsIntoNBins(int N, SplitType type=SplitType::STRICT);
@@ -679,7 +677,7 @@ void uGenericNGSExperiment<_SELF_,_CHROM_, _BASE_>::loadFromTabFile(std::ifstrea
     std::string tempString;
     while(!std::getline(stream, tempString).eof())
     {
-        addSite( static_cast<_BASE_>(factory::makeNGSfromTabString(tempString)));
+        addSite( factory::makeNGSfromTabString<_BASE_>(tempString));
     }
 }
 
@@ -781,7 +779,7 @@ int uGenericNGSExperiment<_SELF_,_CHROM_, _BASE_>::getSubsetCount(const std::str
 
 //TODO Deprecate or make general
 template<class _SELF_, typename _CHROM_, typename _BASE_>
-int uGenericNGSExperiment<_SELF_,_CHROM_, _BASE_>::getSubsetCount(const uGenericNGS & subsetReg, const OverlapType overlap)
+int uGenericNGSExperiment<_SELF_,_CHROM_, _BASE_>::getSubsetCount(const _BASE_ & subsetReg, const OverlapType overlap)
 {
 
     int count=0;
@@ -943,51 +941,13 @@ _CHROM_ uGenericNGSExperiment<_SELF_,_CHROM_, _BASE_>::getSubset(std::string chr
 
 
 /** \brief Return an EXP containing only the unarity sites that do not overlap does of the input structure
- *   Overloads include Experiment, Chrom, Site and chr,start,end
+ *
  *
  * \param compareExp uGenericNGSExperiment& Input, copies exist as mentionned prio
  * \param options OverlapType How we determine if overlapping or not
  * \return uGenericNGSExperiment<_CHROM_,_BASE_> Experiment containing the sites in there appropriate Chroms
  *
  */
-
-template<class _SELF_, typename _CHROM_, typename _BASE_>
-_SELF_ uGenericNGSExperiment<_SELF_,_CHROM_, _BASE_>::getDistinct(uGenericNGSExperiment &compareExp, OverlapType options)
-{
-    typename NGSExpMap::iterator iterMap;
-    _CHROM_* pChrom;
-    _SELF_ returnExp;
-    for (iterMap = ExpMap.begin(); iterMap != ExpMap.end(); iterMap++)
-    {
-        pChrom = compareExp.getpChrom(iterMap->first);
-        returnExp.combine(iterMap->second.getDistinct((uGenericNGSExperiment)compareExp));
-    }
-    return returnExp;
-}
-
-template<class _SELF_, typename _CHROM_, typename _BASE_>
-_SELF_ uGenericNGSExperiment<_SELF_,_CHROM_, _BASE_>::getDistinct(_CHROM_ &compareChr, OverlapType options)
-{
-
-    _CHROM_* pChrom;
-    _SELF_ returnExp;
-    if (ExpMap.count(compareChr.getChr()) )
-    {
-        _CHROM_* tempChrom=&(ExpMap[compareChr.getChr()]);
-        returnExp.combine(tempChrom->getDistinct(compareChr));
-    }
-    return returnExp;
-}
-
-template<class _SELF_, typename _CHROM_, typename _BASE_>
-_SELF_ uGenericNGSExperiment<_SELF_,_CHROM_, _BASE_>::getDistinct(_BASE_ elem,  OverlapType options)
-{
-    typename NGSExpMap::iterator iterMap;
-    _SELF_ returnExp;
-    _CHROM_* tempChrom=&(ExpMap[elem.getChr()]);
-
-    return getDistinct(elem.getChr(),elem.getStart(),elem.getEnd(),options);
-}
 
 template<class _SELF_, typename _CHROM_, typename _BASE_>
 _SELF_ uGenericNGSExperiment<_SELF_,_CHROM_, _BASE_>::getDistinct(std::string chr, float start, float end,  OverlapType options)
@@ -1080,10 +1040,8 @@ _SELF_ uGenericNGSExperiment<_SELF_,_CHROM_,_BASE_>::getOverlapping(std::string 
     try
     {
         _SELF_ tempChrom;
-
-        auto item= uGenericNGS(chr,start,end);
-        auto castItem= static_cast<_BASE_>(item);
-        tempChrom.addSite(castItem);
+        auto item= _BASE_(chr,start,end);
+        tempChrom.addSite(item);
         return getOverlapping(tempChrom, type);
     }
     catch(std::exception & e)

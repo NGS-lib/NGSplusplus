@@ -19,7 +19,6 @@ private:
     bool chrValidate(const std::string& chr);
     bool hasStarted=false;
 
-
 }; // End of class uWriterBed4
 
 } // End of namespace NGS

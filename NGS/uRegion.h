@@ -7,43 +7,59 @@
 #include "uFormats.h"
 #include "uTags.h"
 #include <limits>
-namespace NGS {
+namespace NGS
+{
 class uToken;
 class uParser;
 class uBasicNGS;
 class uBasicNGSChrom;
 class uBasicNGSExperiment;
-class uRegion : public uGenericNGS
+class uRegion : public uGenericNGS<uRegion>
 {
-    public:
-        uRegion();
-        uRegion(std::string chr, int start, int end);
-        uRegion(uGenericNGS);
+public:
+    uRegion();
+    uRegion(std::string chr, int start, int end);
+    uRegion(uGenericNGS);
 
-        uRegion(uToken);
+    uRegion(uToken);
 
-        virtual ~uRegion();
+    virtual ~uRegion();
 
-        std::string getIdent() const {return ident;};
-		void setDensity(float pDensity) {density=pDensity ;};
-        float getDensity() const {return density;};
-        void setCount(int ucount) {count=ucount;};
-        int getCount()const {return count;};
-        void setSignal(int i, float value);
-        void setSignal(std::vector<float>);
-        std::vector<float> getSignal();
+    std::string getIdent() const
+    {
+        return ident;
+    };
+    void setDensity(float pDensity)
+    {
+        density=pDensity ;
+    };
+    float getDensity() const
+    {
+        return density;
+    };
+    void setCount(int ucount)
+    {
+        count=ucount;
+    };
+    int getCount()const
+    {
+        return count;
+    };
+    void setSignal(int i, float value);
+    void setSignal(std::vector<float>);
+    std::vector<float> getSignal();
 
 
-        void writeSignal(std::ostream& out) const;
-        void writeRegion(std::ostream& out) const;
-        void writeAll(std::ostream& out ) const;
+    void writeSignal(std::ostream& out) const;
+    void writeRegion(std::ostream& out) const;
+    void writeAll(std::ostream& out ) const;
 
-        //TODO substract regions (with options)
+    //TODO substract regions (with options)
 
-    protected:
-    private:
+protected:
+private:
 
-    std::vector<float> signal={};
+    std::vector<float> signal= {};
     /**<  User friendly name of our region. */
     std::string ident="";
     /**< Varies according to our needs. */
@@ -58,26 +74,39 @@ class uRegion : public uGenericNGS
 class uRegionExperiment;
 class uRegionChrom :  public uGenericNGSChrom<uRegionChrom,uRegion>
 {
-    public:
-
-     void measureDensityOverlap(const  uGenericNGSChrom<uGenericNGSChrom,uGenericNGS>& chromtoComp, const OverlapType=OverlapType::OVERLAP_PARTIAL);
-     void measureDensityOverlap(const  uTagsChrom& chromtoComp, const OverlapType=OverlapType::OVERLAP_PARTIAL);
-     void measureDensityOverlap(const  uRegionChrom& chromtoComp, const OverlapType=OverlapType::OVERLAP_PARTIAL);
-     void measureDensityOverlap(const  uBasicNGSChrom& chromtoComp, const OverlapType=OverlapType::OVERLAP_PARTIAL);
+public:
 
 
-     void generateSignal(const uRegionChrom & chromToComp);
-     void generateSignal(const uTagsChrom & chromToComp);
-     void generateSignal(const uBasicNGSChrom & chromToComp);
+    uRegionChrom():uGenericNGSChrom() {};
+    uRegionChrom(std::string ourChr):uGenericNGSChrom(ourChr)
+    {
+    }
+    uRegionChrom(std::string ourChr, long long int lenght):uGenericNGSChrom(ourChr,lenght)
+    {
+    }
+    uRegionChrom(const uGenericNGSChrom<uRegionChrom,uRegion>&);
+    uRegionChrom& operator=(const uRegionChrom& copFrom);
+    uRegionChrom(const uRegionChrom&);
+    uRegionChrom(const std::vector<uRegion> & copyVec):uGenericNGSChrom(copyVec){};
 
-     void writeDensityAsTab(std::ostream& out);
-     void writeAll(std::ostream& out);
-     void writeSignal(std::ostream& out);
+
+    void measureDensityOverlap(const  uTagsChrom& chromtoComp, const OverlapType=OverlapType::OVERLAP_PARTIAL);
+    void measureDensityOverlap(const  uRegionChrom& chromtoComp, const OverlapType=OverlapType::OVERLAP_PARTIAL);
+    void measureDensityOverlap(const  uBasicNGSChrom& chromtoComp, const OverlapType=OverlapType::OVERLAP_PARTIAL);
+
+    void generateSignal(const uRegionChrom & chromToComp);
+    void generateSignal(const uTagsChrom & chromToComp);
+    void generateSignal(const uBasicNGSChrom & chromToComp);
+
+    void writeDensityAsTab(std::ostream& out);
+    void writeAll(std::ostream& out);
+    void writeSignal(std::ostream& out);
 
 };
 
-class uRegionExperiment: public uGenericNGSExperiment<uRegionExperiment,uRegionChrom, uRegion>{
-     public:
+class uRegionExperiment: public uGenericNGSExperiment<uRegionExperiment,uRegionChrom, uRegion>
+{
+public:
 
 
     uRegionExperiment& operator=(const uRegionExperiment& copFrom)=default;
@@ -99,7 +128,7 @@ class uRegionExperiment: public uGenericNGSExperiment<uRegionExperiment,uRegionC
     void writeAll(std::ostream& out);
     void writeSignal(std::ostream& out);
 
-   void loadFromWig(std::ifstream & inputStream);
+    void loadFromWig(std::ifstream & inputStream);
 };
 } // End of namespace NGS
 #endif

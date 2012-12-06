@@ -96,6 +96,15 @@ TEST(uTagsTest, CopyCTR){
 
 
 
+/**< Testing DivideItemsIntoNBin */
+TEST(uTagsChrTest, DIVIDEINTONBINFAILCHROM){
+    uTagsChrom emptyChrom("chr1");
+    emptyChrom.addSite(uTags("chr1",100,200));
+    EXPECT_ANY_THROW(emptyChrom.divideItemsIntoNBins(7));
+    //EXPECT_ANY_THROW(uChromTestOverlap.divideItemsIntoNBins(32));
+}
+
+
 
 TEST(uTagsChrTest, distinctChrTest)
 {
@@ -125,8 +134,9 @@ TEST(uTagsChrTest, distinctChrTest)
     newChrom.addSite(uTags("chr5",400, 2200));
     newChrom.addSite(uTags("chr5",1000, 3000));
     newChrom.sortSites();
-    auto testChrom=newChrom.getDistinct(300, 900);
-     EXPECT_EQ(1,testChrom.count());
+    uTagsChrom yar;
+    yar=newChrom.getDistinct(300, 900);
+     EXPECT_EQ(1,yar.count());
 
 }
 
@@ -160,8 +170,6 @@ TEST(uTagsExpTest, derivedSubsetTestEmpty){
 
     EXPECT_EQ(chromToCopyTo.count(), 0);
 }
-
-
 
 
 TEST(factoryTest, uTagsTest){

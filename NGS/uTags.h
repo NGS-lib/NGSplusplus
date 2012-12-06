@@ -7,7 +7,7 @@ namespace NGS {
 //Our Tag format
 //We used this to store mapped tags from NGS experiments
 //This is used for single End tags
-class uTags: public uGenericNGS
+class uTags: public uGenericNGS<uTags>
 {
 
 #define FORWARCHARD '+'
@@ -237,12 +237,6 @@ public:
 
 };
 
-namespace factory
-{
-uTags makeTagfromSamString(std::string samString, bool minimal=false);
-}
-
-
 class uTagsChrom: public uGenericNGSChrom<uTagsChrom,uTags>
 {
 
@@ -250,14 +244,21 @@ private:
 
 public:
 
-    uTagsChrom();
-    uTagsChrom(std::string ourChrom);
-    uTagsChrom(uGenericNGSChrom<uTagsChrom,uTags>);
+    uTagsChrom():uGenericNGSChrom(){};
+    uTagsChrom(const std::string & ourChr):uGenericNGSChrom(ourChr)
+    {
+    }
+
+
+    uTagsChrom(const uGenericNGSChrom<uTagsChrom,uTags>&);
+    uTagsChrom& operator=(const uTagsChrom& copFrom);
+    uTagsChrom(const uTagsChrom&);
+    uTagsChrom(std::vector<uTags>);
+    uTagsChrom(const std::vector<uTags> & copyVec):uGenericNGSChrom(copyVec){};
     uTags getTag(int i)
     {
         return VecSites.at(i);
     };
-    void matchPE();
     template<class _OTHER_>
     uTags generateRandomSite(const int size_,std::mt19937& engine,const _OTHER_ &exclList, const int sigma, const std::string ID) const;
     void writeTrimmedSamToOutput(std::ostream &out, int left, int right);
@@ -295,4 +296,10 @@ public:
     std::vector<float> getRegionSignal(std::string chrom, int start, int end, bool overlap);
 };
 } // End of namespace NGS
+
+namespace factory
+{
+    NGS::uTags makeTagfromSamString(std::string samString, bool minimal=false);
+}
+
 #endif // UTAGS_H_INCLUDED

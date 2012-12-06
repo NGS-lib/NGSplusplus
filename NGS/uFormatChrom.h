@@ -12,7 +12,7 @@ template<class _SELF_, typename _BASE_>
 class uGenericNGSChrom
 {
     static_assert(
-        std::is_convertible<_BASE_, uGenericNGS>::value,
+        std::is_convertible<_BASE_, uGenericNGS<_BASE_>>::value,
         "The type does not inherit from uGenericNGS."
     );
     typedef std::vector<_BASE_> VecGenericNGS;
@@ -60,7 +60,6 @@ private :
     }
 
 protected:
-
     /**< Pointers to our functions and determines if sorted */
     bool m_isSorted=true;
     std::function<float(const _BASE_*)> sortGetStart=nullptr;
@@ -68,7 +67,6 @@ protected:
     std::function<bool(const _BASE_ &item1, const _BASE_ &item2)> m_comptFunc=compareStart;
     long int chromSize=0;
 
-    //TODO Erase these?
     std::vector<long long> returnSiteSizes() const;
 
     unsigned long long avgSiteSize() const;
@@ -76,16 +74,44 @@ protected:
     unsigned long long maxSiteSize() const;
     unsigned long long sumSiteSize() const;
 
-
     void addSiteNoCheck( _BASE_ newSite);
 
     template<class L, typename S, typename R> friend class uGenericNGSExperiment;
 
 public:
-
     void inferChrSize();
     virtual ~uGenericNGSChrom<_SELF_,_BASE_> ()
     {;}
+
+        /**< Constructors */
+    uGenericNGSChrom(){};
+    uGenericNGSChrom(const std::string & consString):chr(consString){};
+    uGenericNGSChrom(const std::string & consString, long int size);
+    uGenericNGSChrom(const std::vector<_BASE_> &);
+
+    uGenericNGSChrom& operator=(const uGenericNGSChrom& copFrom);
+    uGenericNGSChrom(const uGenericNGSChrom&);
+
+    long int countUnique() const;
+
+    /**< Public iterators */
+    auto begin()const->decltype(VecSites.cbegin())
+    {
+        return VecSites.cbegin();
+    };
+    auto end()const->decltype(VecSites.cend())
+    {
+        return VecSites.cend();
+    };
+
+    auto begin()->decltype(VecSites.begin())
+    {
+        return VecSites.begin();
+    };
+    auto end()->decltype(VecSites.end())
+    {
+        return VecSites.end();
+    };
 
     /**< Write functions */
     void outputBedFormat(std::ostream& out);
@@ -108,7 +134,6 @@ public:
     void addNRandomSite(const int size, const int n, std::mt19937& engine, const _OTHER_ &exclList, const int sigma=0, const std::string ID="");
     void addNRandomSite(const int size, const int n, std::mt19937& engine, const int sigma=0, const std::string ID="");
 
-
     template <class _OTHER_>
     _SELF_ getOverlapping(_OTHER_ &compareExp,OverlapType overlap=OverlapType::OVERLAP_PARTIAL) const;
     template <class _OTHER_>
@@ -122,12 +147,23 @@ public:
     void addSite( _BASE_ newSite);
     int getSubsetCount(float p_start, float p_end, OverlapType overlap=OverlapType::OVERLAP_PARTIAL)const;
 
+    std::function<float(const _BASE_*)> getStartFunct() const
+    {
+        return sortGetStart;
+    }
+    std::function<float(const _BASE_*)> getEndFunct() const
+    {
+        return sortGetEnd;
+    }
+    std::function<bool(const _BASE_ &item1, const _BASE_ &item2)> getCompFunct() const
+    {
+        return m_comptFunc;
+    }
 
     bool getSortedStatus() const
     {
         return m_isSorted;
     }
-
     /**< Return number of elements */
     int count() const
     {
@@ -184,7 +220,7 @@ public:
     };
 
     /**< Return a vector containing all elements. */
-    std::vector<_BASE_> returnVecData()
+    std::vector<_BASE_> returnVecData() const
     {
         return VecSites;
     };
@@ -291,7 +327,6 @@ public:
             throw e;
         }
     }
-
 
     /** \brief Transform the sites collection by applying a certain function to all sites
       *
@@ -542,38 +577,7 @@ public:
         /**< End STL wrappers */
 
 
-        /**< Constructors */
-        uGenericNGSChrom() {};
-        uGenericNGSChrom(std::string consString):chr(consString) {};
-        uGenericNGSChrom(std::string consString, long int size);
-
-        uGenericNGSChrom(std::vector<_BASE_>);
-
-        long int countUnique() const;
-
-        /**< Public iterators */
-        auto begin()const->decltype(VecSites.cbegin())
-        {
-            return VecSites.cbegin();
-        };
-        auto end()const->decltype(VecSites.cend())
-        {
-            return VecSites.cend();
-        };
-
-          /**< Private iterators */
-            auto begin()->decltype(VecSites.begin())
-            {
-                return VecSites.begin();
-            };
-            auto end()->decltype(VecSites.end())
-            {
-                return VecSites.end();
-            };
-
     };
-
-
 
     /** \brief Construct with name and size
      *
@@ -582,7 +586,7 @@ public:
      *
      */
     template <class _SELF_, class _BASE_>
-    uGenericNGSChrom<_SELF_,_BASE_>::uGenericNGSChrom(std::string consString, long int size):chr(consString)
+    uGenericNGSChrom<_SELF_,_BASE_>::uGenericNGSChrom(const std::string & consString, long int size):chr(consString)
     {
         try
         {
@@ -593,8 +597,11 @@ public:
             throw e;
         }
     }
-
-
+    template <class _SELF_, class _BASE_>
+    uGenericNGSChrom<_SELF_,_BASE_>::uGenericNGSChrom(const std::vector<_BASE_> & copyVec){
+        for (_BASE_ elem: copyVec)
+            addSite(elem);
+    }
 
     template <class _SELF_,class _BASE_>
     /** \brief add a new element to our chrom, throw out_of_mem if impossible
@@ -920,7 +927,6 @@ public:
     template <class _SELF_, class _BASE_>
     void uGenericNGSChrom<_SELF_,_BASE_>::outputBedFormat(std::ostream& out)
     {
-
         // applyOnAllSites(bind(bind(&_BASE_::writeBedToOuput), out));
         applyOnAllSites(bind2nd(mem_fun_ref(&_BASE_::writeBedToOuput), out));
     }
@@ -1187,7 +1193,6 @@ public:
         }
 
     }
-
      template <class _SELF_,class _BASE_>
     _SELF_ uGenericNGSChrom<_SELF_,_BASE_>::getDistinct(float p_start, float p_end, OverlapType overlap) const
     {
@@ -1313,7 +1318,7 @@ public:
     void uGenericNGSChrom<_SELF_,_BASE_>::divideItemsIntoBinofSize(int N, SplitType type)
     {
         std::vector<_BASE_> newVector;
-        std::vector<uGenericNGS> tempVector;
+        std::vector<_BASE_> tempVector;
         try
         {
             for( _BASE_& x : VecSites)

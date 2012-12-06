@@ -12,7 +12,7 @@
 				<Option object_output="obj/Debug/" />
 				<Option type="1" />
 				<Option compiler="gcc" />
-				<Option parameters="--gtest_filter=*TimeTestingInnerParser*" />
+				<Option parameters="--gtest_filter=*" />
 				<Compiler>
 					<Add option="-std=c++11" />
 					<Add option="-pg" />
@@ -30,7 +30,7 @@
 				<Linker>
 					<Add option="-pg" />
 					<Add option="-lpthread" />
-					<Add option="-Wl,-whole-archive ../../libs/debug/libgeneClass.a -Wl,-no-whole-archive" />
+					<Add option="-Wl,-whole-archive ../../libs/debug/libNGS.a -Wl,-no-whole-archive" />
 					<Add library="../../libs/release/libgtest.a" />
 				</Linker>
 			</Target>
@@ -40,7 +40,7 @@
 				<Option object_output="obj/Release/" />
 				<Option type="1" />
 				<Option compiler="gcc" />
-				<Option parameters="--gtest_filter=*ReadWriteLines*" />
+				<Option parameters="--gtest_filter=*" />
 				<Compiler>
 					<Add option="-O2" />
 					<Add option="-std=c++11" />
@@ -57,7 +57,7 @@
 				<Linker>
 					<Add option="-s" />
 					<Add option="-lpthread" />
-					<Add option="-Wl,-whole-archive ../../libs/release/libgeneClass.a -Wl,-no-whole-archive" />
+					<Add option="-Wl,-whole-archive ../../libs/release/libNGS.a -Wl,-no-whole-archive" />
 					<Add library="../../libs/release/libgtest.a" />
 					<Add library="gomp" />
 					<Add directory="../../libs/release" />
@@ -90,6 +90,7 @@
 		<Unit filename="uParser/test_uParserGFF.cpp" />
 		<Unit filename="uParser/test_uParserSam.cpp" />
 		<Unit filename="uParser/test_uParserWig.cpp" />
+		<Unit filename="uRegion/uRegionTests.cpp" />
 		<Unit filename="uTags/uTagTests.cpp" />
 		<Unit filename="uTokens/tests_uToken.cpp" />
 		<Unit filename="uWriter/tests_Writer_Fixtures.h" />

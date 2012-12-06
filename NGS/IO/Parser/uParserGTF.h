@@ -20,10 +20,10 @@ public :
     uToken getNextEntry();
 
 private:
-    void _getTokenInfoFromGTFString(std::string line, std::stringstream& token_infos);
+    uToken _getTokenInfoFromGTFString(const std::string & line);
     static DerivedParserRegister<uParserGTF> reg;
     boost::xpressive::sregex GTFRegex;
-    const std::string GTFregString="(\\w+)\t(\\w+)\t(\\w+)\t(\\d+)\t(\\d+)\t([-+]?[0-9]*\\.?[0-9]+|.)\t(\\+|\\-|\\.)\t([012])(?:\t(.+))?";
+    const std::string GTFregString="^(\\.|[\\w_-]+)\t(\\.|[\\w_-]+)\t(\\.|[\\w_-]+)\t(\\d+)\t(\\d+)\t([-+]?[0-9]*\\.?[0-9]+|.)\t(\\+|\\-|\\.)\t([012\\.])(?:\t(.+))?";
 };
 
 } // End of namespace NGS
