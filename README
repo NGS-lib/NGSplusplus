@@ -16,7 +16,10 @@ If you are running openSUSE 12.2, the following will install make and gcc 4.7
 Note: For older version of openSUSE, the previous commands may install an older version of gcc. In this case, you can install the latest version with this command
     sudo install gcc47-c++
 
-If you are not on either of these systems, it is quite likely you can find a repository with the binaries available with a minimal amount of search. Otherwise, instructions on how to build the latest gcc are available on the gcc website ( http://gcc.gnu.org/install/build.html )
+If you are running Windows 7, please follow the instructions in the file windowsTDMInstall.txt, available in the same directory as this README. Not that the library is not guaranteed to run well on Windows. The process is moderately involved and requires installing TDM-GCC.
+
+
+If you are on another system, it is quite likely you can find a repository with the binaries available with a minimal amount of search. Otherwise, instructions on how to build the latest gcc are available on the gcc website ( http://gcc.gnu.org/install/build.html )
 
 Important changes will be documented in the CHANGELOG file.
 
@@ -38,6 +41,7 @@ make install
 To compile sample code:
 cd sample-src 
 make samples
+
 
 -----------------------
 Uninstall
