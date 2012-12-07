@@ -2,6 +2,7 @@
 
 Important update (tagged!). Check blog for more info( http://info.usherbrooke.ca/Prospectus/projets/ngs-blog/our-ngs-blog )
 
+- Windows 7 installation walkthrough. Should work, but no guarantees!
 - New format uBasicNGS/uBasicNGSChrom/uBasicNGSExperiment. This format offers no options beyond the basic inherited ones and should be seen as a baseline
 - Deprecated uGenericNGS family. Only used as parent/inherited class now.
 - Signal generation functions in uRegion family overloaded for any other version.

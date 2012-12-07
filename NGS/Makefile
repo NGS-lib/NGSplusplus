@@ -21,6 +21,7 @@ OBJECTS += $(WRITER_DIR)/uWriter.o $(WRITER_DIR)/uWriterBase.o $(WRITER_DIR)/uWr
 OBJECTS += $(WRITER_DIR)/uWriterBed4.o $(WRITER_DIR)/uWriterBed6.o $(WRITER_DIR)/uWriterCustom.o
 OBJECTS += $(WRITER_DIR)/uWriterSam.o $(WRITER_DIR)/uWriterWig.o $(WRITER_DIR)/uWriterBedGraph.o
 OBJECTS += $(WRITER_DIR)/uWriterGFF.o
+OBJECTS += $(WRITER_DIR)/uWriterGTF.o
 OBJECTS += $(PARSER_DIR)/uParser.o $(PARSER_DIR)/uParserBase.o $(PARSER_DIR)/uParserWig.o 
 OBJECTS += $(PARSER_DIR)/uParserSam.o $(PARSER_DIR)/uParserBed.o $(PARSER_DIR)/uParserCustom.o
 OBJECTS += $(PARSER_DIR)/uParserBedGraph.o $(PARSER_DIR)/uParserGTF.o $(PARSER_DIR)/uParserGFF.o
