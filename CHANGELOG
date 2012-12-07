@@ -1,20 +1,14 @@
 6 - 12 -2012
 
-Important update (tagged!). The library now implements a simple version of the CRT template that simplifies certain operation, particularly when keeping data subsets. At the same time, we did a substantial clean up-phase and introduced a new basic format as uGenericNGS can no longer be directly used.
-
-With this update, the guide to using our functional interface is out of data. Every example in the guide uses the deprecated uGeneric formats. For now, you can replace any instance with the new uBasicNGS format and we will be updating the guide soon.
+Important update (tagged!). Check blog for more info( http://info.usherbrooke.ca/Prospectus/projets/ngs-blog/our-ngs-blog )
 
 - New format uBasicNGS/uBasicNGSChrom/uBasicNGSExperiment. This format offers no options beyond the basic inherited ones and should be seen as a baseline
-- Signal generation functions in uRegion family overloaded for any other version
+- Deprecated uGenericNGS family. Only used as parent/inherited class now.
+- Signal generation functions in uRegion family overloaded for any other version.
 - Specified copy constructors and assignement operators for every chrom level. 
 - Constructor cleanup. Synchronized constructors at the chrom structure level, now every Chrom level structures can take a vector of elements as a constructor ( ex: uTagsChrom myNewChrom(vectorofuTags) ) 
 - Fixed a few bugs in the parser and relaxed the conditions for a valid GFF/GTF format (now permits "." when data is unknown, thought this is not GFF/GTF compliant )
 - Fixed problems with getDistinct and upgraded the test suite that allowed the problem to slip through. 
-
-
-At this point, the library needs a small refactor to clear some naming problems and insure ease of maintenance. As such, other then including the genePred format, the next feature update will likely go to January, where hopefully the structure specialized in genomic features will be ready and well tested.
-
-Also, it was mentionned that extra samples or code examples would be helpful. We will be working on included a slew of new ones, probably before the next feature update, specifically showing how to implement simple tasks such as overlapping feature files, counting, subsetting and so on. Since most genomic tools are a combination of relatively simple tasks, these examples are probably more useful then large complicated examples.
 
 
 29 - 11 -2012
