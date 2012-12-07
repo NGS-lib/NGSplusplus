@@ -27,7 +27,7 @@ all: ./DTools/DTools.cpp
 	$(GXX) -c $(CFLAGS) $(INCLUDES) -c -o $(OBJ_DIR)/DTools.o ./DTools/DTools.cpp
 	$(GXX) $(OBJ_DIR)/DTools.o -Wl,-whole-archive $(LIB_DIR)/libNGS.a -Wl,-no-whole-archive -o $(DESTDIR)/$(TARGET_DTOOLS)
 	$(GXX) -c $(CFLAGS) $(INCLUDES) -c -o $(OBJ_DIR)/CTools.o ./ConvertTool/ConvertTool.cpp
-	$(GXX) $(OBJ_DIR)/CTools.o -Wl,-whole-archive $(LIB_DIR)/libNGS.a -Wl,-no-whole-archive -o $(DESTDIR)/$(TARGET_CTOOLS)
+	$(GXX) $(OBJ_DIR)/CTools.o -Wl,-whole-archive $(LIB_DIR)/libNGS.a -Wl,-no-whole-archive -o $(DESTDIR)/$(TARGET_CTOOLS) 
 
 .PHONY : clean
 clean: 
