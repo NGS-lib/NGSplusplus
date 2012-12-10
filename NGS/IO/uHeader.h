@@ -8,6 +8,7 @@
 #include <stdexcept>
 #include <cctype>
 #include "../uGeneException.h"
+#include "../utility/utility.h"
 
 namespace NGS {
 /**< List of param is hard coded as strongly typed enum for extra safety. */

@@ -95,13 +95,13 @@ public:
     {
         try
         {
-            setEnd(std::stoi(pToken.getParam(token_param::END_POS)));
-            setStart( std::stoi(pToken.getParam(token_param::START_POS)));
+            setEnd(utility::stoi(pToken.getParam(token_param::END_POS)));
+            setStart( utility::stoi(pToken.getParam(token_param::START_POS)));
             /**< Default forward */
             if (pToken.isParamSet(token_param::STRAND))
                 setStrand(pToken.getParam(token_param::STRAND).at(0));
             if ((pToken.isParamSet(token_param::SCORE))&&(pToken.getParam(token_param::SCORE)!="." ) )  {
-                    setScore(std::stof (pToken.getParam(token_param::SCORE) ) );
+                    setScore(utility::stof (pToken.getParam(token_param::SCORE) ) );
                 }
         }
         catch(ugene_exception_base &e)
@@ -662,9 +662,9 @@ namespace factory
             tabLine.NextToken();
             chrm = tabLine.GetToken();
             tabLine.NextToken();
-            start = std::stoi(tabLine.GetToken());
+            start = utility::stoi(tabLine.GetToken());
             tabLine.NextToken();
-            end = std::stoi(tabLine.GetToken());
+            end = utility::stoi(tabLine.GetToken());
 
             return _SELF_(chrm,start,end);
         }

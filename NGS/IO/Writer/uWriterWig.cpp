@@ -22,8 +22,8 @@ void uWriterWig::setValueType(const token_param type){
  	try {
        if  ((token.isParamSet(token_param::CHR))&&(token.isParamSet(token_param::START_POS))&&(token.isParamSet(token_param::END_POS)) )
            {
-                long long int ourstart= std::stoll(token.getParam(token_param::START_POS));
-                long long int ourend= std::stoll(token.getParam(token_param::END_POS));
+                long long int ourstart= utility::stoll(token.getParam(token_param::START_POS));
+                long long int ourend= utility::stoll(token.getParam(token_param::END_POS));
                 int ourspan = ( ourend-ourstart+1);
                 float density =1;
                 if (token.isParamSet(m_scoreType))
@@ -31,7 +31,7 @@ void uWriterWig::setValueType(const token_param type){
                  /**< Should not be using catch as a control flow method, but will to for now */
                  /**< Establish standard for bed conversion */
                  try {
-                    density=std::stof(token.getParam(m_scoreType));
+                    density=utility::stof(token.getParam(m_scoreType));
                  }
                     catch(...){
                     density =1;

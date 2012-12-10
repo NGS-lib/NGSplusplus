@@ -54,7 +54,7 @@ catch(construct_elem_throw &e)
   uRegion::uRegion(uToken pToken)try :uGenericNGS(pToken){
 
   	 if (pToken.isParamSet(token_param::DENSITY))
-                setDensity(std::stof(pToken.getParam(token_param::DENSITY)));
+                setDensity(utility::stof(pToken.getParam(token_param::DENSITY)));
 
 }
 catch(construct_elem_throw &e)
@@ -795,7 +795,7 @@ wigType curWig = wigType::NONE;
                         throw 18;
 
                      span=span.substr(span.find("span="));
-                     curSpan=std::stoi(span);
+                     curSpan=utility::stoi(span);
                  }
             }/**< Fixed Step */
             else
@@ -817,7 +817,7 @@ wigType curWig = wigType::NONE;
                         throw 20;
 
                    start=start.substr(start.find("start="));
-                    curStart=std::stoi(start);
+                    curStart=utility::stoi(start);
                     /**< Step */
                     if (!(data.NextToken()))
                         throw 21;
@@ -827,7 +827,7 @@ wigType curWig = wigType::NONE;
                         throw 21;
 
                    step=step.substr(start.find("step="));
-                   curStep=std::stoi(step);
+                   curStep=utility::stoi(step);
 
                     /**<Span  */
 
@@ -841,7 +841,7 @@ wigType curWig = wigType::NONE;
                         throw 22;
 
                      span=span.substr(span.find("span="));
-                     curSpan=std::stoi(span);
+                     curSpan=utility::stoi(span);
                  }
             }
         }
@@ -859,15 +859,15 @@ wigType curWig = wigType::NONE;
             case wigType::FIXED_STEP:
                 curReg.setChr(curChr);
                 curReg.setStartEnd(curStart,curStart+curSpan);
-                curReg.setCount(std::stoi(firstToken));
+                curReg.setCount(utility::stoi(firstToken));
                 curStart+=curStep;
                 break;
             case  wigType::VARIABLE_STEP:
 
                  data.NextToken();
-                 int tagcount=std::stoi(data.GetToken());
+                 int tagcount=utility::stoi(data.GetToken());
                  curReg.setChr(curChr);
-                 int start=std::stoi(firstToken);
+                 int start=utility::stoi(firstToken);
                  curReg.setStartEnd(start,start+curSpan);
                  curReg.setCount(tagcount);
                 break;

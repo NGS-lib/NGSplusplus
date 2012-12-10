@@ -616,7 +616,7 @@ bool uToken::_scoreIsValid(const std::string& value) const
 //TODO replace, do not use try catch as flow control tool
     try
     {
-        std::stof(value);
+        utility::stof(value);
         return true;
     }
     catch(...)
@@ -671,7 +671,7 @@ void uToken::_postProcSequence(const std::string& sequence)
 {
     if (!(isParamSet(token_param::END_POS)))
     {
-        auto start_pos = std::stoi(getParam(token_param::START_POS));
+        auto start_pos = utility::stoi(getParam(token_param::START_POS));
         _setParam(token_param::END_POS, std::to_string(sequence.size()+start_pos-1));
     }
 }
@@ -712,7 +712,7 @@ void uToken::_postProcCigar(const std::string& cig)
                     curPos=(i+1);
                 }
             }
-            auto start_pos=std::stoi(getParam(token_param::START_POS));
+            auto start_pos=utility::stoi(getParam(token_param::START_POS));
             _setParam(token_param::END_POS, std::to_string(start_pos+(size-1) ));
         }
         catch(uToken_exception_base &e)

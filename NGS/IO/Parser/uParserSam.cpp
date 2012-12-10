@@ -276,7 +276,7 @@ void uParserSam::_parseHeader()
                         throw uParser_invalid_Sam_header()<<string_error("Multiple LN tag in @SQ header, failling: \n"+lineString);
                     LN=true;
                     data.erase(0,3);
-                    refSeqlenght=std::stoll(data);
+                    refSeqlenght=utility::stoll(data);
                 }
                 else if (data.find("AS:")!=std::string::npos)
                 {

@@ -65,7 +65,7 @@ std::string uHeader::getParam(header_param name) const
 bool uHeader::_valideStepSize(const std::string& sizeString) const
 {
     try {
-        long long int value = std::stoll(sizeString);
+        long long int value = utility::stoll(sizeString);
         /**< Chr size must be above 0 */
         if (value <= 0)
             return false;
@@ -86,7 +86,7 @@ bool uHeader::_valideStepSize(const std::string& sizeString) const
 bool uHeader::_validateChrSize(const std::string& sizeString) const
 {
     try {
-        long long int value = std::stoll(sizeString);
+        long long int value = utility::stoll(sizeString);
         /**< Chr size must be above 0 */
         if (value <= 0)
             return false;

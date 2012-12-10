@@ -17,13 +17,13 @@ uTags::uTags(const uToken & pToken)try:uGenericNGS(pToken){
 if (pToken.isParamSet(token_param::CIGAR))
     setCigar(pToken.getParam(token_param::CIGAR));
  if (pToken.isParamSet(token_param::MAP_SCORE))
-        setMapQual(std::stoi(pToken.getParam(token_param::MAP_SCORE)));
+        setMapQual(utility::stoi(pToken.getParam(token_param::MAP_SCORE)));
  if (pToken.isParamSet(token_param::PHRED_SCORE))
         setPhred(pToken.getParam(token_param::PHRED_SCORE));
  if (pToken.isParamSet(token_param::SEQUENCE))
         setSequence(pToken.getParam(token_param::SEQUENCE));
  if (pToken.isParamSet(token_param::FLAGS))
-        setFlag(std::stoi(pToken.getParam(token_param::FLAGS)));
+        setFlag(utility::stoi(pToken.getParam(token_param::FLAGS)));
 }
 catch(ugene_exception_base &e)
 {
@@ -667,7 +667,7 @@ void uTagsExperiment::loadFromSamWithParser(std::string filepath)
 try {
 //        std::cerr << "name and size are :" <<chrList.at(i) <<" "<<chrSizes.at(i)<<std::endl;
     for (int i=0; i<(int)chrList.size();i++){
-        this->setChromSize(chrList.at(i), std::stoi(chrSizes.at(i)));
+        this->setChromSize(chrList.at(i), utility::stoi(chrSizes.at(i)));
     }
 
     while (ourParser.eof()==false){
@@ -858,7 +858,7 @@ void uTagsExperiment::parseSamHeader()
                 }
                 if (data.find("LN:")!=string::npos){
                     data.erase(0,3);
-                    chromsize=std::stoi(data);
+                    chromsize=utility::stoi(data);
 
                 }
 
@@ -1061,8 +1061,8 @@ try {
         }
     }
 
- //   ourEnd=(std::stoi(ourStart)+(size-1));
-    NGS::uTags returnTag(ourChr,std::stoi(ourStart),std::stoi(ourStart)+(size-1) );
+ //   ourEnd=(utility::stoi(ourStart)+(size-1));
+    NGS::uTags returnTag(ourChr,utility::stoi(ourStart),utility::stoi(ourStart)+(size-1) );
     returnTag.setName(ourName);
     returnTag.setFlag(ourFlag);
     returnTag.setMapQual(mapScore);
