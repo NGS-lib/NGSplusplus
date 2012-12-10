@@ -28,7 +28,6 @@ This walkthrough details the steps needed to build the NGS++ library on a 64 bit
 
 - Go to ( http://tehsausage.com/mingw-to-string ) and download the mingw-to-string-gcc47.zip file.
 - Copy and replace the two files in mingw-to-string-gcc4.7 (stdio.h and wchar.h) in c:\TDM\x86_64-mingw32\include where TDM is the path you gave when installing TDM.
-(TMP) - Copy the same two files in c:\TDM\lib\gcc\x86_64-w64-mingw32\4.7.1\include
 - Copy and replace the os_defines.h in c:\TDM\lib\gcc\x86_64-w64-mingw32\4.7.1\include\c++\x86_64-w64-mingw32\bits
 
 3) Install MSYS
