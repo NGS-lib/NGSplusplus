@@ -3,6 +3,7 @@
 
 #include "uFormats.h"
 #include <memory>
+#include "utility/utility.h"
 namespace NGS {
 //Our Tag format
 //We used this to store mapped tags from NGS experiments
