@@ -4,6 +4,7 @@
 #include <iostream>
 #include <fstream>
 #include "uWriterBase.h"
+#include "../../utility/utility.h"
 namespace NGS {
 
 class uWriterSam : public uWriterBase {
