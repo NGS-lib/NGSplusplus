@@ -177,8 +177,8 @@ uToken uParserWig::getNextEntry()
                         }
                         uToken ourToken;
                         ourToken._setParamNoValidate(token_param::CHR,m_Info.getChrom());
-						ourToken._setParamNoValidate(token_param::START_POS,std::to_string(start_pos));
-						ourToken._setParamNoValidate(token_param::END_POS,std::to_string(end_pos));
+						ourToken._setParamNoValidate(token_param::START_POS,utility::to_string(start_pos));
+						ourToken._setParamNoValidate(token_param::END_POS,utility::to_string(end_pos));
 						ourToken._setParamNoValidate(token_param::SCORE,m_tokens.at(scorePos));
 
                         foundToken=true;

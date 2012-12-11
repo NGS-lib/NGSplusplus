@@ -88,7 +88,7 @@ void uRegion::setSignal(int i, float value)
     if (i < this->getLenght())
         signal.at(i)=value;
     else
-        throw param_throw()<<string_error("Failling in setSignal, trying to set signal outside of region boundary at position "+std::to_string(i)+"\n");
+        throw param_throw()<<string_error("Failling in setSignal, trying to set signal outside of region boundary at position "+utility::to_string(i)+"\n");
     }
     catch(param_throw &e){
         #ifdef DEBUG
@@ -116,9 +116,9 @@ void uRegion::setSignal(std::vector<float> ourSignal)
     catch(param_throw & e)
     {
         #ifdef DEBUG
-               cerr << "Failling in uRegion setSignal(vector), received a vector of size greater then elem lenght of "+std::to_string(getLenght())+"\n" <<endl;
+               cerr << "Failling in uRegion setSignal(vector), received a vector of size greater then elem lenght of "+utility::to_string(getLenght())+"\n" <<endl;
         #endif
-        e<<string_error("Failling in uRegion setSignal(vector), received a vector of size greater then elem lenght of "+std::to_string(getLenght())+"\n");
+        e<<string_error("Failling in uRegion setSignal(vector), received a vector of size greater then elem lenght of "+utility::to_string(getLenght())+"\n");
         e<<region_error(*this);
         throw e;
     }
@@ -384,7 +384,7 @@ try
     }
     catch(elem_throw & e)
     {
-        e << string_error("Throwing in uRegionChrom::generateSignal(uTagsExperiment& expToComp), from elem_throw error \n Reference is size at "+(std::to_string(densityValues.size()))+
+        e << string_error("Throwing in uRegionChrom::generateSignal(uTagsExperiment& expToComp), from elem_throw error \n Reference is size at "+(utility::to_string(densityValues.size()))+
                           "\n"+
                           trace);
         throw e;
@@ -474,7 +474,7 @@ try
     }
     catch(elem_throw & e)
     {
-        e << string_error("Throwing in uRegionChrom::generateSignal(uTagsExperiment& expToComp), from elem_throw error \n Reference is size at "+(std::to_string(densityValues.size()))+
+        e << string_error("Throwing in uRegionChrom::generateSignal(uTagsExperiment& expToComp), from elem_throw error \n Reference is size at "+(utility::to_string(densityValues.size()))+
                           "\n"+
                           trace);
         throw e;
@@ -567,7 +567,7 @@ void uRegionChrom::generateSignal(const uBasicNGSChrom& chrToComp)
     catch(elem_throw & e)
     {
         e << string_error("Throwing in uRegionChrom::generateSignal(uTagsExperiment& expToComp), from elem_throw error \n Reference is size at "+
-                         (std::to_string((int)densityValues.size()))+
+                         (utility::to_string((int)densityValues.size()))+
                           "\n"+
                           trace);
         throw e;

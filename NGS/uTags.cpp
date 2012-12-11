@@ -65,7 +65,7 @@ uTags::uTags(std::string pchr, int start, int end, StrandDir pstrand):name(nullp
         if (std::string const * ste =boost::get_error_info<string_error>(e) )
                 trace=*ste;
 
-        e << string_error(trace+"Failling in uTags constructor, parameters are"+pchr+" "+std::to_string(start)+" "+std::to_string(end)+"\n");
+        e << string_error(trace+"Failling in uTags constructor, parameters are"+pchr+" "+utility::to_string(start)+" "+utility::to_string(end)+"\n");
 
         throw e;
     }
@@ -302,10 +302,10 @@ void uTags::debugElem() const
     using namespace utility;
     stringTocerr("Outputting elemn data");
     stringTocerr("Chrom "+getChr());
-    stringTocerr("Start "+std::to_string(getStart()));
-    stringTocerr("End " +std::to_string(getEnd()));
-    stringTocerr("PELenght " +std::to_string(getPeLenght()));
-    stringTocerr("Flag " +std::to_string(getFlag()));
+    stringTocerr("Start "+utility::to_string(getStart()));
+    stringTocerr("End " +utility::to_string(getEnd()));
+    stringTocerr("PELenght " +utility::to_string(getPeLenght()));
+    stringTocerr("Flag " +utility::to_string(getFlag()));
 }
 
 // TODO: Move this to output class
@@ -732,7 +732,7 @@ void uTagsExperiment::loadFromSam(std::ifstream& curStream, bool minimal)
         if (std::string const * ste =boost::get_error_info<string_error>(e) )
                 trace=*ste;
 
-        e <<string_error(trace+"\n"+"falling from loadFromSam(stream, bool) while loading tag number"+std::to_string(count) );
+        e <<string_error(trace+"\n"+"falling from loadFromSam(stream, bool) while loading tag number"+utility::to_string(count) );
             #ifdef DEBUG
                     cerr << "Throwing elem_throw" <<endl;
                 #endif

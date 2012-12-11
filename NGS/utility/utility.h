@@ -537,6 +537,36 @@ static inline std::string clean_WString(const std::string & input_string)
         }
 	throw std::logic_error("utility::stof -> invalid value in string.");
     }
+
+    static inline std::string to_string(int v) {
+        std::stringstream ss;
+	ss << v;
+	return ss.str();
+    }
+
+    static inline std::string to_string(float v) {
+        std::stringstream ss;
+	ss << v;
+	return ss.str();
+    }
+
+    static inline std::string to_string(long v) {
+        std::stringstream ss;
+	ss << v;
+	return ss.str();
+    }
+
+    static inline std::string to_string(long long v) {
+        std::stringstream ss;
+	ss << v;
+	return ss.str();
+    }
+
+    static inline std::string to_string(size_t v) {
+        std::stringstream ss;
+	ss << v;
+	return ss.str();
+    }
 }
 
 /**< Clustering contains odd and ends, distance measures and such */

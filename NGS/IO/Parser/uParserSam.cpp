@@ -316,7 +316,7 @@ void uParserSam::_parseHeader()
                 throw uParser_invalid_Sam_header()<<string_error("Missing SN or LN tag in @SQ header, failling: \n"+lineString);
             /**< Load our data */
             m_headerData._addToParam(header_param::CHR,chrom);
-            m_headerData._addToParam(header_param::CHR_SIZE,std::to_string(refSeqlenght));
+            m_headerData._addToParam(header_param::CHR_SIZE,utility::to_string(refSeqlenght));
         } /**< Invalid, fail */
         else
         {
