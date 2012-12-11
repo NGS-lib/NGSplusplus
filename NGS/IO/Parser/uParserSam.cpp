@@ -95,7 +95,7 @@ void uParserSam::init(std::istream* stream, bool header )
 //
 //
 //            std::string strand="+";
-//            if (utility::querySamFlag(std::stoi(flag),SamQuery::SEQ_REV_STRAND))
+//            if (utility::querySamFlag(utility::stoi(flag),SamQuery::SEQ_REV_STRAND))
 //                strand="-";
 //
 //            token_infos << "STRAND\t" << strand << "\n";
@@ -168,7 +168,7 @@ uToken uParserSam::getNextEntry()
             throw uParser_invalid_Sam_line()<<string_error("SAM line, failling validation. Line is:\n"+strLine);
         }
         std::string strand="+";
-        if (utility::querySamFlag(std::stoi(what[2]),SamQuery::SEQ_REV_STRAND))
+        if (utility::querySamFlag(utility::stoi(what[2]),SamQuery::SEQ_REV_STRAND))
             strand="-";
 		ourToken._setParamNoValidate(token_param::STRAND, strand);
 		//token_infos << "STRAND\t" << strand << "\n";
