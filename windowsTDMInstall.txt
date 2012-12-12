@@ -8,7 +8,6 @@ This install will work on a 64 bit Windows 7 installation. If you are using a 32
 This walkthrough details the steps needed to build the NGS++ library on a 64 bit Windows 7 platform. It includes the following:
 
 - Installing a gcc comptatible toolchain (TDM)
-- Patching the installation to enable certain C++11 functions.
 - Installing MSYS.
 - Building the library.
 - Manually building and linking a test program via command line.
@@ -24,20 +23,14 @@ This walkthrough details the steps needed to build the NGS++ library on a 64 bit
 	IMPORTANT : Change the default path to something other then c:\Mingw64
 	IMPORTANT : Make sure to install with all components to include openMp support. (Select the type of install: TDM-GCC Recommended, All Packages)
 
-2) Patch TDM
-
-- Go to ( http://tehsausage.com/mingw-to-string ) and download the mingw-to-string-gcc47.zip file.
-- Copy and replace the two files in mingw-to-string-gcc4.7 (stdio.h and wchar.h) in c:\TDM\x86_64-mingw32\include where TDM is the path you gave when installing TDM.
-- Copy and replace the os_defines.h in c:\TDM\lib\gcc\x86_64-w64-mingw32\4.7.1\include\c++\x86_64-w64-mingw32\bits
-
-3) Install MSYS
+2) Install MSYS
 
 - Download the latest installer from http://sourceforge.net/projects/mingw/files/Installer/mingw-get-inst/ in .exe format.
 - Install with default values except for the Select Component part where you must select MinGW Developper ToolKit (you can also unselect the MinGW Compiler Suite if you wish to save space).
 - Add C:\MinGW\msys\1.0\bin to the PATH in the System Variables.
 (http://geekswithblogs.net/renso/archive/2009/10/21/how-to-set-the-windows-path-in-windows-7.aspx offers a good guide on changing the path on Windows 7 system).
 
-4) Building the library
+3) Building the library
 
 - Open the mingW command prompt from the application menu. This will automatically set the needed PATH parameters to use the TDM toolchain.
 - Navigate to the NGS directory
@@ -45,13 +38,13 @@ This walkthrough details the steps needed to build the NGS++ library on a 64 bit
 
 The library should build and link. The library will be present in the ..\libs sub-directory
 
-5) Building a test sample
+4) Building a test sample
 
 - Navigate to the sample-src directory (NGSplusplus\NGS\sample-src).
 - Type "make"
 - The compiled tools are located in the "bin" directory. 
 
-6) Configuring and building via Codeblocks
+5) Configuring and building via Codeblocks
 
 - Install Codeblocks ( http://www.codeblocks.org/ )  12.11. As we will be using TDM, download the version without mingW
 - Start Codeblocks. Ignore warnings of no compilers detected if any found.
