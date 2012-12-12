@@ -1,3 +1,8 @@
+12 - 12 -2012
+
+- Removed the string conversion functions that requiered to install a patch with windows installation (stoi, stoll, stof and to_string).
+- Updated the windowsTDMInstall.txt file accordingly
+
 6 - 12 -2012
 
 Important update (tagged!). Check blog for more info( http://info.usherbrooke.ca/Prospectus/projets/ngs-blog/our-ngs-blog )
