@@ -4,15 +4,14 @@
 namespace NGS {
 
     uBasicNGS::uBasicNGS(uTags p_tags):uGenericNGS(p_tags.getChr(),p_tags.getStart(), p_tags.getEnd(), p_tags.getStrand()){
+
+        setScoreVector(p_tags.getScoreVector());
     }
 
     uBasicNGS::uBasicNGS(uRegion p_region):uGenericNGS(p_region.getChr(),p_region.getStart(), p_region.getEnd(), p_region.getStrand()){
+        setScoreVector(p_region.getScoreVector());
     }
 
-    /** \brief Copy constructor
-     *
-     * \param copyCop : The object to instaciate  from.
-     */
     /** \brief Copy constructor
      *
      * \param copyCop : The object to instaciate  from.

@@ -276,6 +276,9 @@ public:
 
     void setScore(float p_score, int p_Pos);
     void setScore(float ourscore) {setScore(ourscore,0);}
+    std::vector<float> getScoreVector()const{return score;};
+    void setScoreVector(std::vector<float> p_Score){score=std::move(p_Score);};
+
 
 };
 
@@ -621,7 +624,7 @@ template <class _SELF_>
 float uGenericNGS<_SELF_>::getScore(int p_Pos) const
 {
     if (p_Pos>=((int)score.size()))
-       return std::numeric_limits<float>::infinity();
+       throw param_throw()<<string_error("Asked for Score position "+std::to_string(p_Pos)+"that is not set");
     return score.at(p_Pos);
 }
 

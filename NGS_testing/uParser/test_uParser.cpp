@@ -17,7 +17,6 @@ using namespace NGS;
  *		EndOfFile
  *		NoTokenInStream
  */
-
 TEST(uParserEof, NotEndOfFile) {
 	uParser Parser("../data/BED/test.bed", "BED");
 	ASSERT_FALSE(Parser.eof());

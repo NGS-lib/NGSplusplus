@@ -41,7 +41,11 @@ public:
     uTags();
     uTags(uGenericNGS otherItem);
     uTags(const uToken & pToken);
-    uTags(std::string pchr, int start, int end, StrandDir pstrand=StrandDir::FORWARD);
+    uTags(std::string pChr, long long int pStart, long long int pEnd, float pScore);
+    uTags(std::string pChr, long long int pStart, long long int pEnd, StrandDir pStrand=StrandDir::FORWARD);
+    uTags(std::string pChr, long long int pStart, long long int pEnd, StrandDir pStrand, float pScore);
+
+
     uTags(const uTags& copy_from);
     uTags& operator=  (uTags const& assign_from);
     ~uTags();

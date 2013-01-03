@@ -9,9 +9,7 @@ namespace NGS {
 /** \brief Default constructor
  */
 uRegion::uRegion()
-{
-
-}
+{}
 
 /** \brief Region constructor, with start, end and chr
  *
@@ -20,16 +18,30 @@ uRegion::uRegion()
  * \param ourend int          : End position
  *
  */
-uRegion::uRegion(std::string ourchr, int ourstart, int ourend) try : uGenericNGS(ourchr, ourstart,ourend)
+uRegion::uRegion(std::string pChr, long long int pStart, long long int pEnd,StrandDir pStrand) try : uGenericNGS(pChr, pStart,pEnd,pStrand)
 {}
 catch(construct_elem_throw &e)
 {
     addStringError(e,"Throwing in uRegion(string,int int)");
     e << region_error(*this);
     throw e;
-
 }
-catch(std::exception &e){throw e;}
+uRegion::uRegion(std::string pChr, long long int pStart, long long int pEnd, StrandDir pStrand, float pScore)try : uGenericNGS(pChr,pStart, pEnd,pStrand,pScore)
+{}
+catch(construct_elem_throw &e)
+{
+    addStringError(e,"Throwing in uRegion(string,int int,Strandir,float)");
+    e << region_error(*this);
+    throw e;
+}
+uRegion::uRegion(std::string pChr, long long int pStart, long long int pEnd, float pScore )try : uGenericNGS(pChr,pStart,pEnd,pScore)
+{}
+catch(construct_elem_throw &e)
+{
+    addStringError(e,"Throwing in uRegion(string,int, int,float)");
+    e << region_error(*this);
+    throw e;
+}
 
 /** \brief Constructor from parent singular
  *
@@ -45,15 +57,29 @@ catch(construct_elem_throw &e)
     throw e;
 }
 
+uRegion::uRegion(uTags otherNGS)try :uGenericNGS(otherNGS.getChr(),otherNGS.getStart(),otherNGS.getEnd(), otherNGS.getStrand())
+{}
+catch(construct_elem_throw &e)
+{
+    addStringError(e,"Throwing in uRegion(uTags)");
+    e << region_error(*this);
+    throw e;
+}
+uRegion::uRegion(uBasicNGS otherNGS)try :uGenericNGS(otherNGS.getChr(),otherNGS.getStart(),otherNGS.getEnd(), otherNGS.getStrand())
+{}
+catch(construct_elem_throw &e)
+{
+    addStringError(e,"Throwing in uRegion(uBasicNGS)");
+    e << region_error(*this);
+    throw e;
+}
 
   /** \brief Constructor from parser Token
-   *
    * \param uToken Valid Token with data. We assumed the token is valid, so skip some checks here to avoid duplication
-   *
    */
-  uRegion::uRegion(uToken pToken)try :uGenericNGS(pToken){
+uRegion::uRegion(uToken pToken)try :uGenericNGS(pToken){
 
-  	 if (pToken.isParamSet(token_param::DENSITY))
+     if (pToken.isParamSet(token_param::DENSITY))
                 setDensity(std::stof(pToken.getParam(token_param::DENSITY)));
 
 }
@@ -65,11 +91,11 @@ catch(construct_elem_throw &e)
 }
 
 
+
 /** \brief Destructor
  */
 uRegion::~uRegion()
 {}
-
 
 /** \brief Set the signal value for our region at a specific position.
  *

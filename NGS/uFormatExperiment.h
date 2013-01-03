@@ -84,7 +84,6 @@ protected:
 
 
 public:
-
     virtual ~uGenericNGSExperiment() {};
     uGenericNGSExperiment& operator=(const uGenericNGSExperiment& copFrom)=default;
     uGenericNGSExperiment(const uGenericNGSExperiment&)=default;
@@ -161,6 +160,7 @@ public:
     typename std::vector<_BASE_>::const_iterator findNextSite(std::string chr, int position)const;
 
     virtual void loadFromTabFile(std::ifstream& stream);
+   // virtual void loadWithParser(uParser&, std::string);
     virtual void loadWithParser(std::ifstream&, std::string);
     virtual void loadWithParser(std::string, std::string);
 
@@ -174,7 +174,6 @@ public:
     _SELF_ getOverlapping(std::string chr, int start, int end, OverlapType type=OverlapType::OVERLAP_PARTIAL);
 
     void printChromSortStatus()const;
-
 
      _CHROM_ getSubset(std::string chr, float start, float end, OverlapType options=OverlapType::OVERLAP_PARTIAL);
      _SELF_ getDistinct( std::string chr, float start, float end, OverlapType type=OverlapType::OVERLAP_PARTIAL);
@@ -467,7 +466,6 @@ public:
             throw;
         }
     }
-
     template<class UnaryFunction>
     void loadWithParserAndRun(std::string filepath, std::string pType, UnaryFunction f, int pBlockSize=1)
     {

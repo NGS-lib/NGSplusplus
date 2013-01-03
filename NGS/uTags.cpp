@@ -42,18 +42,46 @@ uTags::uTags(uGenericNGS otherItem):uGenericNGS(otherItem),name(nullptr),phredSc
 {
 }
 
+uTags::uTags(std::string pChr, long long int pStart, long long int pEnd, float pScore)try:uGenericNGS(pChr,pStart,pEnd,StrandDir::FORWARD,pScore),name(nullptr),phredScore(nullptr),cigar(nullptr)
+{}
+catch(elem_throw & e)
+{
+    #ifdef DEBUG
+           cerr << "Throwing in uTags constructor" <<endl;
+    #endif
+    string trace;
+    if (std::string const * ste =boost::get_error_info<string_error>(e) )
+            trace=*ste;
+    e << string_error(trace+"Failling in uTags constructor, parameters are"+pChr+" "+std::to_string(pStart)+" "+std::to_string(pEnd)+"\n");
+    throw e;
+}
+
+
+uTags::uTags(std::string pChr, long long int pStart, long long int pEnd, StrandDir pStrand, float pScore)try:uGenericNGS(pChr,pStart,pEnd,pStrand,pScore),name(nullptr),phredScore(nullptr),cigar(nullptr)
+{}
+catch(elem_throw & e)
+    {
+        #ifdef DEBUG
+               cerr << "Throwing in uTags constructor" <<endl;
+        #endif
+        string trace;
+        if (std::string const * ste =boost::get_error_info<string_error>(e) )
+                trace=*ste;
+        e << string_error(trace+"Failling in uTags constructor, parameters are"+pChr+" "+std::to_string(pStart)+" "+std::to_string(pEnd)+"\n");
+        throw e;
+    }
 /** \brief Default constructor with init list, implicitly sets strand
  *
  * \param chr: name of the chromosome
  * \param start: beginning position of the tag
  * \param end: ending position of the tag
  */
-uTags::uTags(std::string pchr, int start, int end, StrandDir pstrand):name(nullptr),phredScore(nullptr),cigar(nullptr)
+uTags::uTags(std::string pChr, long long int pStart, long long int pEnd, StrandDir pStrand):name(nullptr),phredScore(nullptr),cigar(nullptr)
 {
    try {
-     setStartEnd(start,end);
-     setChr(pchr);
-     setStrand(pstrand);
+     setStartEnd(pStart,pEnd);
+     setChr(pChr);
+     setStrand(pStrand);
     }
     catch(elem_throw & e)
     {
@@ -65,7 +93,7 @@ uTags::uTags(std::string pchr, int start, int end, StrandDir pstrand):name(nullp
         if (std::string const * ste =boost::get_error_info<string_error>(e) )
                 trace=*ste;
 
-        e << string_error(trace+"Failling in uTags constructor, parameters are"+pchr+" "+std::to_string(start)+" "+std::to_string(end)+"\n");
+        e << string_error(trace+"Failling in uTags constructor, parameters are"+pChr+" "+std::to_string(pStart)+" "+std::to_string(pEnd)+"\n");
 
         throw e;
     }

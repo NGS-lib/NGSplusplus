@@ -141,21 +141,23 @@ inline static void  GetTokens(std::vector<std::string>& tokens, const std::strin
  std:: string buff;
 
  size_t from = 0;
- while( from < line.length() )
+while( from < line.length()-1 )
  {
   GetNextToken( buff, from,line );
-  tokens.push_back( buff );
+  if (buff!="")
+    tokens.push_back( buff );
  }
 }
 /**< Hardcoded delimiters are blank space, tab and return (not neewline) */
 inline static void  GetNextToken( std::string& container, size_t& from,const std::string & line )
 {
  size_t to = from;
- while( from != line.length() && ( line[from] == ' ' || line[from] == '\t' || line[from] == '\r' ) )
+ while( from < line.length() && ( line.at(from) == ' ' || line.at(from) == '\t' || line.at(from) == '\r' ) )
   from++;
  to = from + 1;
- while( to != line.length() && line[to] != ' ' && line[to] != '\t' && line[to] != '\r' )
+ while( to < line.length() && line.at(to) != ' ' && line.at(to) != '\t' && line.at(to) != '\r' )
   to++;
+ // std::cout <<from <<"\t"<<to<<std::endl;
  container = line.substr( from, to - from );
  from = to;
 }

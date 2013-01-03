@@ -18,7 +18,7 @@ class uBasicNGS: public uGenericNGS<uBasicNGS>
     */
 public:
 uBasicNGS(uToken pToken)try :
-        uGenericNGS(pToken)
+    uGenericNGS(pToken)
     {
     }
     catch(construct_elem_throw &e)
@@ -27,18 +27,25 @@ uBasicNGS(uToken pToken)try :
         e << basic_error(*this);
         throw e;
     }
-    uBasicNGS(std::string chr, long long int start, long long int end, StrandDir dir):uGenericNGS(chr,start,end,dir)
+    uBasicNGS(std::string chr, long long int start, long long int end, StrandDir dir)try:uGenericNGS(chr,start,end,dir)
     {   }
-    uBasicNGS():uGenericNGS()
+    catch(construct_elem_throw &e)
     {
+        addStringError(e,"Throwing in uBasicNGS(string, long long int, long long int, Strandir)");
+        e << basic_error(*this);
+        throw e;
     }
-    uBasicNGS(uGenericNGS otherItem):uGenericNGS(otherItem)
-    {   }
-    uBasicNGS(std::string chr, long long int start, long long int end):uGenericNGS(chr,start,end)
-    {   }
-    uBasicNGS(std::string pchr, int pstart, int pend, StrandDir pstrand, float pScore ):uGenericNGS(pchr, pstart, pend,pstrand,pScore) {}
-    uBasicNGS(std::string pchr, int pstart, int pend, float pScore ):uGenericNGS(pchr, pstart, pend,pScore) {}
+    uBasicNGS():uGenericNGS()
+    { }
 
+    uBasicNGS(std::string pChr, long long int pStart, long long int pEnd):uGenericNGS(pChr,pStart,pEnd)
+    { }
+    uBasicNGS(std::string pChr, int pStart, int pEnd, StrandDir pStrand, float pScore ):uGenericNGS(pChr, pStart, pEnd,pStrand,pScore) {}
+    uBasicNGS(std::string pChr, int pStart, int pEnd, float pScore ):uGenericNGS(pChr, pStart, pEnd,pScore) {}
+    uBasicNGS(std::string pChr, int pStart, int pEnd, StrandDir pStrand=StrandDir::FORWARD ):uGenericNGS(pChr, pStart, pEnd,pStrand) {}
+
+    uBasicNGS(uGenericNGS otherItem):uGenericNGS(otherItem)
+    { }
     uBasicNGS(uTags   p_tags);
     uBasicNGS(uRegion p_region);
 };
