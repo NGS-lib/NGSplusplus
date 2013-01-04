@@ -35,7 +35,13 @@ protected:
     StrandDir strand=StrandDir::FORWARD;
     std::vector<float> score={};
 public:
-    /**< Constructor taking chromosome name, start and end */
+	/** \brief Constructor taking chromosome name, start, end and optionnaly a strand.
+	 * \param std::string pChr: The name of the chromosome.
+	 * \param int pStart: Starting position, must be greater than 0.
+	 * \param int pEnd: Ending position, must be greater or equal to pStart.
+	 * \param StrandDir pStrand: The strand in enum class StranDir format. Must be either FOWARD or REVERSE. 
+	 * \exception ugene_exception_base: When the starting position and ending position are incorrect.
+	 */
     uGenericNGS(std::string pchr, int pstart, int pend, StrandDir pstrand=StrandDir::FORWARD ):chr(pchr),strand(pstrand)
     {
         try
@@ -53,6 +59,14 @@ public:
         }
     };
 
+	/** \brief Constructor taking chromosome name, start position, end position, strand and score.
+	 * \param std::string pChr: The name of the chromosome.
+	 * \param int pStart: Starting position, must be greater than 0.
+	 * \param int pEnd: Ending position, must be greater or equal to pStart.
+	 * \param StrandDir pStrand: The strand in enum class StranDir format. Must be either FOWARD or REVERSE. 
+	 * \param float pScore: The score associated with the current entry. 
+	 * \exception ugene_exception_base: When the starting position and ending position are incorrect.
+	 */
     uGenericNGS(std::string pchr, int pstart, int pend, StrandDir pstrand, float pScore ):chr(pchr),strand(pstrand)
     {
         try
@@ -71,6 +85,13 @@ public:
         }
     };
 
+	/** \brief Constructor taking chromosome name, start position, end position and score.
+	 * \param std::string pChr: The name of the chromosome.
+	 * \param int pStart: Starting position, must be greater than 0.
+	 * \param int pEnd: Ending position, must be greater or equal to pStart.
+	 * \param float pScore: The score associated with the current entry. 
+	 * \exception ugene_exception_base: When the starting position and ending position are incorrect.
+	 */
     uGenericNGS(std::string pchr, int pstart, int pend,float pScore ):chr(pchr),strand(StrandDir::FORWARD)
     {
         try
@@ -89,8 +110,15 @@ public:
         }
     };
 
+	/** \brief Default uGenericNGS constructor. Dummy function.
+	 */
     uGenericNGS()
     {};
+
+	/** \brief Constructor taking a token.
+	 * \param const uToken & pToken: A token containing all the infos for the current region. See uToken class for more details.
+	 * \exception ugene_exception_base: When the values of the token are not valid.
+	 */
     uGenericNGS(const uToken & pToken):chr(pToken.getParam(token_param::CHR))
     {
         try
@@ -115,6 +143,8 @@ public:
 
     };
 
+	/** \brief Destructor.
+	 */
     virtual ~uGenericNGS() {};
     /**< End Constructor/Destructor */
 
