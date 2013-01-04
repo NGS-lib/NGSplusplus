@@ -146,16 +146,25 @@ public:
 	/** \brief Destructor.
 	 */
     virtual ~uGenericNGS() {};
+
     /**< End Constructor/Destructor */
 
      virtual void writeToOutput(uWriter& pWriter) const;
      virtual uToken getToken()const;
 
-    /**< Get /Set */
+    /**< Get/Set */
+
+	/** \brief Get the chromosome of the current entry.
+	 * \return A string corresponding to the name of the chr. Returns an empty string if the chr value is not set.
+	 */
     std::string getChr() const
     {
         return m_chr;
     };
+
+	/** \brief Set the name of the chromosome for the current entry.
+	 * \return void
+	 */
     void setChr(std::string ourm_chr)
     {
         if (ourm_chr.size()==0)
@@ -163,11 +172,19 @@ public:
         m_chr=ourm_chr;
     };
 
+	/** \brief Set the name of the chromosome for the current entry.
+	 * \return A StrandDir corresponding to the strand for the current entry. The default value is FORWARD.
+	 */
     StrandDir getStrand() const
     {
         return m_strand;
     };
 
+	/** \brief Set the strand for the current entry with a char.
+	 * \param char pStrand: The value for the strand. Must be either '+' or '-'.
+	 * \exception param_throw: When the user gave an incorrect value for the strand.
+	 * \return void
+	 */
     void setStrand(char pStrand)
     {
         try
@@ -185,11 +202,19 @@ public:
             throw e;
         }
     };
+
+	/** \brief Set the strand for the current entry with a StrandDir.
+	 * \param StrandDir pStrand: The value for the strand. Must be either StrandDir::FORWARD or StrandDir::REVERSE.
+	 * \return void
+	 */
     void setStrand(StrandDir pStrand)
     {
         m_strand=pStrand;
     };
 
+	/** \brief Check if the orientation of the strand for the current entry is reverse.
+	 * \return bool: true if the strand is StrandDir::REVERSE. false if the strand is StrandDir::FORWARD.
+	 */
     bool isReverse() const
     {
         if (m_strand==StrandDir::REVERSE)
@@ -198,6 +223,11 @@ public:
             return false;
     }
 
+	/** \brief Set the start position for the current entry.
+	 * \param int ourStart: The start position we wish to set.
+	 * \exception param_throw: If the start position is greater than the end position or if the start position is smaller than zero.
+	 * \return void
+	 */
     void setStart(int ourStart)
     {
         try
@@ -215,6 +245,12 @@ public:
             throw e;
         }
     };
+
+	/** \brief Set the end position for the current entry.
+	 * \param int ourEnd: The end position we wish to set.
+	 * \exception param_throw: If the end position is smaller than the start position or if the end position is smaller than zero.
+	 * \return void
+	 */
     void setEnd(int ourEnd)
     {
         try
@@ -232,6 +268,12 @@ public:
         }
     };
 
+	/** \brief Set the start and end position for the current entry.
+	 * \param int ourStart: The start position we wish to set.
+	 * \param int ourEnd: The end position we wish to set.
+	 * \exception param_throw: If the end position is smaller than the start position or if the start and end position are smaller than zero.
+	 * \return void
+	 */
     void setStartEnd(long int ourStart, long int ourEnd)
     {
         try
@@ -255,14 +297,25 @@ public:
         }
     };
 
+	/** \brief Get the start position of the current entry.
+	 * \return long int: the start position of the current entry. Default value is 0.
+	 */
     long int getStart() const
     {
         return m_startPos;
     };
+
+	/** \brief Get the end position of the current entry.
+	 * \return long int: the end position of the current entry. Default value is 0.
+	 */
     long int getEnd() const
     {
         return m_endPos;
     };
+
+	/** \brief Get the length of the current entry.
+	 * \return long int: the difference between the ending position and the starting position.
+	 */
     long int getLenght() const
     {
         /**< 0 based coordinates, so N - N  is a legal fragment covering a single nucleotide at position N */
@@ -331,7 +384,8 @@ void uGenericNGS<_SELF_>::extendSite(int extendLeft, int extendRight)
         return;
     }
 }
-/** \brief Idem as above, but equal shift.
+
+/** \brief Increase size of the element by the same for both begin and end. Coordinates can go no lower then 0,
  *
  * \param extend int : Size of shift on both sides
  * \return void
@@ -360,7 +414,7 @@ void uGenericNGS<_SELF_>::extendSite(int extend)
  * \return void
  *
  */
- template <class _SELF_>
+template <class _SELF_>
 void uGenericNGS<_SELF_>::trimSites(int trimLeft, int trimRight)
 {
     /**< Validate input */
@@ -379,8 +433,6 @@ void uGenericNGS<_SELF_>::trimSites(int trimLeft, int trimRight)
         #endif
         throw(err);
     }
-
-
 }
 
 /** \brief Diminish our element by an equal amount from both ends
@@ -418,12 +470,10 @@ bool uGenericNGS<_SELF_>::doesOverlap(_SELF_ other, OverlapType type) const
     return returnb;
 }
 
-/** \brief Write contig to writer.
- *
- * \param pWriter uWriter& Previously declared writer, passe by param
- * \return void
- *
- */
+	/** \brief Write contig to file using a writer. 
+	 * \param uWriter& pWriter: A writer is used to specify the formating of the values and save them accordingly to disk.
+	 * \return void
+	 */
 template <class _SELF_>
 void uGenericNGS<_SELF_>::writeToOutput(uWriter& pWriter) const
 {
@@ -520,7 +570,7 @@ std::vector<_SELF_> uGenericNGS<_SELF_>::divideIntoNBin(int N,SplitType ptype)
  * \return vector<uGenericNGS> List of returned contigs
  *
  */
- template <class _SELF_>
+template <class _SELF_>
 std::vector<_SELF_> uGenericNGS<_SELF_>::divideIntoBinofSize(const int N, const SplitType type)
 {
     std::vector<_SELF_> returnVec;
@@ -596,6 +646,7 @@ std::vector<_SELF_> uGenericNGS<_SELF_>::divideIntoBinofSize(const int N, const 
 
     return returnVec;
 }
+
 /**< A score is an arbitray value set that can be used later */
 /** \brief Set the score of a contig. Note that this involves resizing the vector, so settting arbitrarily large score counts can bust your memory
  * \param float p_score: the score to set
@@ -623,12 +674,11 @@ float uGenericNGS<_SELF_>::getScore(int p_Pos) const
     return m_score.at(p_Pos);
 }
 
-
- /** \brief Get the parser Token associated with our Read/Write class
-  *
-  * \return uToken The token returned
-  *
-  */
+/** \brief Get the parser Token associated with our Read/Write class
+ *
+ * \return uToken The token returned
+ *
+ */
 template <class _SELF_>
  uToken uGenericNGS<_SELF_>::getToken() const
  {
@@ -640,8 +690,6 @@ template <class _SELF_>
     return uToken(ss);
  }
 
-
-
 } // End of namespace NGS
 
 /**< Legacy code, will return a uGenericNGS from  a tab delimited code. Deprecated, will be removed */
@@ -650,7 +698,6 @@ namespace factory
     template<class _SELF_>
     inline static _SELF_ makeNGSfromTabString(std::string tabString)
     {
-
         utility::Tokenizer tabLine(tabString);
 
         std::string m_chrm;
@@ -670,7 +717,6 @@ namespace factory
         {
             throw;
         }
-
     }
 }
 
