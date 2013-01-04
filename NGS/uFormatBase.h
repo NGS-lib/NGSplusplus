@@ -239,7 +239,6 @@ public:
         return (m_endPos-m_startPos+1);
     };
 
-
     /**< Strictly for debugging */
     virtual void debugElem() const
     {
@@ -307,7 +306,7 @@ void uGenericNGS<_SELF_>::extendSite(int extendLeft, int extendRight)
         e << string_error(*trace+"Catching and re-throwing from extendSite("+utility::to_string(extendLeft)+","+utility::to_string(extendRight)+")\n");
      else
          e << string_error("Catching and re-throwing from extendSite("+utility::to_string(extendLeft)+","+utility::to_string(extendRight)+")\n");
-        throw(e);
+     throw(e);
         return;
     }
 }
