@@ -398,11 +398,11 @@ bool uTags::writeTrimmedSamToOutput(std::ostream &out, int left, int right)
     // ourflag=ourflag&
     if (getStrand()==StrandDir::REVERSE)
     {
-        trimSites(right, left);
+        trimSite(right, left);
     }
     else
     {
-        trimSites(left,right);
+        trimSite(left,right);
     }    /**< Do not write cigar for now */
     out <<  getName() << "\t" << 0 << "\t" << getChr() << "\t" << getStart() << "\t" << getMapQual()
     << "\t" <<   getLenght()<<'M' << "\t" << '*' << "\t" << 0 << "\t" << 0;// << "\t" << '*' << "\t" << '*';

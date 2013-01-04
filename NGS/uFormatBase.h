@@ -353,8 +353,8 @@ public:
     void extendSite(int extend);
     void extendSite(int extendLeft, int extendRight);
 
-    void trimSites(int trim);
-    void trimSites(int trimLeft,int trimRight);
+    void trimSite(int trim);
+    void trimSite(int trimLeft,int trimRight);
 
     /**< Should this be there? */
     bool doesOverlap(_SELF_ other,OverlapType type=OverlapType::OVERLAP_PARTIAL) const;
@@ -445,14 +445,14 @@ void uGenericNGS<_SELF_>::extendSite(int extend)
  *
  */
 template <class _SELF_>
-void uGenericNGS<_SELF_>::trimSites(int trimLeft, int trimRight)
+void uGenericNGS<_SELF_>::trimSite(int trimLeft, int trimRight)
 {
     /**< Validate input */
     try
     {
         if ((trimLeft<0)||(trimRight<0)||(trimLeft+trimRight>this->getLenght()))
         {
-            throw param_throw()<< string_error("PARAMERROR, throwing from trimSites("
+            throw param_throw()<< string_error("PARAMERROR, throwing from trimSite("
                   +utility::to_string(trimLeft)+","+utility::to_string(trimRight)+"), param < 0 \n"  );
         }
         this->m_startPos=(this->m_startPos+trimLeft);
@@ -461,7 +461,7 @@ void uGenericNGS<_SELF_>::trimSites(int trimLeft, int trimRight)
     catch (param_throw & err)
     {
         #ifdef DEBUG
-           std::cerr << "Throwing in trimSites(int, int)"<<std::endl;
+           std::cerr << "Throwing in trimSite(int, int)"<<std::endl;
         #endif
         throw(err);
     }
@@ -474,11 +474,11 @@ void uGenericNGS<_SELF_>::trimSites(int trimLeft, int trimRight)
  *
  */
 template <class _SELF_>
-void uGenericNGS<_SELF_>::trimSites(int trim)
+void uGenericNGS<_SELF_>::trimSite(int trim)
 {
     try
     {
-        this->trimSites(trim,trim);
+        this->trimSite(trim,trim);
     }
     catch(param_throw & e)
     {

@@ -36,8 +36,8 @@ TEST(uBasicNGSTestHerit, SETGETSTART){
         EXPECT_EQ(STARTCASE1,uTest.getStart());
         uTest.setStart(150);
         EXPECT_EQ(150, uTest.getStart());
-        uTest.setStart(200);
-        EXPECT_EQ(200, uTest.getStart());
+        uTest.setStart(ENDCASE1);
+        EXPECT_EQ(ENDCASE1, uTest.getStart());
  }
 TEST(uBasicNGSTestHerit, SETGETEND){
         uBasicNGS uTest("chr1", STARTCASE1, ENDCASE1,StrandDir::REVERSE);
@@ -47,6 +47,13 @@ TEST(uBasicNGSTestHerit, SETGETEND){
         uTest.setEnd(100);
         EXPECT_EQ(100, uTest.getEnd());
  }
+
+/**< Add test for StartEnd() */
+
+
+
+
+
 
  TEST(uBasicNGSTestHerit, SETSTRANDFAIL){
         uBasicNGS uTest("chr1", STARTCASE1, ENDCASE1,StrandDir::FORWARD);
@@ -58,12 +65,16 @@ TEST(uBasicNGSTestHerit, SETGETSTRAND){
         EXPECT_EQ(StrandDir::FORWARD,uTest.getStrand());
         uTest.setStrand(StrandDir::REVERSE);
         EXPECT_EQ(StrandDir::REVERSE,uTest.getStrand());
+        EXPECT_TRUE(uTest.isReverse());
+ }
+TEST(uBasicNGSTestHerit, SETGETSTRANDCHAR){
+        uBasicNGS uTest("chr1", STARTCASE1, ENDCASE1,StrandDir::FORWARD);
         uTest.setStrand('+');
         EXPECT_EQ(StrandDir::FORWARD,uTest.getStrand());
         uTest.setStrand('-');
         EXPECT_EQ(StrandDir::REVERSE,uTest.getStrand());
-        EXPECT_TRUE(uTest.isReverse());
- }
+}
+
 
 TEST(uBasicNGSTestHerit, GETSETCHR)
 {
@@ -75,7 +86,7 @@ TEST(uBasicNGSTestHerit, GETSETCHR)
     EXPECT_EQ("",uEmpty.getChr());
 }
 
-TEST(uBasicNGSTestHerit, GETSETLENGHT)
+TEST(uBasicNGSTestHerit, GETLENGHT)
 {
     uBasicNGS uTest("chr1", 150, 200);
     EXPECT_EQ(51, uTest.getLenght());
@@ -93,6 +104,7 @@ TEST(uBasicNGSTestHerit, GETSETSCORE)
     EXPECT_NO_THROW(uTest.setScore(0.2,1));
     EXPECT_FLOAT_EQ(0.2,uTest.getScore(1));
 }
+
 
 TEST(uBasicNGSTestHerit, GETSETSCOREVECTOR)
 {
@@ -134,30 +146,29 @@ TEST(uBasicNGSTestHerit,EXTENDNOTHING){
     EXPECT_EQ(500, uTest.getStart());
     EXPECT_EQ(600, uTest.getEnd());
 }
-
-
+//TODO, verify behavior when trimming beyond 0.
 TEST(uBasicNGSTestHerit,TRIMSIMPLE){
     uBasicNGS uTest("chr1", 100, 200);
-    uTest.trimSites(50);
+    uTest.trimSite(50);
     EXPECT_EQ(150, uTest.getStart());
     EXPECT_EQ(150, uTest.getEnd());
-    EXPECT_ANY_THROW(uTest.trimSites(50));
-    EXPECT_ANY_THROW(uTest.trimSites(-50));
+    EXPECT_ANY_THROW(uTest.trimSite(50));
+    EXPECT_ANY_THROW(uTest.trimSite(-50));
 }
 TEST(uBasicNGSTestHerit,TRIMDOUBLE){
     uBasicNGS uTest("chr1", 200, 600);
-    uTest.trimSites(50,100);
+    uTest.trimSite(50,100);
     EXPECT_EQ(250, uTest.getStart());
     EXPECT_EQ(500, uTest.getEnd());
 }
 TEST(uBasicNGSTestHerit,TRIMILLEGAL){
     uBasicNGS uTestTrim2("chr1", 200, 600);
-    EXPECT_ANY_THROW(uTestTrim2.trimSites(-100,100));
-    EXPECT_ANY_THROW(uTestTrim2.trimSites(100,-100));
+    EXPECT_ANY_THROW(uTestTrim2.trimSite(-100,100));
+    EXPECT_ANY_THROW(uTestTrim2.trimSite(100,-100));
 }
 TEST(uBasicNGSTestHerit,TRIMNOTHING){
     uBasicNGS uTest("chr1", 500, 600);
-    EXPECT_NO_THROW(uTest.trimSites(0));
+    EXPECT_NO_THROW(uTest.trimSite(0));
     EXPECT_EQ(500, uTest.getStart());
     EXPECT_EQ(600, uTest.getEnd());
 }
@@ -243,6 +254,8 @@ TEST(uBasicNGSTestHerit, DIVIDEINTOBINOFSIZESTRICT){
         EXPECT_EQ( x.getLenght(), 5);
 }
 
+//TODO
+/**< add extra testing to element, test first, last and middle */
 TEST(uBasicNGSTestHerit, DIVIDEINTOBINOFSIZEIGNORE){
 
     uBasicNGS uTest("chr1", 100, 119);
@@ -280,15 +293,16 @@ TEST(uBasicNGSTestHerit, DIVIDEINTOBINOFSIZEEXTEND){
     EXPECT_EQ( TestVector.at(1).getEnd(), 119);
 }
 
-
 TEST(uBasicNGSTestHerit, GETTOKENTEST){
     uBasicNGS uTest("chr1", 100, 119);
-    uTest.getToken();
 
-
+    uToken ourToken= uTest.createToken();
+    EXPECT_EQ("chr1", ourToken.getParam(token_param::CHR));
+    EXPECT_EQ("100", ourToken.getParam(token_param::START_POS));
+    EXPECT_EQ("119", ourToken.getParam(token_param::END_POS));
+    /**< Random Testin of certain Params */
+    EXPECT_FALSE(ourToken.isParamSet(token_param::CIGAR));
+    EXPECT_FALSE(ourToken.isParamSet(token_param::DENSITY));
+    EXPECT_FALSE(ourToken.isParamSet(token_param::SCORE));
 
 }
-
-
-
-
