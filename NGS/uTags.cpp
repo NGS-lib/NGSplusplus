@@ -48,12 +48,12 @@ uTags::uTags(uGenericNGS otherItem):uGenericNGS(otherItem),name(nullptr),phredSc
  * \param start: beginning position of the tag
  * \param end: ending position of the tag
  */
-uTags::uTags(std::string pchr, int start, int end, StrandDir pstrand):name(nullptr),phredScore(nullptr),cigar(nullptr)
+uTags::uTags(std::string pChr, long long int pStart, long long int pEnd, StrandDir pStrand):name(nullptr),phredScore(nullptr),cigar(nullptr)
 {
    try {
-     setStartEnd(start,end);
-     setChr(pchr);
-     setStrand(pstrand);
+     setStartEnd(pStart,pEnd);
+     setChr(pChr);
+     setStrand(pStrand);
     }
     catch(elem_throw & e)
     {
@@ -65,11 +65,35 @@ uTags::uTags(std::string pchr, int start, int end, StrandDir pstrand):name(nullp
         if (std::string const * ste =boost::get_error_info<string_error>(e) )
                 trace=*ste;
 
-        e << string_error(trace+"Failling in uTags constructor, parameters are"+pchr+" "+utility::to_string(start)+" "+utility::to_string(end)+"\n");
+        e << string_error(trace+"Failling in uTags constructor, parameters are"+pChr+" "+std::to_string(pStart)+" "+std::to_string(pEnd)+"\n");
 
         throw e;
     }
 }
+
+uTags::uTags(std::string pChr, long long int pStart, long long int pEnd, StrandDir pStrand, float pScore):name(nullptr),phredScore(nullptr),cigar(nullptr)
+{
+   try {
+     setStartEnd(pStart,pEnd);
+     setChr(pChr);
+     setStrand(pStrand);
+     setScore(pScore);
+    }
+    catch(elem_throw & e)
+    {
+        #ifdef DEBUG
+               cerr << "Throwing in uTags constructor" <<endl;
+        #endif
+
+        string trace;
+        if (std::string const * ste =boost::get_error_info<string_error>(e) )
+                trace=*ste;
+
+        e << string_error(trace+"Failling in uTags constructor, parameters are"+pChr+" "+std::to_string(pStart)+" "+std::to_string(pEnd)+"\n");
+        throw e;
+    }
+}
+
 
 /** \brief Default destructor
  */
@@ -116,7 +140,7 @@ uTags::uTags(const uTags& copy_from):uGenericNGS(copy_from),name(nullptr),phredS
         phredScore = new char[(strlen(copy_from.phredScore)+1)];
         strcpy(phredScore,copy_from.phredScore);
     }
-    strand=copy_from.strand;
+    m_strand=copy_from.m_strand;
     PELenght=copy_from.PELenght;
     sequence=copy_from.sequence;
     mapScore=copy_from.mapScore;
@@ -179,7 +203,7 @@ uTags& uTags::operator= (uTags const& assign_from)
         phredScore = new char[(strlen(assign_from.phredScore)+1)];
         strcpy(phredScore,assign_from.phredScore);
     }
-    strand=assign_from.strand;
+    m_strand=assign_from.m_strand;
     PELenght=assign_from.PELenght;
     sequence=assign_from.sequence;
     mapScore=assign_from.mapScore;
@@ -210,31 +234,31 @@ void uTags::loadfromSamString(std::string samString, bool minimal=false)
 }
 
 // TODO: Move this to output class
-/** \brief Write our tag in bed format, using our Tag Name/ID as the misc 4th column
- *
- * \param out : Output stream to use.
- *
- */
-void uTags::writeBedToOuput(std::ostream &out) const
-{
-
-    uGenericNGS::writeBedToOuput(out, false);
-    if (getName().size()!=0)
-        out << "\t" << getName();
-    else
-        out << "\t" << "unknown";
-
-    out << "\t" << -1;
-
-    /**< Strand is implicit, always write it */
-    //if ((getStrand()=='+')||(getStrand()=='-'))
-    char strand='+';
-    if (isReverse())
-        strand='-';
-    out << "\t" << strand;
-
-    out <<"\n";
-}
+///** \brief Write our tag in bed format, using our Tag Name/ID as the misc 4th column
+// *
+// * \param out : Output stream to use.
+// *
+// */
+//void uTags::writeBedToOuput(std::ostream &out) const
+//{
+//
+//    uGenericNGS::writeBedToOuput(out, false);
+//    if (getName().size()!=0)
+//        out << "\t" << getName();
+//    else
+//        out << "\t" << "unknown";
+//
+//    out << "\t" << -1;
+//
+//    /**< Strand is implicit, always write it */
+//    //if ((getStrand()=='+')||(getStrand()=='-'))
+//    char strand='+';
+//    if (isReverse())
+//        strand='-';
+//    out << "\t" << strand;
+//
+//    out <<"\n";
+//}
 
 
 // TODO: Move this to output class
@@ -445,7 +469,7 @@ void uTagsChrom::outputBedFormat(std::ostream& out) const
    // std::vector<uTags>::iterator iterVec;
     for (auto iterVec = VecSites.begin(); iterVec != VecSites.end(); ++iterVec)
     {
-        iterVec->writeBedToOuput(out);
+        //iterVec->writeBedToOuput(out);
     }
 }
 

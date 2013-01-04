@@ -2,8 +2,6 @@
 #define UREGION_H
 
 /**< A region, is a fairly generic entity */
-/**< General, we use this to measure statistics and overlaps on a given region.. */
-
 #include "uFormats.h"
 #include "uTags.h"
 #include <limits>
@@ -19,9 +17,13 @@ class uRegion : public uGenericNGS<uRegion>
 {
 public:
     uRegion();
-    uRegion(std::string chr, int start, int end);
-    uRegion(uGenericNGS);
+    uRegion(std::string pChr, long long int pStart, long long int pEnd, StrandDir pStrand=StrandDir::FORWARD);
+    uRegion(std::string pChr, long long int pStart, long long int pEnd, StrandDir pstrand, float pScore);
+    uRegion(std::string pChr, long long int pStart, long long int pEnd, float pScore );
 
+    uRegion(uTags);
+    uRegion(uBasicNGS);
+    uRegion(uGenericNGS);
     uRegion(uToken);
 
     virtual ~uRegion();

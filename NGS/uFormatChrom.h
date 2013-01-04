@@ -1342,7 +1342,7 @@ public:
     template <class _SELF_,class _BASE_>
     void uGenericNGSChrom<_SELF_,_BASE_>:: inferChrSize()
     {
-        this->maxSite(comparePos)->getEnd();
+     this->setChromSize(this->maxSite(comparePos)->getEnd());
     }
 
 } // End of namespace NGS
