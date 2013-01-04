@@ -100,16 +100,17 @@ TEST(uBasicNGSTestHerit, GETLENGHT)
 TEST(uBasicNGSTestHerit, GETSETSCORE)
 {
     uBasicNGS uTest("chr1", 100, 200,StrandDir::FORWARD, 0.4f);
+    EXPECT_FLOAT_EQ(0.4f,uTest.getScore(0));
     EXPECT_ANY_THROW(uTest.getScore(2));
     EXPECT_NO_THROW(uTest.setScore(0.2,1));
     EXPECT_FLOAT_EQ(0.2,uTest.getScore(1));
 }
 
-
 TEST(uBasicNGSTestHerit, GETSETSCOREVECTOR)
 {
    uBasicNGS uTest("chr1", 100, 200,StrandDir::FORWARD);
    uTest.setScoreVector({4.2f,0.4f,-1.03f});
+   EXPECT_FLOAT_EQ(4.2f, uTest.getScore());
    EXPECT_EQ(3, uTest.getScoreVector().size());
    auto vec=uTest.getScoreVector();
    EXPECT_FLOAT_EQ(4.2f,vec.at(0));
@@ -188,15 +189,15 @@ TEST(uBasicNGSTestHerit, OVERLAPDIFFCHR){
     uBasicNGS uTest("chr1", 100, 200);
     uBasicNGS uTestOverlapDifChr("chr2", 100, 200);
     uBasicNGS uTestEmpty;
-
     EXPECT_FALSE (uTest.doesOverlap(uTestOverlapDifChr));
     EXPECT_FALSE (uTest.doesOverlap(uTestEmpty));
 }
 TEST(uBasicNGSTestHerit, OVERLAPNOT){
     uBasicNGS uTest("chr1", 100, 200);
     uBasicNGS uTestOverlapNot("chr1", 300, 305);
-
+    uBasicNGS uTestNot2("chr1", 201, 300);
     EXPECT_FALSE (uTest.doesOverlap(uTestOverlapNot));
+    EXPECT_FALSE (uTest.doesOverlap(uTestNot2));
 }
 
 /**< Need to test for every overload */

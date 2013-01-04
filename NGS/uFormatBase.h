@@ -25,6 +25,7 @@ enum class SplitType
 };
 
 template<class _SELF_>
+//TODO Doxygen class documentation
 class uGenericNGS
 {
 
@@ -352,7 +353,7 @@ public:
     //If we want to Change the dimensions of our site
     void extendSite(int extend);
     void extendSite(int extendLeft, int extendRight);
-
+    //TODO Add parameters on behavior
     void trimSite(int trim);
     void trimSite(int trimLeft,int trimRight);
 
