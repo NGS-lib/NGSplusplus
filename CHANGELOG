@@ -1,3 +1,12 @@
+
+04 - 01 -2013
+
+- uFormatBase refactor, changed some names, removed deprecated write functions.
+- Improved test suite for uFormatBase derived functions.
+- Improved doXygen documentation for uFormatBase.
+- Modified corresponding functions in uTags and uRegions.
+
+
 12 - 12 -2012
 
 - Removed the string conversion functions that requiered to install a patch with windows installation (stoi, stoll, stof and to_string).
