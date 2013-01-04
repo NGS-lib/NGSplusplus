@@ -25,7 +25,7 @@ template<class _SELF_>
 class uGenericNGS
 {
 
-	#define FORWARCHAR '+'
+	#define FORWARDCHAR '+'
 	#define REVERSECHAR '-'
 
 protected:
@@ -174,7 +174,7 @@ public:
         {
             if (pStrand==REVERSECHAR)
                 m_strand=StrandDir::REVERSE;
-            else if (pStrand==FORWARCHAR)
+            else if (pStrand==FORWARDCHAR)
                 m_strand=StrandDir::FORWARD;
             else
                 throw param_throw()<<string_error("Failling in setStrand(char), invalid character");
