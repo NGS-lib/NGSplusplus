@@ -155,7 +155,7 @@ public:
     /**< End Constructor/Destructor */
 
      virtual void writeToOutput(uWriter& pWriter) const;
-     virtual uToken getToken()const;
+     virtual uToken createToken()const;
 
     /**< Get/Set */
 
@@ -512,7 +512,7 @@ void uGenericNGS<_SELF_>::writeToOutput(uWriter& pWriter) const
 {
 
     try {
-        pWriter.writeToken(this->getToken());
+        pWriter.writeToken(this->createToken());
     }
     catch(uWriter_exception_base &e)
     {
@@ -729,13 +729,13 @@ float uGenericNGS<_SELF_>::getScore(int p_Pos) const
     return m_score.at(p_Pos);
 }
 
-/** \brief Get the parser Token associated with our Read/Write class
+/** \brief Create the parser Token associated with Element
  *
  * \return uToken The token returned
  *
  */
 template <class _SELF_>
-uToken uGenericNGS<_SELF_>::getToken() const
+uToken uGenericNGS<_SELF_>::createToken() const
 {
     std::stringstream ss;
     ss << "CHR\t"<<this->getChr()<<"\nSTART_POS\t"<<this->getStart()<<"\n" << "END_POS\t"<<this->getEnd()<<"\n";
@@ -743,7 +743,15 @@ uToken uGenericNGS<_SELF_>::getToken() const
     {
         ss << "SCORE\t"<<this->getScore()<<"\n";
     }
-    return uToken(ss);
+    try {
+        return uToken(ss);
+    }
+    catch(uToken_exception_base &e)
+    {
+        addStringError(e, "Failed while creating token in uGenericNGS::getToken()");
+        throw e;
+    }
+
  }
 
 } // End of namespace NGS

@@ -281,4 +281,14 @@ TEST(uBasicNGSTestHerit, DIVIDEINTOBINOFSIZEEXTEND){
 }
 
 
+TEST(uBasicNGSTestHerit, GETTOKENTEST){
+    uBasicNGS uTest("chr1", 100, 119);
+    uTest.getToken();
+
+
+
+}
+
+
+
 
