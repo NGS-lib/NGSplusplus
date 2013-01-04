@@ -186,7 +186,7 @@ public:
         try
         {
             if (chromS<0)
-                throw param_throw()<<string_error("failling in setChromSize, value "+std::to_string(chromS)+" is below 0\n");
+                throw param_throw()<<string_error("failling in setChromSize, value "+utility::to_string(chromS)+" is below 0\n");
             chromSize= chromS;
         }
         catch(std::exception e)

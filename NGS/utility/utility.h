@@ -509,6 +509,66 @@ static inline std::string clean_WString(const std::string & input_string)
         return !s.empty() && std::find_if(s.begin(),
             s.end(), [](char c) { return !std::isdigit(c); }) == s.end();
     }
+
+    static inline int stoi(const std::string& s) {
+        std::stringstream ss;
+	ss << s;
+	int toReturn;
+        if (ss >> toReturn) {
+            return toReturn;
+        }
+	throw std::logic_error("utility::stoi -> invalid value in string.");
+    }
+
+    static inline long long stoll(const std::string& s) {
+        std::stringstream ss;
+	ss << s;
+	long long toReturn;
+        if (ss >> toReturn) {
+            return toReturn;
+        }
+	throw std::logic_error("utility::stoll -> invalid value in string.");
+    }
+
+    static inline float stof(const std::string& s) {
+        std::stringstream ss;
+	ss << s;
+	float toReturn;
+        if (ss >> toReturn) {
+            return toReturn;
+        }
+	throw std::logic_error("utility::stof -> invalid value in string.");
+    }
+
+    static inline std::string to_string(int v) {
+        std::stringstream ss;
+	ss << v;
+	return ss.str();
+    }
+
+    static inline std::string to_string(float v) {
+        std::stringstream ss;
+	ss << v;
+	return ss.str();
+    }
+
+    static inline std::string to_string(long v) {
+        std::stringstream ss;
+	ss << v;
+	return ss.str();
+    }
+
+    static inline std::string to_string(long long v) {
+        std::stringstream ss;
+	ss << v;
+	return ss.str();
+    }
+
+    static inline std::string to_string(size_t v) {
+        std::stringstream ss;
+	ss << v;
+	return ss.str();
+    }
 }
 
 /**< Clustering contains odd and ends, distance measures and such */

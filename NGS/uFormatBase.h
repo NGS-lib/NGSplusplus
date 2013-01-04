@@ -95,13 +95,13 @@ public:
     {
         try
         {
-            setEnd(std::stoi(pToken.getParam(token_param::END_POS)));
-            setStart( std::stoi(pToken.getParam(token_param::START_POS)));
+            setEnd(utility::stoi(pToken.getParam(token_param::END_POS)));
+            setStart( utility::stoi(pToken.getParam(token_param::START_POS)));
             /**< Default forward */
             if (pToken.isParamSet(token_param::STRAND))
                 setStrand(pToken.getParam(token_param::STRAND).at(0));
             if ((pToken.isParamSet(token_param::SCORE))&&(pToken.getParam(token_param::SCORE)!="." ) )  {
-                    setScore(std::stof (pToken.getParam(token_param::SCORE) ) );
+                    setScore(utility::stof (pToken.getParam(token_param::SCORE) ) );
                 }
         }
         catch(ugene_exception_base &e)
@@ -179,7 +179,7 @@ public:
         try
         {
             if (!((ourStart<=getEnd())&&(ourStart>=0)))
-                throw param_throw()<<string_error("Failed in setStart, ourStart is smalled then end or under 0, start is "+std::to_string(ourStart)+ " end is "+ std::to_string(getEnd()) +"\n");
+                throw param_throw()<<string_error("Failed in setStart, ourStart is smalled then end or under 0, start is "+utility::to_string(ourStart)+ " end is "+ utility::to_string(getEnd()) +"\n");
             startPos=ourStart;
 
         }
@@ -196,7 +196,7 @@ public:
         try
         {
             if (!((ourEnd>=getStart())&&(ourEnd>=0)))
-                throw param_throw()<<string_error("throwing in setEnd(), start at "+std::to_string((int)getStart())+ " end is "+ std::to_string(ourEnd) +"\n");
+                throw param_throw()<<string_error("throwing in setEnd(), start at "+utility::to_string((int)getStart())+ " end is "+ utility::to_string(ourEnd) +"\n");
             endPos=ourEnd;
         }
         catch(param_throw & e)
@@ -219,7 +219,7 @@ public:
             }
         else
             {
-            throw param_throw() <<string_error("Throwing in set StartEnd,  ourStart="+std::to_string(ourStart)+" ourEnd="+std::to_string(ourEnd)+"\n" );
+            throw param_throw() <<string_error("Throwing in set StartEnd,  ourStart="+utility::to_string(ourStart)+" ourEnd="+utility::to_string(ourEnd)+"\n" );
             }
         }
         catch(param_throw &e)
@@ -252,8 +252,8 @@ public:
         using namespace utility;
         stringTocerr("Outputting elemn data");
         stringTocerr("Chrom "+getChr());
-        stringTocerr("Start "+std::to_string((int)getStart()));
-        stringTocerr("End " +std::to_string((int)getEnd()));
+        stringTocerr("Start "+utility::to_string((int)getStart()));
+        stringTocerr("End " +utility::to_string((int)getEnd()));
     }
     /**<  Divide our region into a certain number of subregions */
 
@@ -295,7 +295,7 @@ void uGenericNGS<_SELF_>::extendSite(int extendLeft, int extendRight)
     try
     {
         if((extendLeft<0)||(extendRight<0))
-            throw param_throw()<< string_error("INIT throwing from extendSite("+std::to_string(extendLeft)+","+std::to_string(extendRight)+"), param < 0 \n"  );;
+            throw param_throw()<< string_error("INIT throwing from extendSite("+utility::to_string(extendLeft)+","+utility::to_string(extendRight)+"), param < 0 \n"  );;
 
         int start=(getStart()-extendLeft);
         if (start < 0)
@@ -310,9 +310,9 @@ void uGenericNGS<_SELF_>::extendSite(int extendLeft, int extendRight)
         std::string * trace;
 
      if ( (trace=(boost::get_error_info<string_error>(e))) )
-        e << string_error(*trace+"Catching and re-throwing from extendSite("+std::to_string(extendLeft)+","+std::to_string(extendRight)+")\n");
+        e << string_error(*trace+"Catching and re-throwing from extendSite("+utility::to_string(extendLeft)+","+utility::to_string(extendRight)+")\n");
      else
-         e << string_error("Catching and re-throwing from extendSite("+std::to_string(extendLeft)+","+std::to_string(extendRight)+")\n");
+         e << string_error("Catching and re-throwing from extendSite("+utility::to_string(extendLeft)+","+utility::to_string(extendRight)+")\n");
         throw(e);
         return;
     }
@@ -353,7 +353,7 @@ void uGenericNGS<_SELF_>::trimSites(int trimLeft, int trimRight)
     try
     {
         if ((trimLeft<0)||(trimRight<0)||(trimLeft+trimRight>this->getLenght()))
-            throw param_throw()<< string_error("PARAMERROR, throwing from trimSites("+std::to_string(trimLeft)+","+std::to_string(trimRight)+"), param < 0 \n"  );
+            throw param_throw()<< string_error("PARAMERROR, throwing from trimSites("+utility::to_string(trimLeft)+","+utility::to_string(trimRight)+"), param < 0 \n"  );
 
         this->startPos=(this->startPos+trimLeft);
         this->endPos=(this->endPos-trimRight);
@@ -665,9 +665,9 @@ namespace factory
             tabLine.NextToken();
             chrm = tabLine.GetToken();
             tabLine.NextToken();
-            start = std::stoi(tabLine.GetToken());
+            start = utility::stoi(tabLine.GetToken());
             tabLine.NextToken();
-            end = std::stoi(tabLine.GetToken());
+            end = utility::stoi(tabLine.GetToken());
 
             return _SELF_(chrm,start,end);
         }

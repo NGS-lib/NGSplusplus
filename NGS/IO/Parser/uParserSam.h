@@ -2,6 +2,7 @@
 #define UPARSERSAM_H_INCLUDED
 
 #include "uParserBase.h"
+#include "../../utility/utility.h"
 #include <iostream>
 #include "../../boost-include/boost/xpressive/xpressive.hpp"
 namespace NGS

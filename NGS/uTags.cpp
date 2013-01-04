@@ -17,13 +17,13 @@ uTags::uTags(const uToken & pToken)try:uGenericNGS(pToken){
 if (pToken.isParamSet(token_param::CIGAR))
     setCigar(pToken.getParam(token_param::CIGAR));
  if (pToken.isParamSet(token_param::MAP_SCORE))
-        setMapQual(std::stoi(pToken.getParam(token_param::MAP_SCORE)));
+        setMapQual(utility::stoi(pToken.getParam(token_param::MAP_SCORE)));
  if (pToken.isParamSet(token_param::PHRED_SCORE))
         setPhred(pToken.getParam(token_param::PHRED_SCORE));
  if (pToken.isParamSet(token_param::SEQUENCE))
         setSequence(pToken.getParam(token_param::SEQUENCE));
  if (pToken.isParamSet(token_param::FLAGS))
-        setFlag(std::stoi(pToken.getParam(token_param::FLAGS)));
+        setFlag(utility::stoi(pToken.getParam(token_param::FLAGS)));
 }
 catch(ugene_exception_base &e)
 {
@@ -42,34 +42,6 @@ uTags::uTags(uGenericNGS otherItem):uGenericNGS(otherItem),name(nullptr),phredSc
 {
 }
 
-uTags::uTags(std::string pChr, long long int pStart, long long int pEnd, float pScore)try:uGenericNGS(pChr,pStart,pEnd,StrandDir::FORWARD,pScore),name(nullptr),phredScore(nullptr),cigar(nullptr)
-{}
-catch(elem_throw & e)
-{
-    #ifdef DEBUG
-           cerr << "Throwing in uTags constructor" <<endl;
-    #endif
-    string trace;
-    if (std::string const * ste =boost::get_error_info<string_error>(e) )
-            trace=*ste;
-    e << string_error(trace+"Failling in uTags constructor, parameters are"+pChr+" "+std::to_string(pStart)+" "+std::to_string(pEnd)+"\n");
-    throw e;
-}
-
-
-uTags::uTags(std::string pChr, long long int pStart, long long int pEnd, StrandDir pStrand, float pScore)try:uGenericNGS(pChr,pStart,pEnd,pStrand,pScore),name(nullptr),phredScore(nullptr),cigar(nullptr)
-{}
-catch(elem_throw & e)
-    {
-        #ifdef DEBUG
-               cerr << "Throwing in uTags constructor" <<endl;
-        #endif
-        string trace;
-        if (std::string const * ste =boost::get_error_info<string_error>(e) )
-                trace=*ste;
-        e << string_error(trace+"Failling in uTags constructor, parameters are"+pChr+" "+std::to_string(pStart)+" "+std::to_string(pEnd)+"\n");
-        throw e;
-    }
 /** \brief Default constructor with init list, implicitly sets strand
  *
  * \param chr: name of the chromosome
@@ -330,10 +302,10 @@ void uTags::debugElem() const
     using namespace utility;
     stringTocerr("Outputting elemn data");
     stringTocerr("Chrom "+getChr());
-    stringTocerr("Start "+std::to_string(getStart()));
-    stringTocerr("End " +std::to_string(getEnd()));
-    stringTocerr("PELenght " +std::to_string(getPeLenght()));
-    stringTocerr("Flag " +std::to_string(getFlag()));
+    stringTocerr("Start "+utility::to_string(getStart()));
+    stringTocerr("End " +utility::to_string(getEnd()));
+    stringTocerr("PELenght " +utility::to_string(getPeLenght()));
+    stringTocerr("Flag " +utility::to_string(getFlag()));
 }
 
 // TODO: Move this to output class
@@ -695,7 +667,7 @@ void uTagsExperiment::loadFromSamWithParser(std::string filepath)
 try {
 //        std::cerr << "name and size are :" <<chrList.at(i) <<" "<<chrSizes.at(i)<<std::endl;
     for (int i=0; i<(int)chrList.size();i++){
-        this->setChromSize(chrList.at(i), std::stoi(chrSizes.at(i)));
+        this->setChromSize(chrList.at(i), utility::stoi(chrSizes.at(i)));
     }
 
     while (ourParser.eof()==false){
@@ -760,7 +732,7 @@ void uTagsExperiment::loadFromSam(std::ifstream& curStream, bool minimal)
         if (std::string const * ste =boost::get_error_info<string_error>(e) )
                 trace=*ste;
 
-        e <<string_error(trace+"\n"+"falling from loadFromSam(stream, bool) while loading tag number"+std::to_string(count) );
+        e <<string_error(trace+"\n"+"falling from loadFromSam(stream, bool) while loading tag number"+utility::to_string(count) );
             #ifdef DEBUG
                     cerr << "Throwing elem_throw" <<endl;
                 #endif
@@ -886,7 +858,7 @@ void uTagsExperiment::parseSamHeader()
                 }
                 if (data.find("LN:")!=string::npos){
                     data.erase(0,3);
-                    chromsize=std::stoi(data);
+                    chromsize=utility::stoi(data);
 
                 }
 
@@ -1089,8 +1061,8 @@ try {
         }
     }
 
- //   ourEnd=(std::stoi(ourStart)+(size-1));
-    NGS::uTags returnTag(ourChr,std::stoi(ourStart),std::stoi(ourStart)+(size-1) );
+ //   ourEnd=(utility::stoi(ourStart)+(size-1));
+    NGS::uTags returnTag(ourChr,utility::stoi(ourStart),utility::stoi(ourStart)+(size-1) );
     returnTag.setName(ourName);
     returnTag.setFlag(ourFlag);
     returnTag.setMapQual(mapScore);

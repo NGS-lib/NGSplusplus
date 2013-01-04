@@ -86,7 +86,7 @@ void uWriterSam::writeToken(const uToken& token) {
          /**< End pos but no way to get that size, infer CIGAR */
         if ((cigar=="*")&&(seq=="*")&&(end_pos!="0"))
         {
-            cigar=to_string ( (std::stoi(end_pos)-std::stoi(start_pos) )+1 )+"M";
+            cigar=utility::to_string ( (utility::stoi(end_pos)-utility::stoi(start_pos) )+1 )+"M";
         }
 		*m_pOstream <<seq_name <<TAB << flag <<TAB << chr <<TAB <<start_pos<<TAB <<MAPQual<<TAB <<cigar<<TAB << RNext<<TAB <<pNext<<TAB <<TLEN<<TAB<<seq<<TAB<<PHREDQual<<endl;
 	}

@@ -2,6 +2,7 @@
 #define UPARSERWIG_H_INCLUDED
 
 #include "uParserBase.h"
+#include "../../utility/utility.h"
 #include <iostream>
 
 namespace NGS

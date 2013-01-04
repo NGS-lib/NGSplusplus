@@ -5,6 +5,7 @@
 #include "uFormats.h"
 #include "uTags.h"
 #include <limits>
+#include "utility/utility.h"
 namespace NGS
 {
 class uToken;

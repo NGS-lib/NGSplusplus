@@ -79,8 +79,10 @@ catch(construct_elem_throw &e)
    */
 uRegion::uRegion(uToken pToken)try :uGenericNGS(pToken){
 
-     if (pToken.isParamSet(token_param::DENSITY))
-                setDensity(std::stof(pToken.getParam(token_param::DENSITY)));
+
+  	 if (pToken.isParamSet(token_param::DENSITY))
+                setDensity(utility::stof(pToken.getParam(token_param::DENSITY)));
+
 
 }
 catch(construct_elem_throw &e)
@@ -114,7 +116,7 @@ void uRegion::setSignal(int i, float value)
     if (i < this->getLenght())
         signal.at(i)=value;
     else
-        throw param_throw()<<string_error("Failling in setSignal, trying to set signal outside of region boundary at position "+std::to_string(i)+"\n");
+        throw param_throw()<<string_error("Failling in setSignal, trying to set signal outside of region boundary at position "+utility::to_string(i)+"\n");
     }
     catch(param_throw &e){
         #ifdef DEBUG
@@ -142,9 +144,9 @@ void uRegion::setSignal(std::vector<float> ourSignal)
     catch(param_throw & e)
     {
         #ifdef DEBUG
-               cerr << "Failling in uRegion setSignal(vector), received a vector of size greater then elem lenght of "+std::to_string(getLenght())+"\n" <<endl;
+               cerr << "Failling in uRegion setSignal(vector), received a vector of size greater then elem lenght of "+utility::to_string(getLenght())+"\n" <<endl;
         #endif
-        e<<string_error("Failling in uRegion setSignal(vector), received a vector of size greater then elem lenght of "+std::to_string(getLenght())+"\n");
+        e<<string_error("Failling in uRegion setSignal(vector), received a vector of size greater then elem lenght of "+utility::to_string(getLenght())+"\n");
         e<<region_error(*this);
         throw e;
     }
@@ -410,7 +412,7 @@ try
     }
     catch(elem_throw & e)
     {
-        e << string_error("Throwing in uRegionChrom::generateSignal(uTagsExperiment& expToComp), from elem_throw error \n Reference is size at "+(std::to_string(densityValues.size()))+
+        e << string_error("Throwing in uRegionChrom::generateSignal(uTagsExperiment& expToComp), from elem_throw error \n Reference is size at "+(utility::to_string(densityValues.size()))+
                           "\n"+
                           trace);
         throw e;
@@ -500,7 +502,7 @@ try
     }
     catch(elem_throw & e)
     {
-        e << string_error("Throwing in uRegionChrom::generateSignal(uTagsExperiment& expToComp), from elem_throw error \n Reference is size at "+(std::to_string(densityValues.size()))+
+        e << string_error("Throwing in uRegionChrom::generateSignal(uTagsExperiment& expToComp), from elem_throw error \n Reference is size at "+(utility::to_string(densityValues.size()))+
                           "\n"+
                           trace);
         throw e;
@@ -593,7 +595,7 @@ void uRegionChrom::generateSignal(const uBasicNGSChrom& chrToComp)
     catch(elem_throw & e)
     {
         e << string_error("Throwing in uRegionChrom::generateSignal(uTagsExperiment& expToComp), from elem_throw error \n Reference is size at "+
-                         (std::to_string((int)densityValues.size()))+
+                         (utility::to_string((int)densityValues.size()))+
                           "\n"+
                           trace);
         throw e;
@@ -821,7 +823,7 @@ wigType curWig = wigType::NONE;
                         throw 18;
 
                      span=span.substr(span.find("span="));
-                     curSpan=std::stoi(span);
+                     curSpan=utility::stoi(span);
                  }
             }/**< Fixed Step */
             else
@@ -843,7 +845,7 @@ wigType curWig = wigType::NONE;
                         throw 20;
 
                    start=start.substr(start.find("start="));
-                    curStart=std::stoi(start);
+                    curStart=utility::stoi(start);
                     /**< Step */
                     if (!(data.NextToken()))
                         throw 21;
@@ -853,7 +855,7 @@ wigType curWig = wigType::NONE;
                         throw 21;
 
                    step=step.substr(start.find("step="));
-                   curStep=std::stoi(step);
+                   curStep=utility::stoi(step);
 
                     /**<Span  */
 
@@ -867,7 +869,7 @@ wigType curWig = wigType::NONE;
                         throw 22;
 
                      span=span.substr(span.find("span="));
-                     curSpan=std::stoi(span);
+                     curSpan=utility::stoi(span);
                  }
             }
         }
@@ -885,15 +887,15 @@ wigType curWig = wigType::NONE;
             case wigType::FIXED_STEP:
                 curReg.setChr(curChr);
                 curReg.setStartEnd(curStart,curStart+curSpan);
-                curReg.setCount(std::stoi(firstToken));
+                curReg.setCount(utility::stoi(firstToken));
                 curStart+=curStep;
                 break;
             case  wigType::VARIABLE_STEP:
 
                  data.NextToken();
-                 int tagcount=std::stoi(data.GetToken());
+                 int tagcount=utility::stoi(data.GetToken());
                  curReg.setChr(curChr);
-                 int start=std::stoi(firstToken);
+                 int start=utility::stoi(firstToken);
                  curReg.setStartEnd(start,start+curSpan);
                  curReg.setCount(tagcount);
                 break;
