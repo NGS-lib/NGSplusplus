@@ -52,8 +52,6 @@ public:
     ~uTags();
 
 
-
-    void writeBedToOuput(std::ostream &out) const;
     void writetoBedCompletePE( std::ostream &out);
     void writeCompletedPESamToOutput(std::ostream &out);
     bool writeTrimmedSamToOutput(std::ostream &out, int left, int right);

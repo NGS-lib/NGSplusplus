@@ -1,13 +1,32 @@
-
 /**< Test Common inherited functions */
-TEST(uBasicNGSTest, GETSETSCORE)
-    {
-        uBasicNGS uTest("chr1", 100, 200,StrandDir::FORWARD, 0.4f);
+#include "NGS++.h"
+#include <iostream>
+#include <string>
+#include <fstream>
+#include <vector>
+#include <time.h>
+#include <thread>
+#include <random>
+#include <string.h>
+#include <time.h>
+#include "gtest.h"
 
-        EXPECT_ANY_THROW(uTest.getScore(2));
-        EXPECT_NO_THROW(uTest.setScore(0.2,1));
-        EXPECT_FLOAT_EQ(0.2,uTest.getScore(1));
-    }
+using namespace std;
+
+#define SOMENUMBER 102343
+using namespace NGS;
+
+#define STARTCASE1 100
+#define ENDCASE1 200
+
+TEST(uBasicNGSTest, GETSETSCORE)
+{
+    uBasicNGS uTest("chr1", 100, 200,StrandDir::FORWARD, 0.4f);
+    EXPECT_ANY_THROW(uTest.getScore(2));
+    EXPECT_NO_THROW(uTest.setScore(0.2,1));
+    EXPECT_FLOAT_EQ(0.2,uTest.getScore(1));
+}
+
 TEST(uBasicNGSTest, GETSET){
     {
         uBasicNGS uTest("chr1", 100, 200,StrandDir::REVERSE);

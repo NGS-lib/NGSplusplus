@@ -50,7 +50,6 @@ uBasicNGS(uToken pToken)try :
     uBasicNGS(uRegion p_region);
 };
 
-
 class uBasicNGSChrom: public uGenericNGSChrom<uBasicNGSChrom,uBasicNGS>
 {
 public:
