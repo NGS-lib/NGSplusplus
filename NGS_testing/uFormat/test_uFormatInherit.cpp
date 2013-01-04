@@ -15,7 +15,6 @@ using namespace std;
 
 #define SOMENUMBER 102343
 using namespace NGS;
-
 #define STARTCASE1 100
 #define ENDCASE1 200
 
@@ -280,3 +279,6 @@ TEST(uBasicNGSTestHerit, DIVIDEINTOBINOFSIZEEXTEND){
     EXPECT_EQ( TestVector.at(1).getStart(), 107);
     EXPECT_EQ( TestVector.at(1).getEnd(), 119);
 }
+
+
+

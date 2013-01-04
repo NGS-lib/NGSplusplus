@@ -9,7 +9,7 @@
 #include "IO/uToken.h"
 #include "IO/Writer/uWriter.h"
 
-namespace NGS 
+namespace NGS
 {
 /**< Our basic Site for NGS format */
 /**< Very weak class as there are many differences in the functionality of derived classes. */
@@ -43,7 +43,7 @@ public:
      * \param std::string pChr: The name of the chromosome.
      * \param int pStart: Starting position, must be greater than 0.
      * \param int pEnd: Ending position, must be greater or equal to pStart.
-     * \param StrandDir pStrand: The strand in enum class StranDir format. Must be either FOWARD or REVERSE. 
+     * \param StrandDir pStrand: The strand in enum class StranDir format. Must be either FOWARD or REVERSE.
      * \exception ugene_exception_base: When the starting position and ending position are incorrect.
      */
     uGenericNGS(std::string pChr, int pStart, int pEnd, StrandDir pStrand=StrandDir::FORWARD ):m_chr(pChr),m_strand(pStrand)
@@ -67,8 +67,8 @@ public:
      * \param std::string pChr: The name of the chromosome.
      * \param int pStart: Starting position, must be greater than 0.
      * \param int pEnd: Ending position, must be greater or equal to pStart.
-     * \param StrandDir pStrand: The strand in enum class StranDir format. Must be either FOWARD or REVERSE. 
-     * \param float pScore: The score associated with the current entry. 
+     * \param StrandDir pStrand: The strand in enum class StranDir format. Must be either FOWARD or REVERSE.
+     * \param float pScore: The score associated with the current entry.
      * \exception ugene_exception_base: When the starting position and ending position are incorrect.
      */
     uGenericNGS(std::string pChr, int pStart, int pEnd, StrandDir pStrand, float pScore ):m_chr(pChr),m_strand(pStrand)
@@ -93,7 +93,7 @@ public:
      * \param std::string pChr: The name of the chromosome.
      * \param int pStart: Starting position, must be greater than 0.
      * \param int pEnd: Ending position, must be greater or equal to pStart.
-     * \param float pScore: The score associated with the current entry. 
+     * \param float pScore: The score associated with the current entry.
      * \exception ugene_exception_base: When the starting position and ending position are incorrect.
      */
     uGenericNGS(std::string pChr, int pStart, int pEnd,float pScore ):m_chr(pChr),m_strand(StrandDir::FORWARD)
@@ -133,7 +133,7 @@ public:
             {
                 setStrand(pToken.getParam(token_param::STRAND).at(0));
             }
-            if ((pToken.isParamSet(token_param::SCORE))&&(pToken.getParam(token_param::SCORE)!="." ) )  
+            if ((pToken.isParamSet(token_param::SCORE))&&(pToken.getParam(token_param::SCORE)!="." ) )
             {
                 setScore(utility::stof (pToken.getParam(token_param::SCORE) ) );
             }
@@ -476,7 +476,7 @@ void uGenericNGS<_SELF_>::trimSites(int trimLeft, int trimRight)
 template <class _SELF_>
 void uGenericNGS<_SELF_>::trimSites(int trim)
 {
-    try 
+    try
     {
         this->trimSites(trim,trim);
     }
@@ -503,14 +503,23 @@ bool uGenericNGS<_SELF_>::doesOverlap(_SELF_ other, OverlapType type) const
     return returnb;
 }
 
-    /** \brief Write contig to file using a writer. 
+    /** \brief Write contig to file using a writer.
      * \param uWriter& pWriter: A writer is used to specify the formating of the values and save them accordingly to disk.
      * \return void
      */
 template <class _SELF_>
 void uGenericNGS<_SELF_>::writeToOutput(uWriter& pWriter) const
 {
-    pWriter.writeToken(this->getToken());
+
+    try {
+        pWriter.writeToken(this->getToken());
+    }
+    catch(uWriter_exception_base &e)
+    {
+        addStringError(e,"Failed while calling writeToken in writeToOutput");
+        throw e;
+    }
+
 }
 
 
