@@ -269,16 +269,6 @@ public:
         return (m_endPos-m_startPos+1);
     };
 
-
-    /**< Strictly for debugging */
-    virtual void debugElem() const
-    {
-        using namespace utility;
-        stringTocerr("Outputting elemn data");
-        stringTocerr("Chrom "+getChr());
-        stringTocerr("Start "+utility::to_string((int)getStart()));
-        stringTocerr("End " +utility::to_string((int)getEnd()));
-    }
     /**<  Divide our region into a certain number of subregions */
 
     std::vector<_SELF_> divideIntoBinofSize(const int N, const SplitType type=SplitType::STRICT);
