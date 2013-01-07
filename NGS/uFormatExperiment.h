@@ -3,28 +3,27 @@
 #include <fstream>
 #include "IO/Parser/uParser.h"
 
-//
-
 namespace NGS
 {
-//_BASE_ is our Tags, _CHROM_ our Chrom structure.
+
 enum class ReadMode
 {
     DEFAULT, GRADUAL
 };
 
-
 /**<
 
 Explanation on _SELF_
-This is a simple implementation of the curiosly reoccuring template (CRT)
+This is a simple implementation of the curiously recurring template (CRT)
 Note that applying it to our entire class does contribute to code bloat
-as functions that do not need to know there type, will still generate a seperate instation
+as functions that do not need to know their type, will still generate a seperate instantiation
 for each data type.
 
-Potentially, we could derived a parent class where we place the version that do not require _SELF_
+Potentially, we could derive a parent class where we place the version that do not require _SELF_
 
 However, while this would reduce code size, it would complexify an already somewhat complex hiearchy.
+
+_BASE_ is our Tags, _CHROM_ our Chrom structure.
  */
 template<class _SELF_, typename _CHROM_, typename _BASE_>
 class uGenericNGSExperiment
@@ -84,10 +83,13 @@ protected:
 
 
 public:
+	/** \brief Empty constructor. Does nothing.
+	  */
     virtual ~uGenericNGSExperiment() {};
     uGenericNGSExperiment& operator=(const uGenericNGSExperiment& copFrom)=default;
     uGenericNGSExperiment(const uGenericNGSExperiment&)=default;
 
+	// Not sure why this is public
     auto begin()->decltype(ExpMap.begin())
     {
         return ExpMap.begin();
@@ -106,16 +108,27 @@ public:
         return ExpMap.cend();
     };
 
+//TODO: Make sure the return is ok
+/** \brief Returns the requested chrom object, if it exists.
+ * \param const std::string & chrom: the name of the chrom.
+ * \exception ugene_operation_thoow: When the name of the chrom does not exists.
+ * \return _CHROM_: a copy(?) of the chrom object
+ */
     _CHROM_ getChrom(const std::string & chrom) const
     {
         if (ExpMap.count(chrom)==0)
         {
             throw ugene_operation_throw()<<string_error("Requested non-existent Chrom from Exp in getChrom(), value : " +chrom);
         }
-        return  ExpMap.find(chrom)->second;;
+        return ExpMap.find(chrom)->second;
     };
 
 
+/** \brief Returns a const pointer to the requested chrom object, if it exists.
+ * \param const std::string & chrom: the name of the chrom.
+ * \exception ugene_operation_throw: When the name of the chrom does not exists.
+ * \return const _CHROM_*: a const pointer to the chrom object
+ */
     const _CHROM_* getpChrom(const std::string & chrom) const
     {
         if (ExpMap.count(chrom)==0)
@@ -126,23 +139,46 @@ public:
         return (refer);
     };
 
+/** \brief Returns a pointer to the requested chrom object, if it exists.
+ * \param const std::string & chrom: the name of the chrom.
+ * \exception ugene_operation_throw: When the name of the chrom does not exists.
+ * \return _CHROM_*: a pointer to the chrom object
+ */
+    _CHROM_* getpChrom(const std::string & chrom)
+    {
+        if (ExpMap.count(chrom)==0)
+        {
+            throw ugene_operation_throw()<<string_error("Required pointer to non-existent Chrom from Exp in getpChrom(), value : " +chrom);
+        }
+        return &(ExpMap[chrom]);
+    };
+
+
     void combine(const _CHROM_ &);
     void addSite(const _BASE_ & newSite);
 
     long long count() const;
 
-    //Replace with parser
+    //Replace with parser // TODO
     bool isEndfile()
     {
         return ourStream->eof();
     };
-    /**< For graduel loading */
+    /**< For gradual loading */
+
+/** \brief Save a file stream in the experiment object.
+ * \param  std::ifstream& stream: the stream to save.
+ * \return void
+ */
     void setFileStream( std::ifstream& stream)
     {
         ourStream = &stream;
-        op_mode = ReadMode::GRADUAL;
+        op_mode = ReadMode::GRADUAL; // TODO: Isn't it weird that the default ReadMode is GRADUAL, when the other possibility is named DEFAULT?
     };
 
+/** \brief Check if stream parsing is in ReadMode::GRADUAL
+* \return bool: true if the stream parsing is in ReadMode::GRADUAL, false if it is in ReadMode::DEFAULT
+ */
     bool isModeGradual()
     {
         return op_mode == ReadMode::GRADUAL;
@@ -178,16 +214,29 @@ public:
      _CHROM_ getSubset(std::string chr, float start, float end, OverlapType options=OverlapType::OVERLAP_PARTIAL);
      _SELF_ getDistinct( std::string chr, float start, float end, OverlapType type=OverlapType::OVERLAP_PARTIAL);
 
-    /**<  ok from here*/
+    /**<  ok from here*/ // TODO: ??
 
 
+// TODO: Is there a check if the position of an element of a chromosome is greater than the Chrom size?
+// TODO: We need to check if the chrom exists before setting it's size!!
+/** \brief Set the size of a chrom object
+ * \param std::string chr: the chrom from which to set the size.
+ * \param int chrSize: the size of the chrom. 
+ * \return void
+ */
     void setChrSize(std::string chr, int chrSize)
     {
         ExpMap[chr].setChromSize(chrSize);
     };
+
+// TODO: We need to check if the chrom exists before getting it's size!!
+/** \brief Get the size of a chrom object
+ * \param std::string chr: the chrom from which to set the size.
+ * \return int: the size of the chromosome.
+ */
     int getChrSize(std::string chr)
     {
-        return (ExpMap[chr].getChromSize());
+        return (ExpMap[chr].getChromSize()); // TODO: check in uFormatChrom what happens when the size is not set.
     };
 
     int getSubsetCount(const std::string & chr, const float start, const float end, const OverlapType overlap=OverlapType::OVERLAP_PARTIAL);
@@ -466,6 +515,13 @@ public:
             throw;
         }
     }
+
+    /** \brief load data from Parser, convert to unitary and execute the given function. Does -not- necessarily add to EXP
+     *
+     * \param stream std::string filepath path to the file to load from
+     * \return void
+     *
+     */
     template<class UnaryFunction>
     void loadWithParserAndRun(std::string filepath, std::string pType, UnaryFunction f, int pBlockSize=1)
     {
@@ -495,8 +551,6 @@ public:
             throw;
         }
     }
-
-
 
     /** \brief Count the chromosomes for which a certain predicate is true
       *
@@ -590,21 +644,15 @@ public:
 
     uGenericNGSExperiment():op_mode(ReadMode::DEFAULT) {};
 
-    _CHROM_* getpChrom(const std::string & chrom)
-    {
-        if (ExpMap.count(chrom)==0)
-        {
-            throw ugene_operation_throw()<<string_error("Required pointer to non-existent Chrom from Exp in getpChrom(), value : " +chrom);
-        }
-        return &(ExpMap[chrom]);
-    };
-
 };
 
-
-
-
 //Start uGenericNGSExperiment
+/** \brief Add a site to the experiment.
+ *
+ * \param const _BASE_ & newSite: the site to add to the experiment. 
+ * \return void
+ *
+ */
 template<class _SELF_, typename _CHROM_, typename _BASE_>
 void uGenericNGSExperiment<_SELF_,_CHROM_, _BASE_>::addSite(const _BASE_ & newSite)
 {
@@ -626,14 +674,6 @@ void uGenericNGSExperiment<_SELF_,_CHROM_, _BASE_>::addSite(const _BASE_ & newSi
     }
 }
 
-template<class _SELF_, typename _CHROM_, typename _BASE_>
-void uGenericNGSExperiment<_SELF_,_CHROM_, _BASE_>::inferChrSize()
-{
-    applyOnAllChroms(std::mem_fun_ref(static_cast<void (_CHROM_::*)()>(&_CHROM_::inferChrSize)));
-    //applyOnAllChroms(std::bind(static_cast<void (_CHROM_::*)()>(&_CHROM_::inferChrSize)));
-}
-
-
 /** \brief Remove a specific number from the specific subtype. //TODO Should this be public?
  *
  * \param chr std::string : Key to map element (chrom)
@@ -650,7 +690,6 @@ void uGenericNGSExperiment<_SELF_,_CHROM_, _BASE_>::removeSite(std::string chr, 
     {
         if (position>=tempChrom.count())
         {
-
             abort();
         }
         tempChrom.removeSite(position);
@@ -663,6 +702,17 @@ void uGenericNGSExperiment<_SELF_,_CHROM_, _BASE_>::removeSite(std::string chr, 
     }
 }
 
+/** \brief Infer and set the of every chrom base on their tags at the highest position.
+* \return void
+ */
+template<class _SELF_, typename _CHROM_, typename _BASE_>
+void uGenericNGSExperiment<_SELF_,_CHROM_, _BASE_>::inferChrSize()
+{
+    applyOnAllChroms(std::mem_fun_ref(static_cast<void (_CHROM_::*)()>(&_CHROM_::inferChrSize)));
+    //applyOnAllChroms(std::bind(static_cast<void (_CHROM_::*)()>(&_CHROM_::inferChrSize)));
+}
+
+// TODO: Remove deprecated function
 /** \brief load basic data from a tab delimited file, throw away the rest.
  *          DEPRECATED
  * \param stream std::ifstream& file to load from
@@ -704,6 +754,10 @@ void uGenericNGSExperiment<_SELF_,_CHROM_, _BASE_>::loadWithParser(std::ifstream
     inferChrSize();
 }
 
+/** \brief Load a file
+ * \param std::string filepath: the path to the file to load
+ * \param std::string pType: the file type (i.e.: BED, SAM, BEDGRAPH, WIG, etc...)
+ */
 template<class _SELF_, typename _CHROM_, typename _BASE_>
 void uGenericNGSExperiment<_SELF_,_CHROM_, _BASE_>::loadWithParser(std::string filepath, std::string pType)
 {
@@ -721,9 +775,6 @@ void uGenericNGSExperiment<_SELF_,_CHROM_, _BASE_>::loadWithParser(std::string f
     }
     inferChrSize();
 }
-
-
-
 
 /** \brief Write our data as a legal bed file, filling only the first three columns
  *          DEPRECATED
@@ -758,7 +809,7 @@ long long uGenericNGSExperiment<_SELF_,_CHROM_, _BASE_>::count() const
  * \param start int : Start position, must be positive
  * \param end int : End position, must be >= start
  * \param overlap int : Type of overlap
- * \return int
+ * \return int: the count.
  *
  */
 template<class _SELF_, typename _CHROM_, typename _BASE_>
@@ -776,6 +827,13 @@ int uGenericNGSExperiment<_SELF_,_CHROM_, _BASE_>::getSubsetCount(const std::str
 }
 
 //TODO Deprecate or make general
+/** \brief Return overlap of a specific position for a specific map
+ *
+ * \param const _BASE_ & subsetReg: a tag that represent a subset of an experiment.
+ * \param overlap int : Type of overlap
+ * \return int: the count.
+ *
+ */
 template<class _SELF_, typename _CHROM_, typename _BASE_>
 int uGenericNGSExperiment<_SELF_,_CHROM_, _BASE_>::getSubsetCount(const _BASE_ & subsetReg, const OverlapType overlap)
 {
@@ -831,11 +889,11 @@ void uGenericNGSExperiment<_SELF_,_CHROM_, _BASE_>::sortSites(Compare comp,std::
 }
 
 
-template<class _SELF_, typename _CHROM_, typename _BASE_>
 /** \brief Returns false if at least one chrom is unsorted
  *
  * \return bool true if the experiment is sorted
  */
+template<class _SELF_, typename _CHROM_, typename _BASE_>
 bool uGenericNGSExperiment<_SELF_,_CHROM_, _BASE_>::isSorted()const
 {
     bool sorted=true;
@@ -848,6 +906,12 @@ bool uGenericNGSExperiment<_SELF_,_CHROM_, _BASE_>::isSorted()const
     return sorted;
 }
 
+// TODO: Not sure the output is what would be expected, a cerr with a bool will print a number...
+// TODO: Should unnamed chrom be mentionned more explicitly?
+// TODO: Should the function print something special when there is no chrom in the exp?
+/** \brief Print a summary of the sort status of every chrom in the experiment (in cerr to avoid polluting output stream).
+ * \return void
+ */
 template<class _SELF_, typename _CHROM_, typename _BASE_>
 void uGenericNGSExperiment<_SELF_,_CHROM_, _BASE_>::printChromSortStatus()const
 {
@@ -857,7 +921,7 @@ void uGenericNGSExperiment<_SELF_,_CHROM_, _BASE_>::printChromSortStatus()const
     }
 }
 
-/** \brief Return an interator pointing to the element of the chr before or after the specified value
+/** \brief Return an interator pointing to the element of the chr before the specified value
  *   Note that this is based on the current sort type so may not refer to genomic position.
  *   Requires the data to be sorted first
  * \param std::string chrom to search
@@ -877,6 +941,15 @@ typename std::vector<_BASE_>::const_iterator uGenericNGSExperiment<_SELF_,_CHROM
     }
     return nullptr;
 }
+
+/** \brief Return an interator pointing to the element of the chr after the specified value
+ *   Note that this is based on the current sort type so may not refer to genomic position.
+ *   Requires the data to be sorted first
+ * \param std::string chrom to search
+ * \param int value to check
+ * \return Iterator pointing to value or nullptr if invalid chr.
+ *
+ */
 template<class _SELF_, typename _CHROM_, typename _BASE_>
 typename std::vector<_BASE_>::const_iterator uGenericNGSExperiment<_SELF_,_CHROM_, _BASE_>::findNextSite(std::string chr, int position)const
 {
@@ -890,7 +963,7 @@ typename std::vector<_BASE_>::const_iterator uGenericNGSExperiment<_SELF_,_CHROM
     return nullptr;
 }
 
-/** \brief Get a specific site from a specific chrom. Overloaded to work with position or an interator, typically got from findPrecedingor findNext
+/** \brief Get a specific site from a specific chrom. Overloaded to work with position, typically got from findPrecedingor findNext
  *
  * \param chr std::string
  * \param position int
@@ -908,6 +981,13 @@ _BASE_ uGenericNGSExperiment<_SELF_,_CHROM_, _BASE_>::getSite(std::string chr, i
     return tempChrom->getSite( chr,position);
 }
 
+/** \brief Get a specific site from a specific chrom. Overloaded to work with an interator, typically got from findPrecedingor findNext
+ *
+ * \param chr std::string
+ * \param position int
+ * \return _BASE_
+ *
+ */
 template<class _SELF_, typename _CHROM_, typename _BASE_>
 _BASE_ uGenericNGSExperiment<_SELF_,_CHROM_, _BASE_>::getSite(typename std::vector<_BASE_>::const_iterator posItr)const
 {
@@ -1008,15 +1088,15 @@ _SELF_ uGenericNGSExperiment<_SELF_,_CHROM_,_BASE_>::getOverlapping(uGenericNGSE
     return returnExp;
 }
 
-template<class _SELF_, typename _CHROM_, typename _BASE_>
-template<class _SELFPAR_,typename _BASEPAR_>
-/** \brief Same as above, but compare a chrom rather then EXP
+/** \brief Return every element of THIS overlapping with a specified chrom.
  *
  * \param uGenericNGSExperiment compareChrom : Experiment to check for overlaps
  * \param type OverlapType What overlap to check
  * \return uGenericNGSExperiment<_CHROM_,_BASE_> Experiment containing all elements from THIS that overlap with parameter.
  *
  */
+template<class _SELF_, typename _CHROM_, typename _BASE_>
+template<class _SELFPAR_,typename _BASEPAR_>
 _SELF_ uGenericNGSExperiment<_SELF_, _CHROM_,_BASE_>::getOverlapping(uGenericNGSChrom<_SELFPAR_,_BASEPAR_> &compareChrom, OverlapType type)
 {
     try
@@ -1031,7 +1111,14 @@ _SELF_ uGenericNGSExperiment<_SELF_, _CHROM_,_BASE_>::getOverlapping(uGenericNGS
         throw e;
     }
 }
-/**< See above, but using fixed positions */
+
+/** \brief Return every element of THIS overlapping with fixed interval.
+ *
+ * \param uGenericNGSExperiment compareChrom : Experiment to check for overlaps
+ * \param type OverlapType What overlap to check
+ * \return uGenericNGSExperiment<_CHROM_,_BASE_> Experiment containing all elements from THIS that overlap with parameter.
+ *
+ */
 template<class _SELF_, typename _CHROM_, typename _BASE_>
 _SELF_ uGenericNGSExperiment<_SELF_,_CHROM_,_BASE_>::getOverlapping(std::string chr, int start, int end, OverlapType type)
 {
@@ -1047,8 +1134,6 @@ _SELF_ uGenericNGSExperiment<_SELF_,_CHROM_,_BASE_>::getOverlapping(std::string 
         throw e;
     }
 }
-
-
 
 /** \brief Split each item into smaller equal size members and replace our vector of items with the new one.
  *
@@ -1076,7 +1161,6 @@ void uGenericNGSExperiment<_SELF_,_CHROM_,_BASE_>::divideItemsIntoNBins(int N, S
     }
 }
 
-
 /** \brief Call divideItemsIntoBinofSize on every container item
  *
  * \param N int : Size of the members to build in BP
@@ -1102,8 +1186,6 @@ void uGenericNGSExperiment<_SELF_,_CHROM_,_BASE_>::divideItemsIntoBinofSize(int 
         throw uExp_operation_throw()<<string_error("Throwing while trying to call divideItemsIntoBinofSize() on all chroms");
     }
 }
-
-
 
 } // End of namespace NGS
 #endif // UFORMATEXPERIMENT_H_INCLUDED
