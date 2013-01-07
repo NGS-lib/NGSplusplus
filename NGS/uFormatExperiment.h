@@ -510,9 +510,9 @@ public:
                 }
             }
         }
-        catch(...)
+        catch (uParser_exception_base& e) // TODO: check if there is something else that can be thrown
         {
-            throw;
+            throw e;
         }
     }
 
@@ -546,9 +546,9 @@ public:
                 }
             }
         }
-        catch(...)
+        catch (uParser_exception_base& e) // TODO: check if there is something else that can be thrown
         {
-            throw;
+            throw e;
         }
     }
 
@@ -747,9 +747,9 @@ void uGenericNGSExperiment<_SELF_,_CHROM_, _BASE_>::loadWithParser(std::ifstream
             addSite(Curparser.getNextEntry());
         }
     }
-    catch(...)
+    catch (uParser_exception_base& e) // TODO: check if there is something else that can be thrown
     {
-        throw;
+        throw e;
     }
     inferChrSize();
 }
