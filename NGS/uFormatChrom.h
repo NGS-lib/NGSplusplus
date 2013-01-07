@@ -9,6 +9,15 @@
 #include <functional>
 namespace NGS {
 template<class _SELF_, typename _BASE_>
+
+/******************
+\brief The parent class for all Chrom structures
+*
+* This class is used as parent for all chromosome structures.
+* It contains a vector of unatary base contig and the operations
+* needed to manipulate them
+*
+********************/
 class uGenericNGSChrom
 {
     static_assert(
@@ -21,8 +30,14 @@ class uGenericNGSChrom
 
 protected:
 
-    std::vector<_BASE_> VecSites{};
-    std::string chr="";
+    std::vector<_BASE_> VecSites{}; /*!< std vector containing our unitary contigs  */
+    std::string chr=""; /*!< Name of the scaffold/chromosome  */
+   /**< Pointers to our functions and determines if sorted */
+    bool m_isSorted=true; /**< If we are in a sorted state or not */
+    std::function<float(const _BASE_*)> sortGetStart=nullptr;  /**<Pointer to the starting sort value */
+    std::function<float(const _BASE_*)> sortGetEnd=nullptr ;  /**< Pointer to the end starting sort value. Typically set to equal Start */
+    std::function<bool(const _BASE_ &item1, const _BASE_ &item2)> m_comptFunc=compareStart; /**< Pointer to sorting function */
+    long int chromSize=0; /**< Size of the scaffold */
 
 private :
     /**< removeSites overloads */
@@ -31,7 +46,6 @@ private :
     void removeSite(VecGenConstIter position);
     void removeSite(VecGenConstIter start,VecGenConstIter end);
 
-    /**< Should not be necesary in C++ 11? */
     template <class Container>
     typename Container::iterator to_mutable_iterator(Container& c, typename Container::const_iterator it)
     {
@@ -60,15 +74,8 @@ private :
     }
 
 protected:
-    /**< Pointers to our functions and determines if sorted */
-    bool m_isSorted=true;
-    std::function<float(const _BASE_*)> sortGetStart=nullptr;
-    std::function<float(const _BASE_*)> sortGetEnd=nullptr ;
-    std::function<bool(const _BASE_ &item1, const _BASE_ &item2)> m_comptFunc=compareStart;
-    long int chromSize=0;
 
     std::vector<long long> returnSiteSizes() const;
-
     unsigned long long avgSiteSize() const;
     unsigned long long minSiteSize() const;
     unsigned long long maxSiteSize() const;
@@ -80,6 +87,10 @@ protected:
 
 public:
     void inferChrSize();
+
+    /**
+
+    **/
     virtual ~uGenericNGSChrom<_SELF_,_BASE_> ()
     {;}
 
