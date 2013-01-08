@@ -20,6 +20,7 @@ template<class _SELF_, typename _BASE_>
 ********************/
 class uGenericNGSChrom
 {
+
     static_assert(
         std::is_convertible<_BASE_, uGenericNGS<_BASE_>>::value,
         "The type does not inherit from uGenericNGS."
@@ -37,7 +38,7 @@ protected:
     std::function<float(const _BASE_*)> sortGetStart=nullptr;  /**<Pointer to the starting sort value */
     std::function<float(const _BASE_*)> sortGetEnd=nullptr ;  /**< Pointer to the end starting sort value. Typically set to equal Start */
     std::function<bool(const _BASE_ &item1, const _BASE_ &item2)> m_comptFunc=compareStart; /**< Pointer to sorting function */
-    long int chromSize=0; /**< Size of the scaffold */
+    long long int chromSize=0; /**< Size of the scaffold */
 
 private :
     /**< removeSites overloads */
@@ -86,14 +87,12 @@ protected:
     template<class L, typename S, typename R> friend class uGenericNGSExperiment;
 
 public:
-    void inferChrSize();
 
-    /**
-
-    **/
+    /**< Declared functions */
+    /** \brief Default virtual destructor of uGenericNGSChrom
+     */
     virtual ~uGenericNGSChrom<_SELF_,_BASE_> ()
     {;}
-
         /**< Constructors */
     uGenericNGSChrom(){};
     uGenericNGSChrom(const std::string & consString):chr(consString){};
@@ -103,26 +102,8 @@ public:
     uGenericNGSChrom& operator=(const uGenericNGSChrom& copFrom);
     uGenericNGSChrom(const uGenericNGSChrom&);
 
+    void inferChrSize();
     long int countUnique() const;
-
-    /**< Public iterators */
-    auto begin()const->decltype(VecSites.cbegin())
-    {
-        return VecSites.cbegin();
-    };
-    auto end()const->decltype(VecSites.cend())
-    {
-        return VecSites.cend();
-    };
-
-    auto begin()->decltype(VecSites.begin())
-    {
-        return VecSites.begin();
-    };
-    auto end()->decltype(VecSites.end())
-    {
-        return VecSites.end();
-    };
 
     /**< Write functions */
     void outputBedFormat(std::ostream& out);
@@ -158,41 +139,123 @@ public:
     void addSite( _BASE_ newSite);
     int getSubsetCount(float p_start, float p_end, OverlapType overlap=OverlapType::OVERLAP_PARTIAL)const;
 
+
+/**< Inline functions */
+
+
+ /**< Public iterators */
+    /** \brief Return an const iterator pointing to the first element of  VecSites
+     *
+     * \return Const random access iterator, pointing to the first element of VecSites
+     *
+     */
+    auto begin()const->decltype(VecSites.cbegin())
+    {
+        return VecSites.cbegin();
+    };
+    /** \brief Return an const iterator pointing to the last element of  VecSites
+     *
+     * \return Const random access iterator, pointing to the last element of VecSites
+     *
+     */
+    auto end()const->decltype(VecSites.cend())
+    {
+        return VecSites.cend();
+    };
+    /** \brief Return an iterator pointing to the first element of  VecSites
+     *
+     * \return Const random access iterator, pointing to the first element of VecSites
+     *
+     */
+    auto begin()->decltype(VecSites.begin())
+    {
+        return VecSites.begin();
+    };
+    /** \brief Return an iterator pointing to the last element of  VecSites
+     *
+     * \return Const random access iterator, pointing to the last element of VecSites
+     *
+     */
+    auto end()->decltype(VecSites.end())
+    {
+        return VecSites.end();
+    };
+
+    /** \brief Return a copy of the functor  used to access to current Start value
+     *
+     *  This will return a copy of the assigned functor to access the start value. Will equal nullptr if not set
+     *
+     *
+     * \return std::function<float(const _BASE_*)> const Copy of the fucntor to access start.
+     */
     std::function<float(const _BASE_*)> getStartFunct() const
     {
         return sortGetStart;
     }
+     /** \brief Return a copy of the functor  used to access to current end value
+     *
+     *  This will return a copy of the assigned functor to access the end value. Will equal nullptr if not set
+     *
+     * \return std::function<float(const _BASE_*)> const Copy of the fucntor to access end.
+     */
     std::function<float(const _BASE_*)> getEndFunct() const
     {
         return sortGetEnd;
     }
+
+    /** \brief Return a copy of the comparison functor currently used
+     *
+     *  Will return a copy of the comparisong functor used for sorting. The comparison functor takes
+     *  two _BASE_ elements and returns true or false comparison. Set to nullptr by default
+     *
+     *
+     * \return std::function<bool(const _BASE_ &item1, const _BASE_ &item2)> Comparison functor
+     *
+     */
     std::function<bool(const _BASE_ &item1, const _BASE_ &item2)> getCompFunct() const
     {
         return m_comptFunc;
     }
 
+    /** \brief Return sorted status of the elements
+     *
+     * \return bool. True if sorted.
+     *
+     */
     bool getSortedStatus() const
     {
         return m_isSorted;
     }
-    /**< Return number of elements */
+
+    /** \brief  Return number of elements
+     *
+     * \return int. Number of elements contained
+     *
+     */
     int count() const
     {
         return VecSites.size();
     };
-    /**< Return size */
-    int getChromSize() const
+
+    /** \brief Return size of scaffold/chrom. 0 if not set
+     *
+     * \return long long int. Size of the scaffold/chrom.
+     *
+     */
+    long long int getChromSize() const
     {
         return chromSize;
     };
 
-    /** \brief Set element collection max size
+    /** \brief Set scaffold/chrom size
      *
-     * \param chromS long int size to set as
+     *  Set the scaffold/chrom size. Must be above 0
+     * \param chromS long int. Size to set the scaffold/chrom size to
+     * \exception param_throw. Parameter chromS is < then 0.
      * \return void
      *
      */
-    void setChromSize(long int chromS)
+    void setChromSize(long long int chromS)
     {
         try
         {
@@ -200,77 +263,109 @@ public:
                 throw param_throw()<<string_error("failling in setChromSize, value "+utility::to_string(chromS)+" is below 0\n");
             chromSize= chromS;
         }
-        catch(std::exception e)
-        {
-            throw e;
-        }
     };
-    /**< return name of the element. */
+
+    /** \brief return name of the scaffold/chrom
+     *
+     *  Returns a std::string containing the name of the scaffold.
+     *  An empty string ("") is a valid name.
+     *
+     * \return std::string. Name of the scaffold/chrom
+     *
+     */
     std::string getChr() const
     {
         return chr;
     };
 
-    /**< Set name of the element. Be careful about this, can throw of Experiment mapping */
-    void setChr(std::string pchr)
+    /** \brief Set the name of the scaffold/chr.
+     *
+     *   Set the name of the scaffold/chr. This function is included for
+     *   working directly with a chrom structure. If working through a Exp structure, this should be set
+     *   via a call to the corresponding Exp function, otherwise mapping may be throw off.
+     *
+     * \param pChr std::string. Scaffold name to set to.
+     * \return void
+     *
+     */
+    void setChr(std::string pChr)
     {
-        chr = move(pchr);
+        chr = move(pChr);
     };
 
-    /**< Return copy of the element at .begin()+position count from iterator */
+
+    /** \brief  Return copy of the element at .begin()+position count from iterator
+     *
+     * \param position int. Position of the _BASE_ in Vecsites to return
+     * \exception param_throw. Throw if the requested element is an invalid position.
+     * \return _BASE_ Copy of the element at the asked for position.
+     *
+     */
     _BASE_ getSite(int position)
     {
         try
         {
             return VecSites.at(position);
         }
-        catch (std::exception)
+        catch (std::exception &e)
         {
-            throw;
+            throw param_throw()<<string_error("Failling in getSite(), out_of_range error");
         }
     };
 
-    /**< Return a vector containing all elements. */
+    /** \brief  Return a vector containing all elements of chrom structure.
+     *
+     * \return std::vector<_BASE_> std::vector containing all _BASE_ elements in chrom structure
+     *
+     */
     std::vector<_BASE_> returnVecData() const
     {
         return VecSites;
     };
 
-    /**<  Wrappers around the STL algorithms*/
+    /**<  Wrappers around STL algorithms*/
     /** \brief Compute a value for all sites in the chromosome and return the resulting collection
       *
-      * This function take a pointer to a function to perform on all the
-      * sites in the collection; this function pointer can either be a)
+      * This function take a pointer to a functor to perform on all the
+      * sites in the collection. Specifically, this will make an std::vector copy
+      * of all elements. It will then run the functor using for_each and return the resulting results.
+      *
+      *
+      * The function pointer can either be a)
       * the name of a function taking a site by reference, b) a lambda
       * function taking a site by reference or c) a member method of a
-      * site using "mem_fun_ref". In all cases, the function must return a
+      * site using "mem_fun_ref" or "ref". In all cases, the function must return a
       * non void value.
       *
       * \param unary_op UnaryOperation : Unary operation to perform on all the sites of the chromosome
       * \return A collection of values computed on each site by unary_op
       */
-//TODO erase
-    /*   template<class UnaryOperation>
-       std::vector<_BASE_> transformAndGetVecData(UnaryOperation unary_op)
+       template<class UnaryOperation>
+       std::vector<_BASE_> applyAndGetVecData(UnaryOperation unary_op)
        {
            std::vector<_BASE_> copyVec(VecSites);
            for_each(begin(copyVec), end(copyVec), unary_op);
            return copyVec;
-       } */
+       }
 
     /** \brief Create a copy of the sites vector, transform it and return the copy
       *
       * This function take a pointer to a function to transform the copied sites
-      * vector; this function pointer can either be a) the name of a function
-      * taking a site by reference, b) a lambda function taking a site by
-      * reference or c) a member method of a site using "mem_fun_ref". In all
-      * cases, the function must return void (any other return value will be
-      * ignored).
+      * vector; It will operator transform() on the elements and return a vector of results.
+      * The vector will contain the elements specified by the functor, so may be any value.
+      * Please note, the standard requires the functor given to transform() to be side-effect free.
       *
+      *
+      * The functor can either be a) the name of a function
+      * taking a site by reference, b) a lambda function taking a site by
+      * reference or c) a member method of a site using "mem_fun_ref" or "ref".
+      * The function must have a return value.
+      *
+      * \exception std::exception : Any exception throw by reserve() or transform()
       * \param unary_op UnaryOperation : Unary operation to perform on the copied sites vector
       * \return A vector of the same type and length as the sites vector but with its sites transformed by unary_op
       */
-    //TODO send back a chrom&
+    //TODO send back a chrom?
     template<class UnaryOperation>
     auto computeOnAllSites(UnaryOperation unary_op) -> std::vector<decltype(unary_op(_BASE_()))>
     {
@@ -288,16 +383,19 @@ public:
 
     /** \brief Get the sites for which a certain predicate is true
       *
-      * This function take a pointer to a predicate function; this function
-      * pointer can either be a) the name of a function taking a site as
+      * This function take a pointer to a predicate function. It return a vector containing
+      * the elements of our collection that evalue true when the predicate is applied.
+      *
+      *
+      * The functor can either be a) the name of a function taking a site as
       * parameter, b) a lambda function taking a site as parameter or c) a
-      * member method of a site using "mem_fun_ref". In all cases, the function
-      * must return a boolean; true is the predicate is true, false otherwise.
+      * member method of a site using "mem_fun_ref" or "ref". In all cases, the function
+      * must return a boolean; true if the predicate is true, false otherwise.
       *
       * \param p UnaryPredicate : Unary predicate to evaluate on all sites
       * \return A collection containing all the sites for which the predicate is true
       */
-    //TODO return chrom,
+    //TODO return chrom?,
     template<class UnaryPredicate>
     std::vector<_BASE_> getSpecificSites(UnaryPredicate pred) const
     {
@@ -316,10 +414,18 @@ public:
             throw e;
         }
     }
-
         template<class UnaryPredicate>
     /** \brief Remove sites for which the predicate is true.
      *
+     *  This function calls remove_if using the supplied predicated, followed by erase(). This will
+     *  remove every element that evaluates true from the container  . This will preserve the relative order of the non-removed elements.
+     *
+     *  The functor can either be a) the name of a function taking a site as
+     *  parameter, b) a lambda function taking a site as parameter or c) a
+     *  member method of a site using "mem_fun_ref" or "ref". In all cases, the function
+     *  must return a boolean; true if the predicate is true, false otherwise.
+     *
+     * \exception std::exception : Any exception throw by erase() or remove_if()
      * \param pred UnaryPredicate Predicate to test, follows standard pattern
      * \return void
      *
@@ -339,10 +445,14 @@ public:
         }
     }
 
-    /** \brief Transform the sites collection by applying a certain function to all sites
+    /** \brief applyOnAllSites: Transform the sites collection by applying a certain function to all sites
       *
-      * This function take a pointer to a function to transform the sites
-      * collection; this function pointer can either be a) the name of a function
+      * In-place complement to applyAndGetVecData. This function will run the given functor
+      * on every element of the collection, using for_each.
+      *
+      * If collection is empty, nothing will be done.
+      *
+      * The functor pointer can either be a) the name of a function
       * taking a site by reference, b) a lambda function taking a site by
       * reference or c) a member method of a site using "mem_fun_ref". In all
       * cases, the function must return void (any other return value will be
@@ -366,6 +476,13 @@ public:
         }
     }
 
+
+    /** \brief applyOnAllSitesConst: Pool the sites collection by applying a certain function to all sites
+      *
+      *  Const version, see non-const for doc.
+      *
+      * \sa applyOnAllSites
+      */
     template<class UnaryOperation>
     UnaryOperation applyOnAllSites(const UnaryOperation f) const
     {
@@ -381,14 +498,18 @@ public:
 
         /** \brief Accumulate information by querying all sites
           *
-          * This function take a pointer to a function to accumulate some information;
-          * this function pointer can either be a) the name of a function taking two
+          *  Runs accumulate() on the elements of the collection with the given functor. This allows the
+          *  querying of every site in a way that returns a single value. ex : adding every elem lenght to
+          *  obtain the total lenght of all contigs in the collection.
+          *
+          *
+          * The function pointer can either be a) the name of a function taking two
           * parameters, an accumulator and a site or b) a lambda function taking two
           * parameters, an accumulator and a site. In all cases, the function must
           * return the new value of the accumulator.
           *
           * \param binary_op BinaryOperation : Querying function to perform on the sites collection
-          * \param init InitialValue The initial value of the "accumulator"
+          * \param init InitialValue The initial value of the "accumulator". Typically 0 if working with an int.
           * \return The information accumulated by querying all the sites
           */
         template<class BinaryOperation, class InitialValue>
@@ -400,24 +521,21 @@ public:
             return __gnu_parallel::accumulate(std::begin(VecSites), std::end(VecSites), init, binary_op, __gnu_parallel::sequential_tag());
         }
         /**< End STL wrappers */
+
+
         /** \brief Sort the sites vector by applying a certain comparison
           *
-          * This function take a pointer to a function to sort the sites collection;
-          * this function pointer can either be a) the name of a function taking two
-          * sites as parameters, b) a lambda function taking two sites as parameters
-          * or c) a member method of a site taking another site as parameter using
-          * "mem_fun_ref". In all cases, the function must return a boolean: true if
-          * the first element is "lower" than the second, false otherwise.
-          *
+          * Sort the elements of the collection according to the given binary comparison operator.
           *
           * Addtionally, one may provide a pointer to related getters. This enables the use of getSubset()
-          * and removeSubset() on the appropriate type of sort
+          * and removeSubset() on the appropriate type of sort. If only get_start_funct is provided, getEnd_funct is set to get_start_funct
           *
-          *
+          *\
+          * \param getStart_funct : function object taking a _BASE_ as member object and returning a value used to sort
+          * \param getEnd_funct: function object taking a _BASE_ as member object and returning a value used to break sorting ties.
           * \param comp Compare : Binary comparison operation to perform on the sites collection
           * \return void
           */
-
         template<class Compare>
         void sortSites(Compare comp,std::function<float(const _BASE_*)> getStart_funct=nullptr,std::function<float(const _BASE_*)> getEnd_funct=nullptr)
         {

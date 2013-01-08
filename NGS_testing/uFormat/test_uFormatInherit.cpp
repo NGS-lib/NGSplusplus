@@ -48,7 +48,7 @@ TEST(uBasicNGSTestHerit, SETGETEND){
 
 TEST(uBasicNGSTestHerit, SETSTARTILLEGAL){
         uBasicNGS uTest("chr1", STARTCASE1, ENDCASE1,StrandDir::REVERSE);
-        /**< Illegal Start */ 
+        /**< Illegal Start */
         EXPECT_ANY_THROW(uTest.setStart(-10));
         EXPECT_ANY_THROW(uTest.setStart(250));
  }
@@ -318,11 +318,11 @@ TEST(uBasicNGSTestHerit, DIVIDEINTOBINADD){
 
 TEST(uBasicNGSTestHerit, DIVIDEINTOBINEXTEND){
      uBasicNGS uTest("chr1", 100, 119);
-    auto TestVector= uTest.divideIntoNBin(3, SplitType::EXTEND);
-    EXPECT_EQ( (int)TestVector.size(), 3);
-    EXPECT_EQ( TestVector.at(2).getLenght(), 8);
-    EXPECT_EQ( TestVector.at(2).getStart(), 112);
-    EXPECT_EQ( TestVector.at(2).getEnd(), 119);
+     auto TestVector= uTest.divideIntoNBin(3, SplitType::EXTEND);
+     EXPECT_EQ( (int)TestVector.size(), 3);
+     EXPECT_EQ( TestVector.at(2).getLenght(), 8);
+     EXPECT_EQ( TestVector.at(2).getStart(), 112);
+     EXPECT_EQ( TestVector.at(2).getEnd(), 119);
 }
 
 TEST(uBasicNGSTestHerit, DIVIDEINTOBINIGNORE){

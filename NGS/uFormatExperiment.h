@@ -89,7 +89,25 @@ public:
     uGenericNGSExperiment& operator=(const uGenericNGSExperiment& copFrom)=default;
     uGenericNGSExperiment(const uGenericNGSExperiment&)=default;
 
-	// Not sure why this is public
+    void combine(const _CHROM_ &);
+    void addSite(const _BASE_ & newSite);
+    long long count() const;
+    void sortSites();
+    template<typename Compare>
+    void sortSites(Compare comp,std::function<float(const _BASE_*)> getStart_funct=nullptr,std::function<float(const _BASE_*)> getEnd_funct=nullptr);
+    bool isSorted()const;
+    typename std::vector<_BASE_>::const_iterator findPrecedingSite(std::string chr, int position)const;
+    typename std::vector<_BASE_>::const_iterator findNextSite(std::string chr, int position)const;
+
+    virtual void loadFromTabFile(std::ifstream& stream);
+   // virtual void loadWithParser(uParser&, std::string);
+    virtual void loadWithParser(std::ifstream&, std::string);
+    virtual void loadWithParser(std::string, std::string);
+    void writeAsBedFile(std::ostream& out)const;
+
+
+
+	//TODO Should this be public
     auto begin()->decltype(ExpMap.begin())
     {
         return ExpMap.begin();
@@ -123,7 +141,6 @@ public:
         return ExpMap.find(chrom)->second;
     };
 
-
 /** \brief Returns a const pointer to the requested chrom object, if it exists.
  * \param const std::string & chrom: the name of the chrom.
  * \exception ugene_operation_throw: When the name of the chrom does not exists.
@@ -154,10 +171,6 @@ public:
     };
 
 
-    void combine(const _CHROM_ &);
-    void addSite(const _BASE_ & newSite);
-
-    long long count() const;
 
     //Replace with parser // TODO
     bool isEndfile()
@@ -188,20 +201,6 @@ public:
     _BASE_ getSite(typename std::vector<_BASE_>::const_iterator posItr)const;
 
 
-    void sortSites();
-    template<typename Compare>
-    void sortSites(Compare comp,std::function<float(const _BASE_*)> getStart_funct=nullptr,std::function<float(const _BASE_*)> getEnd_funct=nullptr);
-    bool isSorted()const;
-    typename std::vector<_BASE_>::const_iterator findPrecedingSite(std::string chr, int position)const;
-    typename std::vector<_BASE_>::const_iterator findNextSite(std::string chr, int position)const;
-
-    virtual void loadFromTabFile(std::ifstream& stream);
-   // virtual void loadWithParser(uParser&, std::string);
-    virtual void loadWithParser(std::ifstream&, std::string);
-    virtual void loadWithParser(std::string, std::string);
-
-
-    void writeAsBedFile(std::ostream& out)const;
 
     template<class _SELFPAR_, typename _CHROMPAR_, typename _BASEPAR_>
     _SELF_ getOverlapping(uGenericNGSExperiment<_SELFPAR_, _CHROMPAR_,_BASEPAR_> &compareExp, OverlapType type=OverlapType::OVERLAP_PARTIAL);
@@ -221,7 +220,7 @@ public:
 // TODO: We need to check if the chrom exists before setting it's size!!
 /** \brief Set the size of a chrom object
  * \param std::string chr: the chrom from which to set the size.
- * \param int chrSize: the size of the chrom. 
+ * \param int chrSize: the size of the chrom.
  * \return void
  */
     void setChrSize(std::string chr, int chrSize)
@@ -649,7 +648,7 @@ public:
 //Start uGenericNGSExperiment
 /** \brief Add a site to the experiment.
  *
- * \param const _BASE_ & newSite: the site to add to the experiment. 
+ * \param const _BASE_ & newSite: the site to add to the experiment.
  * \return void
  *
  */
