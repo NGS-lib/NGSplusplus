@@ -258,7 +258,6 @@ public:
      */
     void setChromSize(long long int chromS)
     {
-        try
         {
             if (chromS<0)
                 throw param_throw()<<string_error("failling in setChromSize, value "+utility::to_string(chromS)+" is below 0\n");
@@ -740,7 +739,7 @@ public:
      * \param newSite _BASE_ Ellement to add
      *
      */
-    void uGenericNGSChrom<_SELF_,_BASE_>::addData(_BASE_ newSite)
+    void uGenericNGSChrom<_SELF_,_BASE_>::addData(const _BASE_& newSite)
     {
         try
         {

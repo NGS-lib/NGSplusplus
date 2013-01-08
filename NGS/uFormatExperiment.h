@@ -92,7 +92,7 @@ public:
     //TODO code these overloads
     void addData(const _BASE_ &);
     void addData(const _CHROM_ &);
-    void addData(const _EXP_ &);
+    void addData(const _SELF_ &);
     //TODO Code this
     void replaceChr(const _CHROM_ &);
 
@@ -1054,7 +1054,7 @@ _SELF_ uGenericNGSExperiment<_SELF_,_CHROM_, _BASE_>::getDistinct(std::string ch
  *
  */
 template<class _SELF_, typename _CHROM_, typename _BASE_>
-void uGenericNGSExperiment<_SELF_,_CHROM_, _BASE_>::combineChr(const _CHROM_ & inputChrom)
+void uGenericNGSExperiment<_SELF_,_CHROM_, _BASE_>::addData(const _CHROM_ & inputChrom)
 {
     //TODO remove const ref to allow move semantics?
     _CHROM_* currentChrom;

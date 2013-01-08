@@ -696,7 +696,7 @@ try {
 
     while (ourParser.eof()==false){
         auto Token =ourParser.getNextEntry();
-        this->addSite(uTags(Token));
+        this->addData(uTags(Token));
     }
 }
     catch(...){
@@ -733,7 +733,7 @@ void uTagsExperiment::loadFromSam(std::ifstream& curStream, bool minimal)
             {
 
                 if (lineString.size()>5)
-                    addSite(move(factory::makeTagfromSamString(lineString,minimal) ));
+                    addData(move(factory::makeTagfromSamString(lineString,minimal) ));
                 else{
                 #ifdef DEBUG
                     cerr <<"Skipping the following line as it does not satisfy minimal sam string size" <<endl;
