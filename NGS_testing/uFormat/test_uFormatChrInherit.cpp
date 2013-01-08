@@ -24,49 +24,47 @@ using namespace NGS;
  *		SETSTARTILLEGAL
  *		SETSENDILLEGAL
  */
-TEST(uBasicNGSEXP_GetChrom, NONAMECHROM){
+TEST(uBasicNGSCHR_GetChrom, NONAMECHROM){
     //CHROMOSOME sans nom ""
        ASSERT_TRUE(false);
  }
-TEST(uBasicNGSEXP_GetChrom, NOCHROMTHROWEXC){
+TEST(uBasicNGSCHR_GetChrom, NOCHROMTHROWEXC){
     //Demande de chrom existe pas, throw
        ASSERT_TRUE(false);
  }
-TEST(uBasicNGSEXP_GetChrom, VALIDCHROM){
+TEST(uBasicNGSCHR_GetChrom, VALIDCHROM){
     //VALID CHROM
        ASSERT_TRUE(false);
  }
 /**<  */
-TEST(uBasicNGSEXP_getChromP, NONAMECHROM){
+TEST(uBasicNGSCHR_getChromP, NONAMECHROM){
     //Chromosome pointer no name and works
        ASSERT_TRUE(false);
  }
-TEST(uBasicNGSEXP_getChromP, NOCHROMTHROWEXC){
+TEST(uBasicNGSCHR_getChromP, NOCHROMTHROWEXC){
     //Chromosome pointer not exist and throw
        ASSERT_TRUE(false);
  }
-TEST(uBasicNGSEXP_getChromP, VALIDCHROM){
+TEST(uBasicNGSCHR_getChromP, VALIDCHROM){
     // Chromosome pointer, valid and works
        ASSERT_TRUE(false);
  }
 /**<  */
- TEST(uBasicNGSEXP_getConstChromP, NONAMECHROM){
+ TEST(uBasicNGSCHR_getConstChromP, NONAMECHROM){
     //Chromosome pointer no name and works
        ASSERT_TRUE(false);
  }
-TEST(uBasicNGSEXP_getConstChromP, NOCHROMTHROWEXC){
+TEST(uBasicNGSCHR_getConstChromP, NOCHROMTHROWEXC){
     //Chromosome pointer not exist and throw
        ASSERT_TRUE(false);
  }
-TEST(uBasicNGSEXP_getConstChromP, VALIDCHROM){
+TEST(uBasicNGSCHR_getConstChromP, VALIDCHROM){
     // Chromosome pointer, valid and works
        ASSERT_TRUE(false);
  }
 /**<  */
 
-TEST(uBasicNGSEXP_getConstChromP, VALIDCHROM){
+TEST(uBasicNGSCHR_getConstChromP, VALIDCHROM){
     // Chromosome pointer, valid and works
        ASSERT_TRUE(false);
  }
-
-
