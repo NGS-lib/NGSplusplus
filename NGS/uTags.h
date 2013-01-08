@@ -169,7 +169,6 @@ public:
         return returnStr;
     };
 
-
     void setName(std::string pName)
     {
         if (name!=nullptr)

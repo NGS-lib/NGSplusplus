@@ -99,24 +99,21 @@ public:
     unsigned long long minSiteSize() const;
     unsigned long long maxSiteSize() const;
     unsigned long long sumSiteSize() const;
+    void printStats(std::ostream& out) const;
 
     /** \brief Default virtual destructor of uGenericNGSChrom
      */
     virtual ~uGenericNGSChrom<_SELF_,_BASE_> ()
     {;}
 
-
     void inferChrSize();
-    long int countUnique() const;
 
-    /**< Write functions */
-    void outputBedFormat(std::ostream& out);
-    void printStats(std::ostream& out) const;
+    //TODO MAKE THIS WORK
+    long int countUnique() const;
 
     /**< In place */
     void divideItemsIntoNBins(int N, SplitType type=SplitType::STRICT);
     void divideItemsIntoBinofSize(int N, SplitType type=SplitType::STRICT);
-
 
     /**< Find according to sort value */
     VecGenConstIter findPrecedingSite(const float position) const;
@@ -131,20 +128,22 @@ public:
     void addNRandomSite(const int size, const int n, std::mt19937& engine, const int sigma=0, const std::string ID="");
 
     template <class _OTHER_>
-    _SELF_ getOverlapping(_OTHER_ &compareExp,OverlapType overlap=OverlapType::OVERLAP_PARTIAL) const;
+    _SELF_ getOverlapping(_OTHER_ &compareChr,OverlapType overlap=OverlapType::OVERLAP_PARTIAL) const;
     template <class _OTHER_>
-    _SELF_ getNotOverlapping(_OTHER_ &compareExp,OverlapType overlap=OverlapType::OVERLAP_PARTIAL) const;
+    _SELF_ getNotOverlapping(_OTHER_ &compareChr,OverlapType overlap=OverlapType::OVERLAP_PARTIAL) const;
 
+    /**<  */
     _SELF_ getDistinct(float p_start, float p_end, OverlapType options=OverlapType::OVERLAP_PARTIAL) const;
+
     /**< Functions to manipulate generically ranges of our elements */
     _SELF_ getSubset(float p_start, float p_end, OverlapType overlap=OverlapType::OVERLAP_PARTIAL) const;
     _SELF_ removeSubset(float p_start, float p_end, OverlapType overlap=OverlapType::OVERLAP_PARTIAL);
 
-    void addData(const _BASE_ & newSite);
     int getSubsetCount(float p_start, float p_end, OverlapType overlap=OverlapType::OVERLAP_PARTIAL)const;
 
-/**< Inline functions */
+    void addData(const _BASE_ & newSite);
 
+/**< Inline functions */
 
  /**< Public iterators */
     /** \brief Return an const iterator pointing to the first element of  VecSites
@@ -286,8 +285,8 @@ public:
      *   working directly with a chrom structure. If working through a Exp structure, this should be set
      *   via a call to the corresponding Exp function, otherwise mapping may be throw off.
      *
-     * \param pChr std::string. Scaffold name to set to.
-     * \return void
+     *  \param pChr std::string. Scaffold name to set to.
+     *  \return void
      *
      */
     void setChr(std::string pChr)
@@ -298,7 +297,7 @@ public:
 
     /** \brief  Return copy of the element at .begin()+position count from iterator
      *
-     * \param position int. Position of the _BASE_ in Vecsites to return
+     * \param position int. Position of the _BASE_ in Vecsites to returné (Unrelated to the start and end position of the element)
      * \exception param_throw. Throw if the requested element is an invalid position.
      * \return _BASE_ Copy of the element at the asked for position.
      *
@@ -754,10 +753,6 @@ public:
         {
             throw e;
         }
-        catch(std::exception & e)
-        {
-            throw e;
-        }
     }
 
     template <class _SELF_,class _BASE_>
@@ -870,7 +865,6 @@ public:
     (const int size_,std::mt19937& engine,const _OTHER_ &exclList, const int sigma, const std::string ID) const
     {
         //TODO Sanity check here to make sure it is possible to generate the asked for tag.
-
         try
         {
             _BASE_ returnTag;
@@ -890,7 +884,6 @@ public:
                         std::normal_distribution<float> gaussian(size, sigma);
                         size = (int)gaussian(engine);
                     }
-
                     if (size>=1)
                     {
                         int shift = size/2;
@@ -900,9 +893,8 @@ public:
                         temptag.setEnd(center+shift);
                         temptag.setStart(center-shift);
                         temptag.setChr(this->getChr());
-                        //TODO Is this valid for our basic tags?
+                        //TODO DO MAKE THIS WORK
                         temptag.setName(ID);
-
                         if ((exclList.getSubset(temptag.getStart(),temptag.getEnd())).count()==0)
                         {
                             found=true;
@@ -1069,7 +1061,6 @@ public:
     void uGenericNGSChrom<_SELF_,_BASE_>::printStats(std::ostream& out) const
     {
         typename std::vector<long long> quarts;
-
         /**< Get a vector containing the lenght of every site */
         quarts = utility::quartilesofVector(computeOnAllSites([] (_BASE_ elem) -> long long {return elem.getLenght();}));
 
