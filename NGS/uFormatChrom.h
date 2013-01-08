@@ -21,6 +21,7 @@ template<class _SELF_, typename _BASE_>
 class uGenericNGSChrom
 {
 
+    /**<  */
     static_assert(
         std::is_convertible<_BASE_, uGenericNGS<_BASE_>>::value,
         "The type does not inherit from uGenericNGS."
@@ -34,11 +35,11 @@ protected:
     std::vector<_BASE_> VecSites{}; /*!< std vector containing our unitary contigs  */
     std::string chr=""; /*!< Name of the scaffold/chromosome  */
    /**< Pointers to our functions and determines if sorted */
-    bool m_isSorted=true; /**< If we are in a sorted state or not */
-    std::function<float(const _BASE_*)> sortGetStart=nullptr;  /**<Pointer to the starting sort value */
-    std::function<float(const _BASE_*)> sortGetEnd=nullptr ;  /**< Pointer to the end starting sort value. Typically set to equal Start */
-    std::function<bool(const _BASE_ &item1, const _BASE_ &item2)> m_comptFunc=compareStart; /**< Pointer to sorting function */
-    long long int chromSize=0; /**< Size of the scaffold */
+    bool m_isSorted=true; /*!< If we are in a sorted state or not */
+    std::function<float(const _BASE_*)> sortGetStart=nullptr;  /*!<Pointer to the starting sort value */
+    std::function<float(const _BASE_*)> sortGetEnd=nullptr ;  /*!< Pointer to the end starting sort value. Typically set to equal Start */
+    std::function<bool(const _BASE_ &item1, const _BASE_ &item2)> m_comptFunc=compareStart; /*!< Pointer to sorting function */
+    long long int chromSize=0; /*!< Size of the scaffold */
 
 private :
     /**< removeSites overloads */
@@ -47,6 +48,8 @@ private :
     void removeSite(VecGenConstIter position);
     void removeSite(VecGenConstIter start,VecGenConstIter end);
 
+
+    //TODO move to utility
     template <class Container>
     typename Container::iterator to_mutable_iterator(Container& c, typename Container::const_iterator it)
     {
@@ -77,25 +80,12 @@ private :
 protected:
 
     std::vector<long long> returnSiteSizes() const;
-    unsigned long long avgSiteSize() const;
-    unsigned long long minSiteSize() const;
-    unsigned long long maxSiteSize() const;
-    unsigned long long sumSiteSize() const;
-
-    void addSiteNoCheck( _BASE_ newSite);
-
+    void addDataNoCheck( _BASE_ newSite);
     template<class L, typename S, typename R> friend class uGenericNGSExperiment;
 
 public:
 
-    /**< Declared functions */
-
-
-    /** \brief Default virtual destructor of uGenericNGSChrom
-     */
-    virtual ~uGenericNGSChrom<_SELF_,_BASE_> ()
-    {;}
-        /**< Constructors */
+    /**< Constructors */
     uGenericNGSChrom(){};
     uGenericNGSChrom(const std::string & consString):chr(consString){};
     uGenericNGSChrom(const std::string & consString, long int size);
@@ -103,6 +93,19 @@ public:
 
     uGenericNGSChrom& operator=(const uGenericNGSChrom& copFrom);
     uGenericNGSChrom(const uGenericNGSChrom&);
+
+
+    /**< Declared functions */
+    unsigned long long avgSiteSize() const;
+    unsigned long long minSiteSize() const;
+    unsigned long long maxSiteSize() const;
+    unsigned long long sumSiteSize() const;
+
+    /** \brief Default virtual destructor of uGenericNGSChrom
+     */
+    virtual ~uGenericNGSChrom<_SELF_,_BASE_> ()
+    {;}
+
 
     void inferChrSize();
     long int countUnique() const;
@@ -761,7 +764,7 @@ public:
     template <class _SELF_,class _BASE_>
     /** \brief Overload for internal use, skips check
     */
-    void uGenericNGSChrom<_SELF_,_BASE_>::addSiteNoCheck(_BASE_ newSite)
+    void uGenericNGSChrom<_SELF_,_BASE_>::addDataNoCheck(_BASE_ newSite)
     {
         try
         {
@@ -1239,7 +1242,7 @@ public:
                     break;
                 _BASE_ temp;
                 if (utility::isOverlap(sortGetStart(&(*pos)), sortGetEnd(&(*pos)),p_start, p_end,overlap))
-                    returnChrom.addSiteNoCheck(*pos);
+                    returnChrom.addDataNoCheck(*pos);
             }
             return returnChrom;
         }
@@ -1281,7 +1284,7 @@ public:
                 /**< When we find a valid element, go back one step and erase th element */
                 if (utility::isOverlap(sortGetStart(&(*pos)), sortGetEnd(&(*pos)),p_start, p_end,overlap))
                 {
-                    returnChrom.addSiteNoCheck(*pos);
+                    returnChrom.addDataNoCheck(*pos);
                     pos--;
                     delPos=pos;
                     this->removeSite( to_mutable_iterator(VecSites,delPos ));
@@ -1310,7 +1313,7 @@ public:
                 {
                     if (utility::isOverlap(it->getStart(), it->getEnd(),compit->getStart(),compit->getEnd(),overlap))
                     {
-                        returnChr.addSiteNoCheck(*it);
+                        returnChr.addDataNoCheck(*it);
                         break;
                     }
                 }
@@ -1395,7 +1398,7 @@ public:
                     }
                 }
                 if (add)
-                    returnChr.addSiteNoCheck(*it);
+                    returnChr.addDataNoCheck(*it);
                 add =true;
             }
             return returnChr;
