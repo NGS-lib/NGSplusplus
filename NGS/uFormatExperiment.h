@@ -77,8 +77,14 @@ protected:
     std::function<float(const _BASE_*)> sortGetStart=nullptr;
     std::function<float(const _BASE_*)> sortGetEnd=nullptr ;
     std::function<bool(const _BASE_ &item1, const _BASE_ &item2)> m_comptFunc=compareStart;
-
+    //TODO finish these implementations
     void removeSite(std::string chr,int position);
+    void removeSite(std::string chr,int position);
+    void removeSite(std::string chr,int position);
+    void removeSite(std::string chr,int position);
+
+    //TODO
+    void removeChr(const std::string &);
     void inferChrSize();
 
 

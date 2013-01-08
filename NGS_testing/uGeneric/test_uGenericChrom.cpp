@@ -46,9 +46,9 @@ class ChromDivide : public testing::Test {
   virtual void SetUp() {
 
     uChromTestOverlap.setChr("chr1");
-    uChromTestOverlap.addSite(uBasicNGS ("chr1", 300, 500));
-    uChromTestOverlap.addSite(uBasicNGS("chr1", 100, 199));
-    uChromTestOverlap.addSite(uBasicNGS("chr1", 100, 299));
+    uChromTestOverlap.addData(uBasicNGS ("chr1", 300, 500));
+    uChromTestOverlap.addData(uBasicNGS("chr1", 100, 199));
+    uChromTestOverlap.addData(uBasicNGS("chr1", 100, 299));
   }
 uBasicNGSChrom uChromTestOverlap;
 };
@@ -58,9 +58,9 @@ class ChromSubset : public testing::Test {
 /**< As always, this is inclusive so 100-199 is of size 100 */
   virtual void SetUp() {
     uChromSubsetTest.setChr("chr1");
-    uChromSubsetTest.addSite(uBasicNGS("chr1", 300, 500));
-    uChromSubsetTest.addSite(uBasicNGS("chr1", 100, 199));
-    uChromSubsetTest.addSite(uBasicNGS("chr1", 100, 299));
+    uChromSubsetTest.addData(uBasicNGS("chr1", 300, 500));
+    uChromSubsetTest.addData(uBasicNGS("chr1", 100, 199));
+    uChromSubsetTest.addData(uBasicNGS("chr1", 100, 299));
     uChromSubsetTest.sortSites();
   }
 uBasicNGSChrom uChromSubsetTest;
@@ -74,16 +74,16 @@ TEST_F(ChromDivide, SORT){
     EXPECT_FALSE(uChromTestOverlap.isSorted());
     uChromTestOverlap.sortSites();
     EXPECT_TRUE(uChromTestOverlap.isSorted());
-    uChromTestOverlap.addSite(uBasicNGS("chr1", 200, 800));
-    uChromTestOverlap.addSite(uBasicNGS("chr1", 100, 800));
-    uChromTestOverlap.addSite(uBasicNGS("chr1", 300, 800));
+    uChromTestOverlap.addData(uBasicNGS("chr1", 200, 800));
+    uChromTestOverlap.addData(uBasicNGS("chr1", 100, 800));
+    uChromTestOverlap.addData(uBasicNGS("chr1", 300, 800));
     EXPECT_FALSE(uChromTestOverlap.isSorted());
 }
 
 
 TEST_F(ChromDivide, FIND_TEST){
-    uChromTestOverlap.addSite(uBasicNGS("chr1", 200, 800));
-    uChromTestOverlap.addSite(uBasicNGS("chr1", 250, 800));
+    uChromTestOverlap.addData(uBasicNGS("chr1", 200, 800));
+    uChromTestOverlap.addData(uBasicNGS("chr1", 250, 800));
     uChromTestOverlap.sortSites();
     auto first=uChromTestOverlap.findPrecedingSite(195);
     EXPECT_EQ(100,first->getStart());
