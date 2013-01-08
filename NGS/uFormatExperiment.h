@@ -96,7 +96,6 @@ public:
     //TODO Code this
     void replaceChr(const _CHROM_ &);
 
-
     long long count() const;
     void sortSites();
     template<typename Compare>
