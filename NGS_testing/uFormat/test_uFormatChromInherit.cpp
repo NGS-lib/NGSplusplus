@@ -65,5 +65,12 @@ TEST(uBasicNGSCHROM_getConstChromP, VALIDCHROM){
     // Chromosome pointer, valid and works
        ASSERT_TRUE(false);
  }
+/**<  */
+
+
+TEST(uBasicNGSCHROM_getConstChromP, VALIDCHROM){
+    // Chromosome pointer, valid and works
+       ASSERT_TRUE(false);
+ }
 
 

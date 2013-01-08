@@ -89,6 +89,8 @@ protected:
 public:
 
     /**< Declared functions */
+
+
     /** \brief Default virtual destructor of uGenericNGSChrom
      */
     virtual ~uGenericNGSChrom<_SELF_,_BASE_> ()
@@ -136,9 +138,8 @@ public:
     _SELF_ getSubset(float p_start, float p_end, OverlapType overlap=OverlapType::OVERLAP_PARTIAL) const;
     _SELF_ removeSubset(float p_start, float p_end, OverlapType overlap=OverlapType::OVERLAP_PARTIAL);
 
-    void addSite( _BASE_ newSite);
+    void addData(const _BASE_ & newSite);
     int getSubsetCount(float p_start, float p_end, OverlapType overlap=OverlapType::OVERLAP_PARTIAL)const;
-
 
 /**< Inline functions */
 
@@ -536,6 +537,7 @@ public:
           * \param comp Compare : Binary comparison operation to perform on the sites collection
           * \return void
           */
+
         template<class Compare>
         void sortSites(Compare comp,std::function<float(const _BASE_*)> getStart_funct=nullptr,std::function<float(const _BASE_*)> getEnd_funct=nullptr)
         {
@@ -729,7 +731,7 @@ public:
     template <class _SELF_, class _BASE_>
     uGenericNGSChrom<_SELF_,_BASE_>::uGenericNGSChrom(const std::vector<_BASE_> & copyVec){
         for (_BASE_ elem: copyVec)
-            addSite(elem);
+            addData(elem);
     }
 
     template <class _SELF_,class _BASE_>
@@ -738,7 +740,7 @@ public:
      * \param newSite _BASE_ Ellement to add
      *
      */
-    void uGenericNGSChrom<_SELF_,_BASE_>::addSite(_BASE_ newSite)
+    void uGenericNGSChrom<_SELF_,_BASE_>::addData(_BASE_ newSite)
     {
         try
         {

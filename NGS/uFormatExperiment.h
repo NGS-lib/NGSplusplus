@@ -89,8 +89,14 @@ public:
     uGenericNGSExperiment& operator=(const uGenericNGSExperiment& copFrom)=default;
     uGenericNGSExperiment(const uGenericNGSExperiment&)=default;
 
-    void combine(const _CHROM_ &);
-    void addSite(const _BASE_ & newSite);
+    //TODO code these overloads
+    void addData(const _BASE_ &);
+    void addData(const _CHROM_ &);
+    void addData(const _EXP_ &);
+    //TODO Code this
+    void replaceChr(const _CHROM_ &);
+
+
     long long count() const;
     void sortSites();
     template<typename Compare>
@@ -653,21 +659,19 @@ public:
  *
  */
 template<class _SELF_, typename _CHROM_, typename _BASE_>
-void uGenericNGSExperiment<_SELF_,_CHROM_, _BASE_>::addSite(const _BASE_ & newSite)
+void uGenericNGSExperiment<_SELF_,_CHROM_, _BASE_>::addData(const _BASE_ & newSite)
 {
-
     try
     {
         _CHROM_* ptempChrom;
-
         ptempChrom=&(ExpMap[newSite.getChr()]);
         ptempChrom->setChr(newSite.getChr());
-        ptempChrom->addSite(newSite);
+        ptempChrom->addData(newSite);
     }
     catch(std::exception & e)
     {
 #ifdef DEBUG
-        std::cerr << "Catching and re-throwing in uFormatExp::addSite()" <<std::endl;
+        std::cerr << "Catching and re-throwing in uFormatExp::addData()" <<std::endl;
 #endif
         throw e;
     }
@@ -724,7 +728,7 @@ void uGenericNGSExperiment<_SELF_,_CHROM_, _BASE_>::loadFromTabFile(std::ifstrea
     std::string tempString;
     while(!std::getline(stream, tempString).eof())
     {
-        addSite( factory::makeNGSfromTabString<_BASE_>(tempString));
+        addData( factory::makeNGSfromTabString<_BASE_>(tempString));
     }
 }
 
@@ -743,7 +747,7 @@ void uGenericNGSExperiment<_SELF_,_CHROM_, _BASE_>::loadWithParser(std::ifstream
         uParser Curparser(&refStream, pType);
         while(!Curparser.eof())
         {
-            addSite(Curparser.getNextEntry());
+            addData(Curparser.getNextEntry());
         }
     }
     catch (uParser_exception_base& e) // TODO: check if there is something else that can be thrown
@@ -765,7 +769,7 @@ void uGenericNGSExperiment<_SELF_,_CHROM_, _BASE_>::loadWithParser(std::string f
     {
         while (ourParser.eof()==false)
         {
-            this->addSite((ourParser.getNextEntry()));
+            this->addData((ourParser.getNextEntry()));
         }
     }
     catch (...)
@@ -1035,9 +1039,9 @@ _SELF_ uGenericNGSExperiment<_SELF_,_CHROM_, _BASE_>::getDistinct(std::string ch
     {
         if (iterMap->first==chr){
             auto pChrom = this->getpChrom(iterMap->first);
-            returnExp.combine(pChrom->getDistinct(start, end) );
+            returnExp.combineChr(pChrom->getDistinct(start, end) );
         }else {
-        returnExp.combine(iterMap->second);}
+        returnExp.combineChr(iterMap->second);}
     }
     return returnExp;
 }
@@ -1051,7 +1055,7 @@ _SELF_ uGenericNGSExperiment<_SELF_,_CHROM_, _BASE_>::getDistinct(std::string ch
  *
  */
 template<class _SELF_, typename _CHROM_, typename _BASE_>
-void uGenericNGSExperiment<_SELF_,_CHROM_, _BASE_>::combine(const _CHROM_ & inputChrom)
+void uGenericNGSExperiment<_SELF_,_CHROM_, _BASE_>::combineChr(const _CHROM_ & inputChrom)
 {
     //TODO remove const ref to allow move semantics?
     _CHROM_* currentChrom;
@@ -1082,7 +1086,7 @@ _SELF_ uGenericNGSExperiment<_SELF_,_CHROM_,_BASE_>::getOverlapping(uGenericNGSE
     for (iterMap = ExpMap.begin(); iterMap != ExpMap.end(); iterMap++)
     {
         pChrom = compareExp.getpChrom(iterMap->first);
-        returnExp.combine(iterMap->second.getOverlapping(*pChrom));
+        returnExp.combineChr(iterMap->second.getOverlapping(*pChrom));
     }
     return returnExp;
 }
@@ -1102,7 +1106,7 @@ _SELF_ uGenericNGSExperiment<_SELF_, _CHROM_,_BASE_>::getOverlapping(uGenericNGS
     {
         _SELF_ tempExp;
 
-        tempExp.combine(compareChrom);
+        tempExp.combineChr(compareChrom);
         return getOverlapping(tempExp,type);
     }
     catch(std::exception & e)
@@ -1125,7 +1129,7 @@ _SELF_ uGenericNGSExperiment<_SELF_,_CHROM_,_BASE_>::getOverlapping(std::string 
     {
         _SELF_ tempChrom;
         auto item= _BASE_(chr,start,end);
-        tempChrom.addSite(item);
+        tempChrom.addData(item);
         return getOverlapping(tempChrom, type);
     }
     catch(std::exception & e)
