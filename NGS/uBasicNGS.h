@@ -39,8 +39,6 @@ uBasicNGS(uToken pToken)try :
     uBasicNGS():uGenericNGS()
     { }
 
-    uBasicNGS(std::string pChr, long long int pStart, long long int pEnd):uGenericNGS(pChr,pStart,pEnd)
-    { }
     uBasicNGS(std::string pChr, long long int pStart, long long int pEnd, StrandDir pStrand, float pScore ):uGenericNGS(pChr, pStart, pEnd,pStrand,pScore) {}
     uBasicNGS(std::string pChr, long long int pStart, long long int pEnd, float pScore ):uGenericNGS(pChr, pStart, pEnd,pScore) {}
     uBasicNGS(std::string pChr, long long int pStart, long long int pEnd, StrandDir pStrand=StrandDir::FORWARD ):uGenericNGS(pChr, pStart, pEnd,pStrand) {}

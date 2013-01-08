@@ -79,9 +79,9 @@ protected:
     std::function<bool(const _BASE_ &item1, const _BASE_ &item2)> m_comptFunc=compareStart;
     //TODO finish these implementations
     void removeSite(std::string chr,int position);
-    void removeSite(std::string chr,int position);
-    void removeSite(std::string chr,int position);
-    void removeSite(std::string chr,int position);
+    void removeSite(std::string chr,int start,int end);
+    void removeSite(std::string chr,VecGenConstIter position);
+    void removeSite(std::string chr,VecGenConstIter start,VecGenConstIter end);
 
     //TODO
     void removeChr(const std::string &);
