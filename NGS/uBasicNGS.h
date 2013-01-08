@@ -28,7 +28,7 @@ uBasicNGS(uToken pToken)try :
         throw e;
     }
 
-    uBasicNGS(std::string chr, long long int start, long long int end, StrandDir dir)try:uGenericNGS(chr,start,end,dir)
+    uBasicNGS(std::string pChr, long long int pStart, long long int pEnd, StrandDir pStrand=StrandDir::FORWARD)try:uGenericNGS(pChr,pStart,pEnd,pStrand)
     {   }
     catch(construct_elem_throw &e)
     {
@@ -41,7 +41,6 @@ uBasicNGS(uToken pToken)try :
 
     uBasicNGS(std::string pChr, long long int pStart, long long int pEnd, StrandDir pStrand, float pScore ):uGenericNGS(pChr, pStart, pEnd,pStrand,pScore) {}
     uBasicNGS(std::string pChr, long long int pStart, long long int pEnd, float pScore ):uGenericNGS(pChr, pStart, pEnd,pScore) {}
-    uBasicNGS(std::string pChr, long long int pStart, long long int pEnd, StrandDir pStrand=StrandDir::FORWARD ):uGenericNGS(pChr, pStart, pEnd,pStrand) {}
 
     uBasicNGS(uGenericNGS otherItem):uGenericNGS(otherItem)
     { }
