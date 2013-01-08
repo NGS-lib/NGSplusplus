@@ -901,7 +901,7 @@ wigType curWig = wigType::NONE;
                 break;
 
             }
-            addSite(curReg);
+            addData(curReg);
         }
 }
 
