@@ -94,7 +94,6 @@ public:
     uGenericNGSChrom& operator=(const uGenericNGSChrom& copFrom);
     uGenericNGSChrom(const uGenericNGSChrom&);
 
-
     /**< Declared functions */
     unsigned long long avgSiteSize() const;
     unsigned long long minSiteSize() const;

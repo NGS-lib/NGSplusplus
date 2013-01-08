@@ -1069,7 +1069,7 @@ void uGenericNGSExperiment<_SELF_,_CHROM_, _BASE_>::addData(const _CHROM_ & inpu
     currentChrom=&(ExpMap[inputChrom.getChr()]);
     for(auto itChrom =inputChrom.begin(); itChrom!= inputChrom.end(); itChrom++)
     {
-        currentChrom->addSiteNoCheck(*itChrom);
+        currentChrom->addDataNoCheck(*itChrom);
     }
 }
 

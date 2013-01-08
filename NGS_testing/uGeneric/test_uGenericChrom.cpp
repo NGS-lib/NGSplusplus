@@ -39,14 +39,15 @@ using namespace NGS;
 //class ourDerivedExperiment : public uGenericNGSExperiment<ourDerivedExperiment,ourDerivedClass, uBasicNGS> {
 //
 //};
-// To use a test fixture, derive a class from testing::Test.
+// To use a test fixture, derive a class from testing::Test.à
+#define CHROMDIVIDESIZE 500
 class ChromDivide : public testing::Test {
  protected:
 /**< As always, this is inclusive so 100-199 is of size 100 */
   virtual void SetUp() {
 
     uChromTestOverlap.setChr("chr1");
-    uChromTestOverlap.addData(uBasicNGS ("chr1", 300, 500));
+    uChromTestOverlap.addData(uBasicNGS ("chr1", 300, CHROMDIVIDESIZE));
     uChromTestOverlap.addData(uBasicNGS("chr1", 100, 199));
     uChromTestOverlap.addData(uBasicNGS("chr1", 100, 299));
   }
