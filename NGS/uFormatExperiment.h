@@ -40,6 +40,10 @@ class uGenericNGSExperiment
     typedef typename NGSExpMap::const_iterator NGSExpConstIter;
     typedef typename NGSExpMap::value_type     NGSExpPair;
 
+    typedef std::vector<_BASE_> VecGenericNGS;
+    typedef typename std::vector<_BASE_>::iterator VecGenIter;
+    typedef typename std::vector<_BASE_>::const_iterator VecGenConstIter;
+
     //TODO, const iterators public
 private:
 
