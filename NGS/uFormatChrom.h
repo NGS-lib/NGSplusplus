@@ -1048,14 +1048,6 @@ public:
     }
 
 //Output functions
-    template <class _SELF_, class _BASE_>
-    void uGenericNGSChrom<_SELF_,_BASE_>::outputBedFormat(std::ostream& out)
-    {
-        // applyOnAllSites(bind(bind(&_BASE_::writeBedToOuput), out));
-        applyOnAllSites(bind2nd(mem_fun_ref(&_BASE_::writeBedToOuput), out));
-    }
-
-
 
     template <class _SELF_,class _BASE_>
     void uGenericNGSChrom<_SELF_,_BASE_>::printStats(std::ostream& out) const
