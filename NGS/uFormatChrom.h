@@ -415,7 +415,6 @@ public:
             throw e;
         }
     }
-    template<class UnaryPredicate>
     /** \brief Remove sites for which the predicate is true.
      *
      *  This function calls remove_if using the supplied predicated, followed by erase(). This will
@@ -431,6 +430,7 @@ public:
      * \return void
      *
      */
+    template<class UnaryPredicate>
     void removeSpecificSites(UnaryPredicate pred)
     {
         try
@@ -489,7 +489,10 @@ public:
     {
         try
         {
-            return for_each(std::begin(VecSites), std::end(VecSites), f);
+            if (VecSites.size()>0)
+                return for_each(std::begin(VecSites), std::end(VecSites), f);
+            else
+                return f;
         }
         catch(std::exception & e)
         {
@@ -594,14 +597,15 @@ public:
         return is_sorted(std::begin(VecSites), std::end(VecSites), comp);
     }
 
-    /** \brief Indicates if the sites collection is sorted ascendingly according to
-      * their start position
+    /** \brief Indicates if the sites collection is sorted ascendingly according the function
+      * that was used for the sort (by default: compareStart, which is a sort based on the 
+      * position of the element on the chromosome).
       *
       * \return true if the sites are sorted, false otherwise.
       */
     bool isSorted() const
     {
-        return isSorted(compareStart);
+        return isSorted(m_comptFunc);
     }
 
     /** \brief Find the minimal site according to a certain comparison
