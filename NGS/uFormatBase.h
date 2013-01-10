@@ -14,18 +14,17 @@ namespace NGS
 /**< Our basic Site for NGS format */
 /**< Very weak class as there are many differences in the functionality of derived classes. */
 
-enum class StrandDir
+enum class StrandDir /*!< Possible strand directions */
 {
     FORWARD,REVERSE
 };
 
-enum class SplitType
+enum class SplitType /*!< Used with division functions */
 {
     STRICT, IGNORE, EXTEND, ADD
 };
 
 template<class _SELF_>
-//TODO Doxygen class documentation
 class uGenericNGS
 {
 
@@ -33,11 +32,11 @@ class uGenericNGS
     #define REVERSECHAR '-'
 
 protected:
-    std::string m_chr="";
-    long int m_startPos=0;
-    long int m_endPos=0;
-    StrandDir m_strand=StrandDir::FORWARD;
-    std::vector<float> m_score={};
+    std::string m_chr=""; /*!< Name of the scaffold/chromosome  */
+    long int m_startPos=0; /*!< Begining genomic position of the element  */
+    long int m_endPos=0; /*!< End genomic position of the element  */
+    StrandDir m_strand=StrandDir::FORWARD; /*!< Strand orientation of the element  */
+    std::vector<float> m_score={}; /*!< Values potentially associated with the element */
 
 public:
     /** \brief Constructor taking chromosome name, start, end and optionnaly a strand.
@@ -160,190 +159,23 @@ public:
 
     /**< Get/Set */
 
-    /** \brief Get the chromosome of the current entry.
-     * \return A string corresponding to the name of the chr. Returns an empty string if the chr value is not set.
-     */
-    std::string getChr() const
-    {
-        return m_chr;
-    };
+    std::string getChr() const;
+    void setChr(std::string ourm_chr);
 
-    /** \brief Set the name of the chromosome for the current entry.
-     * \return void
-     */
-    void setChr(std::string ourm_chr)
-    {
-        if (ourm_chr.size()==0)
-        {
-            throw param_throw() << string_error("Throwing in setChr, ID must be of size > 0");
-        }
-        m_chr=ourm_chr;
-    };
+    StrandDir getStrand() const;
+    void setStrand(char pStrand);
 
-    /** \brief Set the name of the chromosome for the current entry.
-     * \return A StrandDir corresponding to the strand for the current entry. The default value is FORWARD.
-     */
-    StrandDir getStrand() const
-    {
-        return m_strand;
-    };
 
-    /** \brief Set the strand for the current entry with a char.
-     * \param char pStrand: The value for the strand. Must be either '+' or '-'.
-     * \exception param_throw: When the user gave an incorrect value for the strand.
-     * \return void
-     */
-    void setStrand(char pStrand)
-    {
-        try
-        {
-            if (pStrand==REVERSECHAR)
-            {
-                m_strand=StrandDir::REVERSE;
-            }
-            else if (pStrand==FORWARDCHAR)
-            {
-                m_strand=StrandDir::FORWARD;
-            }
-            else
-            {
-                throw param_throw()<<string_error("Failling in setStrand(char), invalid character");
-            }
-        }
-        catch(param_throw &e)
-        {
-            throw e;
-        }
-    };
+    void setStrand(StrandDir pStrand);
+    bool isReverse() const;
 
-    /** \brief Set the strand for the current entry with a StrandDir.
-     * \param StrandDir pStrand: The value for the strand. Must be either StrandDir::FORWARD or StrandDir::REVERSE.
-     * \return void
-     */
-    void setStrand(StrandDir pStrand)
-    {
-        m_strand=pStrand;
-    };
+    void setStart(int ourStart);
+    void setEnd(int ourEnd);
+    void setStartEnd(long int ourStart, long int ourEnd);
 
-    /** \brief Check if the orientation of the strand for the current entry is reverse.
-     * \return bool: true if the strand is StrandDir::REVERSE. false if the strand is StrandDir::FORWARD.
-     */
-    bool isReverse() const
-    {
-        if (m_strand==StrandDir::REVERSE)
-        {
-            return true;
-        }
-        else
-        {
-            return false;
-        }
-    }
-
-    /** \brief Set the start position for the current entry.
-     * \param int ourStart: The start position we wish to set.
-     * \exception param_throw: If the start position is greater than the end position or if the start position is smaller than zero.
-     * \return void
-     */
-    void setStart(int ourStart)
-    {
-        try
-        {
-            if (!((ourStart<=getEnd())&&(ourStart>=0)))
-            {
-                throw param_throw()<<string_error("Failed in setStart, ourStart is smalled then end or under 0, start is "
-                      +utility::to_string(ourStart)+ " end is "+ utility::to_string(getEnd()) +"\n");
-            }
-            m_startPos=ourStart;
-        }
-        catch(param_throw &e)
-        {
-#ifdef DEBUG
-            std::cerr << "throwing in setStart" <<std::endl;
-#endif
-            throw e;
-        }
-    };
-
-    /** \brief Set the end position for the current entry.
-     * \param int ourEnd: The end position we wish to set.
-     * \exception param_throw: If the end position is smaller than the start position or if the end position is smaller than zero.
-     * \return void
-     */
-    void setEnd(int ourEnd)
-    {
-        try
-        {
-            if (!((ourEnd>=getStart())&&(ourEnd>=0)))
-            {
-                throw param_throw()<<string_error("throwing in setEnd(), start at "
-                   +utility::to_string((int)getStart())+ " end is "+ utility::to_string(ourEnd) +"\n");
-            }
-            m_endPos=ourEnd;
-        }
-        catch(param_throw & e)
-        {
-#ifdef DEBUG
-            std::cerr << "throwing in setEnd" <<std::endl;
-#endif
-            throw e;
-        }
-    };
-
-    /** \brief Set the start and end position for the current entry.
-     * \param int ourStart: The start position we wish to set.
-     * \param int ourEnd: The end position we wish to set.
-     * \exception param_throw: If the end position is smaller than the start position or if the start and end position are smaller than zero.
-     * \return void
-     */
-    void setStartEnd(long int ourStart, long int ourEnd)
-    {
-        try
-        {
-            if ((ourStart>0) && (ourStart<=ourEnd))
-            {
-                m_startPos=ourStart;
-                m_endPos=ourEnd;
-            }
-            else
-            {
-                throw param_throw() <<string_error("Throwing in set StartEnd,  ourStart="
-                     +utility::to_string(ourStart)+" ourEnd="+utility::to_string(ourEnd)+"\n" );
-            }
-        }
-        catch(param_throw &e)
-        {
-#ifdef DEBUG
-            std::cerr << "throwing in setStartEnd" <<std::endl;
-#endif
-            throw e;
-        }
-    };
-
-    /** \brief Get the start position of the current entry.
-     * \return long int: the start position of the current entry. Default value is 0.
-     */
-    long int getStart() const
-    {
-        return m_startPos;
-    };
-
-    /** \brief Get the end position of the current entry.
-     * \return long int: the end position of the current entry. Default value is 0.
-     */
-    long int getEnd() const
-    {
-        return m_endPos;
-    };
-
-    /** \brief Get the length of the current entry.
-     * \return long int: the difference between the ending position and the starting position.
-     */
-    long int getLenght() const
-    {
-        /**< 0 based coordinates, so N - N  is a legal fragment covering a single nucleotide at position N */
-        return (m_endPos-m_startPos+1);
-    };
+    long int getStart() const;
+    long int getEnd() const;
+    long int getLenght() const;
 
     /**<  Divide our region into a certain number of subregions */
 
@@ -371,6 +203,210 @@ public:
 
 
 };
+
+
+    /** \brief Get the chromosome of the current entry.
+     * \return A string corresponding to the name of the chr. Returns an empty string if the chr value is not set.
+     */
+    template <class _SELF_>
+    std::string uGenericNGS<_SELF_>::getChr() const
+    {
+        return m_chr;
+    };
+
+    /** \brief Set the name of the chromosome for the current entry.
+     * \return void
+     */
+    template <class _SELF_>
+    void uGenericNGS<_SELF_>::setChr(std::string ourm_chr)
+    {
+        if (ourm_chr.size()==0)
+        {
+            throw param_throw() << string_error("Throwing in setChr, ID must be of size > 0");
+        }
+        m_chr=ourm_chr;
+    };
+
+
+    /** \brief Set the name of the chromosome for the current entry.
+     * \return A StrandDir corresponding to the strand for the current entry. The default value is FORWARD.
+     */
+    template <class _SELF_>
+    StrandDir uGenericNGS<_SELF_>::getStrand() const
+    {
+        return m_strand;
+    };
+
+    /** \brief Set the strand for the current entry with a char.
+     * \param char pStrand: The value for the strand. Must be either '+' or '-'.
+     * \exception param_throw: When the user gave an incorrect value for the strand.
+     * \return void
+     */
+    template <class _SELF_>
+    void uGenericNGS<_SELF_>::setStrand(char pStrand)
+    {
+        try
+        {
+            if (pStrand==REVERSECHAR)
+            {
+                m_strand=StrandDir::REVERSE;
+            }
+            else if (pStrand==FORWARDCHAR)
+            {
+                m_strand=StrandDir::FORWARD;
+            }
+            else
+            {
+                throw param_throw()<<string_error("Failling in setStrand(char), invalid character");
+            }
+        }
+        catch(param_throw &e)
+        {
+            throw e;
+        }
+    };
+
+    /** \brief Set the strand for the current entry with a StrandDir.
+     * \param StrandDir pStrand: The value for the strand. Must be either StrandDir::FORWARD or StrandDir::REVERSE.
+     * \return void
+     */
+    template <class _SELF_>
+    void uGenericNGS<_SELF_>::setStrand(StrandDir pStrand)
+    {
+        m_strand=pStrand;
+    };
+
+    /** \brief Check if the orientation of the strand for the current entry is reverse.
+     * \return bool: true if the strand is StrandDir::REVERSE. false if the strand is StrandDir::FORWARD.
+     */
+    template <class _SELF_>
+    bool uGenericNGS<_SELF_>::isReverse() const
+    {
+        if (m_strand==StrandDir::REVERSE)
+        {
+            return true;
+        }
+        else
+        {
+            return false;
+        }
+    }
+
+   /** \brief Set the start position for the current entry.
+     * \param int ourStart: The start position we wish to set.
+     * \exception param_throw: If the start position is greater than the end position or if the start position is smaller than zero.
+     * \return void
+     */
+    template <class _SELF_>
+    void uGenericNGS<_SELF_>::setStart(int ourStart)
+    {
+        try
+        {
+            if (!((ourStart<=getEnd())&&(ourStart>=0)))
+            {
+                throw param_throw()<<string_error("Failed in setStart, ourStart is smalled then end or under 0, start is "
+                      +utility::to_string(ourStart)+ " end is "+ utility::to_string(getEnd()) +"\n");
+            }
+            m_startPos=ourStart;
+        }
+        catch(param_throw &e)
+        {
+#ifdef DEBUG
+            std::cerr << "throwing in setStart" <<std::endl;
+#endif
+            throw e;
+        }
+    };
+
+    /** \brief Set the end position for the current entry.
+     * \param int ourEnd: The end position we wish to set.
+     * \exception param_throw: If the end position is smaller than the start position or if the end position is smaller than zero.
+     * \return void
+     */
+    template <class _SELF_>
+    void uGenericNGS<_SELF_>::setEnd(int ourEnd)
+    {
+        try
+        {
+            if (!((ourEnd>=getStart())&&(ourEnd>=0)))
+            {
+                throw param_throw()<<string_error("throwing in setEnd(), start at "
+                   +utility::to_string((int)getStart())+ " end is "+ utility::to_string(ourEnd) +"\n");
+            }
+            m_endPos=ourEnd;
+        }
+        catch(param_throw & e)
+        {
+#ifdef DEBUG
+            std::cerr << "throwing in setEnd" <<std::endl;
+#endif
+            throw e;
+        }
+    };
+
+    /** \brief Set the start and end position for the current entry.
+     * \param int ourStart: The start position we wish to set.
+     * \param int ourEnd: The end position we wish to set.
+     * \exception param_throw: If the end position is smaller than the start position or if the start and end position are smaller than zero.
+     * \return void
+     */
+    template <class _SELF_>
+    void uGenericNGS<_SELF_>::setStartEnd(long int ourStart, long int ourEnd)
+    {
+        try
+        {
+            if ((ourStart>0) && (ourStart<=ourEnd))
+            {
+                m_startPos=ourStart;
+                m_endPos=ourEnd;
+            }
+            else
+            {
+                throw param_throw() <<string_error("Throwing in set StartEnd,  ourStart="
+                     +utility::to_string(ourStart)+" ourEnd="+utility::to_string(ourEnd)+"\n" );
+            }
+        }
+        catch(param_throw &e)
+        {
+#ifdef DEBUG
+            std::cerr << "throwing in setStartEnd" <<std::endl;
+#endif
+            throw e;
+        }
+    };
+
+
+
+
+
+/** \brief Get the start position of the current entry.
+ * \return long int: the start position of the current entry. Default value is 0.
+ */
+template <class _SELF_>
+long int uGenericNGS<_SELF_>::getStart() const
+{
+    return m_startPos;
+};
+
+/** \brief Get the end position of the current entry.
+ * \return long int: the end position of the current entry. Default value is 0.
+ */
+template <class _SELF_>
+long int uGenericNGS<_SELF_>::getEnd() const
+{
+    return m_endPos;
+};
+
+/** \brief Get the length of the current entry.
+ * \return long int: the difference between the ending position and the starting position.
+ */
+template <class _SELF_>
+long int uGenericNGS<_SELF_>::getLenght() const
+{
+    /**< 0 based coordinates, so N - N  is a legal fragment covering a single nucleotide at position N */
+    return (m_endPos-m_startPos+1);
+};
+
 
 /** \brief Increase size of the element. Coordinates can go no lower then 0,
  *
