@@ -334,7 +334,6 @@ public:
       * sites in the collection. Specifically, this will make an std::vector copy
       * of all elements. It will then run the functor using for_each and return the resulting results.
       *
-      *
       * The function pointer can either be a)
       * the name of a function taking a site by reference, b) a lambda
       * function taking a site by reference or c) a member method of a
@@ -369,7 +368,6 @@ public:
       * \param unary_op UnaryOperation : Unary operation to perform on the copied sites vector
       * \return A vector of the same type and length as the sites vector but with its sites transformed by unary_op
       */
-    //TODO send back a chrom?
     template<class UnaryOperation>
     auto computeOnAllSites(UnaryOperation unary_op) -> std::vector<decltype(unary_op(_BASE_()))>
     {
@@ -384,7 +382,6 @@ public:
             throw e;
         }
     }
-
     /** \brief Get the sites for which a certain predicate is true
       *
       * This function take a pointer to a predicate function. It return a vector containing
@@ -481,7 +478,6 @@ public:
         }
     }
 
-
     /** \brief applyOnAllSitesConst: Pool the sites collection by applying a certain function to all sites
       *
       *  Const version, see non-const for doc.
@@ -532,7 +528,7 @@ public:
       *
       * Sort the elements of the collection according to the given binary comparison operator.
       *
-      * Addtionally, one may provide a pointer to related getters. This enables the use of getSubset()
+      * Additionally, one may provide a pointer to related getters. This enables the use of getSubset()
       * and removeSubset() on the appropriate type of sort. If only get_start_funct is provided, getEnd_funct is set to get_start_funct
       *
       *\
@@ -632,7 +628,6 @@ public:
             throw e;
         }
     }
-
     /** \brief Find the maximal site according to a certain comparison
       *
       * This function take a pointer to a function to find the maximal site;
@@ -1471,7 +1466,7 @@ _SELF_ uGenericNGSChrom<_SELF_,_BASE_>::getNotOverlapping(_OTHER_ &compareChr,Ov
         throw e;
     }
 }
-//TODO Test this?
+//TODO TEST THIS
 template <class _SELF_,class _BASE_>
 /** \brief
  *
@@ -1479,7 +1474,6 @@ template <class _SELF_,class _BASE_>
  * \param p_end float
  * \param overlap OverlapType
  * \return _SELF_
- *
  */
 _SELF_ uGenericNGSChrom<_SELF_,_BASE_>::getDistinct(float p_start, float p_end, OverlapType overlap) const
 {

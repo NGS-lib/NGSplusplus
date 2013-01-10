@@ -97,24 +97,7 @@ TEST(uBasicNGSCHR_countUnique, NOSITE){
 TEST(uBasicNGSCHR_countUnique, MANYSITEWITHUNIQUE){
        ASSERT_TRUE(false);
  }
-/**<  */
 
-TEST_F(ChromDivide, FINDNEXT_TEST){
-    uChromTestOverlap.addData(uBasicNGS("chr1", 200, 800));
-    uChromTestOverlap.addData(uBasicNGS("chr1", 250, 800));
-    uChromTestOverlap.sortSites();
-    auto second=uChromTestOverlap.findNextSite(235);
-    EXPECT_EQ(250,second->getStart());
-
-    EXPECT_EQ(uChromTestOverlap.end(), uChromTestOverlap.findNextSite(1500));
-}
-TEST_F(ChromDivide, FINDPREC_TEST){
- uChromTestOverlap.addData(uBasicNGS("chr1", 200, 800));
-    uChromTestOverlap.addData(uBasicNGS("chr1", 250, 800));
-    uChromTestOverlap.sortSites();
-    auto first=uChromTestOverlap.findPrecedingSite(195);
-    EXPECT_EQ(100,first->getStart());
-}
 /**< Testing DivideItemsIntoNBin */
 TEST_F(ChromDivide, DIVIDEINTONBINFAILCHROM){
     EXPECT_ANY_THROW(uChromTestOverlap.divideItemsIntoNBins(7));
@@ -371,3 +354,101 @@ TEST(uBasicNGSCHR_getSite, INVALID)
 {
      ASSERT_TRUE(false);
 }
+
+    void sortSites(Compare comp,std::function<float(const _BASE_*)> getStart_funct=nullptr,std::function<float(const _BASE_*)> getEnd_funct=nullptr)
+
+/**< SortSites */
+TEST(uBasicNGSCHR_sortSites, DEFAULT)
+{
+     ASSERT_TRUE(false);
+}
+
+TEST(uBasicNGSCHR_sortSites, CUSTOM)
+{
+     ASSERT_TRUE(false);
+}
+
+TEST(uBasicNGSCHR_sortSites, CUSTOMSTARTFUNCT)
+{
+     ASSERT_TRUE(false);
+}
+
+/**< Custom next and Prec */
+TEST_F(ChromDivide, FINDNEXT_TEST){
+    uChromTestOverlap.addData(uBasicNGS("chr1", 200, 800));
+    uChromTestOverlap.addData(uBasicNGS("chr1", 250, 800));
+    uChromTestOverlap.sortSites();
+    auto second=uChromTestOverlap.findNextSite(235);
+    EXPECT_EQ(250,second->getStart());
+
+    EXPECT_EQ(uChromTestOverlap.end(), uChromTestOverlap.findNextSite(1500));
+}
+TEST_F(ChromDivide, FINDPREC_TEST){
+ uChromTestOverlap.addData(uBasicNGS("chr1", 200, 800));
+    uChromTestOverlap.addData(uBasicNGS("chr1", 250, 800));
+    uChromTestOverlap.sortSites();
+    auto first=uChromTestOverlap.findPrecedingSite(195);
+    EXPECT_EQ(100,first->getStart());
+}
+TEST(uBasicNGSCHR_findNext, CUSTOM)
+{
+     ASSERT_TRUE(false);
+}
+TEST(uBasicNGSCHR_findPrec, CUSTOM)
+{
+     ASSERT_TRUE(false);
+}
+
+TEST(uBasicNGSCHR_getSubset, CUSTOM)
+{
+     ASSERT_TRUE(false);
+}
+/**< isSorted() */
+TEST(uBasicNGSCHR_isSorted, NOT)
+{
+     ASSERT_TRUE(false);
+}
+TEST(uBasicNGSCHR_isSorted, EMPTY)
+{
+     ASSERT_TRUE(false);
+}
+TEST(uBasicNGSCHR_isSorted, DEFAULT)
+{
+     ASSERT_TRUE(false);
+}
+TEST(uBasicNGSCHR_isSorted, CUSTOM)
+{
+     ASSERT_TRUE(false);
+}
+/**< minSite(comp ) */
+TEST(uBasicNGSCHR_minSite, NORMAL)
+{
+     ASSERT_TRUE(false);
+}
+TEST(uBasicNGSCHR_minSite, EMPTY)
+{
+     ASSERT_TRUE(false);
+}
+TEST(uBasicNGSCHR_minSite, EXCEPTIOn)
+{
+     ASSERT_TRUE(false);
+}
+
+/**< maxSite(comp ) */
+TEST(uBasicNGSCHR_maxSite, NORMAL)
+{
+     ASSERT_TRUE(false);
+}
+TEST(uBasicNGSCHR_maxSite, EMPTY)
+{
+     ASSERT_TRUE(false);
+}
+TEST(uBasicNGSCHR_maxSite, EXCEPTIOn)
+{
+     ASSERT_TRUE(false);
+}
+
+
+
+
+/**<  */
