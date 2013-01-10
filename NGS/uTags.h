@@ -19,23 +19,17 @@ private:
 
     //Optional
     //Map score, quality of the alignement.
-    short int mapScore=255;
+    short int mapScore=255; /*!<Total mapping quality of the read */
 
-    //TODO this is some heavy overhead considering we are very unlikely to user Phred, cigar and name.. store in a different configuration?
-    //The actual sequence
-    std::string sequence="";
-    char* name=nullptr;
-    char* phredScore=nullptr;
-    char* cigar=nullptr;
-    //Paired End
-    // bool PE;
-    //Unmapped
+    std::string sequence=""; /*!<Sequence associated with the read. Optional */
+    char* name=nullptr;  /*!<Name or ID associated with read. not guaranteed to be unique*/
+    char* phredScore=nullptr; /*!<PhredScore associated with each position of the read*/
+    char* cigar=nullptr; /*!<Cigar flag as defined by the SAM format*/
     bool Unmapped=true;
     //Using Samtools definition here. Replace above variables by this when possible.
-    int flag=0;
+    int flag=0;  /*!<Sam flag as defined by the SAM format*/
     //Pointer to next element of the template, not sure we really want to use this?.
-    uTags * pMate=nullptr;
-    int PELenght=0;
+    int PELenght=0; /**< Lenght of the total segment if paired. Can also be used for estimated lenght */
 
 public:
 
@@ -63,20 +57,33 @@ public:
     void debugElem() const;
 
 
+    /** \brief Returns true if the tag is unmapped or incorrectly mapped
+     *
+     * \return bool
+     *
+     */
     bool isMapped()
     {
         return Unmapped;
     }
+    /** \brief Set the mapped value of the tag.
+     *
+     * \param pmapped bool : Value to set the status to
+     * \return void
+     *
+     */
     void setMapped(bool pmapped)
     {
         Unmapped=pmapped;
     }
 
-    uTags* getMate()
-    {
-        return pMate;
-    };
 
+    /** \brief Set the cigar value
+     *
+     * \param pcigar std::string : String to set cigar to
+     * \return void
+     *
+     */
     void setCigar(std::string pcigar)
     {
         if (cigar!=nullptr)
@@ -84,22 +91,27 @@ public:
             delete []cigar;
             cigar = nullptr;
         }
-
         try
         {
-
             cigar = new char[pcigar.size()+1];
-
             int lenght=pcigar.copy(cigar,pcigar.size(),0 );
             cigar[lenght]='\0';
 
         }
-        catch(std::exception alloc_except)
+        catch(std::exception & e)
         {
-            std::cerr <<"Failled allocation in setCigar()";
-            throw;
+            #ifdef DEBUG
+             std::cerr <<"Failled allocation in setCigar()";
+            #endif
+            throw  e;
         }
     };
+
+    /** \brief get the Cigar string associated with the sequence
+     *
+     * \return std::string
+     *
+     */
     std::string getCigar() const
     {
         std::string returnStr;
@@ -110,10 +122,9 @@ public:
         return returnStr;
     };
 
-
-    /** \brief Parse your flag and set the necessary values to stay coherent.
+    /** \brief Set the Sam Flag associated with the sequence
      *
-     * \param pflag int
+     * \param pflag int : The sam flag to set
      * \return void
      *
      */
@@ -121,20 +132,48 @@ public:
     {
         flag=pflag;
     };
+    /** \brief Get the Sam flag associated with the sequence.
+     *
+     * \return int : The Sam flag associated.
+     *
+     */
     int getFlag() const
     {
         return flag;
     };
+
+    /** \brief Set the sequence associated with the element
+     *
+     *  Sets the sequence associated with the element. The sequence needs to be either
+     *  null ("") or of size equal to the element.
+     * \exception param_throw : Thrown when parameter size neighter null or equal to element getLenght()
+     * \param pSeq std::string : The sequence to set
+     * \return void
+     *
+     */
     void setSequence(std::string pSeq)
     {
+        if(pSeq.size()!=0)&&(pSeq.size()!=getLenght())
+            throw param_throw()<< "Failling in seqSequence. Sequence size neither null or equal to element size."
         sequence=pSeq;
     };
-
+    /** \brief Get the sequence associated with the element.
+     *
+     * \return std::string : The sequence associated with the element.
+     *
+     */
     std::string getSequence() const
     {
         return sequence;
     };
 
+    /** \brief Set the PhredScore assocaited with the sequence
+     *
+     * \param Phred std::string : The sequence to set
+     * \exception
+     * \return void
+     *
+     */
     void setPhred(std::string Phred)
     {
         if (phredScore!=nullptr)
@@ -146,19 +185,25 @@ public:
         try
         {
             phredScore = new char[Phred.size()+1];
-
             int lenght=Phred.copy(phredScore,Phred.size(),0 );
             phredScore[lenght]='\0';
         }
-        catch(std::exception alloc_except)
+        catch(std::exception & e)
         {
+            #ifdef DEBUG
             std::cerr <<"Failled allocation in setPhred()";
-            throw;
+            #endif
+            throw e;
         }
 
 
     };
 
+    /** \brief get the PhredScore associated with the sequence
+     *
+     * \return std::string : The PhredScore vector
+     *
+     */
     std::string getPhred() const
     {
         std::string returnStr;
@@ -169,6 +214,15 @@ public:
         return returnStr;
     };
 
+    /** \brief Set the ID associated with the element.
+     *
+     *  This sets the ID associated with the element. There are no conditions attached to the ID
+     *
+     * \param pName std::string : ID to set the name to
+     * \exception Thrown when new allocations fails.
+     * \return void
+     *
+     */
     void setName(std::string pName)
     {
         if (name!=nullptr)
@@ -183,14 +237,22 @@ public:
             int lenght = pName.copy(name, pName.size(),0);
             name[lenght]='\0';
         }
-        catch(std::exception alloc_except)
+        catch(std::exception & e)
         {
+            #ifdef DEBUG
             std::cerr <<"Failled allocation in setName()";
-            throw;
+            #endif
+
+            throw e ;
         }
 
     };
 
+    /** \brief Get the name/ID associated with the element
+     *
+     * \return std::string : The returned ID
+     *
+     */
     std::string getName() const
     {
         std::string returnStr;
@@ -201,38 +263,61 @@ public:
         return returnStr;
     };
 
+    /** \brief True if the paired end lenght is above 0
+     *
+     * \return bool True if PElenght is set
+     *
+     */
     bool isPE() const
     {
-        //if lenght above 0, is paired end
         return PELenght;
     };
 
+    /** \brief
+     *
+     * \param lenght int : Value to set PELenght to.
+     * \exception : param_throw(): Throw if parameter is < 0.
+     * \return void
+     *
+     */
     void setPELenght(int lenght)
     {
         try
         {
             if  (lenght <0)
-                throw 10;
+                throw param_throw()<"Throwing in setPELenght. Set an invalid PE lenght<0";
 
             PELenght=lenght;
         }
-        catch(...)
-        {
-            std::cerr <<"Negative Paired end Lenght"<<std::endl;
-            throw;
-        }
+
     }
+    /** \brief Return the PELenght of the element
+     *
+     * \return int
+     *
+     */
     int getPeLenght() const
     {
         return PELenght;
     };
 
-    void setMapQual(int score)
+    /** \brief Set the mapping quality of the element, max value is 255
+     *
+     * \param score short int : Value to set MapQuality to
+     * \return void
+     *
+     */
+    void setMapQual(short int score)
     {
         mapScore=score;
     }
 
-    int getMapQual() const
+    /** \brief Return the mapping quality of the element.
+     *
+     * \return short int: Mapping value
+     *
+     */
+    short int getMapQual() const
     {
         return mapScore;
     };
