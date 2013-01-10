@@ -1010,16 +1010,9 @@ void uGenericNGSChrom<_SELF_,_BASE_>::addNRandomSite
 template <class _SELF_,class _BASE_>
 unsigned long long uGenericNGSChrom<_SELF_,_BASE_>::avgSiteSize() const
 {
-    try
-    {
         if (this->count() == 0)
             return 0;
         return sumSiteSize()/this->count();
-    }
-    catch(std::exception & e)
-    {
-        throw e;
-    }
 }
 
 template <class _SELF_, class _BASE_>
@@ -1055,6 +1048,7 @@ unsigned long long uGenericNGSChrom<_SELF_ ,_BASE_>::minSiteSize() const
     {
         if (this->count() == 0)
             return ULONG_MAX;
+
 
         return minSite(compareLenght)->getLenght();
     }
@@ -1100,6 +1094,11 @@ long int uGenericNGSChrom<_SELF_,_BASE_>::countUnique() const
     typename std::vector<_BASE_>::iterator iterVec;
 
     for (iterVec = VecSites.begin() ; iterVec!= VecSites.end(); iterVec++)
+
+//Output functions
+
+    template <class _SELF_,class _BASE_>
+    void uGenericNGSChrom<_SELF_,_BASE_>::printStats(std::ostream& out) const
     {
         current= iterVec.getStart();
         if (myUniqueMap.count(current)==0)
