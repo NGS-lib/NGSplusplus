@@ -7,6 +7,18 @@
 #include <algorithm>
 #include <parallel/numeric>
 #include <functional>
+
+
+/**********************************
+      * The function pointer can either be a)
+      * the name of a function taking a site by reference, b) a lambda
+      * function taking a site by reference or c) a member method of a
+      * site using "mem_fun_ref" or "ref". In all cases, the function must return a
+      * non void value.
+      *
+ ***************************/
+
+
 namespace NGS
 {
 template<class _SELF_, typename _BASE_>
@@ -333,12 +345,6 @@ public:
       * sites in the collection. Specifically, this will make an std::vector copy
       * of all elements. It will then run the functor using for_each and return the resulting results.
       *
-      * The function pointer can either be a)
-      * the name of a function taking a site by reference, b) a lambda
-      * function taking a site by reference or c) a member method of a
-      * site using "mem_fun_ref" or "ref". In all cases, the function must return a
-      * non void value.
-      *
       * \param unary_op UnaryOperation : Unary operation to perform on all the sites of the chromosome
       * \return A collection of values computed on each site by unary_op
       */
@@ -357,11 +363,7 @@ public:
       * The vector will contain the elements specified by the functor, so may be any value.
       * Please note, the standard requires the functor given to transform() to be side-effect free.
       *
-      *
-      * The functor can either be a) the name of a function
-      * taking a site by reference, b) a lambda function taking a site by
-      * reference or c) a member method of a site using "mem_fun_ref" or "ref".
-      * The function must have a return value.
+      * The function  passed must have a return value.
       *
       * \exception std::exception : Any exception throw by reserve() or transform()
       * \param unary_op UnaryOperation : Unary operation to perform on the copied sites vector
@@ -386,11 +388,7 @@ public:
       * This function take a pointer to a predicate function. It return a vector containing
       * the elements of our collection that evalue true when the predicate is applied.
       *
-      *
-      * The functor can either be a) the name of a function taking a site as
-      * parameter, b) a lambda function taking a site as parameter or c) a
-      * member method of a site using "mem_fun_ref" or "ref". In all cases, the function
-      * must return a boolean; true if the predicate is true, false otherwise.
+      * The function passed must return a boolean; true if the predicate is true, false otherwise.
       *
       * \param p UnaryPredicate : Unary predicate to evaluate on all sites
       * \return A collection containing all the sites for which the predicate is true
@@ -419,10 +417,7 @@ public:
      *  This function calls remove_if using the supplied predicated, followed by erase(). This will
      *  remove every element that evaluates true from the container  . This will preserve the relative order of the non-removed elements.
      *
-     *  The functor can either be a) the name of a function taking a site as
-     *  parameter, b) a lambda function taking a site as parameter or c) a
-     *  member method of a site using "mem_fun_ref" or "ref". In all cases, the function
-     *  must return a boolean; true if the predicate is true, false otherwise.
+     *  The function must return a boolean; true if the predicate is true, false otherwise.
      *
      * \exception std::exception : Any exception throw by erase() or remove_if()
      * \param pred UnaryPredicate Predicate to test, follows standard pattern
@@ -452,11 +447,7 @@ public:
       *
       * If collection is empty, nothing will be done.
       *
-      * The functor pointer can either be a) the name of a function
-      * taking a site by reference, b) a lambda function taking a site by
-      * reference or c) a member method of a site using "mem_fun_ref". In all
-      * cases, the function must return void (any other return value will be
-      * ignored).
+      * The function must return void (any other return value will be ignored).
       *
       * \param unary_op UnaryOperation : Unary operation to perform on the sites collection
       * \return unary_op, the operation that was performed on all sites
@@ -505,11 +496,7 @@ public:
       *  querying of every site in a way that returns a single value. ex : adding every elem lenght to
       *  obtain the total lenght of all contigs in the collection.
       *
-      *
-      * The function pointer can either be a) the name of a function taking two
-      * parameters, an accumulator and a site or b) a lambda function taking two
-      * parameters, an accumulator and a site. In all cases, the function must
-      * return the new value of the accumulator.
+      *  The function must return the new value of the accumulator.
       *
       * \param binary_op BinaryOperation : Querying function to perform on the sites collection
       * \param init InitialValue The initial value of the "accumulator". Typically 0 if working with an int.
@@ -579,12 +566,7 @@ public:
     }
     /** \brief Indicates if the sites collection is sorted according to a certain comparison
       *
-      * This function take a pointer to a function to determine if the the sites
-      * collection is sorted; this function pointer can either be a) the name of a
-      * function taking two sites as parameters, b) a lambda function taking two
-      * sites as parameters or c) a member method of a site taking another site
-      * as parameter using "mem_fun_ref". In all cases, the function must return
-      * a boolean: true if the first element is "lower" than the second, false
+      * The function passed must return a boolean: true if the first element is "lower" than the second, false
       * otherwise.
       *
       * \param comp Compare : Binary comparison operation to perform on the sites collection
@@ -609,12 +591,7 @@ public:
 
     /** \brief Find the minimal site according to a certain comparison
       *
-      * This function take a pointer to a function to find the minimal site;
-      * this function pointer can either be a) the name of a function taking two
-      * sites as parameters, b) a lambda function taking two sites as parameters
-      * or c) a member method of a site taking another site as parameter using
-      * "mem_fun_ref". In all cases, the function must return a boolean: true if
-      * the first element is "lower" than the second, false otherwise.
+      * The function must return a boolean: true if the first element is "lower" than the second, false otherwise.
       *
       * \param comp Compare : Binary comparison operation to perform on the sites collection
       * \return An iterator to the minimal site
@@ -633,15 +610,12 @@ public:
     }
     /** \brief Find the maximal site according to a certain comparison
       *
-      * This function take a pointer to a function to find the maximal site;
-      * this function pointer can either be a) the name of a function taking two
-      * sites as parameters, b) a lambda function taking two sites as parameters
-      * or c) a member method of a site taking another site as parameter using
-      * "mem_fun_ref". In all cases, the function must return a boolean: true if
-      * the first element is "lower" than the second, false otherwise.
+      *  The function must return a boolean: true if the first element is "lower" than the second, false otherwise.
       *
       * \param comp Compare : Binary comparison operation to perform on the sites collection
       * \return An iterator to the maximal site
+      * \sa minSite
+      * \sa minAndMaxSites
       */
     template<class Compare>
     VecGenConstIter maxSite(Compare comp) const
@@ -682,16 +656,12 @@ public:
         }
 
     }
-
     /** \brief Compute the number of sites for which a certain predicate is true
       *
-      * This function is used to count how many elements in the collection correspond to
+      * Thie function predicate passed is used to count how many elements in the collection correspond to
       * a given collection.
       *
-      * This function pointer can either be a) the name of a function taking a site as
-      * parameter, b) a lambda function taking a site as parameter or c) a
-      * member method of a site using "mem_fun_ref" or "ref". In all cases, the function
-      * must return a boolean; true is the predicate is true, false otherwise.
+      * The function must return a boolean; true is the predicate is true, false otherwise.
       *
       * \param p UnaryPredicate : Unary predicate to evaluate on all sites
       * \return The number of sites for which a certain predicate is true
@@ -711,11 +681,9 @@ public:
     }
     /**< End STL wrappers */
 
-
 };
 
 /**< End inline functions */
-
 
 /**<  Begin public */
 
