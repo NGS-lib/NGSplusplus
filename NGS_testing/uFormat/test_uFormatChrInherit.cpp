@@ -447,8 +447,30 @@ TEST(uBasicNGSCHR_maxSite, EXCEPTIOn)
 {
      ASSERT_TRUE(false);
 }
+/**< DivideItemsIntoBin */
 
-
-
-
+TEST(uBasicNGSCHR_divideItemsIntoBinofSize, NORMAL)
+{
+     ASSERT_TRUE(false);
+}
+TEST(uBasicNGSCHR_divideItemsIntoBinofSize, EMPTYCHR)
+{
+     ASSERT_TRUE(false);
+}
+TEST(uBasicNGSCHR_divideItemsIntoBinofSize, NOCHR)
+{
+     ASSERT_TRUE(false);
+}
+TEST(uBasicNGSCHR_divideItemsIntoNBins, NORMAL)
+{
+     ASSERT_TRUE(false);
+}
+TEST(uBasicNGSCHR_divideItemsIntoNBins, EMPTYCHR)
+{
+     ASSERT_TRUE(false);
+}
+TEST(uBasicNGSCHR_divideItemsIntoNBins, NOCHR)
+{
+     ASSERT_TRUE(false);
+}
 /**<  */

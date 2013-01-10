@@ -11,8 +11,10 @@ enum class ReadMode
     DEFAULT, GRADUAL
 };
 
-/**<
+//TODO, make function that returns all chromosome name
 
+
+/**<
 Explanation on _SELF_
 This is a simple implementation of the curiously recurring template (CRT)
 Note that applying it to our entire class does contribute to code bloat
@@ -75,7 +77,6 @@ protected:
     ReadMode op_mode;
 //    uParser m_parser;
 
-    std::ifstream* ourStream;
     std::map<std::string,_CHROM_>  ExpMap;
 
     std::function<float(const _BASE_*)> sortGetStart=nullptr;
@@ -185,36 +186,9 @@ public:
         return &(ExpMap[chrom]);
     };
 
-
-
-    //Replace with parser // TODO
-    bool isEndfile()
-    {
-        return ourStream->eof();
-    };
-    /**< For gradual loading */
-
-/** \brief Save a file stream in the experiment object.
- * \param  std::ifstream& stream: the stream to save.
- * \return void
- */
-    void setFileStream( std::ifstream& stream)
-    {
-        ourStream = &stream;
-        op_mode = ReadMode::GRADUAL; // TODO: Isn't it weird that the default ReadMode is GRADUAL, when the other possibility is named DEFAULT?
-    };
-
-/** \brief Check if stream parsing is in ReadMode::GRADUAL
-* \return bool: true if the stream parsing is in ReadMode::GRADUAL, false if it is in ReadMode::DEFAULT
- */
-    bool isModeGradual()
-    {
-        return op_mode == ReadMode::GRADUAL;
-    };
-
+    //TODO Check all chrom functions and make EXP wrapeprs
     _BASE_ getSite(std::string chr, int position)const;
     _BASE_ getSite(typename std::vector<_BASE_>::const_iterator posItr)const;
-
 
 
     template<class _SELFPAR_, typename _CHROMPAR_, typename _BASEPAR_>
@@ -223,17 +197,20 @@ public:
     _SELF_ getOverlapping(uGenericNGSChrom<_SELFPAR_,_BASEPAR_> &compareExp, OverlapType type=OverlapType::OVERLAP_PARTIAL);
     _SELF_ getOverlapping(std::string chr, int start, int end, OverlapType type=OverlapType::OVERLAP_PARTIAL);
 
-    void printChromSortStatus()const;
 
      _CHROM_ getSubset(std::string chr, float start, float end, OverlapType options=OverlapType::OVERLAP_PARTIAL);
-     _SELF_ getDistinct( std::string chr, float start, float end, OverlapType type=OverlapType::OVERLAP_PARTIAL);
+     _SELF_  getDistinct( std::string chr, float start, float end, OverlapType type=OverlapType::OVERLAP_PARTIAL);
 
-    /**<  ok from here*/ // TODO: ??
+    int getSubsetCount(const std::string & chr, const float start, const float end, const OverlapType overlap=OverlapType::OVERLAP_PARTIAL);
+    int getSubsetCount(const _BASE_ & subsetReg, const OverlapType overlap=OverlapType::OVERLAP_PARTIAL);
 
+    //TODO MAKE REMOVE SUBSET AND REMOVE DISTINCT
 
-// TODO: Is there a check if the position of an element of a chromosome is greater than the Chrom size?
-// TODO: We need to check if the chrom exists before setting it's size!!
 /** \brief Set the size of a chrom object
+ *
+ *  Take note, the scaffold size is no guarantee. Various tools may map
+ *  elements over the end of a reference/chr. As such, scaffold size is provided as is.
+ *
  * \param std::string chr: the chrom from which to set the size.
  * \param int chrSize: the size of the chrom.
  * \return void
@@ -250,11 +227,12 @@ public:
  */
     int getChrSize(std::string chr)
     {
-        return (ExpMap[chr].getChromSize()); // TODO: check in uFormatChrom what happens when the size is not set.
+        if (ExpMap.count(chr)==0){
+            throw param_throw()<<"Requested chr that does not exist in getChrSize()";
+        }
+        return (ExpMap[chr].getChromSize());
     };
 
-    int getSubsetCount(const std::string & chr, const float start, const float end, const OverlapType overlap=OverlapType::OVERLAP_PARTIAL);
-    int getSubsetCount(const _BASE_ & subsetReg, const OverlapType overlap=OverlapType::OVERLAP_PARTIAL);
 
     void divideItemsIntoBinofSize(int N, SplitType type=SplitType::STRICT);
     void divideItemsIntoNBins(int N, SplitType type=SplitType::STRICT);
@@ -347,6 +325,8 @@ public:
       * \param unary_op UnaryOperation : Unary operation to perform on all the chromosomes of the experiment
       * \return A collection of values computed on each chromosome by unary_op
       */
+
+    //TODO re-write this to call dirrectly on child function
     template<class UnaryOperation>
     auto computeOnOneChrom(UnaryOperation unary_op, const std::string & chr) const -> std::map<std::string, decltype(unary_op(_CHROM_()))>
     {
@@ -373,6 +353,8 @@ public:
       * \param p UnaryPredicate : Unary predicate to evaluate on all chromosomes
       * \return A collection containing all the chromosomes for which the predicate is true
       */
+
+    //TODO, make this return an EXPERIMENT
     template<class UnaryPredicate>
     auto getSpecificChroms(UnaryPredicate pred) const->decltype(ExpMap)
     // NGSExpMap getSpecificChroms(UnaryPredicate pred) const
@@ -411,6 +393,24 @@ public:
         return f;
     }
 
+
+    /** \brief Transform the chromosomes collection by applying a certain function to all chromosomes
+      *
+      * \sa applyOnAllChroms
+      * \param unary_op UnaryOperation : Unary operation to perform on the chromosomes collection
+      * \return unary_op, the operation that was performed on all chromosomes
+      */
+    template<class UnaryFunction>
+    UnaryFunction applyOnAllChroms(const UnaryFunction f)const
+    {
+        for_each(std::begin(ExpMap), std::end(ExpMap), [&f](NGSExpPair element)
+        {
+            f(element.second);
+        });
+        return f;
+    }
+
+
     /** \brief Transform the chromosomes collection by applying a certain function to one chromosomes
       *
       * This function take a pointer to a function to transform a single chrom
@@ -434,30 +434,6 @@ public:
         }
         return f;
     }
-
-    /** \brief Transform the chromosomes collection by applying a certain function to all chromosomes
-      *
-      * This function take a pointer to a function to transform the chromosomes
-      * collection; this function pointer can either be a) the name of a function
-      * taking a chrom by reference, b) a lambda function taking a chrom by
-      * reference or c) a member method of a chrom using "mem_fun_ref". In all
-      * cases, the function must return void (any other return value will be
-      * ignored).
-      *
-      *
-      * \param unary_op UnaryOperation : Unary operation to perform on the chromosomes collection
-      * \return unary_op, the operation that was performed on all chromosomes
-      */
-    template<class UnaryFunction>
-    UnaryFunction applyOnAllChroms(const UnaryFunction f)const
-    {
-        for_each(std::begin(ExpMap), std::end(ExpMap), [&f](NGSExpPair element)
-        {
-            f(element.second);
-        });
-        return f;
-    }
-
 
     /** \brief Transform the sites of the EXP by applying a certain function
       *
@@ -492,6 +468,9 @@ public:
         return f;
     }
 
+    /**********************************************************************************************************
+    // We where HERE!
+    /**********************************************************************************************************
 
     /** \brief load data from Parser, convert to unitary and execute the given function. Does -not- necessarily add to EXP
      *
@@ -918,21 +897,6 @@ bool uGenericNGSExperiment<_SELF_,_CHROM_, _BASE_>::isSorted()const
     return sorted;
 }
 
-// TODO: Not sure the output is what would be expected, a cerr with a bool will print a number...
-// TODO: Should unnamed chrom be mentionned more explicitly?
-// TODO: Should the function print something special when there is no chrom in the exp?
-/** \brief Print a summary of the sort status of every chrom in the experiment (in cerr to avoid polluting output stream).
- * \return void
- */
-template<class _SELF_, typename _CHROM_, typename _BASE_>
-void uGenericNGSExperiment<_SELF_,_CHROM_, _BASE_>::printChromSortStatus()const
-{
-    for( auto it = this->begin(); it!=this->end(); it++)
-    {
-        std::cerr << it->second.getChr() << " is sorted  " <<   it->second.getSortedStatus() <<std::endl;
-    }
-}
-
 /** \brief Return an interator pointing to the element of the chr before the specified value
  *   Note that this is based on the current sort type so may not refer to genomic position.
  *   Requires the data to be sorted first
@@ -982,6 +946,7 @@ typename std::vector<_BASE_>::const_iterator uGenericNGSExperiment<_SELF_,_CHROM
  * \return _BASE_
  *
  */
+ //TODO, check this? Should send chr
 template<class _SELF_, typename _CHROM_, typename _BASE_>
 _BASE_ uGenericNGSExperiment<_SELF_,_CHROM_, _BASE_>::getSite(std::string chr, int position)const
 {
@@ -1003,12 +968,13 @@ _BASE_ uGenericNGSExperiment<_SELF_,_CHROM_, _BASE_>::getSite(std::string chr, i
 template<class _SELF_, typename _CHROM_, typename _BASE_>
 _BASE_ uGenericNGSExperiment<_SELF_,_CHROM_, _BASE_>::getSite(typename std::vector<_BASE_>::const_iterator posItr)const
 {
-    typename NGSExpMap::iterator iterMap;
-    _CHROM_* tempChrom;
+    return *posItr;
+ //   typename NGSExpMap::iterator iterMap;
+ //   _CHROM_* tempChrom;
 
-    tempChrom=&(ExpMap[posItr->second.getChr()]);
+ //   tempChrom=&(ExpMap[posItr->second.getChr()]);
 
-    return tempChrom->getSite( posItr);
+ //   return tempChrom->getSite( posItr);
 }
 
 /** \brief Return a Chrom containing only the sites that overlap the given chr

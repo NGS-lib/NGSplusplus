@@ -21,7 +21,6 @@ template<class _SELF_, typename _BASE_>
 ********************/
 class uGenericNGSChrom
 {
-
     /**<  */
     static_assert(
         std::is_convertible<_BASE_, uGenericNGS<_BASE_>>::value,
@@ -598,7 +597,7 @@ public:
     }
 
     /** \brief Indicates if the sites collection is sorted ascendingly according the function
-      * that was used for the sort (by default: compareStart, which is a sort based on the 
+      * that was used for the sort (by default: compareStart, which is a sort based on the
       * position of the element on the chromosome).
       *
       * \return true if the sites are sorted, false otherwise.
@@ -1386,7 +1385,6 @@ _SELF_ uGenericNGSChrom<_SELF_,_BASE_>::removeSubset(float p_start, float p_end,
     {
         throw e;
     }
-
 }
 /**< Return elements of A that overlap B */
 template <class _SELF_,class _BASE_>
@@ -1426,7 +1424,6 @@ _SELF_ uGenericNGSChrom<_SELF_,_BASE_>::getOverlapping(_OTHER_ &compareChr,Overl
     }
 
 }
-
 
 /**< Return elements of A that overlap B */
 template <class _SELF_,class _BASE_>
