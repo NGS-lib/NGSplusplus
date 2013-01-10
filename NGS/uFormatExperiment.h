@@ -266,12 +266,9 @@ public:
     /**< Wrappers around the STL algorithms */
     /** \brief Accumulate information by querying all chromosomes
       *
-      * This function take a pointer to a function to accumulate some information;
-      * this function pointer can either be a) the name of a function taking two
-      * parameters, an accumulator and a site or b) a lambda function taking two
-      * parameters, an accumulator and a site. In all cases, the function must
-      * return the new value of the accumulator.
-      *
+      * Passes the given function to std::accumulate and runs it on every chrom element. Note that the passed
+      * function needs to take directly a chrom structure as argument and an "accumulator" paramator. the function must return the new value
+      * of the accumulator
       * \param binary_op BinaryOperation : Querying function to perform on the chromosomes collection
       * \param init InitialValue The initial value of the "accumulator"
       * \return The information accumulated by querying all the chromosomes
@@ -292,12 +289,8 @@ public:
 
     /** \brief Compute a value for all chromosomes in the experiment and return the resulting collection
       *
-      * This function take a pointer to a function to perform on all the
-      * chromosomes in the collection; this function pointer can either be a)
-      * the name of a function taking a chromosome by reference, b) a lambda
-      * function taking a chromosome by reference or c) a member method of a
-      * chromosome using "mem_fun_ref". In all cases, the function must return a
-      * non void value.
+      * Takes the pased functions and passes it to std::transform. Stores the result in a Map structure
+      * with each result mapping to the equivalent string. The passed function must return a non-void value.
       *
       * \param unary_op UnaryOperation : Unary operation to perform on all the chromosomes of the experiment
       * \return A collection of values computed on each chromosome by unary_op
@@ -315,20 +308,17 @@ public:
 
     /** \brief Compute a value for all chromosomes in the experiment and return the resulting collection
       *
-      * This function take a pointer to a function to perform on all the
-      * chromosomes in the collection; this function pointer can either be a)
-      * the name of a function taking a chromosome by reference, b) a lambda
-      * function taking a chromosome by reference or c) a member method of a
-      * chromosome using "mem_fun_ref". In all cases, the function must return a
-      * non void value.
+      * Takes the passed function and uses it to run std::transform on the specified chrom structure. The passed function
+      * must return a non void value.
       *
-      * \param unary_op UnaryOperation : Unary operation to perform on all the chromosomes of the experiment
+      * \param unary_op UnaryOperation : Unary operation to perform on all the chromosomes of the experiment.
+      * \param pChr std::string : Chrom/Scaffold name to call the transform on.
+      * \exception param_throw : Thrown if the given pChr does not exist.
       * \return A collection of values computed on each chromosome by unary_op
       */
-
     //TODO re-write this to call dirrectly on child function
     template<class UnaryOperation>
-    auto computeOnOneChrom(UnaryOperation unary_op, const std::string & chr) const -> std::map<std::string, decltype(unary_op(_CHROM_()))>
+    auto computeOnOneChrom(UnaryOperation unary_op, const std::string & pChr) const -> std::map<std::string, decltype(unary_op(_CHROM_()))>
     {
         std::map<std::string, decltype(unary_op(_CHROM_()))> results;
         if (ExpMap.count(chr))
@@ -343,12 +333,9 @@ public:
 
     /** \brief Get the chromosomes for which a certain predicate is true
       *
-      * This function take a pointer to a predicate function; this function
-      * pointer can either be a) * the name of a function taking a chromosome by
-      * reference, b) a lambda function taking a chromosome by reference or c) a
-      * member method of a chromosome using "mem_fun_ref". In all cases, the
-      * function must return a boolean; true is the predicate is true, false
-      * otherwise.
+      *  Returns a subset of the chromosome structures that evaluated true to the given predicate.
+      *  The passed predicated must return true or false.
+      *
       *
       * \param p UnaryPredicate : Unary predicate to evaluate on all chromosomes
       * \return A collection containing all the chromosomes for which the predicate is true
@@ -372,13 +359,7 @@ public:
 
     /** \brief Transform the chromosomes collection by applying a certain function to all chromosomes
       *
-      * This function take a pointer to a function to transform the chromosomes
-      * collection; this function pointer can either be a) the name of a function
-      * taking a site by reference, b) a lambda function taking a site by
-      * reference or c) a member method of a site using "mem_fun_ref". In all
-      * cases, the function must return void (any other return value will be
-      * ignored).
-      *
+      *  Takes the passed function and run them on every chromosome structure, via std::for_each.
       *
       * \param unary_op UnaryOperation : Unary operation to perform on the chromosomes collection
       * \return unary_op, the operation that was performed on all chromosomes
@@ -393,12 +374,12 @@ public:
         return f;
     }
 
-
     /** \brief Transform the chromosomes collection by applying a certain function to all chromosomes
       *
-      * \sa applyOnAllChroms
       * \param unary_op UnaryOperation : Unary operation to perform on the chromosomes collection
       * \return unary_op, the operation that was performed on all chromosomes
+      * \sa applyOnOneChrom
+      * \sa applyOnAllChroms
       */
     template<class UnaryFunction>
     UnaryFunction applyOnAllChroms(const UnaryFunction f)const
@@ -413,16 +394,12 @@ public:
 
     /** \brief Transform the chromosomes collection by applying a certain function to one chromosomes
       *
-      * This function take a pointer to a function to transform a single chrom
-      ; this function pointer can either be a) the name of a function
-      * taking a chrom by reference, b) a lambda function taking a chrom by
-      * reference or c) a member method of a site using "mem_fun_ref". In all
-      * cases, the function must return void (any other return value will be
-      * ignored).
-      *
+      *  Identical to applyOnAllChroms, but the function is run on the specified chrom structure.
       *
       * \param unary_op UnaryOperation : Unary operation to perform on the chromosomes collection
+      * \exception param_throw
       * \return unary_op, the operation that was performed on all chromosomes
+      * \sa applyOnAllChroms
       */
     template<class UnaryFunction>
     UnaryFunction applyOnOneChrom(UnaryFunction f, const std::string & chr)
@@ -437,12 +414,7 @@ public:
 
     /** \brief Transform the sites of the EXP by applying a certain function
       *
-      * This function take a pointer to a function to transform;
-      * this function pointer can either be a) the name of a function
-      * taking a site by reference, b) a lambda function taking a site by
-      * reference or c) a member method of a site using "mem_fun_ref". In all
-      * cases, the function must return void (any other return value will be
-      * ignored).
+      *  The passed function is given to applyOnAllSites for each chromosome structure.
       *
       * \param unary_op UnaryOperation : Unary operation to perform on the sites collection
       * \return unary_op, the operation that was performed on all sites
