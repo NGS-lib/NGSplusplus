@@ -3,17 +3,25 @@
 #include "uRegion.h"
 namespace NGS {
 
-    uBasicNGS::uBasicNGS(uTags p_tags):uGenericNGS(p_tags.getChr(),p_tags.getStart(), p_tags.getEnd(), p_tags.getStrand()){
-
+    /** \brief Constructor taking a uTags as parameter.
+     * \param uTags p_tags: the tag to add to create the uBasicNGS object from.
+     */
+    uBasicNGS::uBasicNGS(uTags p_tags)
+        : uGenericNGS(p_tags.getChr(),p_tags.getStart(), p_tags.getEnd(), p_tags.getStrand())
+    {
         setScoreVector(p_tags.getScoreVector());
     }
 
-    uBasicNGS::uBasicNGS(uRegion p_region):uGenericNGS(p_region.getChr(),p_region.getStart(), p_region.getEnd(), p_region.getStrand()){
+    /** \brief Constructor taking a uRegion as parameter.
+     * \param uRegion p_region: the region to add to create the uBasicNGS object from.
+     */
+    uBasicNGS::uBasicNGS(uRegion p_region)
+        : uGenericNGS(p_region.getChr(),p_region.getStart(), p_region.getEnd(), p_region.getStrand())
+    {
         setScoreVector(p_region.getScoreVector());
     }
 
     /** \brief Copy constructor
-     *
      * \param copyCop : The object to instaciate  from.
      */
     uBasicNGSChrom::uBasicNGSChrom(const uGenericNGSChrom<uBasicNGSChrom,uBasicNGS> & copyCop)
@@ -27,8 +35,11 @@ namespace NGS {
         chromSize=copyCop.getChromSize();
     }
 
-    uBasicNGSChrom::uBasicNGSChrom(const uBasicNGSChrom& initFrom){
-
+    /** \brief Copy constructor
+     * \param const uBasicNGSChrom& initFrom: the uBasicNGSChrom to copy.
+     */
+    uBasicNGSChrom::uBasicNGSChrom(const uBasicNGSChrom& initFrom)
+    {
         VecSites=initFrom.returnVecData();
         chr= initFrom.getChr();
         m_isSorted=initFrom.m_isSorted;
@@ -36,8 +47,11 @@ namespace NGS {
         sortGetEnd=initFrom.sortGetEnd;
         m_comptFunc=initFrom.m_comptFunc;
         chromSize=initFrom.chromSize;
-
     }
+
+    /** \brief Assignment operator overload to copy a uBagicNGSChrom.
+     * \param const uBasicNGSChrom& copFrom: the uBasicNGSChrom to copy.
+     */
     uBasicNGSChrom& uBasicNGSChrom::operator=(const uBasicNGSChrom& copFrom)
     {
 
@@ -51,6 +65,4 @@ namespace NGS {
 
         return *this;
     }
-
-
 }

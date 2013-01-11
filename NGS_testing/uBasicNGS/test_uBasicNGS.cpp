@@ -66,6 +66,8 @@ TEST(uBasicNGSTest, NOCHRCTR){
 }
 /**< End Constructor */
 
+
+
 /**< Copy Constructor and implicit conversion */
 TEST(uBasicNGSTest, CPYOPP){
  uBasicNGS uTest("chr1", 100, 200,StrandDir::REVERSE, 0.4);

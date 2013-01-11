@@ -17,9 +17,9 @@ class TestExp : public testing::Test {
  protected:
 /**< As always, this is inclusive so 100-199 is of size 100 */
   virtual void SetUp() {
-    uExpTest.addSite(uBasicNGS("chr1", 300, 500, 0.1f));
-    uExpTest.addSite(uBasicNGS("chr1", 100, 199,0.5f));
-    uExpTest.addSite(uBasicNGS("chr1", 100, 299,0.3f));
+    uExpTest.addData(uBasicNGS("chr1", 300, 500, 0.1f));
+    uExpTest.addData(uBasicNGS("chr1", 100, 199,0.5f));
+    uExpTest.addData(uBasicNGS("chr1", 100, 299,0.3f));
   }
 uBasicNGSExperiment uExpTest;
 };
@@ -29,13 +29,11 @@ TEST_F(TestExp, SORTEXP){
     EXPECT_FALSE(uExpTest.isSorted());
     uExpTest.sortSites();
     EXPECT_TRUE(uExpTest.isSorted());
-    uExpTest.addSite(uBasicNGS("chr1", 2, 50));
+    uExpTest.addData(uBasicNGS("chr1", 2, 50));
     EXPECT_FALSE(uExpTest.isSorted());
     uExpTest.sortSites();
     EXPECT_TRUE(uExpTest.isSorted());
 }
-
-
 TEST_F(TestExp, SORTCUSTOM){
 
     auto comp=[](const uBasicNGS & item1, const uBasicNGS & item2){
@@ -45,8 +43,8 @@ TEST_F(TestExp, SORTCUSTOM){
     EXPECT_FALSE(uExpTest.isSorted());
     uExpTest.sortSites(comp);
     EXPECT_TRUE(uExpTest.isSorted());
-    uExpTest.addSite(uBasicNGS("chr1", 2, 50, 0.05f));
-    uExpTest.addSite(uBasicNGS("chr1", 2, 50, 0.7f));
+    uExpTest.addData(uBasicNGS("chr1", 2, 50, 0.05f));
+    uExpTest.addData(uBasicNGS("chr1", 2, 50, 0.7f));
     EXPECT_FALSE(uExpTest.isSorted());
     uExpTest.sortSites();
     EXPECT_TRUE(uExpTest.isSorted());
@@ -55,8 +53,8 @@ TEST_F(TestExp, SORTCUSTOM){
 
 TEST_F(TestExp, GETSUBSET){
 
-    uExpTest.addSite(uBasicNGS("chr1", 2, 50, 0.05f));
-    uExpTest.addSite(uBasicNGS("chr1", 5, 25, 0.7f));
+    uExpTest.addData(uBasicNGS("chr1", 2, 50, 0.05f));
+    uExpTest.addData(uBasicNGS("chr1", 5, 25, 0.7f));
     uExpTest.sortSites();
     auto resultChrom=uExpTest.getSubset("chr1",99,200);
     EXPECT_EQ(resultChrom.count(), 2);
@@ -66,11 +64,11 @@ TEST_F(TestExp, GETSUBSET){
 
 TEST_F(TestExp, GETSUBSETLARGE){
 
-    uExpTest.addSite(uBasicNGS("chr1", 180000050, 180500000 ));
-    uExpTest.addSite(uBasicNGS("chr1", 180050000, 180500000));
-    uExpTest.addSite(uBasicNGS("chr1", 180550000, 180900000));
-    uExpTest.addSite(uBasicNGS("chr1", 5, 25, 0.7f));
-    uExpTest.addSite(uBasicNGS("chr1", 5, 25, 0.7f));
+    uExpTest.addData(uBasicNGS("chr1", 180000050, 180500000 ));
+    uExpTest.addData(uBasicNGS("chr1", 180050000, 180500000));
+    uExpTest.addData(uBasicNGS("chr1", 180550000, 180900000));
+    uExpTest.addData(uBasicNGS("chr1", 5, 25, 0.7f));
+    uExpTest.addData(uBasicNGS("chr1", 5, 25, 0.7f));
 
     uExpTest.sortSites();
     auto resultChrom=uExpTest.getSubset("chr1",180000000,181000000);
@@ -78,15 +76,14 @@ TEST_F(TestExp, GETSUBSETLARGE){
 
 }
 
-
 TEST_F(TestExp, GETSUBSETCUSTOM){
 
   auto comp=[](const uBasicNGS & item1, const uBasicNGS & item2){
              return item1.getScore() < item2.getScore();
     };
 
-    uExpTest.addSite(uBasicNGS("chr1", 2, 50, 0.05f));
-    uExpTest.addSite(uBasicNGS("chr1", 5, 25, 0.7f));
+    uExpTest.addData(uBasicNGS("chr1", 2, 50, 0.05f));
+    uExpTest.addData(uBasicNGS("chr1", 5, 25, 0.7f));
     auto getScoreFunct=std::mem_fn((float(uBasicNGS::*)()const)&uBasicNGS::getScore);
 
     uExpTest.sortSites(comp,getScoreFunct,getScoreFunct);
