@@ -121,9 +121,6 @@ public:
     virtual void loadWithParser(std::string, std::string);
     void writeAsBedFile(std::ostream& out)const;
 
-
-
-	//TODO Should this be public
     auto begin()->decltype(ExpMap.begin())
     {
         return ExpMap.begin();
@@ -142,52 +139,11 @@ public:
         return ExpMap.cend();
     };
 
-//TODO: Make sure the return is ok
-/** \brief Returns the requested chrom object, if it exists.
- * \param const std::string & chrom: the name of the chrom.
- * \exception ugene_operation_thoow: When the name of the chrom does not exists.
- * \return _CHROM_: a copy(?) of the chrom object
- */
-    _CHROM_ getChrom(const std::string & chrom) const
-    {
-        if (ExpMap.count(chrom)==0)
-        {
-            throw ugene_operation_throw()<<string_error("Requested non-existent Chrom from Exp in getChrom(), value : " +chrom);
-        }
-        return ExpMap.find(chrom)->second;
-    };
 
-/** \brief Returns a const pointer to the requested chrom object, if it exists.
- * \param const std::string & chrom: the name of the chrom.
- * \exception ugene_operation_throw: When the name of the chrom does not exists.
- * \return const _CHROM_*: a const pointer to the chrom object
- */
-    const _CHROM_* getpChrom(const std::string & chrom) const
-    {
-        if (ExpMap.count(chrom)==0)
-        {
-            throw ugene_operation_throw()<<string_error("Required pointer to non-existent Chrom from Exp in getpChrom(), value : " +chrom);
-        }
-        const auto refer=&(ExpMap.find(chrom)->second);
-        return (refer);
-    };
-
-/** \brief Returns a pointer to the requested chrom object, if it exists.
- * \param const std::string & chrom: the name of the chrom.
- * \exception ugene_operation_throw: When the name of the chrom does not exists.
- * \return _CHROM_*: a pointer to the chrom object
- */
-    _CHROM_* getpChrom(const std::string & chrom)
-    {
-        if (ExpMap.count(chrom)==0)
-        {
-            throw ugene_operation_throw()<<string_error("Required pointer to non-existent Chrom from Exp in getpChrom(), value : " +chrom);
-        }
-        return &(ExpMap[chrom]);
-    };
-
-    //TODO Check all chrom functions and make EXP wrapeprs
-    _BASE_ getSite(std::string chr, int position)const;
+    _CHROM_ getChrom(const std::string & chrom) const;
+    const _CHROM_* getpChrom(const std::string & chrom) const;
+    _CHROM_* getpChrom(const std::string & chrom);
+   _BASE_ getSite(std::string chr, int position)const;
     _BASE_ getSite(typename std::vector<_BASE_>::const_iterator posItr)const;
 
 
@@ -201,39 +157,13 @@ public:
      _CHROM_ getSubset(std::string pChr, float pStart, float pEnd, OverlapType options=OverlapType::OVERLAP_PARTIAL);
      _SELF_  getDistinct( std::string pChr, float pStart, float pEnd, OverlapType type=OverlapType::OVERLAP_PARTIAL);
 
+    //TODO MAKE REMOVE SUBSET AND REMOVE DISTINCT
     int getSubsetCount(const std::string & chr, const float start, const float end, const OverlapType overlap=OverlapType::OVERLAP_PARTIAL);
     int getSubsetCount(const _BASE_ & subsetReg, const OverlapType overlap=OverlapType::OVERLAP_PARTIAL);
 
-    //TODO MAKE REMOVE SUBSET AND REMOVE DISTINCT
 
-/** \brief Set the size of a chrom object
- *
- *  Take note, the scaffold size is no guarantee. Various tools may map
- *  elements over the end of a reference/chr. As such, scaffold size is provided as is.
- *
- * \param std::string chr: the chrom from which to set the size.
- * \param int chrSize: the size of the chrom.
- * \return void
- */
-    void setChrSize(std::string chr, int chrSize)
-    {
-        ExpMap[chr].setChromSize(chrSize);
-    };
-
-// TODO: We need to check if the chrom exists before getting it's size!!
-/** \brief Get the size of a chrom object
- * \param std::string chr: the chrom from which to set the size.
- * \return int: the size of the chromosome.
- */
-    int getChrSize(std::string chr)
-    {
-        if (ExpMap.count(chr)==0){
-            throw param_throw() << string_error("Requested chr that does not exist in getChrSize()");
-        }
-        return (ExpMap[chr].getChromSize());
-    };
-
-
+    void setChrSize(std::string chr, int chrSize);
+    int getChrSize(std::string chr);
     void divideItemsIntoBinofSize(int N, SplitType type=SplitType::STRICT);
     void divideItemsIntoNBins(int N, SplitType type=SplitType::STRICT);
 
@@ -750,6 +680,83 @@ void uGenericNGSExperiment<_SELF_,_CHROM_, _BASE_>::writeAsBedFile(std::ostream&
 {
     applyOnAllChroms(bind2nd(mem_fun_ref(&_CHROM_::outputBedFormat), out));
 }
+
+//TODO: Make sure the return is ok
+/** \brief Returns the requested chrom object, if it exists.
+ * \param const std::string & chrom: the name of the chrom.
+ * \exception ugene_operation_thoow: When the name of the chrom does not exists.
+ * \return _CHROM_: a copy(?) of the chrom object
+ */
+template<class _SELF_, typename _CHROM_, typename _BASE_>
+_CHROM_ uGenericNGSExperiment<_SELF_,_CHROM_, _BASE_>::getChrom(const std::string & chrom) const
+{
+    if (ExpMap.count(chrom)==0)
+    {
+        throw ugene_operation_throw()<<string_error("Requested non-existent Chrom from Exp in getChrom(), value : " +chrom);
+    }
+    return ExpMap.find(chrom)->second;
+};
+
+//TODO Check all chrom functions and make EXP wrapeprs
+/** \brief Returns a const pointer to the requested chrom object, if it exists.
+ * \param const std::string & chrom: the name of the chrom.
+ * \exception ugene_operation_throw: When the name of the chrom does not exists.
+ * \return const _CHROM_*: a const pointer to the chrom object
+ */
+template<class _SELF_, typename _CHROM_, typename _BASE_>
+const _CHROM_* uGenericNGSExperiment<_SELF_,_CHROM_, _BASE_>::getpChrom(const std::string & chrom) const
+{
+    if (ExpMap.count(chrom)==0)
+    {
+        throw ugene_operation_throw()<<string_error("Required pointer to non-existent Chrom from Exp in getpChrom(), value : " +chrom);
+    }
+    const auto refer=&(ExpMap.find(chrom)->second);
+    return (refer);
+};
+
+/** \brief Returns a pointer to the requested chrom object, if it exists.
+ * \param const std::string & chrom: the name of the chrom.
+ * \exception ugene_operation_throw: When the name of the chrom does not exists.
+ * \return _CHROM_*: a pointer to the chrom object
+ */
+template<class _SELF_, typename _CHROM_, typename _BASE_>
+_CHROM_* uGenericNGSExperiment<_SELF_,_CHROM_, _BASE_>::getpChrom(const std::string & chrom)
+{
+    if (ExpMap.count(chrom)==0)
+    {
+        throw ugene_operation_throw()<<string_error("Required pointer to non-existent Chrom from Exp in getpChrom(), value : " +chrom);
+    }
+    return &(ExpMap[chrom]);
+};
+
+/** \brief Set the size of a chrom object
+ *
+ *  Take note, the scaffold size is no guarantee. Various tools may map
+ *  elements over the end of a reference/chr. As such, scaffold size is provided as is.
+ *
+ * \param std::string chr: the chrom from which to set the size.
+ * \param int chrSize: the size of the chrom.
+ * \return void
+ */
+template<class _SELF_, typename _CHROM_, typename _BASE_>
+void uGenericNGSExperiment<_SELF_,_CHROM_, _BASE_>::setChrSize(std::string chr, int chrSize)
+{
+    ExpMap[chr].setChromSize(chrSize);
+};
+
+// TODO: We need to check if the chrom exists before getting it's size!!
+/** \brief Get the size of a chrom object
+ * \param std::string chr: the chrom from which to set the size.
+ * \return int: the size of the chromosome.
+ */
+template<class _SELF_, typename _CHROM_, typename _BASE_>
+int uGenericNGSExperiment<_SELF_,_CHROM_, _BASE_>::getChrSize(std::string chr)
+{
+    if (ExpMap.count(chr)==0){
+        throw param_throw() << string_error("Requested chr that does not exist in getChrSize()");
+    }
+    return (ExpMap[chr].getChromSize());
+};
 
 //Return the number of elements in our experiment
 /** \brief Return our element count
