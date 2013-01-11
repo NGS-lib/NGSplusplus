@@ -26,7 +26,7 @@ TEST(uBasicNGSTestHerit, SETSTARTILLEGAL){
  }
  TEST(uBasicNGSTestHerit, SETSENDILLEGAL){
         uBasicNGS uTest("chr1", STARTCASE1, ENDCASE1,StrandDir::REVERSE);
-        /**< Illegal Start */
+        /**< Illegal END */
         EXPECT_ANY_THROW(uTest.setEnd(50));
         EXPECT_ANY_THROW(uTest.setEnd(-20));
  }
@@ -49,12 +49,6 @@ TEST(uBasicNGSTestHerit, SETGETEND){
  }
 
 /**< Add test for StartEnd() */
-
-
-
-
-
-
  TEST(uBasicNGSTestHerit, SETSTRANDFAIL){
         uBasicNGS uTest("chr1", STARTCASE1, ENDCASE1,StrandDir::FORWARD);
         EXPECT_THROW(uTest.setStrand('a'), param_throw);
