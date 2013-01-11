@@ -81,8 +81,3 @@ TEST_F(ChromDivide, SORT){
     EXPECT_FALSE(uChromTestOverlap.isSorted());
 }
 
-}
-
-
-
-
