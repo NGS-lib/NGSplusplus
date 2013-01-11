@@ -153,8 +153,8 @@ public:
      */
     void setSequence(std::string pSeq)
     {
-        if(pSeq.size()!=0)&&(pSeq.size()!=getLenght())
-            throw param_throw()<< "Failling in seqSequence. Sequence size neither null or equal to element size."
+        if(((int)pSeq.size()!=0)&&((int)pSeq.size()!=getLenght()))
+            throw param_throw()<< string_error("Failling in seqSequence. Sequence size neither null or equal to element size.");
         sequence=pSeq;
     };
     /** \brief Get the sequence associated with the element.
@@ -282,13 +282,10 @@ public:
      */
     void setPELenght(int lenght)
     {
-        try
-        {
-            if  (lenght <0)
-                throw param_throw()<"Throwing in setPELenght. Set an invalid PE lenght<0";
 
+            if  (lenght <0)
+                throw param_throw()<<string_error("Throwing in setPELenght. Set an invalid PE lenght<0");
             PELenght=lenght;
-        }
 
     }
     /** \brief Return the PELenght of the element

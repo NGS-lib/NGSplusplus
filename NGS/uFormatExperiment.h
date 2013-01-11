@@ -198,8 +198,8 @@ public:
     _SELF_ getOverlapping(std::string chr, int start, int end, OverlapType type=OverlapType::OVERLAP_PARTIAL);
 
 
-     _CHROM_ getSubset(std::string chr, float start, float end, OverlapType options=OverlapType::OVERLAP_PARTIAL);
-     _SELF_  getDistinct( std::string chr, float start, float end, OverlapType type=OverlapType::OVERLAP_PARTIAL);
+     _CHROM_ getSubset(std::string pChr, float pStart, float pEnd, OverlapType options=OverlapType::OVERLAP_PARTIAL);
+     _SELF_  getDistinct( std::string pChr, float pStart, float pEnd, OverlapType type=OverlapType::OVERLAP_PARTIAL);
 
     int getSubsetCount(const std::string & chr, const float start, const float end, const OverlapType overlap=OverlapType::OVERLAP_PARTIAL);
     int getSubsetCount(const _BASE_ & subsetReg, const OverlapType overlap=OverlapType::OVERLAP_PARTIAL);
@@ -228,7 +228,7 @@ public:
     int getChrSize(std::string chr)
     {
         if (ExpMap.count(chr)==0){
-            throw param_throw()<<"Requested chr that does not exist in getChrSize()";
+            throw param_throw() << string_error("Requested chr that does not exist in getChrSize()");
         }
         return (ExpMap[chr].getChromSize());
     };
@@ -321,7 +321,7 @@ public:
     auto computeOnOneChrom(UnaryOperation unary_op, const std::string & pChr) const -> std::map<std::string, decltype(unary_op(_CHROM_()))>
     {
         std::map<std::string, decltype(unary_op(_CHROM_()))> results;
-        if (ExpMap.count(chr))
+        if (ExpMap.count(pChr))
         {
             transform(std::begin(ExpMap), std::end(ExpMap), std::inserter(results, begin(results)), [&unary_op](NGSExpPair element)
             {
@@ -440,9 +440,9 @@ public:
         return f;
     }
 
-    /**********************************************************************************************************
+
     // We where HERE!
-    /**********************************************************************************************************
+
 
     /** \brief load data from Parser, convert to unitary and execute the given function. Does -not- necessarily add to EXP
      *
@@ -959,12 +959,12 @@ _BASE_ uGenericNGSExperiment<_SELF_,_CHROM_, _BASE_>::getSite(typename std::vect
  *
  */
 template<class _SELF_, typename _CHROM_, typename _BASE_>
-_CHROM_ uGenericNGSExperiment<_SELF_,_CHROM_, _BASE_>::getSubset(std::string chr, float start, float end, OverlapType options)
+_CHROM_ uGenericNGSExperiment<_SELF_,_CHROM_, _BASE_>::getSubset(std::string pChr, float pStart, float pEnd, OverlapType options)
 {
-    if (ExpMap.count(chr)==0)
+    if (ExpMap.count(pChr)==0)
         return _CHROM_();
 
-    return (_CHROM_)ExpMap[chr].getSubset(start,end,options);
+    return (_CHROM_)ExpMap[pChr].getSubset(pStart,pEnd,options);
 }
 
 
@@ -978,17 +978,17 @@ _CHROM_ uGenericNGSExperiment<_SELF_,_CHROM_, _BASE_>::getSubset(std::string chr
  */
 
 template<class _SELF_, typename _CHROM_, typename _BASE_>
-_SELF_ uGenericNGSExperiment<_SELF_,_CHROM_, _BASE_>::getDistinct(std::string chr, float start, float end,  OverlapType options)
+_SELF_ uGenericNGSExperiment<_SELF_,_CHROM_, _BASE_>::getDistinct(std::string pChr, float pStart, float pEnd,  OverlapType options)
 {
     typename NGSExpMap::iterator iterMap;
     _SELF_ returnExp;
     for (iterMap = ExpMap.begin(); iterMap != ExpMap.end(); iterMap++)
     {
-        if (iterMap->first==chr){
+        if (iterMap->first==pChr){
             auto pChrom = this->getpChrom(iterMap->first);
-            returnExp.combineChr(pChrom->getDistinct(start, end) );
+            returnExp.addData(pChrom->getDistinct(pStart, pEnd) );
         }else {
-        returnExp.combineChr(iterMap->second);}
+        returnExp.addData(iterMap->second);}
     }
     return returnExp;
 }

@@ -211,16 +211,6 @@ uTags& uTags::operator= (uTags const& assign_from)
     return *this;
 }
 
-/** \brief Associate a tag with it's PE mate. Currently unused
-*
-* \param pTag: Pointer to another Tag element to associate with
-*
-*/
-void uTags::setMate(uTags* pTag)
-{
-    pMate=pTag;
-}
-
 // TODO: Should this be in parser code?
 /** \brief Load a tag from a string formated in Sam format and enter in member data
  *
@@ -711,187 +701,187 @@ try {
  * \param minimal : If true, do not load every data
  *
  */
-void uTagsExperiment::loadFromSam(std::ifstream& curStream, bool minimal)
-{
-    string lineString;
-    int count=0;
-    ourStream = &curStream;
-    op_mode= ReadMode::DEFAULT;
-/**< Parse Header if header there is */
-    parseSamHeader();
-    try
-    {
-        while(!ourStream->eof())
-        {
-            getline(*ourStream, lineString);
-            /**< Make sure this is not a header */
-            if (ourStream->eof())
-            {
-                cerr<< "Finished loading" << count << " tags" <<endl;
-                break;
-            }
-            {
-
-                if (lineString.size()>5)
-                    addData(move(factory::makeTagfromSamString(lineString,minimal) ));
-                else{
-                #ifdef DEBUG
-                    cerr <<"Skipping the following line as it does not satisfy minimal sam string size" <<endl;
-                    cerr << lineString <<endl;
-                #endif
-
-
-                }
-                count++;
-            }
-        }
-    }
-    catch(elem_throw & e)
-     {
-            #ifdef DEBUG
-            cerr << "caught an exception in loadfromSam"<<endl;
-                #endif
-         string trace;
-
-        if (std::string const * ste =boost::get_error_info<string_error>(e) )
-                trace=*ste;
-
-        e <<string_error(trace+"\n"+"falling from loadFromSam(stream, bool) while loading tag number"+utility::to_string(count) );
-            #ifdef DEBUG
-                    cerr << "Throwing elem_throw" <<endl;
-                #endif
-
-        throw e;
-     }
-    catch(std::exception our_exception)
-    {
-          #ifdef DEBUG
-                   cerr << "caught an exception in loadfromSam"<<endl;
-                #endif
-        throw;
-    }
-}
+//void uTagsExperiment::loadFromSam(std::ifstream& curStream, bool minimal)
+//{
+//    string lineString;
+//    int count=0;
+//    ourStream = &curStream;
+//    op_mode= ReadMode::DEFAULT;
+///**< Parse Header if header there is */
+//    parseSamHeader();
+//    try
+//    {
+//        while(!ourStream->eof())
+//        {
+//            getline(*ourStream, lineString);
+//            /**< Make sure this is not a header */
+//            if (ourStream->eof())
+//            {
+//                cerr<< "Finished loading" << count << " tags" <<endl;
+//                break;
+//            }
+//            {
+//
+//                if (lineString.size()>5)
+//                    addData(move(factory::makeTagfromSamString(lineString,minimal) ));
+//                else{
+//                #ifdef DEBUG
+//                    cerr <<"Skipping the following line as it does not satisfy minimal sam string size" <<endl;
+//                    cerr << lineString <<endl;
+//                #endif
+//
+//
+//                }
+//                count++;
+//            }
+//        }
+//    }
+//    catch(elem_throw & e)
+//     {
+//            #ifdef DEBUG
+//            cerr << "caught an exception in loadfromSam"<<endl;
+//                #endif
+//         string trace;
+//
+//        if (std::string const * ste =boost::get_error_info<string_error>(e) )
+//                trace=*ste;
+//
+//        e <<string_error(trace+"\n"+"falling from loadFromSam(stream, bool) while loading tag number"+utility::to_string(count) );
+//            #ifdef DEBUG
+//                    cerr << "Throwing elem_throw" <<endl;
+//                #endif
+//
+//        throw e;
+//     }
+//    catch(std::exception our_exception)
+//    {
+//          #ifdef DEBUG
+//                   cerr << "caught an exception in loadfromSam"<<endl;
+//                #endif
+//        throw;
+//    }
+//}
 
 /** \brief Parses the header of a Sam file. Used for progressive loading
  *
  * \param curStream : Our input stream, should be opened and validated
  *
  */
-void uTagsExperiment::loadSamHeader(std::ifstream& curStream)
-{
-    setFileStream(curStream);
-    /**< Parse Header if header there is */
-    parseSamHeader();
-}
+//void uTagsExperiment::loadSamHeader(std::ifstream& curStream)
+//{
+//    setFileStream(curStream);
+//    /**< Parse Header if header there is */
+//    parseSamHeader();
+//}
 
 //TODO use parser
-/** \brief Returns the tag parsed from the next line of our sam file. Abort if not in progressive mode
- *
- * \param minimal : If yes, we will not load everything from the line
- *
- */
-uTags uTagsExperiment::nextSamLine(bool minimal)
-{
-    string lineString;
-    uTags tempTag;
-
-    if (op_mode==ReadMode::DEFAULT)
-    {
-
-        #ifdef DEBUG
-            cerr << "Stream not in progressive mode" <<endl;
-        #endif
-
-
-        abort();
-    }
-    if (ourStream==NULL)
-    {
-         #ifdef DEBUG
-             cerr << "Error, trying to load tag from empty stream"<<endl;
-        #endif
-        abort();
-    }
-    if (ourStream->peek()=='@')
-    {
-        #ifdef DEBUG
-              cerr << "Error, header line found. Did you parse the headers?"<<endl;
-        #endif
-        abort();
-    }
-    getline(*ourStream, lineString);
-    if (ourStream->eof()==false)
-        tempTag.loadfromSamString(lineString,minimal);
-
-    return tempTag;
-}
-
-
-/**< To be used when we want to read in gradual mode. Will read every header line and created the appropriate chromosome size */
-/**< Objects */
-/** \brief Parse the Sam header. Use for progressive loading, once our input stream is set.
- *
- */
-void uTagsExperiment::parseSamHeader()
-{
-    string lineString;
-
-    /*   if (op_mode==DEFAULT)
-       {
-           cerr << "Stream not in progressive mode, aborting from parseSamHeader()" <<endl;
-           abort();
-       }
-    */
-    if (ourStream==NULL)
-    {
-
-        #ifdef DEBUG
-              cerr << "Error, trying to load tag from empty stream, aborting from parseSamHeader()"<<endl;
-        #endif
+///** \brief Returns the tag parsed from the next line of our sam file. Abort if not in progressive mode
+// *
+// * \param minimal : If yes, we will not load everything from the line
+// *
+// */
+//uTags uTagsExperiment::nextSamLine(bool minimal)
+//{
+//    string lineString;
+//    uTags tempTag;
+//
+//    if (op_mode==ReadMode::DEFAULT)
+//    {
+//
+//        #ifdef DEBUG
+//            cerr << "Stream not in progressive mode" <<endl;
+//        #endif
+//
+//
+//        abort();
+//    }
+//    if (ourStream==NULL)
+//    {
+//         #ifdef DEBUG
+//             cerr << "Error, trying to load tag from empty stream"<<endl;
+//        #endif
+//        abort();
+//    }
+//    if (ourStream->peek()=='@')
+//    {
+//        #ifdef DEBUG
+//              cerr << "Error, header line found. Did you parse the headers?"<<endl;
+//        #endif
+//        abort();
+//    }
+//    getline(*ourStream, lineString);
+//    if (ourStream->eof()==false)
+//        tempTag.loadfromSamString(lineString,minimal);
+//
+//    return tempTag;
+//}
 
 
-        abort();
-    }
-
-    /**< If header */
-    while (ourStream->peek()=='@')
-    {
-        getline(*ourStream, lineString);
-
-        /**< Parse the line */
-        stringstream Infostream;
-        string temp,chrom, size;
-        int chromsize;
-        Infostream.str(lineString);
-        /**< validate @SQ */
-        Infostream >>temp;
-        /**< Chrom size line? */
-
-        if (temp.find("@SQ")!=string::npos)
-        {
-            string data;
-            string chrom;
-            while (!(Infostream.eof())){
-                Infostream >> data;
-                if (data.find("SN:")!=string::npos){
-                    data.erase(0,3);
-                    chrom=data;
-                }
-                if (data.find("AS:")!=string::npos){
-                    /**< Skip */
-                }
-                if (data.find("LN:")!=string::npos){
-                    data.erase(0,3);
-                    chromsize=utility::stoi(data);
-
-                }
-
-            }
-             this->setChromSize(chrom, chromsize);
-             //this->setChr
-        }
-    }
-}
+///**< To be used when we want to read in gradual mode. Will read every header line and created the appropriate chromosome size */
+///**< Objects */
+///** \brief Parse the Sam header. Use for progressive loading, once our input stream is set.
+// *
+// */
+//void uTagsExperiment::parseSamHeader()
+//{
+//    string lineString;
+//
+//    /*   if (op_mode==DEFAULT)
+//       {
+//           cerr << "Stream not in progressive mode, aborting from parseSamHeader()" <<endl;
+//           abort();
+//       }
+//    */
+//    if (ourStream==NULL)
+//    {
+//
+//        #ifdef DEBUG
+//              cerr << "Error, trying to load tag from empty stream, aborting from parseSamHeader()"<<endl;
+//        #endif
+//
+//
+//        abort();
+//    }
+//
+//    /**< If header */
+//    while (ourStream->peek()=='@')
+//    {
+//        getline(*ourStream, lineString);
+//
+//        /**< Parse the line */
+//        stringstream Infostream;
+//        string temp,chrom, size;
+//        int chromsize;
+//        Infostream.str(lineString);
+//        /**< validate @SQ */
+//        Infostream >>temp;
+//        /**< Chrom size line? */
+//
+//        if (temp.find("@SQ")!=string::npos)
+//        {
+//            string data;
+//            string chrom;
+//            while (!(Infostream.eof())){
+//                Infostream >> data;
+//                if (data.find("SN:")!=string::npos){
+//                    data.erase(0,3);
+//                    chrom=data;
+//                }
+//                if (data.find("AS:")!=string::npos){
+//                    /**< Skip */
+//                }
+//                if (data.find("LN:")!=string::npos){
+//                    data.erase(0,3);
+//                    chromsize=utility::stoi(data);
+//
+//                }
+//
+//            }
+//             this->setChromSize(chrom, chromsize);
+//             //this->setChr
+//        }
+//    }
+//}
 
 /** \brief Write our data in bed format
  *

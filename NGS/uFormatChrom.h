@@ -1060,11 +1060,6 @@ long int uGenericNGSChrom<_SELF_,_BASE_>::countUnique() const
     typename std::vector<_BASE_>::iterator iterVec;
 
     for (iterVec = VecSites.begin() ; iterVec!= VecSites.end(); iterVec++)
-
-//Output functions
-
-    template <class _SELF_,class _BASE_>
-    void uGenericNGSChrom<_SELF_,_BASE_>::printStats(std::ostream& out) const
     {
         current= iterVec.getStart();
         if (myUniqueMap.count(current)==0)
@@ -1394,8 +1389,6 @@ _SELF_ uGenericNGSChrom<_SELF_,_BASE_>::getOverlapping(_OTHER_ &compareChr,Overl
 }
 
 /**< Return elements of A that overlap B */
-template <class _SELF_,class _BASE_>
-template <class _OTHER_>
 /** \brief Wrapper function that returns a chrom structure containing the elements that do notoverlap another chrom structur
  *
  *      This function return a collection. This collection contains every element of THIS that overlaps an element of compareChr. This comparison
