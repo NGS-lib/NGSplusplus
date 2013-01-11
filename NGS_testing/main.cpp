@@ -20,10 +20,10 @@ using namespace NGS;
 TEST(ExperimentDivide, DIVIDECHROMINTONBIN){
 
     uBasicNGSExperiment ourExp;
-    ourExp.addSite(uBasicNGS("chr21", 100, 199));
-    ourExp.addSite(uBasicNGS("chr22", 100, 199));
-    ourExp.addSite(uBasicNGS("chr23", 100, 199));
-    ourExp.addSite(uBasicNGS("chr24", 100, 199));
+    ourExp.addData(uBasicNGS("chr21", 100, 199));
+    ourExp.addData(uBasicNGS("chr22", 100, 199));
+    ourExp.addData(uBasicNGS("chr23", 100, 199));
+    ourExp.addData(uBasicNGS("chr24", 100, 199));
     ourExp.divideItemsIntoNBins(4);
 
     EXPECT_EQ(ourExp.count(),16);
@@ -33,10 +33,10 @@ TEST(ExperimentDivide, DIVIDECHROMINTOBINOFSIZE){
 
     uBasicNGSExperiment ourExp;
 
-    ourExp.addSite(uBasicNGS("chr21", 100, 199));
-    ourExp.addSite(uBasicNGS("chr22", 100, 199));
-    ourExp.addSite(uBasicNGS("chr23", 100, 199));
-    ourExp.addSite(uBasicNGS("chr24", 100, 199));
+    ourExp.addData(uBasicNGS("chr21", 100, 199));
+    ourExp.addData(uBasicNGS("chr22", 100, 199));
+    ourExp.addData(uBasicNGS("chr23", 100, 199));
+    ourExp.addData(uBasicNGS("chr24", 100, 199));
     ourExp.divideItemsIntoBinofSize(50);
     EXPECT_EQ(ourExp.count(),8);
 
@@ -92,7 +92,7 @@ TEST(writeTest, uGenecExpTest){
    // uBasicNGSExperiment testExp;
    //uBasicNGSExperiment<uBasicNGSChrom<uBasicNGS>,uBasicNGS> testExp;
     uTagsExperiment textExp;
-    //testExp.addSite(uBasicNGS("chr21", 300, 800));
+    //testExp.addData(uBasicNGS("chr21", 300, 800));
     textExp.writeAsBedFile(cout);
 
 

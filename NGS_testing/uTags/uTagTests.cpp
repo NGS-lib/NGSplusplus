@@ -99,7 +99,7 @@ TEST(uTagsTest, CopyCTR){
 /**< Testing DivideItemsIntoNBin */
 TEST(uTagsChrTest, DIVIDEINTONBINFAILCHROM){
     uTagsChrom emptyChrom("chr1");
-    emptyChrom.addSite(uTags("chr1",100,200));
+    emptyChrom.addData(uTags("chr1",100,200));
     EXPECT_ANY_THROW(emptyChrom.divideItemsIntoNBins(7));
     //EXPECT_ANY_THROW(uChromTestOverlap.divideItemsIntoNBins(32));
 }
@@ -113,26 +113,26 @@ TEST(uTagsChrTest, distinctChrTest)
     auto chrCopy=emptyChrom.getDistinct(10, 20);
     EXPECT_EQ(chrCopy.count(), 0);
 
-    emptyChrom.addSite(uTags("chr1",100,200));
-    emptyChrom.addSite(uTags("chr1",300,600));
-    emptyChrom.addSite(uTags("chr1",300,700));
+    emptyChrom.addData(uTags("chr1",100,200));
+    emptyChrom.addData(uTags("chr1",300,600));
+    emptyChrom.addData(uTags("chr1",300,700));
     emptyChrom.sortSites();
     std::cerr << emptyChrom.count() <<std::endl;
     chrCopy=emptyChrom.getDistinct(295, 500);
     EXPECT_EQ(1,chrCopy.count());
 
-    emptyChrom.addSite(uTags("chr1",300,600));
-    emptyChrom.addSite(uTags("chr1",300,700));
+    emptyChrom.addData(uTags("chr1",300,600));
+    emptyChrom.addData(uTags("chr1",300,700));
     emptyChrom.sortSites();
     chrCopy=emptyChrom.getDistinct(0, 1);
     EXPECT_EQ(5,chrCopy.count());
 
 
     uTagsChrom newChrom("chr5");
-    newChrom.addSite(uTags("chr5",800, 1400));
-    newChrom.addSite(uTags("chr5",400, 2000));
-    newChrom.addSite(uTags("chr5",400, 2200));
-    newChrom.addSite(uTags("chr5",1000, 3000));
+    newChrom.addData(uTags("chr5",800, 1400));
+    newChrom.addData(uTags("chr5",400, 2000));
+    newChrom.addData(uTags("chr5",400, 2200));
+    newChrom.addData(uTags("chr5",1000, 3000));
     newChrom.sortSites();
     uTagsChrom yar;
     yar=newChrom.getDistinct(300, 900);
@@ -147,10 +147,10 @@ TEST(uTagsExpTest, distinctTest)
     auto chrCopy=emptyExp.getDistinct("chr1",10, 20);
     EXPECT_EQ(0,chrCopy.count());
 
-    emptyExp.addSite(uTags("chr5",800, 1400));
-    emptyExp.addSite(uTags("chr2",400, 2000));
-    emptyExp.addSite(uTags("chr5",400, 2200));
-    emptyExp.addSite(uTags("chr5",1000, 3000));
+    emptyExp.addData(uTags("chr5",800, 1400));
+    emptyExp.addData(uTags("chr2",400, 2000));
+    emptyExp.addData(uTags("chr5",400, 2200));
+    emptyExp.addData(uTags("chr5",1000, 3000));
     emptyExp.sortSites();
     chrCopy=emptyExp.getDistinct("chr5",300, 900);
     EXPECT_EQ(2,chrCopy.count());

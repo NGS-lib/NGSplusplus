@@ -11,7 +11,7 @@
 #include <time.h>
 #include <gtest/gtest.h>
 
-
+#define CHROMDIVIDESIZE 500
 using namespace std;
 using namespace NGS;
 class ChromDivide : public testing::Test {
@@ -26,6 +26,27 @@ class ChromDivide : public testing::Test {
   }
 uBasicNGSChrom uChromTestOverlap;
 };
+
+class StandardChroms : public testing::Test {
+ protected:
+/**< As always, this is inclusive so 100-199 is of size 100 */
+  virtual void SetUp() {
+
+       oneChr.setChr("chr1");
+       oneChr.addData(uBasicNGS("chr1",100,200));
+
+       manyChr.setChr("chr1");
+       manyChr.addData(uBasicNGS("chr1",100,200));
+       manyChr.addData(uBasicNGS("chr1",230,300));
+       manyChr.addData(uBasicNGS("chr1",120,250));
+
+       emptyChr.setChr("chr1");
+  }
+uBasicNGSChrom oneChr;
+uBasicNGSChrom manyChr;
+uBasicNGSChrom emptyChr;
+};
+
 /*
  * Setters/Getters testing - start/end (positions)
  *	Valid cases:
@@ -36,65 +57,103 @@ uBasicNGSChrom uChromTestOverlap;
  *		SETSENDILLEGAL
  */
 TEST(uBasicNGSCHR_avgSiteSize, ONESITE){
-       ASSERT_TRUE(false);
+       uBasicNGSChrom oneChrom("chr1");
+       oneChrom.addData(uBasicNGS("chr1",100,200));
+       EXPECT_EQ(oneChrom.avgSiteSize(), 101);
  }
 TEST(uBasicNGSCHR_avgSiteSize, NOSITE){
-       ASSERT_TRUE(false);
+        uBasicNGSChrom emptyChr("chr1");
+       EXPECT_EQ(emptyChr.avgSiteSize(),0);
  }
  TEST(uBasicNGSCHR_avgSiteSize, MANYSITE){
-       ASSERT_TRUE(false);
+       uBasicNGSChrom manyChr("chr1");
+       manyChr.addData(uBasicNGS("chr1",100,200));
+       manyChr.addData(uBasicNGS("chr1",230,300));
+       manyChr.addData(uBasicNGS("chr1",120,250));
+       EXPECT_EQ(manyChr.avgSiteSize(),((101+71+131)/3));
  }
 /**<  */
  TEST(uBasicNGSCHR_minSiteSize, ONESITE){
-       ASSERT_TRUE(false);
+       uBasicNGSChrom oneChrom("chr1");
+       oneChrom.addData(uBasicNGS("chr1",100,200));
+       EXPECT_EQ(oneChrom.minSiteSize() , 101);
  }
 TEST(uBasicNGSCHR_minSiteSize, NOSITE){
-       ASSERT_TRUE(false);
+       uBasicNGSChrom emptyChr("chr1");
+       EXPECT_EQ(emptyChr.minSiteSize(),0);
  }
  TEST(uBasicNGSCHR_minSiteSize, MANYSITE){
-       ASSERT_TRUE(false);
+       uBasicNGSChrom manyChr("chr1");
+       manyChr.addData(uBasicNGS("chr1",100,200));
+       manyChr.addData(uBasicNGS("chr1",230,300));
+       manyChr.addData(uBasicNGS("chr1",120,250));
+       EXPECT_EQ(manyChr.minSiteSize(),(71));
  }
  /**<  */
  TEST(uBasicNGSCHR_maxSiteSize, ONESITE){
-       ASSERT_TRUE(false);
+       uBasicNGSChrom oneChrom("chr1");
+       oneChrom.addData(uBasicNGS("chr1",100,200));
+       EXPECT_EQ(oneChrom.maxSiteSize() , 101);
  }
 TEST(uBasicNGSCHR_maxSiteSizee, NOSITE){
-       ASSERT_TRUE(false);
+       uBasicNGSChrom emptyChr("chr1");
+       EXPECT_EQ(emptyChr.maxSiteSize(),0);
  }
  TEST(uBasicNGSCHR_maxSiteSize, MANYSITE){
-       ASSERT_TRUE(false);
+       uBasicNGSChrom manyChr("chr1");
+       manyChr.addData(uBasicNGS("chr1",100,200));
+       manyChr.addData(uBasicNGS("chr1",230,300));
+       manyChr.addData(uBasicNGS("chr1",120,250));
+       EXPECT_EQ(manyChr.maxSiteSize(),(101+71+131));
  }
  /**<  */
  TEST(uBasicNGSCHR_sumSiteSize, ONESITE){
-       ASSERT_TRUE(false);
+       uBasicNGSChrom oneChrom("chr1");
+       oneChrom.addData(uBasicNGS("chr1",100,200));
+       EXPECT_EQ(oneChrom.sumSiteSize() , 101);
  }
 TEST(uBasicNGSCHR_sumSiteSize, NOSITE){
-       ASSERT_TRUE(false);
+       uBasicNGSChrom emptyChr("chr1");
+       EXPECT_EQ(emptyChr.sumSiteSize(),0);
  }
  TEST(uBasicNGSCHR_sumSiteSize, MANYSITE){
-       ASSERT_TRUE(false);
+       uBasicNGSChrom manyChr("chr1");
+       manyChr.addData(uBasicNGS("chr1",100,200));
+       manyChr.addData(uBasicNGS("chr1",230,300));
+       manyChr.addData(uBasicNGS("chr1",120,250));
+       EXPECT_EQ(manyChr.sumSiteSize(),131);
  }
 /**<  */
  TEST(uBasicNGSCHR_inferChrSize, ONESITE){
-       ASSERT_TRUE(false);
+       uBasicNGSChrom oneChrom("chr1");
+       oneChrom.addData(uBasicNGS("chr1",100,200));
+       oneChrom.inferChrSize();
+       EXPECT_EQ(oneChrom.getChromSize() , 200);
  }
 TEST(uBasicNGSCHR_inferChrSize, NOSITE){
-       ASSERT_TRUE(false);
+       uBasicNGSChrom emptyChr("chr1");
+       emptyChr.inferChrSize();
+       EXPECT_EQ(emptyChr.getChromSize() , 0);
  }
  TEST(uBasicNGSCHR_inferChrSize, MANYSITE){
-       ASSERT_TRUE(false);
+       uBasicNGSChrom manyChr("chr1");
+       manyChr.addData(uBasicNGS("chr1",100,200));
+       manyChr.addData(uBasicNGS("chr1",230,300));
+       manyChr.addData(uBasicNGS("chr1",120,250));
+       manyChr.inferChrSize();
+       EXPECT_EQ(manyChr.getChromSize() , 300);
  }
 /**<  */
- TEST(uBasicNGSCHR_countUnique, ONESITE){
-       ASSERT_TRUE(false);
+ TEST_F(StandardChroms, uBasicNGSCHR_countUnique_ONESITE){
+       EXPECT_EQ(oneChr.countUnique() , 1);
  }
-TEST(uBasicNGSCHR_countUnique, NOSITE){
-       ASSERT_TRUE(false);
+TEST_F(StandardChroms, uBasicNGSCHR_countUnique_NOSITE){
+         EXPECT_EQ(emptyChr.countUnique() , 0);
  }
- TEST(uBasicNGSCHR_countUnique, MANYSITENOUNIQUE){
-       ASSERT_TRUE(false);
+ TEST_F(StandardChroms, uBasicNGSCHR_countUnique_MANYSITENOUNIQUE){
+       EXPECT_EQ(manyChr.countUnique() , 3);
  }
-TEST(uBasicNGSCHR_countUnique, MANYSITEWITHUNIQUE){
+TEST(StandardChroms, uBasicNGSCHR_countUnique_MANYSITEWITHUNIQUE){
        ASSERT_TRUE(false);
  }
 
@@ -193,11 +252,12 @@ TEST(uBasicNGSCHR_addNRandomSite, MAKECORRECTNUMBER){
 
 
 /**<  getDistinct*/
-TEST_F(ChromSubset, distinctChrTestBorder)
+TEST_F(ChromDivide, distinctChrTestBorder)
 {
-     auto testChrom=uChromSubsetTest.getDistinct(5, 200);
-     EXPECT_EQ(1,testChrom.count());
-
+     ASSERT_TRUE(false);
+  //   auto testChrom=uChromTestOverlap.getDistinct(5, 200);
+  //   EXPECT_EQ(1,testChrom.count());
+}
 TEST(uBasicNGSCHR_getDistinct, NORM)
 {
      uBasicNGSChrom emptyChr("chr2");
@@ -233,10 +293,10 @@ TEST(uBasicNGSCHR_getDistinct, MORECUSTOMSORT)
 }
 /**< Test getSubset, RemoveSubset */
 
-TEST_F(ChromSubset, subsetCountChr)
+TEST_F(ChromDivide, subsetCountChr)
 {
-
-     EXPECT_EQ(3,uChromSubsetTest.getSubsetCount(1, 2000));
+     ASSERT_TRUE(false);
+     //EXPECT_EQ(3,uChromTestOverlap.getSubsetCount(1, 2000));
 }
 
 TEST(uBasicNGSCHR_getSubset, NORMAL)
@@ -319,10 +379,6 @@ TEST(uBasicNGSCHR_getEndFunct, NOTBEENSET)
      ASSERT_TRUE(false);
 }
 
-TEST(uBasicNGSCHR_getEndFunct, NOTBEENSET)
-{
-     ASSERT_TRUE(false);
-}
 
 TEST(uBasicNGSCHR_getCompFunct, BEENSET)
 {
@@ -354,8 +410,6 @@ TEST(uBasicNGSCHR_getSite, INVALID)
 {
      ASSERT_TRUE(false);
 }
-
-    void sortSites(Compare comp,std::function<float(const _BASE_*)> getStart_funct=nullptr,std::function<float(const _BASE_*)> getEnd_funct=nullptr)
 
 /**< SortSites */
 TEST(uBasicNGSCHR_sortSites, DEFAULT)

@@ -1057,11 +1057,11 @@ long int uGenericNGSChrom<_SELF_,_BASE_>::countUnique() const
     int current;
     std::map<int, int >  myUniqueMap;
 
-    typename std::vector<_BASE_>::iterator iterVec;
+   // typename std::vector<_BASE_>::iterator iterVec;
 
-    for (iterVec = VecSites.begin() ; iterVec!= VecSites.end(); iterVec++)
+    for (auto iterVec = VecSites.begin() ; iterVec!= VecSites.end(); iterVec++)
     {
-        current= iterVec.getStart();
+        current= iterVec->getStart();
         if (myUniqueMap.count(current)==0)
             myUniqueMap.insert( std::pair<int,int>(current,current));
     }
@@ -1566,7 +1566,10 @@ template <class _SELF_,class _BASE_>
  */
 void uGenericNGSChrom<_SELF_,_BASE_>:: inferChrSize()
 {
-    this->setChromSize(this->maxSite(comparePos)->getEnd());
+    if (VecSites.size()!=0)
+        this->setChromSize(this->maxSite(comparePos)->getEnd());
+    else
+        this->setChromSize(0);
 }
 
 } // End of namespace NGS

@@ -64,10 +64,6 @@ TEST(uBasicNGSEXP_getConstChromP, VALIDCHROM){
  }
 /**<  */
 
-TEST(uBasicNGSEXP_getConstChromP, VALIDCHROM){
-    // Chromosome pointer, valid and works
-       ASSERT_TRUE(false);
- }
 /**< GetSite */
 TEST(uBasicNGSEXP_getSite, VALID){
        ASSERT_TRUE(false);

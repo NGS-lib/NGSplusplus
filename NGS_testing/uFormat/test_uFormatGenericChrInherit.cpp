@@ -20,7 +20,7 @@ class ChromDivide : public testing::Test {
   virtual void SetUp() {
 
     uChromTestOverlap.setChr("chr1");
-    uChromTestOverlap.addData(uBasicNGS ("chr1", 300, CHROMDIVIDESIZE));
+    uChromTestOverlap.addData(uBasicNGS ("chr1", 300, 500));
     uChromTestOverlap.addData(uBasicNGS("chr1", 100, 199));
     uChromTestOverlap.addData(uBasicNGS("chr1", 100, 299));
   }
@@ -51,9 +51,7 @@ TEST(uBasicNGSCHR_computeOnAllSites, ALLMODIFIED){
 TEST(uBasicNGSCHR_computeOnAllSites, ONEMPTY){
        ASSERT_TRUE(false);
  }
- TEST(uBasicNGSCHR_computeOnAllSites, ONEMPTY){
-       ASSERT_TRUE(false);
- }
+
  TEST(uBasicNGSCHR_computeOnAllSites, THROWUGENE){
        ASSERT_TRUE(false);
  }

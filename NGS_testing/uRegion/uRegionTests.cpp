@@ -28,7 +28,7 @@ TEST(uRegionTest, UsefulCTR){
 
 TEST(uRegionChrTest, DIVIDEINTONBINFAILCHROM){
     uRegionChrom emptyChrom("chr1");
-    emptyChrom.addSite(uRegion("chr1",100,200));
+    emptyChrom.addData(uRegion("chr1",100,200));
     EXPECT_ANY_THROW(emptyChrom.divideItemsIntoNBins(7));
 
 }
