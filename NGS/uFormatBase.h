@@ -212,7 +212,7 @@ public:
     std::string uGenericNGS<_SELF_>::getChr() const
     {
         return m_chr;
-    };
+    }
 
     /** \brief Set the name of the chromosome for the current entry.
      * \return void
@@ -225,7 +225,7 @@ public:
             throw param_throw() << string_error("Throwing in setChr, ID must be of size > 0");
         }
         m_chr=ourm_chr;
-    };
+    }
 
 
     /** \brief Set the name of the chromosome for the current entry.
@@ -235,7 +235,7 @@ public:
     StrandDir uGenericNGS<_SELF_>::getStrand() const
     {
         return m_strand;
-    };
+    }
 
     /** \brief Set the strand for the current entry with a char.
      * \param char pStrand: The value for the strand. Must be either '+' or '-'.
@@ -264,7 +264,7 @@ public:
         {
             throw e;
         }
-    };
+    }
 
     /** \brief Set the strand for the current entry with a StrandDir.
      * \param StrandDir pStrand: The value for the strand. Must be either StrandDir::FORWARD or StrandDir::REVERSE.
@@ -274,7 +274,7 @@ public:
     void uGenericNGS<_SELF_>::setStrand(StrandDir pStrand)
     {
         m_strand=pStrand;
-    };
+    }
 
     /** \brief Check if the orientation of the strand for the current entry is reverse.
      * \return bool: true if the strand is StrandDir::REVERSE. false if the strand is StrandDir::FORWARD.
@@ -316,7 +316,7 @@ public:
 #endif
             throw e;
         }
-    };
+    }
 
     /** \brief Set the end position for the current entry.
      * \param int ourEnd: The end position we wish to set.
@@ -342,7 +342,7 @@ public:
 #endif
             throw e;
         }
-    };
+    }
 
     /** \brief Set the start and end position for the current entry.
      * \param int ourStart: The start position we wish to set.
@@ -373,7 +373,7 @@ public:
 #endif
             throw e;
         }
-    };
+    }
 
 
 
@@ -386,7 +386,7 @@ template <class _SELF_>
 long int uGenericNGS<_SELF_>::getStart() const
 {
     return m_startPos;
-};
+}
 
 /** \brief Get the end position of the current entry.
  * \return long int: the end position of the current entry. Default value is 0.
@@ -395,7 +395,7 @@ template <class _SELF_>
 long int uGenericNGS<_SELF_>::getEnd() const
 {
     return m_endPos;
-};
+}
 
 /** \brief Get the length of the current entry.
  * \return long int: the difference between the ending position and the starting position.
@@ -405,7 +405,7 @@ long int uGenericNGS<_SELF_>::getLenght() const
 {
     /**< 0 based coordinates, so N - N  is a legal fragment covering a single nucleotide at position N */
     return (m_endPos-m_startPos+1);
-};
+}
 
 
 /** \brief Increase size of the element. Coordinates can go no lower then 0,

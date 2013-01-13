@@ -59,81 +59,81 @@ uBasicNGSChrom emptyChr;
 TEST(uBasicNGSCHR_avgSiteSize, ONESITE){
        uBasicNGSChrom oneChrom("chr1");
        oneChrom.addData(uBasicNGS("chr1",100,200));
-       EXPECT_EQ(oneChrom.avgSiteSize(), 101);
+       EXPECT_EQ(101,oneChrom.avgSiteSize());
  }
 TEST(uBasicNGSCHR_avgSiteSize, NOSITE){
         uBasicNGSChrom emptyChr("chr1");
-       EXPECT_EQ(emptyChr.avgSiteSize(),0);
+       EXPECT_EQ(0,emptyChr.avgSiteSize());
  }
  TEST(uBasicNGSCHR_avgSiteSize, MANYSITE){
        uBasicNGSChrom manyChr("chr1");
        manyChr.addData(uBasicNGS("chr1",100,200));
        manyChr.addData(uBasicNGS("chr1",230,300));
        manyChr.addData(uBasicNGS("chr1",120,250));
-       EXPECT_EQ(manyChr.avgSiteSize(),((101+71+131)/3));
+       EXPECT_EQ(((101+71+131)/3),manyChr.avgSiteSize());
  }
 /**<  */
  TEST(uBasicNGSCHR_minSiteSize, ONESITE){
        uBasicNGSChrom oneChrom("chr1");
        oneChrom.addData(uBasicNGS("chr1",100,200));
-       EXPECT_EQ(oneChrom.minSiteSize() , 101);
+       EXPECT_EQ(101,oneChrom.minSiteSize());
  }
 TEST(uBasicNGSCHR_minSiteSize, NOSITE){
        uBasicNGSChrom emptyChr("chr1");
-       EXPECT_EQ(emptyChr.minSiteSize(),0);
+       EXPECT_EQ(0,emptyChr.minSiteSize());
  }
  TEST(uBasicNGSCHR_minSiteSize, MANYSITE){
        uBasicNGSChrom manyChr("chr1");
        manyChr.addData(uBasicNGS("chr1",100,200));
        manyChr.addData(uBasicNGS("chr1",230,300));
        manyChr.addData(uBasicNGS("chr1",120,250));
-       EXPECT_EQ(manyChr.minSiteSize(),(71));
+       EXPECT_EQ(71,manyChr.minSiteSize());
  }
  /**<  */
  TEST(uBasicNGSCHR_maxSiteSize, ONESITE){
        uBasicNGSChrom oneChrom("chr1");
        oneChrom.addData(uBasicNGS("chr1",100,200));
-       EXPECT_EQ(oneChrom.maxSiteSize() , 101);
+       EXPECT_EQ(101,oneChrom.maxSiteSize() );
  }
 TEST(uBasicNGSCHR_maxSiteSizee, NOSITE){
        uBasicNGSChrom emptyChr("chr1");
-       EXPECT_EQ(emptyChr.maxSiteSize(),0);
+       EXPECT_EQ(0,emptyChr.maxSiteSize());
  }
  TEST(uBasicNGSCHR_maxSiteSize, MANYSITE){
        uBasicNGSChrom manyChr("chr1");
        manyChr.addData(uBasicNGS("chr1",100,200));
        manyChr.addData(uBasicNGS("chr1",230,300));
        manyChr.addData(uBasicNGS("chr1",120,250));
-       EXPECT_EQ(manyChr.maxSiteSize(),(101+71+131));
+       EXPECT_EQ((101+71+131),manyChr.maxSiteSize());
  }
  /**<  */
  TEST(uBasicNGSCHR_sumSiteSize, ONESITE){
        uBasicNGSChrom oneChrom("chr1");
        oneChrom.addData(uBasicNGS("chr1",100,200));
-       EXPECT_EQ(oneChrom.sumSiteSize() , 101);
+       EXPECT_EQ(101,oneChrom.sumSiteSize());
  }
 TEST(uBasicNGSCHR_sumSiteSize, NOSITE){
        uBasicNGSChrom emptyChr("chr1");
-       EXPECT_EQ(emptyChr.sumSiteSize(),0);
+       EXPECT_EQ(0,emptyChr.sumSiteSize());
  }
  TEST(uBasicNGSCHR_sumSiteSize, MANYSITE){
        uBasicNGSChrom manyChr("chr1");
        manyChr.addData(uBasicNGS("chr1",100,200));
        manyChr.addData(uBasicNGS("chr1",230,300));
        manyChr.addData(uBasicNGS("chr1",120,250));
-       EXPECT_EQ(manyChr.sumSiteSize(),131);
+       EXPECT_EQ(131,manyChr.sumSiteSize());
  }
 /**<  */
  TEST(uBasicNGSCHR_inferChrSize, ONESITE){
        uBasicNGSChrom oneChrom("chr1");
        oneChrom.addData(uBasicNGS("chr1",100,200));
        oneChrom.inferChrSize();
-       EXPECT_EQ(oneChrom.getChromSize() , 200);
+       EXPECT_EQ(300,oneChrom.getChromSize() );
  }
 TEST(uBasicNGSCHR_inferChrSize, NOSITE){
        uBasicNGSChrom emptyChr("chr1");
        emptyChr.inferChrSize();
-       EXPECT_EQ(emptyChr.getChromSize() , 0);
+       EXPECT_EQ(0,emptyChr.getChromSize() );
  }
  TEST(uBasicNGSCHR_inferChrSize, MANYSITE){
        uBasicNGSChrom manyChr("chr1");
@@ -141,20 +141,27 @@ TEST(uBasicNGSCHR_inferChrSize, NOSITE){
        manyChr.addData(uBasicNGS("chr1",230,300));
        manyChr.addData(uBasicNGS("chr1",120,250));
        manyChr.inferChrSize();
-       EXPECT_EQ(manyChr.getChromSize() , 300);
+       EXPECT_EQ(300,manyChr.getChromSize() );
  }
-/**<  */
+/**<  Count Unique*/
  TEST_F(StandardChroms, uBasicNGSCHR_countUnique_ONESITE){
-       EXPECT_EQ(oneChr.countUnique() , 1);
+       EXPECT_EQ(1,oneChr.countUnique() );
  }
 TEST_F(StandardChroms, uBasicNGSCHR_countUnique_NOSITE){
-         EXPECT_EQ(emptyChr.countUnique() , 0);
+         EXPECT_EQ(0 , emptyChr.countUnique());
  }
  TEST_F(StandardChroms, uBasicNGSCHR_countUnique_MANYSITENOUNIQUE){
-       EXPECT_EQ(manyChr.countUnique() , 3);
+       EXPECT_EQ( 3, manyChr.countUnique());
  }
-TEST(StandardChroms, uBasicNGSCHR_countUnique_MANYSITEWITHUNIQUE){
-       ASSERT_TRUE(false);
+TEST(uBasicNGSCHR_countUnique, MANYSITEWITHUNIQUE){
+       uBasicNGSChrom manyChr("chr1");
+       manyChr.addData(uBasicNGS("chr1",100,200));
+       manyChr.addData(uBasicNGS("chr1",100,200));
+       manyChr.addData(uBasicNGS("chr1",150,200));
+       manyChr.addData(uBasicNGS("chr1",100,2500));
+       manyChr.addData(uBasicNGS("chr1",230,300));
+       manyChr.addData(uBasicNGS("chr1",120,250));
+       EXPECT_EQ(5 , manyChr.countUnique());
  }
 
 /**< Testing DivideItemsIntoNBin */
@@ -193,12 +200,25 @@ TEST_F(ChromDivide, DIVIDECHROMINTOBINOFSIZEEXTEND){
 }
 TEST_F(ChromDivide, DIVIDECHROMINTOBINOFSIZEADD){
     uChromTestOverlap.divideItemsIntoBinofSize(90, SplitType::ADD);
+
     EXPECT_EQ(uChromTestOverlap.count(),8);
 }
 
 /**<  Random generation test*/
+TEST(uBasicNGSCHR_generateRandomSite, NOCHRSIZE){
+       uBasicNGSChrom manyChr("chr1");
+       std::random_device rd;
+       std::mt19937 gen(rd());
+       EXPECT_THROW(manyChr.generateRandomSite(100,gen,0,"test"),param_throw );
+ }
+
 TEST(uBasicNGSCHR_generateRandomSite, MAKEITEM){
-       ASSERT_TRUE(false);
+       uBasicNGSChrom manyChr("chr1");
+       manyChr.inferChrSize();
+       std::random_device rd;
+       std::mt19937 gen(rd());
+       uBasicNGS aItem= manyChr.generateRandomSite(100,gen,0,"test");
+       EXPECT_EQ(100,aItem.getLenght());
  }
 TEST(uBasicNGSCHR_generateRandomSite, MAKEMANYDIFFERENTITEMS){
        ASSERT_TRUE(false);

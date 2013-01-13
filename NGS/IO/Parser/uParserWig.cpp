@@ -144,7 +144,7 @@ uToken uParserWig::getNextEntry()
                         //If not eof
                         int end_pos;
                         int start_pos =0;
-                        float score=0.0f;
+                        float score;
                         int scorePos=0;
                       //  std::cerr << "Getting info " <<std::endl;
                         switch (m_Info.getStepType())
@@ -179,7 +179,7 @@ uToken uParserWig::getNextEntry()
                         ourToken._setParamNoValidate(token_param::CHR,m_Info.getChrom());
 						ourToken._setParamNoValidate(token_param::START_POS,utility::to_string(start_pos));
 						ourToken._setParamNoValidate(token_param::END_POS,utility::to_string(end_pos));
-						ourToken._setParamNoValidate(token_param::SCORE,m_tokens.at(scorePos));
+						ourToken._setParamNoValidate(token_param::SCORE,m_tokens.at(score));
 
                         foundToken=true;
 

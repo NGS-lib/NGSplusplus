@@ -3,6 +3,7 @@
 #include <climits>
 #include <iostream>
 #include <map>
+#include <set>
 #include "utility/utility.h"
 #include <algorithm>
 #include <parallel/numeric>
@@ -837,7 +838,7 @@ _BASE_ uGenericNGSChrom<_SELF_, _BASE_>::generateRandomSite(const int size, std:
         _SELF_ emptyExcl;
         return generateRandomSite(size,engine,emptyExcl,sigma,ID);
     }
-    catch(std::exception &e)
+    catch(param_throw &e)
     {
         throw e;
     }
@@ -865,12 +866,11 @@ _BASE_ uGenericNGSChrom<_SELF_,_BASE_>::generateRandomSite
 
         bool found=false;
         int size = size_;
-
         int max = this->getChromSize();
-
+        if (size >=max)
+            throw param_throw()<<string_error("Asked for element of size larger then scaffold in generateRandomSite()");
         while (!found)
         {
-            int max = this->getChromSize();
             {
                 _BASE_ temptag;
                 if (sigma!=0)
@@ -887,8 +887,8 @@ _BASE_ uGenericNGSChrom<_SELF_,_BASE_>::generateRandomSite
                     temptag.setEnd(center+shift);
                     temptag.setStart(center-shift);
                     temptag.setChr(this->getChr());
-                    //TODO DO MAKE THIS WORK
-                    temptag.setName(ID);
+                    //TODO Either we move name to the base elemtn or we move
+                    //temptag.setName(ID);
                     if ((exclList.getSubset(temptag.getStart(),temptag.getEnd())).count()==0)
                     {
                         found=true;
@@ -901,9 +901,8 @@ _BASE_ uGenericNGSChrom<_SELF_,_BASE_>::generateRandomSite
 
         return returnTag;
     }
-    catch(std::exception & e)
+    catch(param_throw & e)
     {
-
         throw e;
     }
 }
@@ -1053,21 +1052,17 @@ template <class _SELF_, class _BASE_>
  */
 long int uGenericNGSChrom<_SELF_,_BASE_>::countUnique() const
 {
-    long int count=0;
-    int current;
-    std::map<int, int >  myUniqueMap;
-
-   // typename std::vector<_BASE_>::iterator iterVec;
+    std::pair<long long int,long long int> current;
+    std::set< std::pair<long long int,long long int> >  UniqueSet;
 
     for (auto iterVec = VecSites.begin() ; iterVec!= VecSites.end(); iterVec++)
     {
-        current= iterVec->getStart();
-        if (myUniqueMap.count(current)==0)
-            myUniqueMap.insert( std::pair<int,int>(current,current));
+        current.first= iterVec->getStart();
+        current.second = iterVec->getEnd();
+        UniqueSet.insert(current);
     }
-    count=myUniqueMap.size();
+    return UniqueSet.size();
 
-    return count;
 }
 
 
