@@ -54,7 +54,6 @@ namespace NGS {
      */
     uBasicNGSChrom& uBasicNGSChrom::operator=(const uBasicNGSChrom& copFrom)
     {
-
         VecSites=copFrom.returnVecData();
         chr= copFrom.getChr();
         m_isSorted=copFrom.m_isSorted;

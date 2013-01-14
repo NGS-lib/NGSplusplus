@@ -83,7 +83,7 @@ protected:
     std::function<float(const _BASE_*)> sortGetEnd=nullptr ;
     std::function<bool(const _BASE_ &item1, const _BASE_ &item2)> m_comptFunc=compareStart;
 
-    //TODO
+    //TODO Make this function
     void removeChr(const std::string &);
     void inferChrSize();
 
