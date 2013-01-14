@@ -881,20 +881,19 @@ bool uGenericNGSExperiment<_SELF_,_CHROM_, _BASE_>::isSorted()const
  *   Requires the data to be sorted first
  * \param std::string chrom to search
  * \param int value to check
- * \return Iterator pointing to value or nullptr if invalid chr.
+ * \exception param_throw: When the chr value is not present in current experiment.
+ * \return Iterator pointing to value.
  *
  */
 template<class _SELF_, typename _CHROM_, typename _BASE_>
 typename std::vector<_BASE_>::const_iterator uGenericNGSExperiment<_SELF_,_CHROM_, _BASE_>::findPrecedingSite(std::string chr, int position)const
 {
-    typename NGSExpMap::iterator iterMap;
-    _CHROM_* tempChrom;
-    if (ExpMap.count(chr))
+    if (!ExpMap.count(chr))
     {
-        tempChrom=&(ExpMap[chr]);
-        return tempChrom->findPrecedingSite(position);
+        throw param_throw()<<string_error("Failling in uGenericNGSExperiment::findNextSite, value "+chr+" does not exist.\n");
     }
-    return nullptr;
+    auto tempChrom = getpChrom(chr);
+    return tempChrom->findPrecedingSite(position); // TODO: try catch for exception in findNextSite?
 }
 
 /** \brief Return an interator pointing to the element of the chr after the specified value
@@ -902,20 +901,19 @@ typename std::vector<_BASE_>::const_iterator uGenericNGSExperiment<_SELF_,_CHROM
  *   Requires the data to be sorted first
  * \param std::string chrom to search
  * \param int value to check
- * \return Iterator pointing to value or nullptr if invalid chr.
+ * \exception param_throw: When the chr value is not present in current experiment.
+ * \return Iterator pointing to value
  *
  */
 template<class _SELF_, typename _CHROM_, typename _BASE_>
 typename std::vector<_BASE_>::const_iterator uGenericNGSExperiment<_SELF_,_CHROM_, _BASE_>::findNextSite(std::string chr, int position)const
 {
-    typename NGSExpMap::iterator iterMap;
-    _CHROM_* tempChrom;
-    if (ExpMap.count(chr))
+    if (!ExpMap.count(chr))
     {
-        tempChrom=&(ExpMap[chr]);
-        return tempChrom->findPrecedingSite(position);
+        throw param_throw()<<string_error("Failling in uGenericNGSExperiment::findNextSite, value "+chr+" does not exist.\n");
     }
-    return nullptr;
+    auto tempChrom = getpChrom(chr);
+    return tempChrom->findNextSite(position); // TODO: try catch for exception in findNextSite?
 }
 
 /** \brief Get a specific site from a specific chrom. Overloaded to work with position, typically got from findPrecedingor findNext
