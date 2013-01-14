@@ -14,7 +14,7 @@
 using namespace std;
 using namespace NGS;
 
-/**< FIXTURES: Begin */
+/**< pseudo-FIXTURES: Begin */
 class validChroms
 {
 public:
@@ -77,29 +77,48 @@ public:
 	vector<uBasicNGSChrom> m_uBasicNGSChroms;
 };
 
-//class test_uFormatExpInherit_multipleChrom : public testing::Test {
-//public:
-//	test_uFormatExpInherit_multipleChrom() 
-//	{
-//
-//	}
-// protected:
-///**< As always, this is inclusive so 100-199 is of size 100 */
-//  virtual void SetUp() {
-//
-//    uChromTestOverlap.setChr("chr1");
-//    uChromTestOverlap.addData(uBasicNGS ("chr1", 300, CHROMDIVIDESIZE));
-//    uChromTestOverlap.addData(uBasicNGS("chr1", 100, 199));
-//    uChromTestOverlap.addData(uBasicNGS("chr1", 100, 299));
-//  }
-//uBasicNGSChrom uChromTestOverlap;
-//};
+class validExperiments
+{
+public:
+	validExperiments()
+	{
+		validChroms chroms;
+		/**< NoName_Empty */
+		uBasicNGSExperiment NoName_EmptyExp;
+		NoName_EmptyExp.addData(chroms.m_uBasicNGSChroms[0]);
+		m_uBasicNGSExp["NoName_Empty"] = NoName_EmptyExp;
+
+		/**< NoName_1elem */
+		uBasicNGSExperiment NoName_1elemExp;
+		NoName_1elemExp.addData(chroms.m_uBasicNGSChroms[1]);
+		m_uBasicNGSExp["NoName_1elem"] = NoName_1elemExp;
+
+		/**< NoName_3elems */
+		uBasicNGSExperiment NoName_3elemsExp;
+		NoName_3elemsExp.addData(chroms.m_uBasicNGSChroms[2]);
+		m_uBasicNGSExp["NoName_3elems"] = NoName_3elemsExp;
+
+		/**< MultipleChroms */
+		uBasicNGSExperiment MultipleChromsExp;
+		for (size_t i = 2; i < chroms.m_uBasicNGSChroms.size(); i++)
+		{
+			MultipleChromsExp.addData(chroms.m_uBasicNGSChroms[i]); // Chrom with no name and 1 element
+		}
+		m_uBasicNGSExp["MultipleChroms"] = MultipleChromsExp;
 
 
-/**< FIXTURES: End */
+	}
+	uBasicNGSExperiment* getExperiment(const std::string& name)
+	{
+		return &(m_uBasicNGSExp[name]);
+	}
+
+	map<std::string, uBasicNGSExperiment> m_uBasicNGSExp;
+};
+/**< pseudo-FIXTURES: End */
 
 /*
- * Test for the funciton:
+ * Test for the function:
  *		_CHROM_ getChrom(const std::string & chrom) const;
  *	Valid cases:
  *		NONAMECHROM
@@ -110,10 +129,8 @@ public:
 
 TEST(uBasicNGSEXP_GetChrom, NONAMECHROM)
 {
- 	uBasicNGSExperiment anExp;
-	validChroms chroms;
-	anExp.addData(chroms.m_uBasicNGSChroms[1]); // Chrom with no name and 1 element
-	uBasicNGSChrom aChrom = anExp.getChrom("");
+	validExperiments myExperiments;
+	uBasicNGSChrom aChrom = myExperiments.getExperiment("NoName_1elem")->getChrom("");
 	EXPECT_EQ(aChrom.count(), 1);
 	EXPECT_EQ(aChrom.getSite(0).getChr(), "");
 	EXPECT_EQ(aChrom.getSite(0).getStart(), 100);
@@ -122,10 +139,8 @@ TEST(uBasicNGSEXP_GetChrom, NONAMECHROM)
 
 TEST(uBasicNGSEXP_GetChrom, VALIDCHROM)
 {
- 	uBasicNGSExperiment anExp;
-	validChroms chroms;
-	anExp.addData(chroms.m_uBasicNGSChroms[4]); // Chrom with a name and 1 element
-	uBasicNGSChrom aChrom = anExp.getChrom("chr4");
+	validExperiments myExperiments;
+	uBasicNGSChrom aChrom = myExperiments.getExperiment("MultipleChroms")->getChrom("chr4");
 	EXPECT_EQ(aChrom.count(), 1);
 	EXPECT_EQ(aChrom.getSite(0).getChr(), "chr4");
 	EXPECT_EQ(aChrom.getSite(0).getStart(), 100);
