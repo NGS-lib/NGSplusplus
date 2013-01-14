@@ -82,11 +82,6 @@ protected:
     std::function<float(const _BASE_*)> sortGetStart=nullptr;
     std::function<float(const _BASE_*)> sortGetEnd=nullptr ;
     std::function<bool(const _BASE_ &item1, const _BASE_ &item2)> m_comptFunc=compareStart;
-    //TODO finish these implementations
-    void removeSite(std::string chr,int position);
-    void removeSite(std::string chr,int start,int end);
-    void removeSite(std::string chr,VecGenConstIter position);
-    void removeSite(std::string chr,VecGenConstIter start,VecGenConstIter end);
 
     //TODO
     void removeChr(const std::string &);
@@ -102,6 +97,7 @@ public:
 
     //TODO code these overloads
     void addData(const _BASE_ &);
+    // TODO: if chr do not exist, we keep sorted status. Otherwise sorted status should be false and size should be set to highest value between both chr.
     void addData(const _CHROM_ &);
     void addData(const _SELF_ &);
     //TODO Code this
@@ -114,6 +110,11 @@ public:
     bool isSorted()const;
     typename std::vector<_BASE_>::const_iterator findPrecedingSite(std::string chr, int position)const;
     typename std::vector<_BASE_>::const_iterator findNextSite(std::string chr, int position)const;
+    //TODO finish these implementations
+    void removeSite(std::string chr,int position);
+    void removeSite(std::string chr,int start,int end);
+    void removeSite(std::string chr,VecGenConstIter position);
+    void removeSite(std::string chr,VecGenConstIter start,VecGenConstIter end);
 
     virtual void loadFromTabFile(std::ifstream& stream);
    // virtual void loadWithParser(uParser&, std::string);
@@ -581,11 +582,11 @@ void uGenericNGSExperiment<_SELF_,_CHROM_, _BASE_>::removeSite(std::string chr, 
     tempChrom=&(ExpMap[chr]);
     try
     {
-        if (position>=tempChrom.count())
+        if (position>=tempChrom->count())
         {
             abort();
         }
-        tempChrom.removeSite(position);
+        tempChrom->removeSite(position);
 
     }
     catch(...)
@@ -879,8 +880,8 @@ bool uGenericNGSExperiment<_SELF_,_CHROM_, _BASE_>::isSorted()const
 /** \brief Return an interator pointing to the element of the chr before the specified value
  *   Note that this is based on the current sort type so may not refer to genomic position.
  *   Requires the data to be sorted first
- * \param std::string chrom to search
- * \param int value to check
+ * \param std::string chr: chrom to search
+ * \param int position: value to evaluate from (based on the sort type: i.e.: if sorted by score, it will use score as position)
  * \exception param_throw: When the chr value is not present in current experiment.
  * \return Iterator pointing to value.
  *
@@ -890,7 +891,7 @@ typename std::vector<_BASE_>::const_iterator uGenericNGSExperiment<_SELF_,_CHROM
 {
     if (!ExpMap.count(chr))
     {
-        throw param_throw()<<string_error("Failling in uGenericNGSExperiment::findNextSite, value "+chr+" does not exist.\n");
+        throw param_throw()<<string_error("Failling in uGenericNGSExperiment::findPrecedingSite, value "+chr+" does not exist.\n");
     }
     auto tempChrom = getpChrom(chr);
     return tempChrom->findPrecedingSite(position); // TODO: try catch for exception in findNextSite?
@@ -899,8 +900,8 @@ typename std::vector<_BASE_>::const_iterator uGenericNGSExperiment<_SELF_,_CHROM
 /** \brief Return an interator pointing to the element of the chr after the specified value
  *   Note that this is based on the current sort type so may not refer to genomic position.
  *   Requires the data to be sorted first
- * \param std::string chrom to search
- * \param int value to check
+ * \param std::string chr: chrom to search
+ * \param int position: value to evaluate from (based on the sort type: i.e.: if sorted by score, it will use score as position)
  * \exception param_throw: When the chr value is not present in current experiment.
  * \return Iterator pointing to value
  *
@@ -942,12 +943,6 @@ template<class _SELF_, typename _CHROM_, typename _BASE_>
 _BASE_ uGenericNGSExperiment<_SELF_,_CHROM_, _BASE_>::getSite(typename std::vector<_BASE_>::const_iterator posItr)const
 {
     return *posItr;
- //   typename NGSExpMap::iterator iterMap;
- //   _CHROM_* tempChrom;
-
- //   tempChrom=&(ExpMap[posItr->second.getChr()]);
-
- //   return tempChrom->getSite( posItr);
 }
 
 /** \brief Return a Chrom containing only the sites that overlap the given chr

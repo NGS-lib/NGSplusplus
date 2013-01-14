@@ -73,6 +73,7 @@ public:
 		chrom_7.addData(uBasicNGS("chr7",200,350));
 		chrom_7.addData(uBasicNGS("chr7",300,400));
 		m_uBasicNGSChroms.push_back(chrom_7);
+
 	}
 	vector<uBasicNGSChrom> m_uBasicNGSChroms;
 };
@@ -165,26 +166,24 @@ TEST(uBasicNGSEXP_GetChrom, NOCHROMTHROWEXC)
  
 TEST(uBasicNGSEXP_getpChrom, NONAMECHROM)
 {
- 	uBasicNGSExperiment anExp;
-	validChroms chroms;
-	anExp.addData(chroms.m_uBasicNGSChroms[1]); // Chrom with no name and 1 element
-	uBasicNGSChrom* aChrom = anExp.getpChrom("");
+	validExperiments myExperiments;
+	uBasicNGSChrom* aChrom = myExperiments.getExperiment("NoName_1elem")->getpChrom("");
 	EXPECT_EQ(aChrom->count(), 1);
 	EXPECT_EQ(aChrom->getSite(0).getChr(), "");
 	EXPECT_EQ(aChrom->getSite(0).getStart(), 100);
 	EXPECT_EQ(aChrom->getSite(0).getEnd(), 200);
+//	EXPECT_NO_THROW(aChrom->addData(uBasicNGS("chr4", 1000, 2000))); // TODO: Why does this fail?
 }
 
 TEST(uBasicNGSEXP_getpChrom, VALIDCHROM)
 {
- 	uBasicNGSExperiment anExp;
-	validChroms chroms;
-	anExp.addData(chroms.m_uBasicNGSChroms[4]); // Chrom with a name and 1 element
-	uBasicNGSChrom* aChrom = anExp.getpChrom("chr4");
+	validExperiments myExperiments;
+	uBasicNGSChrom* aChrom = myExperiments.getExperiment("MultipleChroms")->getpChrom("chr4");
 	EXPECT_EQ(aChrom->count(), 1);
 	EXPECT_EQ(aChrom->getSite(0).getChr(), "chr4");
 	EXPECT_EQ(aChrom->getSite(0).getStart(), 100);
 	EXPECT_EQ(aChrom->getSite(0).getEnd(), 200);
+//	EXPECT_NO_THROW(aChrom->addData(uBasicNGS("chr4", 1000, 2000))); // TODO: Why does this fail?
 }
 
 TEST(uBasicNGSEXP_getpChrom, NOCHROMTHROWEXC)
@@ -192,21 +191,6 @@ TEST(uBasicNGSEXP_getpChrom, NOCHROMTHROWEXC)
 	uBasicNGSExperiment anExp;
 	EXPECT_THROW(anExp.getpChrom(""), ugene_operation_throw);
 }
-
-
-//TEST(uBasicNGSEXP_getChromP, NONAMECHROM){
-//    //Chromosome pointer no name and works
-//       ASSERT_TRUE(false);
-// }
-//TEST(uBasicNGSEXP_getChromP, NOCHROMTHROWEXC){
-//    //Chromosome pointer not exist and throw
-//       ASSERT_TRUE(false);
-// }
-//TEST(uBasicNGSEXP_getChromP, VALIDCHROM){
-//    // Chromosome pointer, valid and works
-//       ASSERT_TRUE(false);
-// }
-///**<  */
 
 /*
  * Test for the function:
@@ -217,38 +201,87 @@ TEST(uBasicNGSEXP_getpChrom, NOCHROMTHROWEXC)
  *	Invalid cases:
  *		NOCHROMTHROWEXC
  */
- 
 
-// TEST(uBasicNGSEXP_getConstChromP, NONAMECHROM){
-//    //Chromosome pointer no name and works
-//       ASSERT_TRUE(false);
-// }
-//TEST(uBasicNGSEXP_getConstChromP, NOCHROMTHROWEXC){
-//    //Chromosome pointer not exist and throw
-//       ASSERT_TRUE(false);
-// }
-//TEST(uBasicNGSEXP_getConstChromP, VALIDCHROM){
-//    // Chromosome pointer, valid and works
-//       ASSERT_TRUE(false);
-// }
-///**<  */
-//
-///**< GetSite */
-//TEST(uBasicNGSEXP_getSite, VALID){
-//       ASSERT_TRUE(false);
-// }
-//TEST(uBasicNGSEXP_getSite, OUTOFBOUND){
-//       ASSERT_TRUE(false);
-// }
-// TEST(uBasicNGSEXP_getSite, BELOW0){
-//       ASSERT_TRUE(false);
-// }
-// TEST(uBasicNGSEXP_getSite, VALIDITERRATOR){
-//       ASSERT_TRUE(false);
-// }
-// TEST(uBasicNGSEXP_getSite, INVALIDITERATOR){
-//       ASSERT_TRUE(false);
-// }
+TEST(uBasicNGSEXP_getpChromConst, NONAMECHROM)
+{
+	validExperiments myExperiments;
+	const uBasicNGSChrom* aChrom = myExperiments.getExperiment("NoName_1elem")->getpChrom("");
+	EXPECT_EQ((int)(aChrom->avgSiteSize()), 101);
+	EXPECT_EQ(aChrom->count(), 1);
+	EXPECT_EQ(aChrom->getSite(0).getChr(), "");
+	EXPECT_EQ(aChrom->getSite(0).getStart(), 100);
+	EXPECT_EQ(aChrom->getSite(0).getEnd(), 200);
+	// TODO: I don't see a way to test if it is impossible to call a non-const function since it won't compile.
+//	EXPECT_THROW(aChrom->addData(uBasicNGS("chr4", 1000, 2000)), ugene_exception_base);
+}
+
+TEST(uBasicNGSEXP_getpChromConst, VALIDCHROM)
+{
+	validExperiments myExperiments;
+	const uBasicNGSChrom* aChrom = myExperiments.getExperiment("MultipleChroms")->getpChrom("chr4");
+	EXPECT_EQ((int)(aChrom->avgSiteSize()), 101);
+	EXPECT_EQ(aChrom->count(), 1);
+	EXPECT_EQ(aChrom->getSite(0).getChr(), "chr4");
+	EXPECT_EQ(aChrom->getSite(0).getStart(), 100);
+	EXPECT_EQ(aChrom->getSite(0).getEnd(), 200);
+	// TODO: I don't see a way to test if it is impossible to call a non-const function since it won't compile.
+//	EXPECT_THROW(aChrom->addData(uBasicNGS("chr4", 1000, 2000)), ugene_exception_base);
+}
+
+TEST(uBasicNGSEXP_getpChromConst, NOCHROMTHROWEXC)
+{
+	uBasicNGSExperiment anExp;
+	try
+	{
+		const uBasicNGSChrom* aChrom = anExp.getpChrom("chr4");
+		EXPECT_TRUE(false);
+		aChrom->avgSiteSize(); /**< To avoid warning: unused variable */
+	}
+	catch (ugene_exception_base& e)
+	{
+		EXPECT_TRUE(true);
+	}
+}
+
+/*
+ * Test for the function:
+ *		_BASE_ getSite(std::string chr, int position)const;
+ *		_BASE_ getSite(typename std::vector<_BASE_>::const_iterator posItr)const;
+ *	Valid cases:
+ *		VALID
+ *		VALIDITERRATOR
+ *	Invalid cases:
+ *		OUTOFBOUND
+ *		BELOW0
+ */
+
+TEST(uBasicNGSEXP_getSite, VALID){
+	validExperiments myExperiments;
+	EXPECT_EQ(myExperiments.getExperiment("MultipleChroms")->getSite("chr4", 0).getChr(), "chr4");
+	EXPECT_EQ(myExperiments.getExperiment("MultipleChroms")->getSite("chr4", 0).getStart(), 100);
+	EXPECT_EQ(myExperiments.getExperiment("MultipleChroms")->getSite("chr4", 0).getEnd(), 200);
+}
+
+TEST(uBasicNGSEXP_getSite, VALIDITERRATOR){
+	validExperiments myExperiments;
+	myExperiments.getExperiment("MultipleChroms")->sortSites();
+	auto it = myExperiments.getExperiment("MultipleChroms")->findNextSite("chr5", 0);
+	EXPECT_EQ(myExperiments.getExperiment("MultipleChroms")->getSite(it).getChr(), "chr5");
+	EXPECT_EQ(myExperiments.getExperiment("MultipleChroms")->getSite(it).getStart(), 100); 
+	EXPECT_EQ(myExperiments.getExperiment("MultipleChroms")->getSite(it).getEnd(),  200);
+}
+
+TEST(uBasicNGSEXP_getSite, OUTOFBOUND){
+	validExperiments myExperiments;
+	EXPECT_THROW(myExperiments.getExperiment("MultipleChroms")->getSite("chr4", 1), std::exception);
+}
+
+TEST(uBasicNGSEXP_getSite, BELOW0){
+	validExperiments myExperiments;
+	EXPECT_THROW(myExperiments.getExperiment("MultipleChroms")->getSite("chr4", -1), std::exception);
+}
+
+
 // /**< GetOverlapping */
 // TEST(uBasicNGSEXP_getOverlapping, VALIDEXP){
 //       ASSERT_TRUE(false);
