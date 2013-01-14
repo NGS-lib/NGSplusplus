@@ -925,7 +925,7 @@ typename std::vector<_BASE_>::const_iterator uGenericNGSExperiment<_SELF_,_CHROM
  */
  //TODO, check this? Should send chr
 template<class _SELF_, typename _CHROM_, typename _BASE_>
-_BASE_ uGenericNGSExperiment<_SELF_,_CHROM_, _BASE_>::getSite(std::string chr, int position)const
+_BASE_ uGenericNGSExperiment<_SELF_,_CHROM_, _BASE_>::getSite(std::string chr, int position) const
 {
     auto tempChrom = getpChrom(chr);
     return tempChrom->getSite(position);

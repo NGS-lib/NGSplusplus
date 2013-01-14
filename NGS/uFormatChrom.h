@@ -274,11 +274,9 @@ public:
      */
     void setChromSize(long long int chromS)
     {
-        {
-            if (chromS<0)
-                throw param_throw()<<string_error("failling in setChromSize, value "+utility::to_string(chromS)+" is below 0\n");
-            chromSize= chromS;
-        }
+        if (chromS<0)
+            throw param_throw()<<string_error("failling in setChromSize, value "+utility::to_string(chromS)+" is below 0\n");
+        chromSize= chromS;
     };
 
     /** \brief return name of the scaffold/chrom
@@ -857,7 +855,7 @@ template <class _OTHER_>
  * \sa generateRandomSite
  */
 _BASE_ uGenericNGSChrom<_SELF_,_BASE_>::generateRandomSite
-(const int size_,std::mt19937& engine,const _OTHER_ &exclList, const int sigma, const std::string ID) const
+(const int pSize,std::mt19937& engine,const _OTHER_ &exclList, const int sigma, const std::string ID) const
 {
     //TODO Sanity check here to make sure it is possible to generate the asked for tag.
     try
@@ -865,7 +863,7 @@ _BASE_ uGenericNGSChrom<_SELF_,_BASE_>::generateRandomSite
         _BASE_ returnTag;
 
         bool found=false;
-        int size = size_;
+        int size = pSize;
         int max = this->getChromSize();
         if (size >=max)
             throw param_throw()<<string_error("Asked for element of size larger then scaffold in generateRandomSite()");
@@ -884,7 +882,7 @@ _BASE_ uGenericNGSChrom<_SELF_,_BASE_>::generateRandomSite
                     //Generating our distribution at each call is probably needlesly heavy.. check to optimize this in time.
                     std::uniform_int_distribution<int> unif((shift+1), (max-shift));
                     int center = unif(engine);
-                    temptag.setEnd(center+shift);
+                    temptag.setEnd(center+shift-1);
                     temptag.setStart(center-shift);
                     temptag.setChr(this->getChr());
                     //TODO Either we move name to the base elemtn or we move
@@ -997,7 +995,6 @@ unsigned long long uGenericNGSChrom<_SELF_,_BASE_>::sumSiteSize() const
     }, 0ULL);
 }
 
-
 template <class _SELF_, class _BASE_>
 /** \brief Returns size of smallest element
  *
@@ -1009,18 +1006,10 @@ template <class _SELF_, class _BASE_>
  */
 unsigned long long uGenericNGSChrom<_SELF_ ,_BASE_>::minSiteSize() const
 {
-    try
-    {
         if (this->count() == 0)
-            return ULONG_MAX;
-
+            return 0;
 
         return minSite(compareLenght)->getLenght();
-    }
-    catch(std::exception & e)
-    {
-        throw e;
-    }
 }
 
 template <class _SELF_, class _BASE_>
@@ -1183,8 +1172,11 @@ typename std::vector<_BASE_>::const_iterator uGenericNGSChrom<_SELF_,_BASE_>::fi
         if (VecSites.size()==0)
             return VecSites.end();
 
-        if ((m_isSorted==false)||(sortGetStart==nullptr)||(sortGetEnd==nullptr))
-            throw ugene_exception_base();
+        if (m_isSorted==false)
+            throw unsorted_throw() <<string_error("findPrecedingSite called on unsorted vector \n") ;
+        if ((sortGetStart==nullptr)||(sortGetEnd==nullptr))
+            throw ugene_exception_base() <<string_error(" findPrecedingSite called on chrom without appropriate start or end function\n") ;
+
         /**< Return true comparitor if item1 smaller then item 2 */
         auto comp = [&] (const float &item1, const _BASE_ &item2)
         {
@@ -1201,12 +1193,17 @@ typename std::vector<_BASE_>::const_iterator uGenericNGSChrom<_SELF_,_BASE_>::fi
         /**<Return the item greater then value*/
         return (upper);
     }
-    catch (std::exception & e)
+    catch (unsorted_throw & e)
     {
 #ifdef DEBUG
-        std::cerr << "Calling findNextSite on unsorted vector or you did not provide an approriate get function" <<std::endl;
-        std::cerr << "is Nullprt Start "<< (sortGetStart==nullptr) <<std::endl;
-        std::cerr << "is Nullprt End "<< (sortGetEnd==nullptr) <<std::endl;
+        std::cerr << "FindPrecedingSite called on unsorted vector" <<std::endl;
+#endif
+        throw e;
+    }
+    catch (ugene_exception_base & e)
+    {
+#ifdef DEBUG
+        std::cerr << "Calling findPrecedingSite and you did not provide an aproriate get function" <<std::endl;
 #endif
         throw e;
     }

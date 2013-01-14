@@ -66,8 +66,6 @@ class ChromSubset : public testing::Test {
   }
 uBasicNGSChrom uChromSubsetTest;
 };
-
-
 /**< Start chrom test */
 TEST_F(ChromDivide, SORT){
 
