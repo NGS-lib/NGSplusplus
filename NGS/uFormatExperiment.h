@@ -88,7 +88,7 @@ protected:
     void removeSite(std::string chr,VecGenConstIter position);
     void removeSite(std::string chr,VecGenConstIter start,VecGenConstIter end);
 
-    //TODO
+    //TODO Make this function
     void removeChr(const std::string &);
     void inferChrSize();
 

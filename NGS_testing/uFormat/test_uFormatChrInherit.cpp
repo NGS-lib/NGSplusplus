@@ -278,54 +278,99 @@ TEST(uBasicNGSCHR_addNRandomSite, MAKECORRECTNUMBER){
 /**< Get overlapping */
  TEST(uBasicNGSCHR_getOverlapping, NORMAL){
        StandardChroms ourChroms;
-       uBasicNGSChrom oneItem;
+       uBasicNGSChrom oneItem("chr1");
        oneItem.addData(uBasicNGS("chr1",50,100));
        uBasicNGSChrom retChr=ourChroms.manyChr.getOverlapping(oneItem);
        EXPECT_EQ(1,retChr.count());
  }
  TEST(uBasicNGSCHR_getOverlapping, FIRSTEMPTY){
        StandardChroms ourChroms;
-       uBasicNGSChrom oneItem;
+       uBasicNGSChrom oneItem("chr1");
        oneItem.addData(uBasicNGS("chr1",50,100));
        uBasicNGSChrom retChr=ourChroms.emptyChr.getOverlapping(oneItem);
        EXPECT_EQ(0,retChr.count());
  }
  TEST(uBasicNGSCHR_getOverlapping, SECONDEMPTY){
        StandardChroms ourChroms;
-       uBasicNGSChrom oneItem;
+       uBasicNGSChrom oneItem("chr1");
        uBasicNGSChrom retChr=ourChroms.manyChr.getOverlapping(oneItem);
        EXPECT_EQ(0,retChr.count());
  }
  TEST(uBasicNGSCHR_getOverlapping, SOMEOVERLAP){
-       ASSERT_TRUE(false);
+       StandardChroms ourChroms;
+       uBasicNGSChrom oneItem("chr1");
+       oneItem.addData(uBasicNGS("chr1",0,220));
+       uBasicNGSChrom retChr=ourChroms.manyChr.getOverlapping(oneItem);
+       EXPECT_EQ(2,retChr.count());
+ }
+  TEST(uBasicNGSCHR_getOverlapping, ALLOVERLAP){
+       StandardChroms ourChroms;
+       uBasicNGSChrom twoItems("chr1");
+       twoItems.addData(uBasicNGS("chr1",0,220));
+       twoItems.addData(uBasicNGS("chr1",230,420));
+       uBasicNGSChrom retChr=ourChroms.manyChr.getOverlapping(twoItems);
+       EXPECT_EQ(3,retChr.count());
  }
  TEST(uBasicNGSCHR_getOverlapping, NOOVERLAP){
        StandardChroms ourChroms;
-       uBasicNGSChrom oneItem;
+       uBasicNGSChrom oneItem("chr1");
        oneItem.addData(uBasicNGS("chr1",500,1000));
        uBasicNGSChrom retChr=ourChroms.emptyChr.getOverlapping(oneItem);
        EXPECT_EQ(0,retChr.count());
  }
+ TEST(uBasicNGSCHR_getOverlapping, DIFFERENTCHR){
+       StandardChroms ourChroms;
+       uBasicNGSChrom oneItem("chr2");
+       oneItem.addData(uBasicNGS("chr2",0,1000));
+       uBasicNGSChrom retChr=ourChroms.manyChr.getOverlapping(oneItem);
+       EXPECT_EQ(0,retChr.count());
+ }
+
 
  TEST(uBasicNGSCHR_getNotOverlapping, NORMAL){
-       ASSERT_TRUE(false);
+       StandardChroms ourChroms;
+       uBasicNGSChrom oneItem("chr1");
+       oneItem.addData(uBasicNGS("chr1",50,100));
+       uBasicNGSChrom retChr=ourChroms.manyChr.getNotOverlapping(oneItem);
+       EXPECT_EQ(2,retChr.count());
  }
  TEST(uBasicNGSCHR_getNotOverlapping, FIRSTEMPTY){
-       ASSERT_TRUE(false);
+       StandardChroms ourChroms;
+       uBasicNGSChrom oneItem("chr1");
+       oneItem.addData(uBasicNGS("chr1",50,100));
+       uBasicNGSChrom retChr=ourChroms.emptyChr.getNotOverlapping(oneItem);
+       EXPECT_EQ(0,retChr.count());
  }
   TEST(uBasicNGSCHR_getNotOverlapping, SECONDEMPTY){
-       ASSERT_TRUE(false);
+       StandardChroms ourChroms;
+       uBasicNGSChrom noItems("chr1");
+       uBasicNGSChrom retChr=ourChroms.manyChr.getNotOverlapping(noItems);
+       EXPECT_EQ(3,retChr.count());
  }
   TEST(uBasicNGSCHR_getNotOverlapping, SOMEOVERLAP){
-       ASSERT_TRUE(false);
+       StandardChroms ourChroms;
+       uBasicNGSChrom oneItem("chr1");
+       oneItem.addData(uBasicNGS("chr1",0,220));
+       uBasicNGSChrom retChr=ourChroms.manyChr.getNotOverlapping(oneItem);
+       EXPECT_EQ(1,retChr.count());
  }
   TEST(uBasicNGSCHR_getNotOverlapping, NOOVERLAP){
-       ASSERT_TRUE(false);
+       StandardChroms ourChroms;
+       uBasicNGSChrom oneItem("chr1");
+       oneItem.addData(uBasicNGS("chr1",500,1000));
+       uBasicNGSChrom retChr=ourChroms.manyChr.getNotOverlapping(oneItem);
+       EXPECT_EQ(3,retChr.count());
+ }
+ TEST(uBasicNGSCHR_getNotOverlapping, DIFFERENTCHR){
+       StandardChroms ourChroms;
+       uBasicNGSChrom oneItem("chr2");
+       oneItem.addData(uBasicNGS("chr2",0,1000));
+       uBasicNGSChrom retChr=ourChroms.manyChr.getNotOverlapping(oneItem);
+       EXPECT_EQ(3,retChr.count());
  }
 
-
 /**<  getDistinct*/
-TEST_F(ChromDivide, distinctChrTestBorder)
+TEST(uBasicNGSCHR_getDistinct, DISTINCTBORDER)
 {
      ASSERT_TRUE(false);
   //   auto testChrom=uChromTestOverlap.getDistinct(5, 200);
@@ -334,14 +379,14 @@ TEST_F(ChromDivide, distinctChrTestBorder)
 TEST(uBasicNGSCHR_getDistinct, NORM)
 {
      uBasicNGSChrom emptyChr("chr2");
-     auto testChrom =emptyChr.getDistinct(500, 2000);
+     uBasicNGSChrom testChrom =emptyChr.getDistinct(500, 2000);
      EXPECT_EQ(0,testChrom.count());
 }
 
-TEST(uBasicNGSCHR_getDistinct, distinctChrTestEmpty)
+TEST(uBasicNGSCHR_getDistinct, EMPTY)
 {
      uBasicNGSChrom emptyChr("chr2");
-     auto testChrom =emptyChr.getDistinct(500, 2000);
+     uBasicNGSChrom testChrom =emptyChr.getDistinct(500, 2000);
      EXPECT_EQ(0,testChrom.count());
 }
 TEST(uBasicNGSCHR_getDistinct, MULTIPLE)

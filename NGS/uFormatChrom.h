@@ -143,9 +143,9 @@ public:
     void addNRandomSite(const int size, const int n, std::mt19937& engine, const int sigma=0, const std::string ID="");
 
     template <class _OTHER_>
-    _SELF_ getOverlapping(_OTHER_ &compareChr,OverlapType overlap=OverlapType::OVERLAP_PARTIAL) const;
+    _SELF_ getOverlapping(_OTHER_ &pCompareChr,OverlapType pOverlap=OverlapType::OVERLAP_PARTIAL) const;
     template <class _OTHER_>
-    _SELF_ getNotOverlapping(_OTHER_ &compareChr,OverlapType overlap=OverlapType::OVERLAP_PARTIAL) const;
+    _SELF_ getNotOverlapping(_OTHER_ &compareChr,OverlapType pOverlap=OverlapType::OVERLAP_PARTIAL) const;
 
     /**<  */
     _SELF_ getDistinct(float p_start, float p_end, OverlapType options=OverlapType::OVERLAP_PARTIAL) const;
@@ -1149,7 +1149,7 @@ typename std::vector<_BASE_>::const_iterator uGenericNGSChrom<_SELF_,_BASE_>::fi
         throw e;
     }
 }
-template <class _SELF_,class _BASE_>
+
 /** \brief Find first element after a given value for our current sort type. Data must be sorted
  *
  *  This function will find the element after the given value as valid to the current sort condition. By default,
@@ -1163,6 +1163,7 @@ template <class _SELF_,class _BASE_>
  * \return typename std::vector<_BASE_>::const_iterator Constant iterator pointing to the value
  *
  */
+template <class _SELF_,class _BASE_>
 typename std::vector<_BASE_>::const_iterator uGenericNGSChrom<_SELF_,_BASE_>::findNextSite(const float position) const
 {
     try
@@ -1342,43 +1343,39 @@ _SELF_ uGenericNGSChrom<_SELF_,_BASE_>::removeSubset(float p_start, float p_end,
     }
 }
 /**< Return elements of A that overlap B */
-template <class _SELF_,class _BASE_>
-template <class _OTHER_>
 /** \brief Wrapper function that returns a chrom structure containing the elements of that overlap another chrom structur
  *
- *      This function return a collection. This collection contains every element of THIS that overlaps an element of compareChr. This comparison
+ *      This function return a collection. This collection contains every element of THIS that overlaps an element of pCompareChr. This comparison
  *      is always based on genomic positions ( start end )
  *
- * \param _OTHER_ & compareChr : A compatible chrom collection
+ * \param _OTHER_ & pCompareChr : A compatible chrom collection
  * \param OverlapType overlap  : type of overlap
  * \return Chrom collection containing all overlapping elements.
  * \sa getNotOverlapping
  */
-
-_SELF_ uGenericNGSChrom<_SELF_,_BASE_>::getOverlapping(_OTHER_ &compareChr,OverlapType overlap) const
+template <class _SELF_,class _BASE_>
+template <class _OTHER_>
+_SELF_ uGenericNGSChrom<_SELF_,_BASE_>::getOverlapping(_OTHER_ &pCompareChr,OverlapType pOverlap) const
 {
-    try
-    {
         _SELF_ returnChr;
+
+        if (getChr()!=pCompareChr.getChr())
+            return returnChr;
+
         for(auto it= VecSites.begin(); it!=VecSites.end(); it++)
         {
-            for(auto compit= compareChr.begin(); compit!=compareChr.end(); compit++)
+            for(auto compit= pCompareChr.begin(); compit!=pCompareChr.end(); compit++)
             {
-                if (utility::isOverlap(it->getStart(), it->getEnd(),compit->getStart(),compit->getEnd(),overlap))
+                if (utility::isOverlap(it->getStart(), it->getEnd(),compit->getStart(),compit->getEnd(),pOverlap))
                 {
                     returnChr.addDataNoCheck(*it);
                     break;
                 }
             }
         }
-        return returnChr;
-    }
-    catch(std::exception & e)
-    {
-        throw e;
-    }
-
+    return returnChr;
 }
+
 
 /**< Return elements of A that overlap B */
 /** \brief Wrapper function that returns a chrom structure containing the elements that do notoverlap another chrom structur
@@ -1393,17 +1390,20 @@ _SELF_ uGenericNGSChrom<_SELF_,_BASE_>::getOverlapping(_OTHER_ &compareChr,Overl
  */
 template <class _SELF_,class _BASE_>
 template <class _OTHER_>
-_SELF_ uGenericNGSChrom<_SELF_,_BASE_>::getNotOverlapping(_OTHER_ &compareChr,OverlapType overlap)const
+_SELF_ uGenericNGSChrom<_SELF_,_BASE_>::getNotOverlapping(_OTHER_ &pCompareChr,OverlapType pOverlap)const
 {
     try
     {
         _SELF_ returnChr;
+        if (getChr()!=pCompareChr.getChr()){
+            return (returnChr=*this);
+        }
         bool add=true;
         for(auto it= VecSites.begin(); it!=VecSites.end(); it++)
         {
-            for(auto compit= compareChr.begin(); compit!=compareChr.end(); compit++)
+            for(auto compit= pCompareChr.begin(); compit!=pCompareChr.end(); compit++)
             {
-                if (utility::isOverlap(it->getStart(), it->getEnd(),compit->getStart(),compit->getEnd()))
+                if (utility::isOverlap(it->getStart(), it->getEnd(),compit->getStart(),compit->getEnd(),pOverlap))
                 {
                     add=false;
                     break;
@@ -1420,8 +1420,7 @@ _SELF_ uGenericNGSChrom<_SELF_,_BASE_>::getNotOverlapping(_OTHER_ &compareChr,Ov
         throw e;
     }
 }
-//TODO TEST THIS
-template <class _SELF_,class _BASE_>
+
 /** \brief
  *
  * \param p_start float
@@ -1429,6 +1428,7 @@ template <class _SELF_,class _BASE_>
  * \param overlap OverlapType
  * \return _SELF_
  */
+ template <class _SELF_,class _BASE_>
 _SELF_ uGenericNGSChrom<_SELF_,_BASE_>::getDistinct(float p_start, float p_end, OverlapType overlap) const
 {
     try

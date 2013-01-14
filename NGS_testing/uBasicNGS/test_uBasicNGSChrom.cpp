@@ -45,7 +45,6 @@ class ChromDivide : public testing::Test {
  protected:
 /**< As always, this is inclusive so 100-199 is of size 100 */
   virtual void SetUp() {
-
     uChromTestOverlap.setChr("chr1");
     uChromTestOverlap.addData(uBasicNGS ("chr1", 300, CHROMDIVIDESIZE));
     uChromTestOverlap.addData(uBasicNGS("chr1", 100, 199));
