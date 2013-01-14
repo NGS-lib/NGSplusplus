@@ -695,7 +695,7 @@ _CHROM_ uGenericNGSExperiment<_SELF_,_CHROM_, _BASE_>::getChrom(const std::strin
         throw ugene_operation_throw()<<string_error("Requested non-existent Chrom from Exp in getChrom(), value : " +chrom);
     }
     return ExpMap.find(chrom)->second;
-};
+}
 
 //TODO Check all chrom functions and make EXP wrapeprs
 /** \brief Returns a const pointer to the requested chrom object, if it exists.
@@ -712,7 +712,7 @@ const _CHROM_* uGenericNGSExperiment<_SELF_,_CHROM_, _BASE_>::getpChrom(const st
     }
     const auto refer=&(ExpMap.find(chrom)->second);
     return (refer);
-};
+}
 
 /** \brief Returns a pointer to the requested chrom object, if it exists.
  * \param const std::string & chrom: the name of the chrom.
@@ -727,7 +727,7 @@ _CHROM_* uGenericNGSExperiment<_SELF_,_CHROM_, _BASE_>::getpChrom(const std::str
         throw ugene_operation_throw()<<string_error("Required pointer to non-existent Chrom from Exp in getpChrom(), value : " +chrom);
     }
     return &(ExpMap[chrom]);
-};
+}
 
 /** \brief Set the size of a chrom object
  *
@@ -742,7 +742,7 @@ template<class _SELF_, typename _CHROM_, typename _BASE_>
 void uGenericNGSExperiment<_SELF_,_CHROM_, _BASE_>::setChrSize(std::string chr, int chrSize)
 {
     ExpMap[chr].setChromSize(chrSize);
-};
+}
 
 // TODO: We need to check if the chrom exists before getting it's size!!
 /** \brief Get the size of a chrom object
@@ -756,7 +756,7 @@ int uGenericNGSExperiment<_SELF_,_CHROM_, _BASE_>::getChrSize(std::string chr)
         throw param_throw() << string_error("Requested chr that does not exist in getChrSize()");
     }
     return (ExpMap[chr].getChromSize());
-};
+}
 
 //Return the number of elements in our experiment
 /** \brief Return our element count

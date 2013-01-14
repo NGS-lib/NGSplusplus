@@ -317,11 +317,11 @@ public:
      * \return _BASE_ Copy of the element at the asked for position.
      *
      */
-    _BASE_ getSite(int position)
+    _BASE_ getSite(long long pPos) const
     {
         try
         {
-            return VecSites.at(position);
+            return VecSites.at(pPos);
         }
         catch (std::exception &e)
         {
