@@ -929,12 +929,8 @@ typename std::vector<_BASE_>::const_iterator uGenericNGSExperiment<_SELF_,_CHROM
 template<class _SELF_, typename _CHROM_, typename _BASE_>
 _BASE_ uGenericNGSExperiment<_SELF_,_CHROM_, _BASE_>::getSite(std::string chr, int position) const
 {
-    typename NGSExpMap::iterator iterMap;
-    _CHROM_* tempChrom;
-
-    tempChrom=&(ExpMap[chr]);
-
-    return tempChrom->getSite( chr,position);
+    auto tempChrom = getpChrom(chr);
+    return tempChrom->getSite(position);
 }
 
 /** \brief Get a specific site from a specific chrom. Overloaded to work with an interator, typically got from findPrecedingor findNext
