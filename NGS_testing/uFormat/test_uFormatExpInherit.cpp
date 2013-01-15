@@ -84,17 +84,17 @@ public:
 	validExperiments()
 	{
 		validChroms chroms;
-		/**< NoName_Empty */
+		/**< NoName_Empty Chrom */
 		uBasicNGSExperiment NoName_EmptyExp;
 		NoName_EmptyExp.addData(chroms.m_uBasicNGSChroms[0]);
 		m_uBasicNGSExp["NoName_Empty"] = NoName_EmptyExp;
 
-		/**< NoName_1elem */
+		/**< NoName_1elem Chrom */
 		uBasicNGSExperiment NoName_1elemExp;
 		NoName_1elemExp.addData(chroms.m_uBasicNGSChroms[1]);
 		m_uBasicNGSExp["NoName_1elem"] = NoName_1elemExp;
 
-		/**< NoName_3elems */
+		/**< NoName_3elems Chrom */
 		uBasicNGSExperiment NoName_3elemsExp;
 		NoName_3elemsExp.addData(chroms.m_uBasicNGSChroms[2]);
 		m_uBasicNGSExp["NoName_3elems"] = NoName_3elemsExp;
@@ -107,6 +107,9 @@ public:
 		}
 		m_uBasicNGSExp["MultipleChroms"] = MultipleChromsExp;
 
+		/**< Empty Exp */
+		uBasicNGSExperiment Empty_Exp;
+		m_uBasicNGSExp["Empty_Exp"] = Empty_Exp;
 
 	}
 	uBasicNGSExperiment* getExperiment(const std::string& name)
@@ -282,38 +285,94 @@ TEST(uBasicNGSEXP_getSite, BELOW0){
 }
 
 
-// /**< GetOverlapping */
-// TEST(uBasicNGSEXP_getOverlapping, VALIDEXP){
-//       ASSERT_TRUE(false);
-// }
-//  TEST(uBasicNGSEXP_getOverlapping, VALIDCHROM){
-//       ASSERT_TRUE(false);
-// }
-//  TEST(uBasicNGSEXP_getOverlapping, VALIDPOS){
-//       ASSERT_TRUE(false);
-// }
-//TEST(uBasicNGSEXP_getOverlapping, EMPTYEXP){
-//       ASSERT_TRUE(false);
-// }
-//  TEST(uBasicNGSEXP_getOverlapping, EMPTYCHROM){
-//       ASSERT_TRUE(false);
-// }
-//TEST(uBasicNGSEXP_getOverlapping, EMPTYTHISEXP){
-//       ASSERT_TRUE(false);
-// }
-//  TEST(uBasicNGSEXP_getOverlapping, EMPTYTHISCHROM){
-//       ASSERT_TRUE(false);
-// }
-//  TEST(uBasicNGSEXP_getOverlapping, EMPTYTHISANDPOS){
-//       ASSERT_TRUE(false);
-// }
-//TEST(uBasicNGSEXP_getOverlapping, POLYMORPHICHROM){
-//       ASSERT_TRUE(false);
-// }
-//TEST(uBasicNGSEXP_getOverlapping, POLYMORPHICEXP){
-//       ASSERT_TRUE(false);
-// }
+/*
+ * Test for the function:
+ *		_SELF_ getOverlapping(uGenericNGSExperiment<_SELFPAR_, _CHROMPAR_,_BASEPAR_> &compareExp, OverlapType type=OverlapType::OVERLAP_PARTIAL);
+ *		template<class _SELFPAR_,typename _BASEPAR_>
+ *			_SELF_ getOverlapping(uGenericNGSChrom<_SELFPAR_,_BASEPAR_> &compareExp, OverlapType type=OverlapType::OVERLAP_PARTIAL);
+ *		_SELF_ getOverlapping(std::string chr, int start, int end, OverlapType type=OverlapType::OVERLAP_PARTIAL);
+ *	Valid cases:
+ *		VALIDEXP
+ *		VALIDCHROM
+ *		VALIDPOS
+ *		EMPTYEXP
+ *		EMPTYCHROM
+ *		EMPTYTHISEXP
+ *		EMPTYTHISCHROM
+ *		EMPTYTHISANDPOS
+ *		POLYMORPHICHROM
+ *		POLYMORPHICEXP
+ *	Invalid cases:
+ */
+
+TEST(uBasicNGSEXP_getOverlapping, VALIDEXP){
+	validExperiments myExperiments;
+	uBasicNGSExperiment* anExp = myExperiments.getExperiment("MultipleChroms");
+	uBasicNGSExperiment* anotherExp = myExperiments.getExperiment("NoName_3elems");
+	uBasicNGSExperiment overlapExp = anExp->getOverlapping(*anotherExp); // TODO: Finish when the code is functional...
+}
+
+TEST(uBasicNGSEXP_getOverlapping, VALIDCHROM){
+	validExperiments myExperiments;
+	uBasicNGSExperiment* anExp = myExperiments.getExperiment("MultipleChroms");
+	uBasicNGSChrom* aChrom = myExperiments.getExperiment("MultipleChroms")->getpChrom("chr4"); 
+	uBasicNGSExperiment overlapExp = anExp->getOverlapping(*aChrom); // TODO: Finish when the code is functional...
+}
+
+TEST(uBasicNGSEXP_getOverlapping, VALIDPOS){
+	validExperiments myExperiments;
+	uBasicNGSExperiment* anExp = myExperiments.getExperiment("MultipleChroms");
+	uBasicNGSExperiment overlapExp = anExp->getOverlapping("chr4", 100, 200); // TODO: Finish when the code is functional...
+}
+
+TEST(uBasicNGSEXP_getOverlapping, EMPTYEXP){
+	validExperiments myExperiments;
+	uBasicNGSExperiment* anExp = myExperiments.getExperiment("MultipleChroms");
+	uBasicNGSExperiment* anotherExp = myExperiments.getExperiment("Empty_Exp");
+	uBasicNGSExperiment overlapExp = anExp->getOverlapping(*anotherExp); // TODO: Finish when the code is functional...
+}
+
+TEST(uBasicNGSEXP_getOverlapping, EMPTYCHROM){
+	validExperiments myExperiments;
+	uBasicNGSExperiment* anExp = myExperiments.getExperiment("MultipleChroms");
+	uBasicNGSChrom* aChrom = myExperiments.getExperiment("NoName_Empty")->getpChrom(""); 
+	uBasicNGSExperiment overlapExp = anExp->getOverlapping(*aChrom); // TODO: Finish when the code is functional...
+}
+
+TEST(uBasicNGSEXP_getOverlapping, EMPTYTHISEXP){
+	validExperiments myExperiments;
+	uBasicNGSExperiment* anExp = myExperiments.getExperiment("Empty_Exp");
+	uBasicNGSExperiment* anotherExp = myExperiments.getExperiment("MultipleChroms");
+	uBasicNGSExperiment overlapExp = anExp->getOverlapping(*anotherExp); // TODO: Finish when the code is functional...
+}
+
+TEST(uBasicNGSEXP_getOverlapping, EMPTYTHISCHROM){
+	validExperiments myExperiments;
+	uBasicNGSExperiment* anExp = myExperiments.getExperiment("Empty_Exp");
+	uBasicNGSChrom* aChrom = myExperiments.getExperiment("MultipleChroms")->getpChrom(""); 
+	uBasicNGSExperiment overlapExp = anExp->getOverlapping(*aChrom); // TODO: Finish when the code is functional...
+}
+
+TEST(uBasicNGSEXP_getOverlapping, EMPTYTHISANDPOS){
+	validExperiments myExperiments;
+	uBasicNGSExperiment* anExp = myExperiments.getExperiment("MultipleChroms");
+	uBasicNGSExperiment overlapExp = anExp->getOverlapping("chr4", 1000, 2000); // TODO: Finish when the code is functional...
+}
+
+TEST(uBasicNGSEXP_getOverlapping, CHROMDONTEXISTS){
+	validExperiments myExperiments;
+	uBasicNGSExperiment* anExp = myExperiments.getExperiment("Empty_Exp");
+	uBasicNGSChrom* aChrom = myExperiments.getExperiment("MultipleChroms")->getpChrom(""); 
+	uBasicNGSExperiment overlapExp = anExp->getOverlapping(*aChrom); // TODO: Finish when the code is functional...
+	EXPECT_EQ(overlapExp.count(), 0);
+}
+
+//TEST(uBasicNGSEXP_getOverlapping, POLYMORPHICHROM){ //TODO: What is a polymorphic chrom?
+//}
 //
+//TEST(uBasicNGSEXP_getOverlapping, POLYMORPHICEXP){ //TODO: What is a polymorphic chrom?
+//}
+
 ///**< set/get Chr Size */
 //TEST(uBasicNGSEXP_getChrSize, VALID){
 //       ASSERT_TRUE(false);
