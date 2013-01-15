@@ -780,20 +780,22 @@ long long uGenericNGSExperiment<_SELF_,_CHROM_, _BASE_>::count() const
  * \param start int : Start position, must be positive
  * \param end int : End position, must be >= start
  * \param overlap int : Type of overlap
+ * \exception ugene_operation_throw: when the chr value is not valid
  * \return int: the count.
  *
  */
 template<class _SELF_, typename _CHROM_, typename _BASE_>
 int uGenericNGSExperiment<_SELF_,_CHROM_, _BASE_>::getSubsetCount(const std::string & chr, const float start, const float end, OverlapType overlap)
 {
-    int count=0;
-    typename NGSExpMap::iterator iterMap;
-    _CHROM_* tempChrom;
-
-    tempChrom=&(ExpMap[chr]);
-    count = tempChrom->getSubsetCount(start,
-                                      end,
-                                      overlap);
+    int count = 0;
+    try 
+    {
+        count = getpChrom(chr)->getSubsetCount(start, end, overlap);
+    }
+    catch (ugene_operation_throw& e)
+    {
+        throw e;
+    }
     return count;
 }
 

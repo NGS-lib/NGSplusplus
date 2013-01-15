@@ -373,17 +373,37 @@ TEST(uBasicNGSEXP_getOverlapping, CHROMDONTEXISTS){
 //TEST(uBasicNGSEXP_getOverlapping, POLYMORPHICEXP){ //TODO: What is a polymorphic chrom?
 //}
 
-///**< set/get Chr Size */
-//TEST(uBasicNGSEXP_getChrSize, VALID){
-//       ASSERT_TRUE(false);
-// }
-// TEST(uBasicNGSEXP_getChrSize, NOTVALID){
-//       ASSERT_TRUE(false);
-// }
-//  TEST(uBasicNGSEXP_getChrSize, EMPTY){
-//       ASSERT_TRUE(false);
-// }
-//
+/*
+ * Test for the function:
+ *		int getChrSize(std::string chr);
+ *	Valid cases:
+ *		VALIDCHROM
+ *		EMPTYCHROM
+ *	Invalid cases:
+ *		INVALIDCHROM
+ */
+
+TEST(uBasicNGSEXP_getChrSize, VALID){
+	validExperiments myExperiments;
+	EXPECT_EQ(myExperiments.getExperiment("MultipleChroms")->getChrSize("chr4"), 200);
+}
+
+TEST(uBasicNGSEXP_getChrSize, EMPTYCHROM){
+	validExperiments myExperiments;
+	EXPECT_EQ(myExperiments.getExperiment("NoName_Empty")->getChrSize(""), 0);
+}
+
+TEST(uBasicNGSEXP_getChrSize, INVALIDCHROM){
+	validExperiments myExperiments;
+	EXPECT_THROW(myExperiments.getExperiment("NoName_Empty")->getChrSize("chr4"), param_throw);
+}
+
+/*
+ * Test for the function:
+ *	Valid cases:
+ *	Invalid cases:
+ */
+// TODO: Can't find setOverlapping function in uFormatExperiment.h
 // TEST(uBasicNGSEXP_setOverlapping, INVALIDVALUE){
 //       ASSERT_TRUE(false);
 // }
@@ -393,17 +413,37 @@ TEST(uBasicNGSEXP_getOverlapping, CHROMDONTEXISTS){
 // TEST(uBasicNGSEXP_setOverlapping, VALID){
 //       ASSERT_TRUE(false);
 // }
-//
-///**< getSubsetCount */
-// TEST(uBasicNGSEXP_getSubsetCount, POSITIONS){
-//       ASSERT_TRUE(false);
-// }
-//  TEST(uBasicNGSEXP_getSubsetCount, ELEMENT){
-//       ASSERT_TRUE(false);
-// }
-// TEST(uBasicNGSEXP_getSubsetCount, CHROMNOEXIST){
-//       ASSERT_TRUE(false);
-// }
-// TEST(uBasicNGSEXP_getSubsetCount, NONAMECHROM){
-//       ASSERT_TRUE(false);
-// }
+
+/*
+ * Test for the function:
+ *		int getSubsetCount(const std::string & chr, const float start, const float end, const OverlapType overlap=OverlapType::OVERLAP_PARTIAL);
+ *		int getSubsetCount(const _BASE_ & subsetReg, const OverlapType overlap=OverlapType::OVERLAP_PARTIAL);
+ *	Valid cases:
+ *		POSITIONS
+ *		ELEMENT
+ *		NONAMECHROM
+ *	Invalid cases:
+ *		CHROMNOEXIST
+ */
+
+TEST(uBasicNGSEXP_getSubsetCount, POSITIONS){
+	validExperiments myExperiments;
+	EXPECT_EQ(myExperiments.getExperiment("MultipleChroms")->getSubsetCount("chr4", 100, 200), 1);
+	EXPECT_EQ(myExperiments.getExperiment("MultipleChroms")->getSubsetCount("chr4", 1000, 2000), 0);
+}
+
+TEST(uBasicNGSEXP_getSubsetCount, ELEMENT){
+	validExperiments myExperiments;
+	EXPECT_EQ(myExperiments.getExperiment("MultipleChroms")->getSubsetCount(uBasicNGS("chr4",100,200)), 1);
+	EXPECT_EQ(myExperiments.getExperiment("MultipleChroms")->getSubsetCount(uBasicNGS("chr4",1000,2000)), 0);
+}
+
+TEST(uBasicNGSEXP_getSubsetCount, NONAMECHROM){
+	validExperiments myExperiments;
+	EXPECT_EQ(myExperiments.getExperiment("MultipleChroms")->getSubsetCount("", 100, 200), 1);
+}
+
+TEST(uBasicNGSEXP_getSubsetCount, CHROMNOEXIST){
+	validExperiments myExperiments;
+	EXPECT_THROW(myExperiments.getExperiment("NoName_Empty")->getSubsetCount("chr4", 100, 200), ugene_operation_throw);
+}
