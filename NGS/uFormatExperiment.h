@@ -1029,7 +1029,8 @@ _SELF_ uGenericNGSExperiment<_SELF_,_CHROM_,_BASE_>::getOverlapping(uGenericNGSE
     for (iterMap = ExpMap.begin(); iterMap != ExpMap.end(); iterMap++)
     {
         pChrom = compareExp.getpChrom(iterMap->first);
-        returnExp.combineChr(iterMap->second.getOverlapping(*pChrom));
+//        returnExp.combineChr(iterMap->second.getOverlapping(*pChrom));
+	returnExp.addData(*pChrom); // TODO: does not seem to work, but at least it compiles
     }
     return returnExp;
 }
@@ -1049,7 +1050,8 @@ _SELF_ uGenericNGSExperiment<_SELF_, _CHROM_,_BASE_>::getOverlapping(uGenericNGS
     {
         _SELF_ tempExp;
 
-        tempExp.combineChr(compareChrom);
+//        tempExp.combineChr(compareChrom);
+	tempExp.addData(compareChrom); // TODO: does not seem to work, but at least it compiles
         return getOverlapping(tempExp,type);
     }
     catch(std::exception & e)
