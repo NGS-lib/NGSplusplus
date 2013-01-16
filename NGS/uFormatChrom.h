@@ -55,11 +55,6 @@ protected:
     long long int chromSize=0; /*!< Size of the scaffold */
 
 private :
-    /**< removeSites overloads */
-    void removeSite(int position);
-    void removeSite(int start,int end);
-    void removeSite(VecGenConstIter position);
-    void removeSite(VecGenConstIter start,VecGenConstIter end);
 
 
     //TODO move to utility
@@ -131,6 +126,11 @@ public:
     /**< Find according to sort value */
     VecGenConstIter findPrecedingSite(const float position) const;
     VecGenConstIter findNextSite(const float position) const;
+    /**< removeSites overloads */
+    void removeSite(int position);
+    void removeSite(int start,int end);
+    void removeSite(VecGenConstIter position);
+    void removeSite(VecGenConstIter start,VecGenConstIter end);
     /**< Functions to create and add items to our chrom */
     template <class _OTHER_>
     _BASE_ generateRandomSite(const int size, std::mt19937& engine, const _OTHER_ &exclList, const int sigma=0, const std::string ID="") const;
@@ -1099,7 +1099,7 @@ void uGenericNGSChrom<_SELF_,_BASE_>::printStats(std::ostream& out) const
  *
  * \exception unsorted_throw : Will throw if the collection is unsorted
  * \exception ugene_exception_base : Will throw if the proper getters where not set
- * \param position const int& value to evaluate from
+ * \param position const int& value to evaluate from (based on the sort type: i.e.: if sorted by score, it will use score as position)
  * \return typename std::vector<_BASE_>::const_iterator Constant iterator pointing to the item
  *
  */
@@ -1157,7 +1157,7 @@ typename std::vector<_BASE_>::const_iterator uGenericNGSChrom<_SELF_,_BASE_>::fi
  *
  * \exception unsorted_throw : Will throw if the collection is unsorted
  * \exception ugene_exception_base : Will throw if the proper getters where not set
- * \param position const int& value to evaluate from
+ * \param position const int& value to evaluate from (based on the sort type: i.e.: if sorted by score, it will use score as position)
  * \return typename std::vector<_BASE_>::const_iterator Constant iterator pointing to the value
  *
  */
@@ -1172,9 +1172,9 @@ typename std::vector<_BASE_>::const_iterator uGenericNGSChrom<_SELF_,_BASE_>::fi
             return VecSites.end();
 
         if (m_isSorted==false)
-            throw unsorted_throw() <<string_error("findPrecedingSite called on unsorted vector \n") ;
+            throw unsorted_throw() <<string_error("findNextSite called on unsorted vector \n") ;
         if ((sortGetStart==nullptr)||(sortGetEnd==nullptr))
-            throw ugene_exception_base() <<string_error(" findPrecedingSite called on chrom without appropriate start or end function\n") ;
+            throw ugene_exception_base() <<string_error(" findNextSite called on chrom without appropriate start or end function\n") ;
 
         /**< Return true comparitor if item1 smaller then item 2 */
         auto comp = [&] (const float &item1, const _BASE_ &item2)
@@ -1195,14 +1195,14 @@ typename std::vector<_BASE_>::const_iterator uGenericNGSChrom<_SELF_,_BASE_>::fi
     catch (unsorted_throw & e)
     {
 #ifdef DEBUG
-        std::cerr << "FindPrecedingSite called on unsorted vector" <<std::endl;
+        std::cerr << "findNextSite called on unsorted vector" <<std::endl;
 #endif
         throw e;
     }
     catch (ugene_exception_base & e)
     {
 #ifdef DEBUG
-        std::cerr << "Calling findPrecedingSite and you did not provide an aproriate get function" <<std::endl;
+        std::cerr << "Calling findNextSite and you did not provide an aproriate get function" <<std::endl;
 #endif
         throw e;
     }
