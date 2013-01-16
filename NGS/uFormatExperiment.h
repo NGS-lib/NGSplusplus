@@ -373,7 +373,6 @@ public:
 
     // We where HERE!
 
-
     /** \brief load data from Parser, convert to unitary and execute the given function. Does -not- necessarily add to EXP
      *
      * \param stream std::ifstream& file to load from

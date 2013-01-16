@@ -68,8 +68,15 @@ private :
     {
         return c.begin() + (it - c.begin());
     }
+protected:
 
-    /**< Comparison functors */
+    std::vector<long long> returnSiteSizes() const;
+    void addDataNoCheck( _BASE_ newSite);
+    template<class L, typename S, typename R> friend class uGenericNGSExperiment;
+
+public:
+
+   /**< Comparison functors */
     static bool comparePosStart(const _BASE_ &item, const int & value)
     {
         return item.getStart() < value;
@@ -90,14 +97,6 @@ private :
             return item1.getEnd() < item2.getEnd();
     }
 
-protected:
-
-    std::vector<long long> returnSiteSizes() const;
-    void addDataNoCheck( _BASE_ newSite);
-    template<class L, typename S, typename R> friend class uGenericNGSExperiment;
-
-public:
-
     /**< Constructors */
     uGenericNGSChrom() {};
     uGenericNGSChrom(const std::string & consString):chr(consString) {};
@@ -117,8 +116,7 @@ public:
     /** \brief Default virtual destructor of uGenericNGSChrom
      */
     virtual ~uGenericNGSChrom<_SELF_,_BASE_> ()
-    {
-        ;
+    {;
     }
 
     void inferChrSize();
@@ -148,13 +146,13 @@ public:
     _SELF_ getNotOverlapping(_OTHER_ &compareChr,OverlapType pOverlap=OverlapType::OVERLAP_PARTIAL) const;
 
     /**<  */
-    _SELF_ getDistinct(float p_start, float p_end, OverlapType options=OverlapType::OVERLAP_PARTIAL) const;
+    _SELF_ getDistinct(double p_start, double p_end, OverlapType options=OverlapType::OVERLAP_PARTIAL) const;
 
     /**< Functions to manipulate generically ranges of our elements */
-    _SELF_ getSubset(float p_start, float p_end, OverlapType overlap=OverlapType::OVERLAP_PARTIAL) const;
-    _SELF_ removeSubset(float p_start, float p_end, OverlapType overlap=OverlapType::OVERLAP_PARTIAL);
+    _SELF_ getSubset(double p_start, double p_end, OverlapType overlap=OverlapType::OVERLAP_PARTIAL) const;
+    _SELF_ removeSubset(double p_start, double p_end, OverlapType overlap=OverlapType::OVERLAP_PARTIAL);
 
-    long int getSubsetCount(float p_start, float p_end, OverlapType overlap=OverlapType::OVERLAP_PARTIAL)const;
+    long int getSubsetCount(double p_start, double p_end, OverlapType overlap=OverlapType::OVERLAP_PARTIAL)const;
 
     void addData(const _BASE_ & newSite);
 
@@ -1217,14 +1215,14 @@ typename std::vector<_BASE_>::const_iterator uGenericNGSChrom<_SELF_,_BASE_>::fi
  *  and by default the sort condition is based on genomic position ( start/end ).
  *
  *
- * \param start float start interval value
- * \param end float end interval value
+ * \param start double start interval value
+ * \param end double end interval value
  * \param overlap OverlapType OverlapType from Enum
  * \return int Number of elements in our range
  *
  */
 template <class _SELF_,class _BASE_>
-long int uGenericNGSChrom<_SELF_,_BASE_>::getSubsetCount(float p_start, float p_end, OverlapType overlap) const
+long int uGenericNGSChrom<_SELF_,_BASE_>::getSubsetCount(double p_start, double p_end, OverlapType overlap) const
 {
     try
     {
@@ -1243,13 +1241,12 @@ long int uGenericNGSChrom<_SELF_,_BASE_>::getSubsetCount(float p_start, float p_
 
         return tagcount;
     }
-    catch (ugene_exception_base & e )
+    catch (unsorted_throw & e)
     {
         throw e;
     }
-    catch(std::exception & e)
+    catch (ugene_exception_base & e)
     {
-        //std::cerr << " Catching in getSubsetCount" <<std::endl;
         throw e;
     }
 }
@@ -1257,14 +1254,14 @@ long int uGenericNGSChrom<_SELF_,_BASE_>::getSubsetCount(float p_start, float p_
 
 /** \brief Return a subset of our data that overlaps range start/end, based on current sort type.
  *
- * \param start float: Start of interval
- * \param end float: End of interval
+ * \param start double: Start of interval
+ * \param end double: End of interval
  * \param overlap OverlapType: Type of overlap
  * \return uGenericNGSChrom<_BASE_>: Chrom structure containing our element subset
  *
  */
 template <class _SELF_,class _BASE_>
-_SELF_ uGenericNGSChrom<_SELF_,_BASE_>::getSubset(float p_start, float p_end, OverlapType overlap) const
+_SELF_ uGenericNGSChrom<_SELF_,_BASE_>::getSubset(double p_start, double p_end, OverlapType overlap) const
 {
     try
     {
@@ -1287,11 +1284,11 @@ _SELF_ uGenericNGSChrom<_SELF_,_BASE_>::getSubset(float p_start, float p_end, Ov
         }
         return returnChrom;
     }
-    catch (ugene_exception_base & e )
+    catch (unsorted_throw & e)
     {
         throw e;
     }
-    catch(std::exception & e)
+    catch (ugene_exception_base & e)
     {
         throw e;
     }
@@ -1306,7 +1303,7 @@ _SELF_ uGenericNGSChrom<_SELF_,_BASE_>::getSubset(float p_start, float p_end, Ov
  *
  */
 template <class _SELF_,class _BASE_>
-_SELF_ uGenericNGSChrom<_SELF_,_BASE_>::removeSubset(float p_start, float p_end, OverlapType overlap)
+_SELF_ uGenericNGSChrom<_SELF_,_BASE_>::removeSubset(double p_start, double p_end, OverlapType overlap)
 {
     try
     {
@@ -1314,30 +1311,65 @@ _SELF_ uGenericNGSChrom<_SELF_,_BASE_>::removeSubset(float p_start, float p_end,
         returnChrom.setChr(this->getChr());
         std::vector<int> erasePositions;
 
-        auto pos = this->findPrecedingSite(p_start);
+        auto posIter = this->findPrecedingSite(p_start);
 
+        bool start=true;
+        auto startPosIter=posIter;
+        auto endPosIter= posIter;
         /**<  If no tag leftwise, we start at beginning*/
-        if (pos==this->end())
-            pos=this->begin();
+        if (posIter==this->end())
+            posIter=this->begin();
 
-        auto delPos=pos;
-        for (; pos != this->end(); pos++)
+        for (; posIter != this->end(); posIter++)
         {
-            if (sortGetStart(&(*pos))> end)
+            if (sortGetStart(&(*posIter))> p_end)
                 break;
-            /**< When we find a valid element, go back one step and erase th element */
-            if (utility::isOverlap(sortGetStart(&(*pos)), sortGetEnd(&(*pos)),p_start, p_end,overlap))
+
+            if (utility::isOverlap(sortGetStart(&(*posIter)), sortGetEnd(&(*posIter)),p_start, p_end,overlap))
             {
-                returnChrom.addDataNoCheck(*pos);
-                pos--;
-                delPos=pos;
-                this->removeSite( to_mutable_iterator(VecSites,delPos ));
+                if (start)
+                {
+                    start =false;
+                    startPosIter=posIter;
+                    endPosIter= posIter;
+                    returnChrom.addDataNoCheck(*posIter);
+                }
+                else
+                {
+                    endPosIter=posIter;
+                    returnChrom.addDataNoCheck(*posIter);
+                }
             }
         }
+        if(!start)
+        {
+
+            endPosIter++;
+            /**< std erase format, so endPos is not erased. */
+            this->removeSite(startPosIter,endPosIter);
+        }
+//        auto delPos=pos;
+//        for (; pos != this->end(); pos++)
+//        {
+//            if (sortGetStart(&(*pos))> p_end)
+//                break;
+//            /**< When we find a valid element, go back one step and erase th element */
+//            if (utility::isOverlap(sortGetStart(&(*pos)), sortGetEnd(&(*pos)),p_start, p_end,overlap))
+//            {
+//                returnChrom.addDataNoCheck(*pos);
+//                pos--;
+//                delPos=pos;
+//                this->removeSite( to_mutable_iterator(VecSites,delPos ));
+//            }
+//        }
 
         return returnChrom;
     }
-    catch(std::exception & e)
+    catch (unsorted_throw & e)
+    {
+        throw e;
+    }
+    catch (ugene_exception_base & e)
     {
         throw e;
     }
@@ -1423,13 +1455,13 @@ _SELF_ uGenericNGSChrom<_SELF_,_BASE_>::getNotOverlapping(_OTHER_ &pCompareChr,O
 
 /** \brief
  *
- * \param p_start float
- * \param p_end float
+ * \param p_start double
+ * \param p_end double
  * \param overlap OverlapType
  * \return _SELF_
  */
  template <class _SELF_,class _BASE_>
-_SELF_ uGenericNGSChrom<_SELF_,_BASE_>::getDistinct(float p_start, float p_end, OverlapType overlap) const
+_SELF_ uGenericNGSChrom<_SELF_,_BASE_>::getDistinct(double p_start, double p_end, OverlapType overlap) const
 {
     try
     {
@@ -1473,9 +1505,18 @@ _SELF_ uGenericNGSChrom<_SELF_,_BASE_>::getDistinct(float p_start, float p_end, 
 
         return returnChrom;
     }
-    catch(std::exception & e)
+    catch (unsorted_throw & e)
     {
-
+    #ifdef DEBUG
+            std::cerr << "getDistinct called on unsorted vector" <<std::endl;
+    #endif
+        throw e;
+    }
+    catch (ugene_exception_base & e)
+    {
+#ifdef DEBUG
+        std::cerr << "Calling getDistinct and you did not provide an aproriate get function" <<std::endl;
+#endif
         throw e;
     }
 }

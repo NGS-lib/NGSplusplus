@@ -370,19 +370,6 @@ TEST(uBasicNGSCHR_addNRandomSite, MAKECORRECTNUMBER){
  }
 
 /**<  getDistinct*/
-TEST(uBasicNGSCHR_getDistinct, DISTINCTBORDER)
-{
-     ASSERT_TRUE(false);
-  //   auto testChrom=uChromTestOverlap.getDistinct(5, 200);
-  //   EXPECT_EQ(1,testChrom.count());
-}
-TEST(uBasicNGSCHR_getDistinct, NORM)
-{
-     uBasicNGSChrom emptyChr("chr2");
-     uBasicNGSChrom testChrom =emptyChr.getDistinct(500, 2000);
-     EXPECT_EQ(0,testChrom.count());
-}
-
 TEST(uBasicNGSCHR_getDistinct, EMPTY)
 {
      uBasicNGSChrom emptyChr("chr2");
@@ -391,87 +378,147 @@ TEST(uBasicNGSCHR_getDistinct, EMPTY)
 }
 TEST(uBasicNGSCHR_getDistinct, MULTIPLE)
 {
-     ASSERT_TRUE(false);
+     StandardChroms ourChroms;
+     ourChroms.manyChr.sortSites();
+     uBasicNGSChrom testChrom =ourChroms.manyChr.getDistinct(500, 2000);
+     EXPECT_EQ(3,testChrom.count());
 }
-TEST(uBasicNGSCHR_getDistinct, MANY)
+TEST(uBasicNGSCHR_getDistinct, GETNONE)
 {
-     ASSERT_TRUE(false);
+     StandardChroms ourChroms;
+     ourChroms.manyChr.sortSites();
+     uBasicNGSChrom testChrom =ourChroms.manyChr.getDistinct(0, 2000);
+     EXPECT_EQ(0,testChrom.count());
 }
 TEST(uBasicNGSCHR_getDistinct, CUSTOMSORT)
 {
-     ASSERT_TRUE(false);
+     StandardChroms ourChroms;
+     ourChroms.manyChr.sortSites(ourChroms.manyChr.compareLenght,&uBasicNGS::getLenght);
+     uBasicNGSChrom testChrom =ourChroms.manyChr.getDistinct(80, 130);
+     EXPECT_EQ(2,testChrom.count());
 }
 TEST(uBasicNGSCHR_getDistinct, FAILNOSORT)
 {
-     ASSERT_TRUE(false);
+     StandardChroms ourChroms;
+     EXPECT_THROW(ourChroms.manyChr.getDistinct(80, 130),unsorted_throw );
 }
 TEST(uBasicNGSCHR_getDistinct, MORECUSTOMSORT)
 {
-     ASSERT_TRUE(false);
+     StandardChroms ourChroms;
+     ourChroms.manyChr.sortSites(ourChroms.manyChr.compareLenght,&uBasicNGS::getLenght);
+
+     uBasicNGSChrom testChrom =ourChroms.manyChr.getDistinct(80, 130);
+     EXPECT_EQ(2,testChrom.count());
 }
 /**< Test getSubset, RemoveSubset */
-
-TEST_F(ChromDivide, subsetCountChr)
-{
-     ASSERT_TRUE(false);
-     //EXPECT_EQ(3,uChromTestOverlap.getSubsetCount(1, 2000));
-}
-
-TEST(uBasicNGSCHR_getSubset, NORMAL)
-{
-     ASSERT_TRUE(false);
-}
-
 TEST(uBasicNGSCHR_getSubset, EMPTY)
 {
-     ASSERT_TRUE(false);
+     StandardChroms ourChroms;
+     uBasicNGSChrom testChrom =ourChroms.emptyChr.getSubset(0, 2000);
+     EXPECT_EQ(0,testChrom.count());
 }
-
 TEST(uBasicNGSCHR_getSubset, MANY)
 {
-     ASSERT_TRUE(false);
+     StandardChroms ourChroms;
+     ourChroms.manyChr.sortSites();
+     uBasicNGSChrom testChrom =ourChroms.manyChr.getSubset(0, 2000);
+     EXPECT_EQ(3,testChrom.count());
 }
-
-TEST(uBasicNGSCHR_removeSubset, NORMAL)
+TEST(uBasicNGSCHR_getSubset, UNSORTED)
 {
-     ASSERT_TRUE(false);
+     StandardChroms ourChroms;
+     EXPECT_THROW(ourChroms.manyChr.getSubset(80, 130),unsorted_throw );
+}
+TEST(uBasicNGSCHR_getSubset, CUSTOMEMPTY)
+{
+     StandardChroms ourChroms;
+     ourChroms.emptyChr.sortSites(ourChroms.emptyChr.compareLenght,&uBasicNGS::getLenght);
+     uBasicNGSChrom testChrom =ourChroms.emptyChr.getSubset(80, 130);
+     EXPECT_EQ(0,testChrom.count());
+}
+TEST(uBasicNGSCHR_getSubset, CUSTOMESOME)
+{
+     StandardChroms ourChroms;
+     ourChroms.manyChr.sortSites(ourChroms.manyChr.compareLenght,&uBasicNGS::getLenght);
+     uBasicNGSChrom testChrom =ourChroms.manyChr.getSubset(80, 130);
+     EXPECT_EQ(1,testChrom.count());
 }
 
+TEST(uBasicNGSCHR_removeSubset, CUSTOMBORDER)
+{
+     StandardChroms ourChroms;
+     ourChroms.manyChr.sortSites(ourChroms.manyChr.compareLenght,&uBasicNGS::getLenght);
+     uBasicNGSChrom testChrom =ourChroms.manyChr.removeSubset(0, 101);
+     EXPECT_EQ(1,testChrom.count());
+}
+
+TEST(uBasicNGSCHR_removeSubset, CUSTOMALL)
+{
+     StandardChroms ourChroms;
+     ourChroms.manyChr.sortSites(ourChroms.manyChr.compareLenght,&uBasicNGS::getLenght);
+     uBasicNGSChrom testChrom =ourChroms.manyChr.removeSubset(0, 200);
+     EXPECT_EQ(0,testChrom.count());
+}
 TEST(uBasicNGSCHR_removeSubset, EMPTY)
 {
-     ASSERT_TRUE(false);
+     StandardChroms ourChroms;
+     uBasicNGSChrom testChrom =ourChroms.emptyChr.removeSubset(0, 2000);
+     EXPECT_EQ(0,testChrom.count());
 }
-TEST(uBasicNGSCHR_removeSubset, MANY)
+TEST(uBasicNGSCHR_removeSubset, ALLREMOVED)
 {
-     ASSERT_TRUE(false);
-}
 
+     StandardChroms ourChroms;
+     ourChroms.manyChr.sortSites();
+     uBasicNGSChrom testChrom =ourChroms.manyChr.removeSubset(0, 2000);
+     EXPECT_EQ(0,testChrom.count());
+}
+TEST(uBasicNGSCHR_removeSubset, SOMEREMOVED)
+{
+     StandardChroms ourChroms;
+     ourChroms.manyChr.sortSites();
+     uBasicNGSChrom testChrom =ourChroms.manyChr.removeSubset(0, 150);
+     EXPECT_EQ(1,testChrom.count());
+}
 
 /**<  getSubsetCount*/
 
 TEST(uBasicNGSCHR_getSubsetCount, NORMAL)
 {
-     ASSERT_TRUE(false);
+     StandardChroms ourChroms;
+     ourChroms.manyChr.sortSites();
+     EXPECT_EQ(3,ourChroms.manyChr.getSubsetCount(0, 2000));
 }
+
 
 TEST(uBasicNGSCHR_getSubsetCount, EMPTY)
 {
-     ASSERT_TRUE(false);
+     StandardChroms ourChroms;
+     EXPECT_EQ(0,ourChroms.emptyChr.getSubsetCount(0, 2000));
 }
 
-TEST(uBasicNGSCHR_getSubsetCount, MANY)
+TEST(uBasicNGSCHR_getSubsetCount, MANYCUSTOMSORT)
 {
-     ASSERT_TRUE(false);
+     StandardChroms ourChroms;
+     ourChroms.manyChr.sortSites(ourChroms.manyChr.compareLenght,&uBasicNGS::getLenght);
+     EXPECT_EQ(2,ourChroms.manyChr.getSubsetCount(40, 120));
 }
 /**< AddData */
 
 TEST(uBasicNGSCHR_addData, VALID)
 {
-     ASSERT_TRUE(false);
+     StandardChroms ourChroms;
+     ourChroms.manyChr.sortSites(ourChroms.manyChr.compareLenght,&uBasicNGS::getLenght);
+     ourChroms.manyChr.addData(uBasicNGS("chr1", 2032,3245));
+     EXPECT_FALSE(ourChroms.manyChr.getSortedStatus());
+     EXPECT_EQ(4,ourChroms.manyChr.count());
+
 }
 TEST(uBasicNGSCHR_addData, INVALIDCHR)
 {
-     ASSERT_TRUE(false);
+     StandardChroms ourChroms;
+     ourChroms.manyChr.sortSites(ourChroms.manyChr.compareLenght,&uBasicNGS::getLenght);
+     EXPECT_THROW(ourChroms.manyChr.addData(uBasicNGS("chr2", 2032,3245)),ugene_exception_base);
 }
 
 
@@ -480,11 +527,15 @@ TEST(uBasicNGSCHR_addData, INVALIDCHR)
 
 TEST(uBasicNGSCHR_getStartFunct, HASBEENSET)
 {
-     ASSERT_TRUE(false);
+     StandardChroms ourChroms;
+     ourChroms.manyChr.sortSites(ourChroms.manyChr.compareLenght,&uBasicNGS::getLenght);
+     std::function<float(const uBasicNGS*)>  my_funct= &uBasicNGS::getLenght;
+     EXPECT_NE(nullptr,ourChroms.manyChr.getStartFunct());
 }
 TEST(uBasicNGSCHR_getStartFunct, NOTBEENSET)
 {
-     ASSERT_TRUE(false);
+     StandardChroms ourChroms;
+     EXPECT_EQ(nullptr,ourChroms.manyChr.getStartFunct());
 }
 
 TEST(uBasicNGSCHR_getEndFunct, HASBEENSET)
@@ -571,10 +622,6 @@ TEST(uBasicNGSCHR_findPrec, CUSTOM)
      ASSERT_TRUE(false);
 }
 
-TEST(uBasicNGSCHR_getSubset, CUSTOM)
-{
-     ASSERT_TRUE(false);
-}
 /**< isSorted() */
 TEST(uBasicNGSCHR_isSorted, NOT)
 {
