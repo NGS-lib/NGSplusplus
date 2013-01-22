@@ -523,8 +523,6 @@ TEST(uBasicNGSCHR_addData, INVALIDCHR)
 
 
 /**<  GetStartFunct, getEndFunct */
-
-
 TEST(uBasicNGSCHR_getStartFunct, HASBEENSET)
 {
      StandardChroms ourChroms;
@@ -540,12 +538,16 @@ TEST(uBasicNGSCHR_getStartFunct, NOTBEENSET)
 
 TEST(uBasicNGSCHR_getEndFunct, HASBEENSET)
 {
-     ASSERT_TRUE(false);
+     StandardChroms ourChroms;
+     ourChroms.manyChr.sortSites(ourChroms.manyChr.compareLenght,&uBasicNGS::getLenght,&uBasicNGS::getLenght);
+     std::function<float(const uBasicNGS*)>  my_funct= &uBasicNGS::getLenght;
+     EXPECT_NE(nullptr,ourChroms.manyChr.getEndFunct());
 }
 
 TEST(uBasicNGSCHR_getEndFunct, NOTBEENSET)
 {
-     ASSERT_TRUE(false);
+     StandardChroms ourChroms;
+     EXPECT_EQ(nullptr,ourChroms.manyChr.getEndFunct());
 }
 
 
@@ -555,7 +557,8 @@ TEST(uBasicNGSCHR_getCompFunct, BEENSET)
 }
 TEST(uBasicNGSCHR_getCompFunct, NOTBEENSET)
 {
-     ASSERT_TRUE(false);
+   StandardChroms ourChroms;
+//     EXPECT_EQ(nullptr,ourChroms.manyChr.getComp());
 }
 
 
