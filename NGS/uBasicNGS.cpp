@@ -21,19 +21,37 @@ namespace NGS {
         setScoreVector(p_region.getScoreVector());
     }
 
+    /** \brief Checks if the content of elements are identical
+     *
+     * \param pCompared const &_SELF_ Item to compare
+     * \return bool True if identical
+     *
+     */
+
+    bool uBasicNGS::isEqual(const uBasicNGS  &  pCompared) const{
+
+        return ((this->getChr()==pCompared.getChr())&&
+                (this->getStrand()==pCompared.getStrand())&&
+                (this->getStart()==pCompared.getStart())&&
+                (this->getEnd()==pCompared.getEnd())&&
+                (this->getScoreVector()==pCompared.getScoreVector()));
+    }
+/**< uBasicNGSChrom */
+
+
     /** \brief Copy constructor
      * \param copyCop : The object to instaciate  from.
      */
-    uBasicNGSChrom::uBasicNGSChrom(const uGenericNGSChrom<uBasicNGSChrom,uBasicNGS> & copyCop)
-    {
-        VecSites=copyCop.returnVecData();
-        chr= copyCop.getChr();
-        m_isSorted=copyCop.getSortedStatus();
-        sortGetStart=copyCop.getStartFunct();
-        sortGetEnd=copyCop.getEndFunct();
-        m_comptFunc=copyCop.getCompFunct();
-        chromSize=copyCop.getChromSize();
-    }
+//    uBasicNGSChrom::uBasicNGSChrom(const uGenericNGSChrom<uBasicNGSChrom,uBasicNGS> & copyCop)
+//    {
+//        VecSites=copyCop.returnVecData();
+//        chr= copyCop.getChr();
+//        m_isSorted=copyCop.getSortedStatus();
+//        sortGetStart=copyCop.getStartFunct();
+//        sortGetEnd=copyCop.getEndFunct();
+//        m_comptFunc=copyCop.getCompFunct();
+//        chromSize=copyCop.getChromSize();
+//    }
 
     /** \brief Copy constructor
      * \param const uBasicNGSChrom& initFrom: the uBasicNGSChrom to copy.
@@ -64,4 +82,12 @@ namespace NGS {
 
         return *this;
     }
+
+    uBasicNGSChrom uBasicNGSChrom::getCopy()const
+    {
+        uBasicNGSChrom returnCopy = *this;
+        return returnCopy;
+    }
+
+
 }

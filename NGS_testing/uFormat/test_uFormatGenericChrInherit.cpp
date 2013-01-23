@@ -29,128 +29,128 @@ uBasicNGSChrom uChromTestOverlap;
 
 
 /**< Apply on AllVecData */
-TEST(uBasicNGSCHR_applyAndGetVecData, NORMAL){
+TEST(uBasicNGSGENCHR_applyAndGetVecData, NORMAL){
        ASSERT_TRUE(false);
  }
-TEST(uBasicNGSCHR_applyAndGetVecData, ALLMODIFIED){
+TEST(uBasicNGSGENCHR_applyAndGetVecData, ALLMODIFIED){
        ASSERT_TRUE(false);
  }
-TEST(uBasicNGSCHR_applyAndGetVecData, ONEMPTY){
+TEST(uBasicNGSGENCHR_applyAndGetVecData, ONEMPTY){
        ASSERT_TRUE(false);
  }
-TEST(uBasicNGSCHR_applyAndGetVecData, THROWUGENE){
+TEST(uBasicNGSGENCHR_applyAndGetVecData, THROWUGENE){
        ASSERT_TRUE(false);
  }
 /**<  computeOnAllSites*/
-TEST(uBasicNGSCHR_computeOnAllSites, NORMAL){
+TEST(uBasicNGSGENCHR_computeOnAllSites, NORMAL){
        ASSERT_TRUE(false);
  }
-TEST(uBasicNGSCHR_computeOnAllSites, ALLMODIFIED){
+TEST(uBasicNGSGENCHR_computeOnAllSites, ALLMODIFIED){
        ASSERT_TRUE(false);
  }
-TEST(uBasicNGSCHR_computeOnAllSites, ONEMPTY){
+TEST(uBasicNGSGENCHR_computeOnAllSites, ONEMPTY){
        ASSERT_TRUE(false);
  }
 
- TEST(uBasicNGSCHR_computeOnAllSites, THROWUGENE){
+ TEST(uBasicNGSGENCHR_computeOnAllSites, THROWUGENE){
        ASSERT_TRUE(false);
  }
 
 /**<  getSpecificSites*/
-TEST(uBasicNGSCHR_getSpecificSites, NONECOUNTED){
+TEST(uBasicNGSGENCHR_getSpecificSites, NONECOUNTED){
        ASSERT_TRUE(false);
  }
-TEST(uBasicNGSCHR_getSpecificSites, SOMECOUNTED){
+TEST(uBasicNGSGENCHR_getSpecificSites, SOMECOUNTED){
        ASSERT_TRUE(false);
  }
-TEST(uBasicNGSCHR_getSpecificSites, ALLCOUNTED){
+TEST(uBasicNGSGENCHR_getSpecificSites, ALLCOUNTED){
        ASSERT_TRUE(false);
  }
- TEST(uBasicNGSCHR_getSpecificSites, EMPTY){
+ TEST(uBasicNGSGENCHR_getSpecificSites, EMPTY){
        ASSERT_TRUE(false);
  }
-  TEST(uBasicNGSCHR_getSpecificSites, THROWUGENE){
+  TEST(uBasicNGSGENCHR_getSpecificSites, THROWUGENE){
        ASSERT_TRUE(false);
  }
 /**<  removeSpecificSites
  */
-TEST(uBasicNGSCHR_removeSpecificSites, NONEREMOVED){
+TEST(uBasicNGSGENCHR_removeSpecificSites, NONEREMOVED){
        ASSERT_TRUE(false);
  }
-TEST(uBasicNGSCHR_removeSpecificSites, SOMEREMOVED){
+TEST(uBasicNGSGENCHR_removeSpecificSites, SOMEREMOVED){
        ASSERT_TRUE(false);
  }
-TEST(uBasicNGSCHR_removeSpecificSites, ALLREMOVED){
+TEST(uBasicNGSGENCHR_removeSpecificSites, ALLREMOVED){
        ASSERT_TRUE(false);
  }
- TEST(uBasicNGSCHR_removeSpecificSites, EMPTY){
+ TEST(uBasicNGSGENCHR_removeSpecificSites, EMPTY){
        ASSERT_TRUE(false);
  }
- TEST(uBasicNGSCHR_removeSpecificSites, THROWUGENE){
+ TEST(uBasicNGSGENCHR_removeSpecificSites, THROWUGENE){
        ASSERT_TRUE(false);
  }
 
 /**< applyOnAllSites */
-TEST(uBasicNGSCHR_applyOnAllSites, EMPTY){
+TEST(uBasicNGSGENCHR_applyOnAllSites, EMPTY){
        ASSERT_TRUE(false);
  }
-TEST(uBasicNGSCHR_applyOnAllSites, NORMAL){
+TEST(uBasicNGSGENCHR_applyOnAllSites, NORMAL){
        ASSERT_TRUE(false);
  }
-TEST(uBasicNGSCHR_applyOnAllSites, EXCEPTION){
+TEST(uBasicNGSGENCHR_applyOnAllSites, EXCEPTION){
        ASSERT_TRUE(false);
  }
 /**< applyOnAllSites */
-TEST(uBasicNGSCHR_applyOnAllSitesConst, EMPTY){
+TEST(uBasicNGSGENCHR_applyOnAllSitesConst, EMPTY){
        ASSERT_TRUE(false);
  }
-TEST(uBasicNGSCHR_applyOnAllSitesConst, NORMAL){
+TEST(uBasicNGSGENCHR_applyOnAllSitesConst, NORMAL){
        ASSERT_TRUE(false);
  }
-TEST(uBasicNGSCHR_applyOnAllSitesConst, EXCEPTION){
+TEST(uBasicNGSGENCHR_applyOnAllSitesConst, EXCEPTION){
        ASSERT_TRUE(false);
  }
 /**< accumulateSitesInfo */
-TEST(uBasicNGSCHR_accumulateSitesInfos, EMPTY){
+TEST(uBasicNGSGENCHR_accumulateSitesInfos, EMPTY){
        ASSERT_TRUE(false);
  }
-TEST(uBasicNGSCHR_accumulateSitesInfo, NORMAL){
+TEST(uBasicNGSGENCHR_accumulateSitesInfo, NORMAL){
        ASSERT_TRUE(false);
  }
-TEST(uBasicNGSCHR_accumulateSitesInfo, EXCEPTION){
+TEST(uBasicNGSGENCHR_accumulateSitesInfo, EXCEPTION){
        ASSERT_TRUE(false);
  }
 /**< MinMaxSites */
-TEST(uBasicNGSCHR_minAndMaxSites, NORMAL){
+TEST(uBasicNGSGENCHR_minAndMaxSites, NORMAL){
        ASSERT_TRUE(false);
  }
 
- TEST(uBasicNGSCHR_minAndMaxSites, EMPTY){
+ TEST(uBasicNGSGENCHR_minAndMaxSites, EMPTY){
        ASSERT_TRUE(false);
  }
 
- TEST(uBasicNGSCHR_minAndMaxSites, EXCEPTION){
+ TEST(uBasicNGSGENCHR_minAndMaxSites, EXCEPTION){
        ASSERT_TRUE(false);
  }
 
 /**<countSitesWithProperty */
-TEST(uBasicNGSCHR_countSitesWithProperty, NORMAL){
+TEST(uBasicNGSGENCHR_countSitesWithProperty, NORMAL){
        ASSERT_TRUE(false);
  }
 
- TEST(uBasicNGSCHR_countSitesWithProperty, EMPTY){
+ TEST(uBasicNGSGENCHR_countSitesWithProperty, EMPTY){
        ASSERT_TRUE(false);
  }
 
- TEST(uBasicNGSCHR_countSitesWithProperty, EXCEPTION){
+ TEST(uBasicNGSGENCHR_countSitesWithProperty, EXCEPTION){
        ASSERT_TRUE(false);
  }
 /**< applyOnAllChroms */
 
 
- TEST(uBasicNGSCHR_applyOnAllChroms, VALID){
+ TEST(uBasicNGSGENCHR_applyOnAllChroms, VALID){
        ASSERT_TRUE(false);
  }
- TEST(uBasicNGSCHR_applyOnAllChroms, EMPTY){
+ TEST(uBasicNGSGENCHR_applyOnAllChroms, EMPTY){
        ASSERT_TRUE(false);
  }

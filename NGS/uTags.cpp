@@ -2,6 +2,8 @@
 #include <string.h>
 #include <sstream>
 #include "uTags.h"
+#include "uBasicNGS.h"
+#include "uRegion.h"
 namespace NGS {
 
 using namespace std;
@@ -36,9 +38,9 @@ catch(ugene_exception_base &e)
 
 
 /** \brief Copy constructor, with init list
- * \param otherItem: uGenericsNGS (or child class) object
+ * \param otherItem: uBasicNGS  object
  */
-uTags::uTags(uGenericNGS otherItem):uGenericNGS(otherItem),name(nullptr),phredScore(nullptr),cigar(nullptr)
+uTags::uTags(uBasicNGS otherItem):uGenericNGS(otherItem.getChr(),otherItem.getStart(),otherItem.getEnd(),otherItem.getStrand(),otherItem.getScore()),name(nullptr),phredScore(nullptr),cigar(nullptr)
 {
 }
 
@@ -210,6 +212,31 @@ uTags& uTags::operator= (uTags const& assign_from)
      Unmapped= assign_from.Unmapped;
     return *this;
 }
+
+
+uTags uTags::getCopy() const
+{
+   uTags copyObj=*this;
+   return copyObj;
+}
+
+bool uTags::isEqual(const uTags & pCompared) const{
+    return ((this->getChr()==pCompared.getChr())&&
+            (this->getStrand()==pCompared.getStrand())&&
+            (this->getStart()==pCompared.getStart())&&
+            (this->getEnd()==pCompared.getEnd())&&
+            (this->getScoreVector()==pCompared.getScoreVector())&&
+            (this->getMapQual()==pCompared.getMapQual())&&
+            (this->getSequence()==pCompared.getSequence())&&
+            (this->getName()==pCompared.getName())&&
+            (this->getPhred()==pCompared.getPhred())&&
+            (this->getCigar()==pCompared.getCigar())&&
+            (this->isMapped()==pCompared.isMapped())&&
+            (this->getFlag()==pCompared.getFlag())&&
+            (this->getPeLenght()==pCompared.getPeLenght()));
+
+}
+
 
 // TODO: Should this be in parser code?
 /** \brief Load a tag from a string formated in Sam format and enter in member data
@@ -444,6 +471,12 @@ uTagsChrom& uTagsChrom::operator=(const uTagsChrom& copFrom)
     chromSize=copFrom.chromSize;
 
     return *this;
+}
+
+uTagsChrom uTagsChrom::getCopy() const
+{
+   uTagsChrom copyObj=*this;
+   return copyObj;
 }
 
 
@@ -1011,6 +1044,14 @@ void uTagsExperiment::writeTrimmedSamToOutput(std::ostream &out, int left, int r
         iterMap->second.writeTrimmedSamToOutput(out, left, right);
     }
 }
+
+uTagsExperiment uTagsExperiment::getCopy() const
+{
+   uTagsExperiment copyObj=*this;
+   return copyObj;
+}
+
+
 } // End of namespace NGS
 
 

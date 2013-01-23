@@ -144,16 +144,12 @@ public:
     _CHROM_ getChrom(const std::string & chrom) const;
     const _CHROM_* getpChrom(const std::string & chrom) const;
     _CHROM_* getpChrom(const std::string & chrom);
-   _BASE_ getSite(std::string chr, int position)const;
+    _BASE_ getSite(std::string chr, int position)const;
     _BASE_ getSite(typename std::vector<_BASE_>::const_iterator posItr)const;
 
-
-    template<class _SELFPAR_, typename _CHROMPAR_, typename _BASEPAR_>
-    _SELF_ getOverlapping(uGenericNGSExperiment<_SELFPAR_, _CHROMPAR_,_BASEPAR_> &compareExp, OverlapType type=OverlapType::OVERLAP_PARTIAL);
-    template<class _SELFPAR_,typename _BASEPAR_>
-    _SELF_ getOverlapping(uGenericNGSChrom<_SELFPAR_,_BASEPAR_> &compareExp, OverlapType type=OverlapType::OVERLAP_PARTIAL);
+    _SELF_ getOverlapping(_SELF_ &compareExp, OverlapType type=OverlapType::OVERLAP_PARTIAL);
+    _SELF_ getOverlapping(_CHROM_ &compareChrom, OverlapType type=OverlapType::OVERLAP_PARTIAL);
     _SELF_ getOverlapping(std::string chr, int start, int end, OverlapType type=OverlapType::OVERLAP_PARTIAL);
-
 
      _CHROM_ getSubset(std::string pChr, float pStart, float pEnd, OverlapType options=OverlapType::OVERLAP_PARTIAL);
      _SELF_  getDistinct( std::string pChr, float pStart, float pEnd, OverlapType type=OverlapType::OVERLAP_PARTIAL);
@@ -787,7 +783,7 @@ template<class _SELF_, typename _CHROM_, typename _BASE_>
 int uGenericNGSExperiment<_SELF_,_CHROM_, _BASE_>::getSubsetCount(const std::string & chr, const float start, const float end, OverlapType overlap)
 {
     int count = 0;
-    try 
+    try
     {
         count = getpChrom(chr)->getSubsetCount(start, end, overlap);
     }
@@ -1021,8 +1017,7 @@ void uGenericNGSExperiment<_SELF_,_CHROM_, _BASE_>::addData(const _CHROM_ & inpu
  *
  */
 template<class _SELF_, typename _CHROM_, typename _BASE_>
-template<typename _SELFPAR_, typename _CHROMPAR_, typename _BASEPAR_>
-_SELF_ uGenericNGSExperiment<_SELF_,_CHROM_,_BASE_>::getOverlapping(uGenericNGSExperiment<_SELFPAR_, _CHROMPAR_,_BASEPAR_> &compareExp, OverlapType type)
+_SELF_ uGenericNGSExperiment<_SELF_,_CHROM_,_BASE_>::getOverlapping(_SELF_ &compareExp, OverlapType type)
 {
     typename NGSExpMap::iterator iterMap;
     _CHROM_* pChrom;
@@ -1044,8 +1039,7 @@ _SELF_ uGenericNGSExperiment<_SELF_,_CHROM_,_BASE_>::getOverlapping(uGenericNGSE
  *
  */
 template<class _SELF_, typename _CHROM_, typename _BASE_>
-template<class _SELFPAR_,typename _BASEPAR_>
-_SELF_ uGenericNGSExperiment<_SELF_, _CHROM_,_BASE_>::getOverlapping(uGenericNGSChrom<_SELFPAR_,_BASEPAR_> &compareChrom, OverlapType type)
+_SELF_ uGenericNGSExperiment<_SELF_, _CHROM_,_BASE_>::getOverlapping(_CHROM_ &compareChrom, OverlapType type)
 {
     try
     {

@@ -23,8 +23,8 @@ public:
 
     uRegion(uTags);
     uRegion(uBasicNGS);
-    uRegion(uGenericNGS);
     uRegion(uToken);
+
 
     virtual ~uRegion();
 
@@ -50,12 +50,16 @@ public:
     };
     void setSignal(int i, float value);
     void setSignal(std::vector<float>);
-    std::vector<float> getSignal();
+    std::vector<float> getSignal()const;
 
 
     void writeSignal(std::ostream& out) const;
     void writeRegion(std::ostream& out) const;
     void writeAll(std::ostream& out ) const;
+
+    bool isEqual(const uRegion & pCompared)const;
+
+    uRegion getCopy()const;
 
     //TODO substract regions (with options)
 
@@ -79,7 +83,6 @@ class uRegionChrom :  public uGenericNGSChrom<uRegionChrom,uRegion>
 {
 public:
 
-
     uRegionChrom():uGenericNGSChrom() {};
     uRegionChrom(std::string ourChr):uGenericNGSChrom(ourChr)
     {
@@ -92,6 +95,7 @@ public:
     uRegionChrom(const uRegionChrom&);
     uRegionChrom(const std::vector<uRegion> & copyVec):uGenericNGSChrom(copyVec){};
 
+    uRegionChrom getCopy()const;
 
     void measureDensityOverlap(const  uTagsChrom& chromtoComp, const OverlapType=OverlapType::OVERLAP_PARTIAL);
     void measureDensityOverlap(const  uRegionChrom& chromtoComp, const OverlapType=OverlapType::OVERLAP_PARTIAL);
@@ -116,6 +120,7 @@ public:
     uRegionExperiment(const uRegionExperiment&) = default;
     uRegionExperiment()=default;
 
+    uRegionExperiment getCopy() const;
 
     void measureDensityOverlap(const uTagsExperiment& expToComp, const OverlapType poverlap=OverlapType::OVERLAP_PARTIAL);
     void measureDensityOverlap(const uRegionExperiment& expToComp, const OverlapType poverlap=OverlapType::OVERLAP_PARTIAL);

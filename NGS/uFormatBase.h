@@ -177,6 +177,8 @@ public:
     long int getEnd() const;
     long int getLenght() const;
 
+  //  virtual bool isEqual(const  _SELF_ & pCompared)const =0;
+
     /**<  Divide our region into a certain number of subregions */
 
     std::vector<_SELF_> divideIntoBinofSize(const int N, const SplitType type=SplitType::STRICT);
@@ -406,7 +408,6 @@ long int uGenericNGS<_SELF_>::getLenght() const
     /**< 0 based coordinates, so N - N  is a legal fragment covering a single nucleotide at position N */
     return (m_endPos-m_startPos+1);
 }
-
 
 /** \brief Increase size of the element. Coordinates can go no lower then 0,
  *
@@ -677,7 +678,7 @@ std::vector<_SELF_> uGenericNGS<_SELF_>::divideIntoBinofSize(const int N, const 
         int curStart=getStart();
         for (int i=0; i<nbBin; i++)
         {
-            returnVec.push_back(  uGenericNGS(getChr(),curStart, (curStart+(binSize-1))  ));
+            returnVec.push_back(  _SELF_(getChr(),curStart, (curStart+(binSize-1))  ));
             curStart+=binSize;
         }
 
@@ -696,7 +697,7 @@ std::vector<_SELF_> uGenericNGS<_SELF_>::divideIntoBinofSize(const int N, const 
             /**< Add an extra region for the leftover */
             case SplitType::ADD:
             {
-                returnVec.push_back(  uGenericNGS(getChr(),curStart, (curStart+(leftover-1))  ));
+                returnVec.push_back(  _SELF_(getChr(),curStart, (curStart+(leftover-1))  ));
                 break;
             }
             case SplitType::IGNORE:

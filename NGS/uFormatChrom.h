@@ -71,6 +71,12 @@ protected:
 
 public:
 
+
+    virtual _SELF_ getCopy()const{
+
+
+    };
+
    /**< Comparison functors */
     static bool comparePosStart(const _BASE_ &item, const int & value)
     {
@@ -1007,7 +1013,6 @@ _SELF_ uGenericNGSChrom<_SELF_,_BASE_>::removeSubset(double p_start, double p_en
     {
         _SELF_ returnChrom;
         returnChrom.setChr(this->getChr());
-        std::vector<int> erasePositions;
 
         auto posIter = this->findPrecedingSite(p_start);
 
@@ -1046,20 +1051,6 @@ _SELF_ uGenericNGSChrom<_SELF_,_BASE_>::removeSubset(double p_start, double p_en
             /**< std erase format, so endPos is not erased. */
             this->removeSite(startPosIter,endPosIter);
         }
-//        auto delPos=pos;
-//        for (; pos != this->end(); pos++)
-//        {
-//            if (sortGetStart(&(*pos))> p_end)
-//                break;
-//            /**< When we find a valid element, go back one step and erase th element */
-//            if (utility::isOverlap(sortGetStart(&(*pos)), sortGetEnd(&(*pos)),p_start, p_end,overlap))
-//            {
-//                returnChrom.addDataNoCheck(*pos);
-//                pos--;
-//                delPos=pos;
-//                this->removeSite( to_mutable_iterator(VecSites,delPos ));
-//            }
-//        }
 
         return returnChrom;
     }
@@ -1107,6 +1098,8 @@ _SELF_ uGenericNGSChrom<_SELF_,_BASE_>::getOverlapping(_OTHER_ &pCompareChr,Over
 }
 
 
+
+
 /**< Return elements of A that overlap B */
 /** \brief Wrapper function that returns a chrom structure containing the elements that do notoverlap another chrom structur
  *
@@ -1124,10 +1117,12 @@ _SELF_ uGenericNGSChrom<_SELF_,_BASE_>::getNotOverlapping(_OTHER_ &pCompareChr,O
 {
     try
     {
-        _SELF_ returnChr;
+
         if (getChr()!=pCompareChr.getChr()){
-            return (returnChr=*this);
+              return this->getCopy();
+//            return (returnChr=*this);
         }
+        _SELF_ returnChr;
         bool add=true;
         for(auto it= VecSites.begin(); it!=VecSites.end(); it++)
         {
@@ -1164,7 +1159,7 @@ _SELF_ uGenericNGSChrom<_SELF_,_BASE_>::getDistinct(double p_start, double p_end
     try
     {
         _SELF_ returnChrom;
-        returnChrom= *this;
+        returnChrom= this->getCopy();
         returnChrom.sortGetStart=sortGetStart;
         returnChrom.sortGetEnd=sortGetEnd;
         auto posIter = returnChrom.findPrecedingSite(p_start);

@@ -43,20 +43,6 @@ catch(construct_elem_throw &e)
     throw e;
 }
 
-/** \brief Constructor from parent singular
- *
- * \param uGenericNGS
- *
- */
-uRegion::uRegion(uGenericNGS otherNGS)try :uGenericNGS(otherNGS.getChr(),otherNGS.getStart(),otherNGS.getEnd(), otherNGS.getStrand())
-{}
-catch(construct_elem_throw &e)
-{
-    addStringError(e,"Throwing in uRegion(uGenericNGS)");
-    e << region_error(*this);
-    throw e;
-}
-
 uRegion::uRegion(uTags otherNGS)try :uGenericNGS(otherNGS.getChr(),otherNGS.getStart(),otherNGS.getEnd(), otherNGS.getStrand())
 {}
 catch(construct_elem_throw &e)
@@ -127,6 +113,18 @@ void uRegion::setSignal(int i, float value)
     }
 }
 
+bool uRegion::isEqual(const uRegion & pCompared)const{
+
+    return ((this->getChr()==pCompared.getChr())&&
+            (this->getStrand()==pCompared.getStrand())&&
+            (this->getStart()==pCompared.getStart())&&
+            (this->getEnd()==pCompared.getEnd())&&
+            (this->getIdent()==pCompared.getIdent())&&
+            (this->getDensity()==pCompared.getDensity())&&
+            (this->getCount()==pCompared.getCount())&&
+            (this->getSignal()==pCompared.getSignal()));
+
+}
 
 /** \brief Set the signal of an entire region, must be appropriate size
  *
@@ -157,7 +155,7 @@ void uRegion::setSignal(std::vector<float> ourSignal)
  * \return std::vector<float> :: Signal returned
  *
  */
-std::vector<float> uRegion::getSignal()
+std::vector<float> uRegion::getSignal() const
 {
     return signal;
 }
@@ -211,6 +209,11 @@ void uRegion::writeRegion(std::ostream& out) const
 /**< Chrom constructors */
 
 
+    uRegion uRegion::getCopy() const{
+
+        uRegion copyElem =  *this;
+        return copyElem;
+    }
 
 
 
@@ -249,7 +252,11 @@ void uRegion::writeRegion(std::ostream& out) const
         return *this;
     }
 
+    uRegionChrom uRegionChrom::getCopy() const{
 
+        uRegionChrom copyElem =  *this;
+        return copyElem;
+    }
 
 //TODO Once implement, this needs to use our Transform wrapper
 /** \brief Set the density scores for our exp versus another one
@@ -761,6 +768,14 @@ void uRegionChrom::writeDensityAsTab(std::ostream& out)
         it.writeRegion(out);
     }
 }
+
+
+uRegionExperiment uRegionExperiment::getCopy() const{
+
+    uRegionExperiment copyElem =  *this;
+    return copyElem;
+}
+
 
 //TODO Test our loader for Wig
 //TODO Move to parser?

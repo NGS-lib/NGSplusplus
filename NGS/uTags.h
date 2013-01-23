@@ -34,7 +34,7 @@ private:
 public:
 
     uTags();
-    uTags(uGenericNGS otherItem);
+    uTags(uBasicNGS otherItem);
     uTags(const uToken & pToken);
     uTags(std::string pChr, long long int pStart, long long int pEnd, float pScore);
     uTags(std::string pChr, long long int pStart, long long int pEnd, StrandDir pStrand=StrandDir::FORWARD);
@@ -45,6 +45,10 @@ public:
     uTags& operator=  (uTags const& assign_from);
     ~uTags();
 
+    uTags getCopy()const;
+
+
+    bool isEqual(const uTags & pCompared)const;
 
     void writetoBedCompletePE( std::ostream &out);
     void writeCompletedPESamToOutput(std::ostream &out);
@@ -62,7 +66,7 @@ public:
      * \return bool
      *
      */
-    bool isMapped()
+    bool isMapped() const
     {
         return Unmapped;
     }
@@ -333,6 +337,7 @@ public:
     {
     }
 
+    uTagsChrom getCopy() const;
 
     uTagsChrom(const uGenericNGSChrom<uTagsChrom,uTags>&);
     uTagsChrom& operator=(const uTagsChrom& copFrom);
@@ -378,6 +383,9 @@ public:
     void writeTrimmedSamToOutput(std::ostream &out, int left, int right);
     uTags nextSamLine(bool minimal=false);
     std::vector<float> getRegionSignal(std::string chrom, int start, int end, bool overlap);
+
+    uTagsExperiment getCopy() const;
+
 };
 } // End of namespace NGS
 
