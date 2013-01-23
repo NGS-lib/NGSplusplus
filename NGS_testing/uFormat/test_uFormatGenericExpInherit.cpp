@@ -76,7 +76,6 @@ TEST(uBasicNGSEXP_accumulateChromsInfo, VALID){
        ASSERT_TRUE(false);
  }
 
-
 /**<  applyOnOneChrom*/
  TEST(uBasicNGSEXP_applyOnOneChrom, VALID){
        ASSERT_TRUE(false);

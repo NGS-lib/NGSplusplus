@@ -183,11 +183,12 @@ inline static void loadStream(const std::string & filepath,std::ifstream& file)
     }
 }
 //TODO Multi-dimentional Gaussian sim
+//Check
 //One dimensional Gaussian
 /** \brief Returns the gaussiam sim between two points for a given Standard deviation
  *
- * \param x1 float Point a
  * \param x2 float Point b
+ * \param x1 float Point a
  * \param sigma float SD
  * \return float Between 0 and 1
  *
