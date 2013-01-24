@@ -370,6 +370,7 @@ public:
 
     // We where HERE!
 
+    // TODO: there should not be 2 versions, only one that use a parser in paramaters
     /** \brief load data from Parser, convert to unitary and execute the given function. Does -not- necessarily add to EXP
      *
      * \param stream std::ifstream& file to load from
@@ -563,6 +564,7 @@ void uGenericNGSExperiment<_SELF_,_CHROM_, _BASE_>::addData(const _BASE_ & newSi
     }
 }
 
+// TODO: keep only removeSite and getSite with iterator public, others should be private
 /** \brief Remove a specific number from the specific subtype. //TODO Should this be public?
  *
  * \param chr std::string : Key to map element (chrom)
@@ -737,7 +739,7 @@ _CHROM_* uGenericNGSExperiment<_SELF_,_CHROM_, _BASE_>::getpChrom(const std::str
 template<class _SELF_, typename _CHROM_, typename _BASE_>
 void uGenericNGSExperiment<_SELF_,_CHROM_, _BASE_>::setChrSize(std::string chr, int chrSize)
 {
-    ExpMap[chr].setChromSize(chrSize);
+	getpChrom(chr)->setChromSize(chrSize);
 }
 
 // TODO: We need to check if the chrom exists before getting it's size!!
@@ -748,10 +750,7 @@ void uGenericNGSExperiment<_SELF_,_CHROM_, _BASE_>::setChrSize(std::string chr, 
 template<class _SELF_, typename _CHROM_, typename _BASE_>
 int uGenericNGSExperiment<_SELF_,_CHROM_, _BASE_>::getChrSize(std::string chr)
 {
-    if (ExpMap.count(chr)==0){
-        throw param_throw() << string_error("Requested chr that does not exist in getChrSize()");
-    }
-    return (ExpMap[chr].getChromSize());
+	return getpChrom(chr)->getChromSize();
 }
 
 //Return the number of elements in our experiment
@@ -1024,9 +1023,9 @@ _SELF_ uGenericNGSExperiment<_SELF_,_CHROM_,_BASE_>::getOverlapping(_SELF_ &comp
     _SELF_ returnExp;
     for (iterMap = ExpMap.begin(); iterMap != ExpMap.end(); iterMap++)
     {
-        pChrom = compareExp.getpChrom(iterMap->first);
+        pChrom = compareExp.getpChrom(iterMap->first); // TODO: check if chrom exists before getting ptr to avoid throw
 //        returnExp.combineChr(iterMap->second.getOverlapping(*pChrom));
-	returnExp.addData(*pChrom); // TODO: does not seem to work, but at least it compiles
+	returnExp.addData(iterMap->second.getOverlapping(*pChrom)); // TODO: does not seem to work, but at least it compiles
     }
     return returnExp;
 }
