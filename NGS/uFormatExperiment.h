@@ -141,6 +141,9 @@ public:
     };
 
 
+
+    bool isChrom(const std::string & pChrom) const;
+
     _CHROM_ getChrom(const std::string & chrom) const;
     const _CHROM_* getpChrom(const std::string & chrom) const;
     _CHROM_* getpChrom(const std::string & chrom);
@@ -679,10 +682,21 @@ void uGenericNGSExperiment<_SELF_,_CHROM_, _BASE_>::writeAsBedFile(std::ostream&
     applyOnAllChroms(bind2nd(mem_fun_ref(&_CHROM_::outputBedFormat), out));
 }
 
+
+/** \brief Check if a chrom collection associated with the passed ID exist
+ * \param const std::string & chrom: the name of the collection.
+ * \return bool : True if the chrom collection exist
+ */
+template<class _SELF_, typename _CHROM_, typename _BASE_>
+bool uGenericNGSExperiment<_SELF_,_CHROM_, _BASE_>::isChrom(const std::string & pChrom) const{
+    return (ExpMap.count(pChrom));
+}
+
+
 //TODO: Make sure the return is ok
-/** \brief Returns the requested chrom object, if it exists.
+/** \brief Returns the requested chrom object
  * \param const std::string & chrom: the name of the chrom.
- * \exception ugene_operation_thoow: When the name of the chrom does not exists.
+ * \exception ugene_operation_throw: When the name of the chrom does not exists.
  * \return _CHROM_: a copy(?) of the chrom object
  */
 template<class _SELF_, typename _CHROM_, typename _BASE_>
@@ -692,7 +706,7 @@ _CHROM_ uGenericNGSExperiment<_SELF_,_CHROM_, _BASE_>::getChrom(const std::strin
     {
         throw ugene_operation_throw()<<string_error("Requested non-existent Chrom from Exp in getChrom(), value : " +chrom);
     }
-    return ExpMap.find(chrom)->second;
+    return ExpMap.find(chrom)->second.getCopy();
 }
 
 //TODO Check all chrom functions and make EXP wrapeprs
@@ -1023,9 +1037,12 @@ _SELF_ uGenericNGSExperiment<_SELF_,_CHROM_,_BASE_>::getOverlapping(_SELF_ &comp
     _SELF_ returnExp;
     for (iterMap = ExpMap.begin(); iterMap != ExpMap.end(); iterMap++)
     {
-        pChrom = compareExp.getpChrom(iterMap->first); // TODO: check if chrom exists before getting ptr to avoid throw
+
+        if (compareExp.isChrom(iterMap->first)){
+            pChrom = compareExp.getpChrom(iterMap->first); // TODO: check if chrom exists before getting ptr to avoid throw
 //        returnExp.combineChr(iterMap->second.getOverlapping(*pChrom));
-	returnExp.addData(iterMap->second.getOverlapping(*pChrom)); // TODO: does not seem to work, but at least it compiles
+            returnExp.addData(iterMap->second.getOverlapping(*pChrom)); // TODO: does not seem to work, but at least it compiles
+        }
     }
     return returnExp;
 }

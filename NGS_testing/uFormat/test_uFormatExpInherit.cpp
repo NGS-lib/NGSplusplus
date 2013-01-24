@@ -30,7 +30,7 @@ public:
 		chrom_1.setChr("");
 		chrom_1.addData(uBasicNGS("",100,200));
 		m_uBasicNGSChroms.push_back(chrom_1);
-		
+
 		/**< m_uBasicNGSChroms[2]: Chrom with 3 elements without a name ("") */
 		uBasicNGSChrom chrom_2;
 		chrom_2.setChr("");
@@ -166,7 +166,7 @@ TEST(uBasicNGSEXP_GetChrom, NOCHROMTHROWEXC)
  *	Invalid cases:
  *		NOCHROMTHROWEXC
  */
- 
+
 TEST(uBasicNGSEXP_getpChrom, NONAMECHROM)
 {
 	validExperiments myExperiments;
@@ -270,7 +270,7 @@ TEST(uBasicNGSEXP_getSite, VALIDITERRATOR){
 	myExperiments.getExperiment("MultipleChroms")->sortSites();
 	auto it = myExperiments.getExperiment("MultipleChroms")->findNextSite("chr5", 0);
 	EXPECT_EQ(myExperiments.getExperiment("MultipleChroms")->getSite(it).getChr(), "chr5");
-	EXPECT_EQ(myExperiments.getExperiment("MultipleChroms")->getSite(it).getStart(), 100); 
+	EXPECT_EQ(myExperiments.getExperiment("MultipleChroms")->getSite(it).getStart(), 100);
 	EXPECT_EQ(myExperiments.getExperiment("MultipleChroms")->getSite(it).getEnd(),  200);
 }
 
@@ -315,7 +315,7 @@ TEST(uBasicNGSEXP_getOverlapping, VALIDEXP){
 TEST(uBasicNGSEXP_getOverlapping, VALIDCHROM){
 	validExperiments myExperiments;
 	uBasicNGSExperiment* anExp = myExperiments.getExperiment("MultipleChroms");
-	uBasicNGSChrom* aChrom = myExperiments.getExperiment("MultipleChroms")->getpChrom("chr4"); 
+	uBasicNGSChrom* aChrom = myExperiments.getExperiment("MultipleChroms")->getpChrom("chr4");
 	uBasicNGSExperiment overlapExp = anExp->getOverlapping(*aChrom); // TODO: Finish when the code is functional...
 }
 
@@ -335,7 +335,7 @@ TEST(uBasicNGSEXP_getOverlapping, EMPTYEXP){
 TEST(uBasicNGSEXP_getOverlapping, EMPTYCHROM){
 	validExperiments myExperiments;
 	uBasicNGSExperiment* anExp = myExperiments.getExperiment("MultipleChroms");
-	uBasicNGSChrom* aChrom = myExperiments.getExperiment("NoName_Empty")->getpChrom(""); 
+	uBasicNGSChrom* aChrom = myExperiments.getExperiment("NoName_Empty")->getpChrom("");
 	uBasicNGSExperiment overlapExp = anExp->getOverlapping(*aChrom); // TODO: Finish when the code is functional...
 }
 
@@ -349,7 +349,7 @@ TEST(uBasicNGSEXP_getOverlapping, EMPTYTHISEXP){
 TEST(uBasicNGSEXP_getOverlapping, EMPTYTHISCHROM){
 	validExperiments myExperiments;
 	uBasicNGSExperiment* anExp = myExperiments.getExperiment("Empty_Exp");
-	uBasicNGSChrom* aChrom = myExperiments.getExperiment("MultipleChroms")->getpChrom(""); 
+	uBasicNGSChrom* aChrom = myExperiments.getExperiment("MultipleChroms")->getpChrom("");
 	uBasicNGSExperiment overlapExp = anExp->getOverlapping(*aChrom); // TODO: Finish when the code is functional...
 }
 
@@ -362,7 +362,7 @@ TEST(uBasicNGSEXP_getOverlapping, EMPTYTHISANDPOS){
 TEST(uBasicNGSEXP_getOverlapping, CHROMDONTEXISTS){
 	validExperiments myExperiments;
 	uBasicNGSExperiment* anExp = myExperiments.getExperiment("Empty_Exp");
-	uBasicNGSChrom* aChrom = myExperiments.getExperiment("MultipleChroms")->getpChrom(""); 
+	uBasicNGSChrom* aChrom = myExperiments.getExperiment("MultipleChroms")->getpChrom("");
 	uBasicNGSExperiment overlapExp = anExp->getOverlapping(*aChrom); // TODO: Finish when the code is functional...
 	EXPECT_EQ(overlapExp.count(), 0);
 }

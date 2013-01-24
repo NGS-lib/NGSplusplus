@@ -481,7 +481,9 @@ TEST(uBasicNGSCHR_removeSubset, SOMEREMOVED)
      StandardChroms ourChroms;
      ourChroms.manyChr.sortSites();
      uBasicNGSChrom testChrom =ourChroms.manyChr.removeSubset(0, 150);
-     EXPECT_EQ(1,ourChroms.count());
+     EXPECT_EQ(1,ourChroms.manyChr.count());
+     EXPECT_EQ(2,testChrom.count());
+
 }
 
 /**<  getSubsetCount*/

@@ -8,7 +8,7 @@
 #include <algorithm>
 #include <parallel/numeric>
 #include <functional>
-
+#include <assert.h>
 
 /**********************************
       * The function pointer can either be a)
@@ -51,7 +51,7 @@ protected:
     bool m_isSorted=true; /*!< If we are in a sorted state or not */
     std::function<float(const _BASE_*)> sortGetStart=nullptr;  /*!<Pointer to the starting sort value */
     std::function<float(const _BASE_*)> sortGetEnd=nullptr ;  /*!< Pointer to the end starting sort value. Typically set to equal Start */
-    std::function<bool(const _BASE_ &item1, const _BASE_ &item2)> m_comptFunc=compareStart; /*!< Pointer to sorting function */
+    std::function<bool(const _BASE_ &item1, const _BASE_ &item2)> m_comptFunc=nullptr; /*!< Pointer to sorting function */
     long long int chromSize=0; /*!< Size of the scaffold */
 
 private :
@@ -73,7 +73,7 @@ public:
 
 
     virtual _SELF_ getCopy()const{
-
+     assert (false);
 
     };
 
