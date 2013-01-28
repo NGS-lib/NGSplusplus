@@ -203,7 +203,6 @@ public:
     std::vector<float> getScoreVector()const{return m_score;};
     void setScoreVector(std::vector<float> p_Score){m_score=std::move(p_Score);};
 
-
 };
 
 

@@ -15,6 +15,17 @@
 using namespace std;
 using namespace NGS;
 
+
+/**< applyOnAllChroms */
+
+ TEST(BasicNGSEXP_applyOnAllChroms, VALID){
+       ASSERT_TRUE(false);
+ }
+ TEST(BasicNGSEXP_applyOnAllChroms, EMPTY){
+       ASSERT_TRUE(false);
+ }
+
+
 /*
  * Setters/Getters testing - start/end (positions)
  *	Valid cases:
