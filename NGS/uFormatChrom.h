@@ -14,6 +14,7 @@
       * The function pointer can either be a)
       * the name of a function taking a site by reference, b) a lambda
       * function taking a site by reference or c) a member method of a
+      * function taking a site by reference or c) a member method of a
       * site using "mem_fun_ref" or "ref". In all cases, the function must return a
       * non void value.
       *
@@ -48,10 +49,11 @@ protected:
     std::vector<_BASE_> VecSites {}; /*!< std vector containing our unitary contigs  */
     std::string chr=""; /*!< Name of the scaffold/chromosome  */
     /**< Pointers to our functions and determines if sorted */
-    bool m_isSorted=true; /*!< If we are in a sorted state or not */
-    std::function<float(const _BASE_*)> sortGetStart=nullptr;  /*!<Pointer to the starting sort value */
-    std::function<float(const _BASE_*)> sortGetEnd=nullptr ;  /*!< Pointer to the end starting sort value. Typically set to equal Start */
-    std::function<bool(const _BASE_ &item1, const _BASE_ &item2)> m_comptFunc=nullptr; /*!< Pointer to sorting function */
+    bool m_isSorted=false; /*!< If we are in a sorted state or not */
+    std::function<float(const _BASE_*)> sortGetStart=&_BASE_::getStart;  /*!<Pointer to the starting sort value */
+    std::function<float(const _BASE_*)> sortGetEnd=&_BASE_::getEnd ;  /*!< Pointer to the end starting sort value. Typically set to equal Start */
+    std::function<bool(const _BASE_ &item1, const _BASE_ &item2)> m_comptFunc=compareStart; /*!< Pointer to sorting function */
+
     long long int chromSize=0; /*!< Size of the scaffold */
 
 private :
@@ -72,7 +74,7 @@ protected:
 public:
 
 
-    virtual _SELF_ getCopy()const{
+     virtual _SELF_ getCopy()const{
      assert (false);
 
     };
@@ -160,9 +162,12 @@ public:
     /**< Function to add a unitary element */
     void addData(const _BASE_ & newSite);
 
-
     template<class UnaryOperation>
     std::vector<_BASE_> applyAndGetVecData(UnaryOperation unary_op);
+
+     template<class UnaryOperation>
+    _SELF_ applyAndGetChrom(UnaryOperation unary_op);
+
 
     template<class UnaryOperation>
     auto computeOnAllSites(UnaryOperation unary_op) -> std::vector<decltype(unary_op(_BASE_()))>;
@@ -828,11 +833,11 @@ typename std::vector<_BASE_>::const_iterator uGenericNGSChrom<_SELF_,_BASE_>::fi
         /**< Compare, sort Value */
         auto lower = std::lower_bound(VecSites.begin(), VecSites.end(), position, comp);
 
-        /**< If no result, or result is our first item */
-        if (lower==VecSites.end()||(lower==VecSites.begin()))
+        /**< If result is our first item, then no item precedes it */
+        if ((lower==VecSites.begin()))
             return VecSites.end();
-
-        /**<Return item precedes and as such is LESS then position  */
+         /**< If result is end, every idem precedes the value */
+        /**<Return item precedes and as such is LESS then position. if no item was found, last item is closest to value  */
         lower--;
         return (lower);
     }
@@ -889,7 +894,7 @@ typename std::vector<_BASE_>::const_iterator uGenericNGSChrom<_SELF_,_BASE_>::fi
         /**< Compare, sort Value */
         auto upper = std::upper_bound(VecSites.begin(), VecSites.end(), position, comp);
 
-        /**< If no result, or result is our first item */
+        /**< If no result*/
         if (upper==VecSites.end())
             return VecSites.end();
 
@@ -1313,9 +1318,30 @@ void uGenericNGSChrom<_SELF_,_BASE_>:: inferChrSize()
     std::vector<_BASE_> uGenericNGSChrom<_SELF_,_BASE_>::applyAndGetVecData(UnaryOperation unary_op)
     {
         std::vector<_BASE_> copyVec(VecSites);
-        for_each(begin(copyVec), end(copyVec), unary_op);
+        std::for_each(std::begin(copyVec), std::end(copyVec), unary_op);
         return copyVec;
     }
+
+    /**<  Wrappers around STL algorithms*/
+    /** \brief Compute a value for all sites in the chromosome and return the resulting collection
+      *
+      * This function take a pointer to a functor to perform on all the
+      * sites in the collection. Specifically, this will make an std::vector copy
+      * of all elements. It will then run the functor using for_each and return the resulting results.
+      *
+      * \param unary_op UnaryOperation : Unary operation to perform on all the sites of the chromosome
+      * \return A collection of values computed on each site by unary_op
+      */
+    template <class _SELF_,class _BASE_>
+    template<class UnaryOperation>
+    _SELF_ uGenericNGSChrom<_SELF_,_BASE_>::applyAndGetChrom(UnaryOperation unary_op)
+    {
+
+        _SELF_ returnChrom = this->getCopy();
+        returnChrom.applyOnAllSites(unary_op);
+        return returnChrom;
+    }
+
   /** \brief Create a copy of the sites vector, transform it and return the copy
       *
       * This function take a pointer to a function to transform the copied sites
@@ -1339,9 +1365,9 @@ void uGenericNGSChrom<_SELF_,_BASE_>:: inferChrSize()
             transform(std::begin(VecSites), std::end(VecSites), std::back_inserter(results), unary_op);
             return results;
         }
-        catch(std::exception &e)
+        catch(...)
         {
-            throw e;
+            throw;
         }
     }
     /** \brief Get the sites for which a certain predicate is true
@@ -1362,7 +1388,7 @@ void uGenericNGSChrom<_SELF_,_BASE_>:: inferChrSize()
         try
         {
             std::vector<_BASE_> copyVec {};
-            copyVec.reserve(VecSites.size());
+           // copyVec.reserve(VecSites.size());
             copy_if(std::begin(VecSites), std::end(VecSites), std::back_inserter(copyVec), pred);
             return copyVec;
         }
@@ -1371,7 +1397,7 @@ void uGenericNGSChrom<_SELF_,_BASE_>:: inferChrSize()
 #ifdef DEBUG
             std::cerr << "Throwing in getSpecificSites()" <<std::endl;
 #endif
-            throw e;
+            throw ugene_exception_base()<<string_error("Caugh std::exception, throwing in getSpecificSites()");
         }
     }
     /** \brief Remove sites for which the predicate is true.
@@ -1394,12 +1420,12 @@ void uGenericNGSChrom<_SELF_,_BASE_>:: inferChrSize()
         {
             VecSites.erase(std::remove_if(VecSites.begin(), VecSites.end(), pred), VecSites.end());
         }
-        catch(std::exception & e)
+        catch(...)
         {
 #ifdef DEBUG
             std::cerr << "Throwing in removeSpecificSites()" <<std::endl;
 #endif
-            throw e;
+            throw;
         }
     }
 
@@ -1426,9 +1452,9 @@ void uGenericNGSChrom<_SELF_,_BASE_>:: inferChrSize()
             else
                 return f;
         }
-        catch(std::exception & e)
+        catch(...)
         {
-            throw e;
+            throw ;
         }
     }
 
@@ -1449,9 +1475,9 @@ void uGenericNGSChrom<_SELF_,_BASE_>:: inferChrSize()
             else
                 return f;
         }
-        catch(std::exception & e)
+        catch(...)
         {
-            throw e;
+            throw ;
         }
     }
 
@@ -1475,6 +1501,7 @@ void uGenericNGSChrom<_SELF_,_BASE_>:: inferChrSize()
         // doesn't work if actual data type of InitialValue and _BASE_ cannot be
         // converted back and forth.
         return __gnu_parallel::accumulate(std::begin(VecSites), std::end(VecSites), init, binary_op, __gnu_parallel::sequential_tag());
+
     }
 
 
@@ -1494,11 +1521,11 @@ void uGenericNGSChrom<_SELF_,_BASE_>:: inferChrSize()
     {
         try
         {
-            return count_if(begin(VecSites), end(VecSites), p);
+            return count_if(std::begin(VecSites), std::end(VecSites), p);
         }
-        catch(std::exception & e)
+        catch(...)
         {
-            throw e;
+            throw;
         }
     }
 
@@ -1533,9 +1560,9 @@ void uGenericNGSChrom<_SELF_,_BASE_>:: inferChrSize()
 
             return std::sort(std::begin(VecSites), std::end(VecSites), comp);
         }
-        catch(std::exception &e)
+        catch(...)
         {
-            throw e;
+            throw;
         }
     }
 
@@ -1550,9 +1577,9 @@ void uGenericNGSChrom<_SELF_,_BASE_>:: inferChrSize()
         {
             return sortSites(compareStart,&_BASE_::getStart,&_BASE_::getEnd);
         }
-        catch (std::exception & e )
+        catch (...)
         {
-            throw e;
+            throw;
         }
 
     }
@@ -1599,9 +1626,9 @@ void uGenericNGSChrom<_SELF_,_BASE_>:: inferChrSize()
         {
             return min_element(std::begin(VecSites), std::end(VecSites), comp);
         }
-        catch(std::exception & e)
+        catch(...)
         {
-            throw e;
+            throw;
         }
     }
     /** \brief Find the maximal site according to a certain comparison

@@ -60,13 +60,12 @@ TEST(uTagsTest, CopyCTR){
     uTags copyTo;
     uTags copyFilled("chr4", 100000, 2000000);
 
-
     copyFrom.setName("My Name is");
     copyFrom.setPhred("My Phred is");
     copyFrom.setCigar("Hohoho");
     copyFrom.setPELenght(10);
     copyFrom.setMapQual(33);
-    copyFrom.setSequence("LalaBonjourPatate");
+    copyFrom.setSequence("LalaBonjouLalaBonjouLalaBonjouLalaBonjouLalaBonjouLalaBonjouLalaBonjouLalaBonjouLalaBonjouLalaBonjoud");
     copyTo.setChr("chr22");
 
     copyTo.setMapped(true);
