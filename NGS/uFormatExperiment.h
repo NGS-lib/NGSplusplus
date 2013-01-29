@@ -1041,7 +1041,7 @@ _SELF_ uGenericNGSExperiment<_SELF_,_CHROM_,_BASE_>::getOverlapping(_SELF_ &comp
         if (compareExp.isChrom(iterMap->first)){
             pChrom = compareExp.getpChrom(iterMap->first); // TODO: check if chrom exists before getting ptr to avoid throw
 //        returnExp.combineChr(iterMap->second.getOverlapping(*pChrom));
-            returnExp.addData(iterMap->second.getOverlapping(*pChrom)); // TODO: does not seem to work, but at least it compiles
+            returnExp.addData(iterMap->second.getOverlapping(*pChrom)); // TODO: does not seem to work, but at least it compilesd
         }
     }
     return returnExp;
