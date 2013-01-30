@@ -44,6 +44,7 @@ class uGenericNGSChrom
     typedef typename std::vector<_BASE_>::iterator VecGenIter;
     typedef typename std::vector<_BASE_>::const_iterator VecGenConstIter;
 
+
 protected:
 
     std::vector<_BASE_> VecSites {}; /*!< std vector containing our unitary contigs  */
@@ -53,12 +54,9 @@ protected:
     std::function<float(const _BASE_*)> sortGetStart=&_BASE_::getStart;  /*!<Pointer to the starting sort value */
     std::function<float(const _BASE_*)> sortGetEnd=&_BASE_::getEnd ;  /*!< Pointer to the end starting sort value. Typically set to equal Start */
     std::function<bool(const _BASE_ &item1, const _BASE_ &item2)> m_comptFunc=compareStart; /*!< Pointer to sorting function */
-
     long long int chromSize=0; /*!< Size of the scaffold */
 
 private :
-
-
     //TODO move to utility
     template <class Container>
     typename Container::iterator to_mutable_iterator(Container& c, typename Container::const_iterator it)
@@ -68,17 +66,18 @@ private :
 protected:
 
     std::vector<long long> returnSiteSizes() const;
+    /**< For internal use only, slightly faster */
     void addDataNoCheck( _BASE_ newSite);
     template<class L, typename S, typename R> friend class uGenericNGSExperiment;
+    /**< Private site removal */
+    void removeSite(int position);
+    void removeSite(int start,int end);
 
 public:
 
-
      virtual _SELF_ getCopy()const{
-     assert (false);
-
+        assert (false);
     };
-
    /**< Comparison functors */
     static bool comparePosStart(const _BASE_ &item, const int & value)
     {
@@ -100,33 +99,30 @@ public:
             return item1.getEnd() < item2.getEnd();
     }
 
+
     /**< Constructors */
     uGenericNGSChrom() {};
     uGenericNGSChrom(const std::string & consString):chr(consString) {};
     uGenericNGSChrom(const std::string & consString, long int size);
     uGenericNGSChrom(const std::vector<_BASE_> &);
+    uGenericNGSChrom(const std::string &, const std::vector<_BASE_> &);
 
     uGenericNGSChrom& operator=(const uGenericNGSChrom& copFrom);
     uGenericNGSChrom(const uGenericNGSChrom&);
+    virtual ~uGenericNGSChrom<_SELF_,_BASE_> (){;}
 
-    /**< Declared functions */
+    /**< Utility wrappers to query collection */
     unsigned long long avgSiteSize() const;
     unsigned long long minSiteSize() const;
     unsigned long long maxSiteSize() const;
     unsigned long long sumSiteSize() const;
     void printStats(std::ostream& out) const;
 
-    /** \brief Default virtual destructor of uGenericNGSChrom
-     */
-    virtual ~uGenericNGSChrom<_SELF_,_BASE_> ()
-    {; }
-
     void inferChrSize();
 
-    //TODO MAKE THIS WORK
-    long int countUnique() const;
 
-    /**< In place */
+
+    /**< In place, creates items */
     void divideItemsIntoNBins(int N, SplitType type=SplitType::STRICT);
     void divideItemsIntoBinofSize(int N, SplitType type=SplitType::STRICT);
 
@@ -134,15 +130,12 @@ public:
     VecGenConstIter findPrecedingSite(const float position) const;
     VecGenConstIter findNextSite(const float position) const;
     /**< removeSites overloads */
-    void removeSite(int position);
-    void removeSite(int start,int end);
-    void removeSite(VecGenConstIter position);
-    void removeSite(VecGenConstIter start,VecGenConstIter end);
+    void removeSite(VecGenConstIter pItrPos);
+    void removeSite(VecGenConstIter pStartItr,VecGenConstIter pEndItr);
     /**< Functions to create and add items to our chrom */
     template <class _OTHER_>
-    _BASE_ generateRandomSite(const int size, std::mt19937& engine, const _OTHER_ &exclList, const int sigma=0, const std::string ID="") const;
+    _BASE_ generateRandomSite(const int size, std::mt19937& engine, _OTHER_ exclList, const int sigma=0, const std::string ID="") const;
     _BASE_ generateRandomSite(const int size, std::mt19937& engine, const int sigma=0, const std::string ID="") const;
-
     template <class _OTHER_>
     void addNRandomSite(const int size, const int n, std::mt19937& engine, const _OTHER_ &exclList, const int sigma=0, const std::string ID="");
     void addNRandomSite(const int size, const int n, std::mt19937& engine, const int sigma=0, const std::string ID="");
@@ -152,12 +145,27 @@ public:
     _SELF_ getOverlapping(_OTHER_ &pCompareChr,OverlapType pOverlap=OverlapType::OVERLAP_PARTIAL) const;
     template <class _OTHER_>
     _SELF_ getNotOverlapping(_OTHER_ &compareChr,OverlapType pOverlap=OverlapType::OVERLAP_PARTIAL) const;
-    _SELF_ getDistinct(double p_start, double p_end, OverlapType options=OverlapType::OVERLAP_PARTIAL) const;
+
 
     /**< Functions to manipulate generically ranges of our elements. Requires the collection to be sorted */
     _SELF_ getSubset(double p_start, double p_end, OverlapType overlap=OverlapType::OVERLAP_PARTIAL) const;
+     long int getSubsetCount(double p_start, double p_end, OverlapType overlap=OverlapType::OVERLAP_PARTIAL)const;
+
     _SELF_ removeSubset(double p_start, double p_end, OverlapType overlap=OverlapType::OVERLAP_PARTIAL);
-    long int getSubsetCount(double p_start, double p_end, OverlapType overlap=OverlapType::OVERLAP_PARTIAL)const;
+    _SELF_ getDistinct(double p_start, double p_end, OverlapType options=OverlapType::OVERLAP_PARTIAL) const;
+    //TODO code this
+    //long int getDistinctCount(double p_start, double p_end, OverlapType overlap=OverlapType::OVERLAP_PARTIAL)const;
+    //TODO
+   // _SELF_ removeDistinct(double p_start, double p_end, OverlapType options=OverlapType::OVERLAP_PARTIAL);
+
+    //TODO Vector overloads,
+    // _SELF_ getSubset(std::vector<std::pair<double,double>>, OverlapType overlap=OverlapType::OVERLAP_PARTIAL) const;
+   // _SELF_ removeSubset(std::vector<std::pair<double,double>>, OverlapType overlap=OverlapType::OVERLAP_PARTIAL);
+    //_SELF_ getDistinct(std::vector<std::pair<double,double>>, OverlapType options=OverlapType::OVERLAP_PARTIAL) const;
+    //_SELF_ removeDistinct(std::vector<std::pair<double,double>>, OverlapType options=OverlapType::OVERLAP_PARTIAL);
+
+
+
 
     /**< Function to add a unitary element */
     void addData(const _BASE_ & newSite);
@@ -197,6 +205,8 @@ public:
     bool isSorted(Compare comp) const;
     bool isSorted() const;
 
+
+    long int countUnique() const;
 
     template<class Compare>
     VecGenConstIter minSite(Compare comp) const;
@@ -418,6 +428,15 @@ uGenericNGSChrom<_SELF_,_BASE_>::uGenericNGSChrom(const std::vector<_BASE_> & co
         addData(elem);
 }
 
+template <class _SELF_, class _BASE_>
+uGenericNGSChrom<_SELF_,_BASE_>::uGenericNGSChrom(const std::string & pChrom, const std::vector<_BASE_> & pCopyVec):chr(pChrom)
+{
+    for (_BASE_ elem: pCopyVec)
+        addData(elem);
+}
+
+
+
 template <class _SELF_,class _BASE_>
 /** \brief Add a new element to our chrom
  *
@@ -434,7 +453,7 @@ void uGenericNGSChrom<_SELF_,_BASE_>::addData(const _BASE_& newSite)
         if (newSite.getChr()!=chr)
             throw ugene_exception_base()<<string_error("adding base to Chrom with non-matching scaffold/chr name");
         m_isSorted=false;
-        VecSites.push_back(std::move(newSite));
+        VecSites.push_back(newSite);
     }
     catch(ugene_exception_base & e)
     {
@@ -467,12 +486,11 @@ void uGenericNGSChrom<_SELF_,_BASE_>::removeSite(int position)
 {
     try
     {
-        m_isSorted=false;
         VecSites.erase(VecSites.begin()+(position));
     }
-    catch(std::exception & e)
+    catch(...)
     {
-        throw e;
+        throw;
     }
 
 }
@@ -484,39 +502,62 @@ void uGenericNGSChrom<_SELF_,_BASE_>::removeSite(int start, int end)
         m_isSorted=false;
         VecSites.erase(VecSites.begin()+(start),VecSites.begin()+(end));
     }
-    catch(std::exception & e)
+    catch(...)
     {
-        throw e;
+        throw;
     }
 }
+
+
+
+
+/** \brief Remove the range of elements pointed at by the iterator. This function is a relatively straightforward wrapping of
+ *         std::erase and follows the same rules and canveats. Reminder, std:: erase will not erase the element pointed by the end-of-range iterator.
+ *
+ * \param start VecGenConstIter : Iterator pointing to the start of the range to erase
+ * \param end VecGenConstIter : Iterator pointing to the end of the range to erase
+ * \sa removeSite
+ * \return void
+ *
+ */
 template <class _SELF_, class _BASE_>
-void uGenericNGSChrom<_SELF_,_BASE_>::removeSite(VecGenConstIter start,VecGenConstIter end)
+void uGenericNGSChrom<_SELF_,_BASE_>::removeSite(VecGenConstIter pStartItr,VecGenConstIter pEndItr)
 {
     try
     {
         m_isSorted=false;
-        /**< According to C++11 standard, const iterator shoudl be allowed in erase
+        /**< According to the C++11 standard, const iterator should be allowed in erase
         However, implementation does not seem to have caught up, hence this patch
          */
 
-        VecSites.erase(to_mutable_iterator(VecSites,start),to_mutable_iterator(VecSites,end));
+        VecSites.erase(to_mutable_iterator(VecSites,pStartItr),to_mutable_iterator(VecSites,pEndItr));
     }
-    catch(std::exception &e )
+    catch(...)
     {
-        throw e;
+        throw;
     }
 }
+
+/** \brief Remove the element pointed at by iterator. This function is a relatively straightforward wrapping of
+ *         std::erase and follows the same rules and canveats
+ *
+ * \param start VecGenConstIter : Iterator pointing to the start of the range to erase
+ * \param end VecGenConstIter : Iterator pointing to the end of the range to erase
+ * \sa removeSite
+ * \return void
+ *
+ */
 template <class _SELF_, class _BASE_>
-void uGenericNGSChrom<_SELF_,_BASE_>::removeSite(VecGenConstIter position)
+void uGenericNGSChrom<_SELF_,_BASE_>::removeSite(VecGenConstIter pItrPos)
 {
     try
     {
         m_isSorted=false;
-        VecSites.erase(to_mutable_iterator(VecSites,position),to_mutable_iterator(VecSites,position));
+        VecSites.erase(to_mutable_iterator(VecSites,pItrPos));
     }
-    catch(std::exception &e)
+    catch(...)
     {
-        throw e;
+        throw;
     }
 }
 
@@ -540,7 +581,7 @@ _BASE_ uGenericNGSChrom<_SELF_, _BASE_>::generateRandomSite(const int size, std:
 {
     try
     {
-        _SELF_ emptyExcl;
+        _SELF_ emptyExcl(this->getChr());
         return generateRandomSite(size,engine,emptyExcl,sigma,ID);
     }
     catch(param_throw &e)
@@ -562,18 +603,22 @@ template <class _OTHER_>
  * \sa generateRandomSite
  */
 _BASE_ uGenericNGSChrom<_SELF_,_BASE_>::generateRandomSite
-(const int pSize,std::mt19937& engine,const _OTHER_ &exclList, const int sigma, const std::string ID) const
+(const int pSize,std::mt19937& engine,_OTHER_ exclList, const int sigma, const std::string ID) const
 {
-    //TODO Sanity check here to make sure it is possible to generate the asked for tag.
     try
     {
         _BASE_ returnTag;
+
+            exclList.sortSites();
 
         bool found=false;
         int size = pSize;
         int max = this->getChromSize();
         if (size >=max)
             throw param_throw()<<string_error("Asked for element of size larger then scaffold in generateRandomSite()");
+
+
+
         while (!found)
         {
             {
@@ -594,6 +639,7 @@ _BASE_ uGenericNGSChrom<_SELF_,_BASE_>::generateRandomSite
                     temptag.setChr(this->getChr());
                     //TODO Either we move name to the base elemtn or we move
                     //temptag.setName(ID);
+
                     if ((exclList.getSubset(temptag.getStart(),temptag.getEnd())).count()==0)
                     {
                         found=true;
@@ -636,9 +682,9 @@ void uGenericNGSChrom<_SELF_,_BASE_>::addNRandomSite
         }
         chr = VecSites.back().getChr();
     }
-    catch(std::exception &e)
+    catch(...)
     {
-        throw e;
+        throw;
     }
 
 }
@@ -662,9 +708,9 @@ void uGenericNGSChrom<_SELF_,_BASE_>::addNRandomSite
         _SELF_ emptyExcl;
         addNRandomSite(size,n, engine,emptyExcl,sigma, ID);
     }
-    catch(std::exception &e)
+    catch(...)
     {
-        throw e;
+        throw;
     }
 }
 
@@ -715,7 +761,6 @@ unsigned long long uGenericNGSChrom<_SELF_ ,_BASE_>::minSiteSize() const
 {
         if (this->count() == 0)
             return 0;
-
         return minSite(compareLenght)->getLenght();
 }
 
@@ -760,7 +805,6 @@ long int uGenericNGSChrom<_SELF_,_BASE_>::countUnique() const
     return UniqueSet.size();
 
 }
-
 
 template <class _SELF_,class _BASE_>
 /** \brief Returns a vector that contains the size of every element in the collection.

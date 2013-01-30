@@ -179,7 +179,6 @@ TEST_F(ChromDivide, DIVIDEINTOBINADD){
 }
 TEST_F(ChromDivide, DIVIDECHROMINTONBINOFSIZEFAIL){
     EXPECT_ANY_THROW(uChromTestOverlap.divideItemsIntoBinofSize(30));
-
     EXPECT_ANY_THROW(uChromTestOverlap.divideItemsIntoBinofSize(300));
 }
 TEST_F(ChromDivide, DIVIDECHROMINTONBINOFSIZEIGNORE){
@@ -240,19 +239,20 @@ TEST(uBasicNGSCHR_generateRandomSite, MAKEMANYDIFFERENTITEMS){
        EXPECT_NE(aItem3.getStart(),aItem4.getStart());
  }
 TEST(uBasicNGSCHR_generateRandomSite, MAKEMANYEXCLUSIONLIST){
-    //  StandardChroms ourChroms;
-    //  uBasicNGSChrom exclusionChrom;
-    //  newManyChr.addData(uBasicNGS("chr1",100,200));
-    //  newManyChr.addData(uBasicNGS("chr1",150,500));
-    //  newManyChr.addData(uBasicNGS("chr1",800,1000));
-    //  ourChroms.manyChr.setChromSize(1500);
-    //  std::mt19937 gen(432);
+      StandardChroms ourChroms;
+      uBasicNGSChrom exclusionChrom("chr1");
+      exclusionChrom.addData(uBasicNGS("chr1",100,200));
+      exclusionChrom.addData(uBasicNGS("chr1",150,500));
+      exclusionChrom.addData(uBasicNGS("chr1",800,1000));
+      exclusionChrom.setChromSize(1500);
+      ourChroms.emptyChr.setChromSize(1500);
+      std::mt19937 gen(432);
+      for(size_t i =0; i<=2000; i++)
+        ourChroms.emptyChr.addData(ourChroms.emptyChr.generateRandomSite(100,gen,exclusionChrom,4,"test"));
 
-     // uBasicNGS aItem= ourChroms.manyChr.generateRandomSite(100,gen,0,"test");
-     // uBasicNGS aItem2= ourChroms.manyChr.generateRandomSite(100,gen,0,"test");
-     // uBasicNGS aItem3= ourChroms.manyChr.generateRandomSite(100,gen,0,"test");
-       ASSERT_TRUE(false);
 
+      auto chromOverlapping= ourChroms.emptyChr.getOverlapping(exclusionChrom);
+      EXPECT_EQ(chromOverlapping.count(),0);
  }
 
 TEST(uBasicNGSCHR_addNRandomSite, MAKECORRECTNUMBER){
@@ -272,7 +272,18 @@ TEST(uBasicNGSCHR_addNRandomSite, MAKECORRECTNUMBER){
        EXPECT_EQ(10,ourChroms.emptyChr.count());
  }
  TEST(uBasicNGSCHR_addNRandomSite, MAKEMANYEXCLUSIONLIST){
-       ASSERT_TRUE(false);
+   StandardChroms ourChroms;
+      uBasicNGSChrom exclusionChrom("chr1");
+      exclusionChrom.addData(uBasicNGS("chr1",100,200));
+      exclusionChrom.addData(uBasicNGS("chr1",150,500));
+      exclusionChrom.addData(uBasicNGS("chr1",800,1000));
+      exclusionChrom.setChromSize(1500);
+      ourChroms.emptyChr.setChromSize(1500);
+      std::mt19937 gen(432);
+      ourChroms.emptyChr.addNRandomSite(100,2000,gen,exclusionChrom,4);
+      EXPECT_EQ(ourChroms.emptyChr.count(),2000);
+      auto chromOverlapping= ourChroms.emptyChr.getOverlapping(exclusionChrom);
+      EXPECT_EQ(chromOverlapping.count(),0);
  }
 
 /**< Get overlapping */
@@ -555,18 +566,16 @@ TEST(uBasicNGSCHR_getEndFunct, NOTBEENSET)
      EXPECT_NE(nullptr,ourChroms.manyChr.getEndFunct());
 }
 
-
 TEST(uBasicNGSCHR_getCompFunct, BEENSET)
 {
-   //   StandardChroms ourChroms;
-   //   ourChroms.manyChr.sortSites(ourChroms.manyChr.compareLenght,&uBasicNGS::getLenght,&uBasicNGS::getLenght);
-  //    auto funct = ourChroms.manyChr.getEndFunct();
-  //   EXPECT_EQ(ourChroms.manyChr.compareLenght,funct);
+      StandardChroms ourChroms;
+      ourChroms.manyChr.sortSites(ourChroms.manyChr.compareLenght,&uBasicNGS::getLenght,&uBasicNGS::getLenght);
+      EXPECT_NE(nullptr,ourChroms.manyChr.getCompFunct());
 }
 TEST(uBasicNGSCHR_getCompFunct, NOTBEENSET)
 {
    StandardChroms ourChroms;
-     EXPECT_EQ(nullptr,ourChroms.manyChr.getCompFunct());
+     EXPECT_NE(nullptr,ourChroms.manyChr.getCompFunct());
 }
 
 /**<  setChromSize*/
@@ -698,29 +707,39 @@ TEST(uBasicNGSCHR_isSorted, CUSTOM)
        EXPECT_FALSE(ourChroms.manyChr.isSorted(uBasicNGSChrom::compareStart));
 }
 
-/**< DivideItemsIntoBin */
+TEST(uBasicNGSCHR_RemoveSite, SINGLEITERATOR)
+{
+       StandardChroms ourChroms;
+       ourChroms.manyChr.removeSite(ourChroms.manyChr.begin());
+       EXPECT_EQ(2,ourChroms.manyChr.count());
+       EXPECT_TRUE(ourChroms.manyChr.begin()->isEqual(uBasicNGS("chr1",230,300)));
+        StandardChroms newChroms;
+        auto itr =newChroms.manyChr.begin();
+        itr++;
+        newChroms.manyChr.removeSite(itr);
+        EXPECT_EQ(2,newChroms.manyChr.count());
+        EXPECT_TRUE(newChroms.manyChr.begin()->isEqual(uBasicNGS("chr1",100,200)));
+}
+TEST(uBasicNGSCHR_RemoveSite, ITR_RANGE)
+{
+       StandardChroms ourChroms;
+       ourChroms.manyChr.removeSite(ourChroms.manyChr.begin(), ourChroms.manyChr.end());
+       EXPECT_EQ(0,ourChroms.manyChr.count());
+        StandardChroms newChroms;
+        auto itr =newChroms.manyChr.begin();
+        auto itr2 =newChroms.manyChr.begin();
+        itr2+=2;
+        newChroms.manyChr.removeSite(itr,itr2);
+        EXPECT_EQ(1,newChroms.manyChr.count());
+        EXPECT_TRUE(newChroms.manyChr.begin()->isEqual(uBasicNGS("chr1",120,250)));
+        std::cout<< newChroms.manyChr.begin()->getStart() <<std::endl;
+}
+TEST(uBasicNGSCHR_RemoveSite, EMPTY)
+{
+     ASSERT_TRUE(false);
+}
 
-TEST(uBasicNGSCHR_divideItemsIntoBinofSize, NORMAL)
-{
-     ASSERT_TRUE(false);
-}
-TEST(uBasicNGSCHR_divideItemsIntoBinofSize, EMPTYCHR)
-{
-     ASSERT_TRUE(false);
-}
-TEST(uBasicNGSCHR_divideItemsIntoBinofSize, NOCHR)
-{
-     ASSERT_TRUE(false);
-}
-TEST(uBasicNGSCHR_divideItemsIntoNBins, NORMAL)
-{
-     ASSERT_TRUE(false);
-}
-TEST(uBasicNGSCHR_divideItemsIntoNBins, EMPTYCHR)
-{
-     ASSERT_TRUE(false);
-}
-TEST(uBasicNGSCHR_divideItemsIntoNBins, NOCHR)
+TEST(uBasicNGSCHR_RemoveSite, INVALID)
 {
      ASSERT_TRUE(false);
 }

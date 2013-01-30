@@ -12,8 +12,6 @@ enum class ReadMode
 };
 
 //TODO, make function that returns all chromosome name
-
-
 /**<
 Explanation on _SELF_
 This is a simple implementation of the curiously recurring template (CRT)

@@ -13,6 +13,8 @@ class uParser;
 class uBasicNGS;
 class uBasicNGSChrom;
 class uBasicNGSExperiment;
+
+
 class uRegion : public uGenericNGS<uRegion>
 {
 public:
@@ -85,15 +87,16 @@ public:
 
     uRegionChrom():uGenericNGSChrom() {};
     uRegionChrom(std::string ourChr):uGenericNGSChrom(ourChr)
-    {
-    }
+    { }
     uRegionChrom(std::string ourChr, long long int lenght):uGenericNGSChrom(ourChr,lenght)
-    {
-    }
+    { }
     uRegionChrom(const uGenericNGSChrom<uRegionChrom,uRegion>&);
     uRegionChrom& operator=(const uRegionChrom& copFrom);
     uRegionChrom(const uRegionChrom&);
     uRegionChrom(const std::vector<uRegion> & copyVec):uGenericNGSChrom(copyVec){};
+
+    uRegionChrom(uBasicNGSChrom);
+    uRegionChrom(uTagsChrom);
 
     uRegionChrom getCopy()const;
 

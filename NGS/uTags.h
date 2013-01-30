@@ -34,8 +34,11 @@ private:
 public:
 
     uTags();
-    uTags(uBasicNGS otherItem);
-    uTags(const uToken & pToken);
+    uTags(const uBasicNGS & otherItem);
+    uTags(const uRegion & otherItem);
+    uTags(uToken pToken);
+
+
     uTags(std::string pChr, long long int pStart, long long int pEnd, float pScore);
     uTags(std::string pChr, long long int pStart, long long int pEnd, StrandDir pStrand=StrandDir::FORWARD);
     uTags(std::string pChr, long long int pStart, long long int pEnd, StrandDir pStrand, float pScore);
@@ -325,6 +328,9 @@ public:
 
 };
 
+
+class uRegionChrom;
+class uBasicNGSChrom;
 class uTagsChrom: public uGenericNGSChrom<uTagsChrom,uTags>
 {
 
@@ -334,15 +340,17 @@ public:
 
     uTagsChrom():uGenericNGSChrom(){};
     uTagsChrom(const std::string & ourChr):uGenericNGSChrom(ourChr)
-    {
-    }
+    { }
 
     uTagsChrom getCopy() const;
 
     uTagsChrom(const uGenericNGSChrom<uTagsChrom,uTags>&);
     uTagsChrom& operator=(const uTagsChrom& copFrom);
     uTagsChrom(const uTagsChrom&);
-    uTagsChrom(std::vector<uTags>);
+    uTagsChrom(const uRegionChrom &);
+    uTagsChrom(const uBasicNGSChrom &);
+
+
     uTagsChrom(const std::vector<uTags> & copyVec):uGenericNGSChrom(copyVec){};
     uTags getTag(int i)
     {

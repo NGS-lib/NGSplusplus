@@ -10,11 +10,10 @@ using namespace std;
 /** \brief Default constructor, not PE and positive strand
  */
 uTags::uTags():uGenericNGS()
-{
-}
+{}
 
 /**< From uTokens */
-uTags::uTags(const uToken & pToken)try:uGenericNGS(pToken){
+uTags::uTags(uToken pToken)try:uGenericNGS(pToken){
 
 if (pToken.isParamSet(token_param::CIGAR))
     setCigar(pToken.getParam(token_param::CIGAR));
@@ -30,7 +29,7 @@ if (pToken.isParamSet(token_param::CIGAR))
 catch(ugene_exception_base &e)
 {
         #ifdef DEBUG
-        std::cerr << "Error in uGenericNGS(uToken)." <<std::endl;
+        std::cerr << "Error in uTags(uToken)." <<std::endl;
         #endif
         e<<tag_error(*this);
         throw e;
@@ -40,8 +39,17 @@ catch(ugene_exception_base &e)
 /** \brief Copy constructor, with init list
  * \param otherItem: uBasicNGS  object
  */
-uTags::uTags(uBasicNGS otherItem):uGenericNGS(otherItem.getChr(),otherItem.getStart(),otherItem.getEnd(),otherItem.getStrand(),otherItem.getScore()),name(nullptr),phredScore(nullptr),cigar(nullptr)
+uTags::uTags(const uBasicNGS & otherItem):uGenericNGS(otherItem.getChr(),otherItem.getStart(),otherItem.getEnd(),otherItem.getStrand()),name(nullptr),phredScore(nullptr),cigar(nullptr)
 {
+    this->setScoreVector(otherItem.getScoreVector());
+}
+
+/** \brief Copy constructor, with init list
+ * \param otherItem: uRegion  object
+ */
+uTags::uTags(const uRegion & otherItem):uGenericNGS(otherItem.getChr(),otherItem.getStart(),otherItem.getEnd(),otherItem.getStrand()),name(nullptr),phredScore(nullptr),cigar(nullptr)
+{
+    this->setScoreVector(otherItem.getScoreVector());
 }
 
 /** \brief Default constructor with init list, implicitly sets strand
@@ -341,7 +349,7 @@ void uTags::writeSamToOutput(std::ostream &out) const
 void uTags::debugElem() const
 {
     using namespace utility;
-    stringTocerr("Outputting elemn data");
+    stringTocerr("Outputting elem data");
     stringTocerr("Chrom "+getChr());
     stringTocerr("Start "+utility::to_string(getStart()));
     stringTocerr("End " +utility::to_string(getEnd()));
@@ -479,7 +487,20 @@ uTagsChrom uTagsChrom::getCopy() const
    return copyObj;
 }
 
+ uTagsChrom::uTagsChrom(const uRegionChrom & pCopyChrom){
+        setChr(pCopyChrom.getChr());
+        chromSize=pCopyChrom.getChromSize();
+        for (auto itr= pCopyChrom.begin(); itr!=pCopyChrom.end(); itr++  )
+            addData(uTags(*itr));
 
+ }
+
+ uTagsChrom::uTagsChrom(const uBasicNGSChrom & pCopyChrom){
+            setChr(pCopyChrom.getChr());
+            chromSize=pCopyChrom.getChromSize();
+            for (auto itr= pCopyChrom.begin(); itr!=pCopyChrom.end(); itr++  )
+                addData(uTags(*itr));
+ }
 
 /** \brief Output the chrom to bed format
  *

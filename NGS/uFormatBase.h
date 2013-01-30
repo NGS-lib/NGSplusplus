@@ -39,117 +39,13 @@ protected:
     std::vector<float> m_score={}; /*!< Values potentially associated with the element */
 
 public:
-    /** \brief Constructor taking chromosome name, start, end and optionnaly a strand.
-     * \param std::string pChr: The name of the chromosome.
-     * \param int pStart: Starting position, must be greater than 0.
-     * \param int pEnd: Ending position, must be greater or equal to pStart.
-     * \param StrandDir pStrand: The strand in enum class StranDir format. Must be either FOWARD or REVERSE.
-     * \exception ugene_exception_base: When the starting position and ending position are incorrect.
-     */
-    uGenericNGS(std::string pChr, int pStart, int pEnd, StrandDir pStrand=StrandDir::FORWARD ):m_chr(pChr),m_strand(pStrand)
-    {
-        try
-        {
-            setEnd(pEnd);
-            setStart(pStart);
-        }
-        catch( ugene_exception_base &e)
-        {
-#ifdef DEBUG
-            std::cerr << "Error in uGenericNGS(std::string pChr, int pStart, int pEnd). data is"<< pChr<< " "
-		      << pEnd<<" "<< pStart << " "<<std::endl;
-#endif
-            throw e;
-        }
-    };
 
-    /** \brief Constructor taking chromosome name, start position, end position, strand and score.
-     * \param std::string pChr: The name of the chromosome.
-     * \param int pStart: Starting position, must be greater than 0.
-     * \param int pEnd: Ending position, must be greater or equal to pStart.
-     * \param StrandDir pStrand: The strand in enum class StranDir format. Must be either FOWARD or REVERSE.
-     * \param float pScore: The score associated with the current entry.
-     * \exception ugene_exception_base: When the starting position and ending position are incorrect.
-     */
-    uGenericNGS(std::string pChr, int pStart, int pEnd, StrandDir pStrand, float pScore ):m_chr(pChr),m_strand(pStrand)
-    {
-        try
-        {
-            setScore(pScore);
-            setEnd(pEnd);
-            setStart(pStart);
-        }
-        catch( ugene_exception_base &e)
-        {
-#ifdef DEBUG
-            std::cerr << "Error in uGenericNGS(std::string pChr, int pStart, int pEnd, float Score). data is"
-		      << pChr<< " "<< pEnd<<" "<< pStart << " "<<std::endl;
-#endif
-            throw e;
-        }
-    };
-
-    /** \brief Constructor taking chromosome name, start position, end position and score.
-     * \param std::string pChr: The name of the chromosome.
-     * \param int pStart: Starting position, must be greater than 0.
-     * \param int pEnd: Ending position, must be greater or equal to pStart.
-     * \param float pScore: The score associated with the current entry.
-     * \exception ugene_exception_base: When the starting position and ending position are incorrect.
-     */
-    uGenericNGS(std::string pChr, int pStart, int pEnd,float pScore ):m_chr(pChr),m_strand(StrandDir::FORWARD)
-    {
-        try
-        {
-            setScore(pScore);
-            setEnd(pEnd);
-            setStart(pStart);
-        }
-        catch( ugene_exception_base &e)
-        {
-#ifdef DEBUG
-            std::cerr << "Error in uGenericNGS(std::string pChr, int pStart, float Score). data is"
-                      << pChr<< " "<< pEnd<<" "<< pStart << " "<<std::endl;
-#endif
-            throw e;
-        }
-    };
-
-    /** \brief Default uGenericNGS constructor. Dummy function.
-     */
+    uGenericNGS(std::string pChr, int pStart, int pEnd, StrandDir pStrand=StrandDir::FORWARD );
+    uGenericNGS(std::string pChr, int pStart, int pEnd, StrandDir pStrand, float pScore );
+    uGenericNGS(std::string pChr, int pStart, int pEnd,float pScore );
     uGenericNGS() {};
+    uGenericNGS(const uToken & pToken);
 
-    /** \brief Constructor taking a token.
-     * \param const uToken & pToken: A token containing all the infos for the current region. See uToken class for more details.
-     * \exception ugene_exception_base: When the values of the token are not valid.
-     */
-    uGenericNGS(const uToken & pToken):m_chr(pToken.getParam(token_param::CHR))
-    {
-        try
-        {
-            setEnd(utility::stoi(pToken.getParam(token_param::END_POS)));
-            setStart( utility::stoi(pToken.getParam(token_param::START_POS)));
-            /**< Default forward */
-            if (pToken.isParamSet(token_param::STRAND))
-            {
-                setStrand(pToken.getParam(token_param::STRAND).at(0));
-            }
-            if ((pToken.isParamSet(token_param::SCORE))&&(pToken.getParam(token_param::SCORE)!="." ) )
-            {
-                setScore(utility::stof (pToken.getParam(token_param::SCORE) ) );
-            }
-        }
-        catch(ugene_exception_base &e)
-        {
-#ifdef DEBUG
-            std::cerr << "Error in uGenericNGS(uToken)." <<std::endl;
-#endif
-            e<<string_error("Error in uGenericNGS(uToken)." );
-            throw e;
-        }
-    };
-
-    /** \brief Destructor.
-     */
     virtual ~uGenericNGS() {};
 
     /**< End Constructor/Destructor */
@@ -204,6 +100,116 @@ public:
     void setScoreVector(std::vector<float> p_Score){m_score=std::move(p_Score);};
 
 };
+
+
+     /** \brief Constructor taking chromosome name, start, end and optionnaly a strand.
+     * \param std::string pChr: The name of the chromosome.
+     * \param int pStart: Starting position, must be greater than 0.
+     * \param int pEnd: Ending position, must be greater or equal to pStart.
+     * \param StrandDir pStrand: The strand in enum class StranDir format. Must be either FOWARD or REVERSE.
+     * \exception ugene_exception_base: When the starting position and ending position are incorrect.
+     */
+     template <class _SELF_>
+    uGenericNGS<_SELF_>::uGenericNGS(std::string pChr, int pStart, int pEnd, StrandDir pStrand):m_chr(pChr),m_strand(pStrand)
+    {
+        try
+        {
+            setEnd(pEnd);
+            setStart(pStart);
+        }
+        catch( ugene_exception_base &e)
+        {
+#ifdef DEBUG
+            std::cerr << "Error in uGenericNGS(std::string pChr, int pStart, int pEnd). data is"<< pChr<< " "
+		      << pEnd<<" "<< pStart << " "<<std::endl;
+#endif
+            throw e;
+        }
+    }
+
+     /** \brief Constructor taking chromosome name, start position, end position, strand and score.
+     * \param std::string pChr: The name of the chromosome.
+     * \param int pStart: Starting position, must be greater than 0.
+     * \param int pEnd: Ending position, must be greater or equal to pStart.
+     * \param StrandDir pStrand: The strand in enum class StranDir format. Must be either FOWARD or REVERSE.
+     * \param float pScore: The score associated with the current entry.
+     * \exception ugene_exception_base: When the starting position and ending position are incorrect.
+     */
+     template <class _SELF_>
+    uGenericNGS<_SELF_>::uGenericNGS(std::string pChr, int pStart, int pEnd, StrandDir pStrand, float pScore ):m_chr(pChr),m_strand(pStrand)
+    {
+        try
+        {
+            setScore(pScore);
+            setEnd(pEnd);
+            setStart(pStart);
+        }
+        catch(ugene_exception_base &e)
+        {
+#ifdef DEBUG
+            std::cerr << "Error in uGenericNGS(std::string pChr, int pStart, int pEnd, float Score). data is"
+		      << pChr<< " "<< pEnd<<" "<< pStart << " "<<std::endl;
+#endif
+            throw e;
+        }
+    }
+
+     /** \brief Constructor taking chromosome name, start position, end position and score.
+     * \param std::string pChr: The name of the chromosome.
+     * \param int pStart: Starting position, must be greater than 0.
+     * \param int pEnd: Ending position, must be greater or equal to pStart.
+     * \param float pScore: The score associated with the current entry.
+     * \exception ugene_exception_base: When the starting position and ending position are incorrect.
+     */
+     template <class _SELF_>
+     uGenericNGS<_SELF_>::uGenericNGS(std::string pChr, int pStart, int pEnd,float pScore ):m_chr(pChr),m_strand(StrandDir::FORWARD)
+    {
+        try
+        {
+            setScore(pScore);
+            setEnd(pEnd);
+            setStart(pStart);
+        }
+        catch( ugene_exception_base &e)
+        {
+#ifdef DEBUG
+            std::cerr << "Error in uGenericNGS(std::string pChr, int pStart, float Score). data is"
+                      << pChr<< " "<< pEnd<<" "<< pStart << " "<<std::endl;
+#endif
+            throw e;
+        }
+    }
+
+  /** \brief Constructor taking a token.
+     * \param const uToken & pToken: A token containing all the infos for the current region. See uToken class for more details.
+     * \exception ugene_exception_base: When the values of the token are not valid.
+     */
+     template <class _SELF_>
+    uGenericNGS<_SELF_>::uGenericNGS(const uToken & pToken):m_chr(pToken.getParam(token_param::CHR))
+    {
+        try
+        {
+            setEnd(utility::stoi(pToken.getParam(token_param::END_POS)));
+            setStart( utility::stoi(pToken.getParam(token_param::START_POS)));
+            /**< Default forward */
+            if (pToken.isParamSet(token_param::STRAND))
+            {
+                setStrand(pToken.getParam(token_param::STRAND).at(0));
+            }
+            if ((pToken.isParamSet(token_param::SCORE))&&(pToken.getParam(token_param::SCORE)!="." ) )
+            {
+                setScore(utility::stof (pToken.getParam(token_param::SCORE) ) );
+            }
+        }
+        catch(ugene_exception_base &e)
+        {
+#ifdef DEBUG
+            std::cerr << "Error in uGenericNGS(uToken)." <<std::endl;
+#endif
+            e<<string_error("Error in uGenericNGS(uToken)." );
+            throw e;
+        }
+    }
 
 
     /** \brief Get the chromosome of the current entry.
@@ -287,10 +293,8 @@ public:
         {
             return true;
         }
-        else
-        {
-            return false;
-        }
+
+        return false;
     }
 
    /** \brief Set the start position for the current entry.

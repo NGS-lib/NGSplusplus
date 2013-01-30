@@ -206,16 +206,24 @@ void uRegion::writeRegion(std::ostream& out) const
     out << getChr()<<"\t" << getStart() << "\t"<< getEnd() << "\t" << getCount() <<   std::endl;
 }
 
-/**< Chrom constructors */
-
-
-    uRegion uRegion::getCopy() const{
+uRegion uRegion::getCopy() const{
 
         uRegion copyElem =  *this;
         return copyElem;
+}
+
+/**< Chrom constructors */
+    uRegionChrom::uRegionChrom(uBasicNGSChrom pCopyChrom):uGenericNGSChrom(pCopyChrom.getChr()){
+        chromSize=pCopyChrom.getChromSize();
+        for (auto itr= pCopyChrom.begin(); itr!=pCopyChrom.end(); itr++  )
+            addData(uRegion(*itr));
     }
 
-
+    uRegionChrom::uRegionChrom(uTagsChrom pCopyChrom):uGenericNGSChrom(pCopyChrom.getChr()){
+            chromSize=pCopyChrom.getChromSize();
+            for (auto itr= pCopyChrom.begin(); itr!=pCopyChrom.end(); itr++  )
+                addData(uRegion(*itr));
+    }
 
     uRegionChrom::uRegionChrom(const uGenericNGSChrom<uRegionChrom,uRegion> & copyCop)
     {

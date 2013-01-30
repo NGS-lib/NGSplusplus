@@ -67,7 +67,6 @@ uBasicNGSChrom uChromSubsetTest;
 };
 /**< Start chrom test */
 TEST_F(ChromDivide, SORT){
-
     /**< Unsorted, fail */
     EXPECT_FALSE(uChromTestOverlap.isSorted());
     uChromTestOverlap.sortSites();
