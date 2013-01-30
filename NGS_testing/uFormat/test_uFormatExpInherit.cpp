@@ -309,61 +309,69 @@ TEST(uBasicNGSEXP_getOverlapping, VALIDEXP){
 	validExperiments myExperiments;
 	uBasicNGSExperiment* anExp = myExperiments.getExperiment("MultipleChroms");
 	uBasicNGSExperiment* anotherExp = myExperiments.getExperiment("NoName_3elems");
-	uBasicNGSExperiment overlapExp = anExp->getOverlapping(*anotherExp); // TODO: Finish when the code is functional...
+	uBasicNGSExperiment overlapExp = anExp->getOverlapping(*anotherExp);
+	EXPECT_EQ(overlapExp.count(), 3);
 }
 
 TEST(uBasicNGSEXP_getOverlapping, VALIDCHROM){
 	validExperiments myExperiments;
 	uBasicNGSExperiment* anExp = myExperiments.getExperiment("MultipleChroms");
 	uBasicNGSChrom* aChrom = myExperiments.getExperiment("MultipleChroms")->getpChrom("chr4");
-	uBasicNGSExperiment overlapExp = anExp->getOverlapping(*aChrom); // TODO: Finish when the code is functional...
+	uBasicNGSExperiment overlapExp = anExp->getOverlapping(*aChrom);
+	EXPECT_EQ(overlapExp.count(), 1);
 }
 
 TEST(uBasicNGSEXP_getOverlapping, VALIDPOS){
 	validExperiments myExperiments;
 	uBasicNGSExperiment* anExp = myExperiments.getExperiment("MultipleChroms");
-	uBasicNGSExperiment overlapExp = anExp->getOverlapping("chr4", 100, 200); // TODO: Finish when the code is functional...
+	uBasicNGSExperiment overlapExp = anExp->getOverlapping("chr4", 100, 200);
+	EXPECT_EQ(overlapExp.count(), 1);
 }
 
 TEST(uBasicNGSEXP_getOverlapping, EMPTYEXP){
 	validExperiments myExperiments;
 	uBasicNGSExperiment* anExp = myExperiments.getExperiment("MultipleChroms");
 	uBasicNGSExperiment* anotherExp = myExperiments.getExperiment("Empty_Exp");
-	uBasicNGSExperiment overlapExp = anExp->getOverlapping(*anotherExp); // TODO: Finish when the code is functional...
+	uBasicNGSExperiment overlapExp = anExp->getOverlapping(*anotherExp);
+	EXPECT_EQ(overlapExp.count(), 0);
 }
 
 TEST(uBasicNGSEXP_getOverlapping, EMPTYCHROM){
 	validExperiments myExperiments;
 	uBasicNGSExperiment* anExp = myExperiments.getExperiment("MultipleChroms");
 	uBasicNGSChrom* aChrom = myExperiments.getExperiment("NoName_Empty")->getpChrom("");
-	uBasicNGSExperiment overlapExp = anExp->getOverlapping(*aChrom); // TODO: Finish when the code is functional...
+	uBasicNGSExperiment overlapExp = anExp->getOverlapping(*aChrom);
+	EXPECT_EQ(overlapExp.count(), 0);
 }
 
 TEST(uBasicNGSEXP_getOverlapping, EMPTYTHISEXP){
 	validExperiments myExperiments;
 	uBasicNGSExperiment* anExp = myExperiments.getExperiment("Empty_Exp");
 	uBasicNGSExperiment* anotherExp = myExperiments.getExperiment("MultipleChroms");
-	uBasicNGSExperiment overlapExp = anExp->getOverlapping(*anotherExp); // TODO: Finish when the code is functional...
+	uBasicNGSExperiment overlapExp = anExp->getOverlapping(*anotherExp);
+	EXPECT_EQ(overlapExp.count(), 0);
 }
 
 TEST(uBasicNGSEXP_getOverlapping, EMPTYTHISCHROM){
 	validExperiments myExperiments;
 	uBasicNGSExperiment* anExp = myExperiments.getExperiment("Empty_Exp");
 	uBasicNGSChrom* aChrom = myExperiments.getExperiment("MultipleChroms")->getpChrom("");
-	uBasicNGSExperiment overlapExp = anExp->getOverlapping(*aChrom); // TODO: Finish when the code is functional...
+	uBasicNGSExperiment overlapExp = anExp->getOverlapping(*aChrom);
+	EXPECT_EQ(overlapExp.count(), 0);
 }
 
 TEST(uBasicNGSEXP_getOverlapping, EMPTYTHISANDPOS){
 	validExperiments myExperiments;
 	uBasicNGSExperiment* anExp = myExperiments.getExperiment("MultipleChroms");
-	uBasicNGSExperiment overlapExp = anExp->getOverlapping("chr4", 1000, 2000); // TODO: Finish when the code is functional...
+	uBasicNGSExperiment overlapExp = anExp->getOverlapping("chr4", 1000, 2000);
+	EXPECT_EQ(overlapExp.count(), 0);
 }
 
 TEST(uBasicNGSEXP_getOverlapping, CHROMDONTEXISTS){
 	validExperiments myExperiments;
 	uBasicNGSExperiment* anExp = myExperiments.getExperiment("Empty_Exp");
 	uBasicNGSChrom* aChrom = myExperiments.getExperiment("MultipleChroms")->getpChrom("");
-	uBasicNGSExperiment overlapExp = anExp->getOverlapping(*aChrom); // TODO: Finish when the code is functional...
+	uBasicNGSExperiment overlapExp = anExp->getOverlapping(*aChrom);
 	EXPECT_EQ(overlapExp.count(), 0);
 }
 

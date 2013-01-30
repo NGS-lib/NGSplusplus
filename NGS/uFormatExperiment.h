@@ -87,8 +87,8 @@ protected:
 
 
 public:
-	/** \brief Empty constructor. Does nothing.
-	  */
+    /** \brief Empty constructor. Does nothing.
+      */
     virtual ~uGenericNGSExperiment() {};
     uGenericNGSExperiment& operator=(const uGenericNGSExperiment& copFrom)=default;
     uGenericNGSExperiment(const uGenericNGSExperiment&)=default;
@@ -752,7 +752,7 @@ _CHROM_* uGenericNGSExperiment<_SELF_,_CHROM_, _BASE_>::getpChrom(const std::str
 template<class _SELF_, typename _CHROM_, typename _BASE_>
 void uGenericNGSExperiment<_SELF_,_CHROM_, _BASE_>::setChrSize(std::string chr, int chrSize)
 {
-	getpChrom(chr)->setChromSize(chrSize);
+    getpChrom(chr)->setChromSize(chrSize);
 }
 
 // TODO: We need to check if the chrom exists before getting it's size!!
@@ -763,7 +763,7 @@ void uGenericNGSExperiment<_SELF_,_CHROM_, _BASE_>::setChrSize(std::string chr, 
 template<class _SELF_, typename _CHROM_, typename _BASE_>
 int uGenericNGSExperiment<_SELF_,_CHROM_, _BASE_>::getChrSize(std::string chr)
 {
-	return getpChrom(chr)->getChromSize();
+    return getpChrom(chr)->getChromSize();
 }
 
 //Return the number of elements in our experiment
@@ -1009,15 +1009,21 @@ _SELF_ uGenericNGSExperiment<_SELF_,_CHROM_, _BASE_>::getDistinct(std::string pC
 template<class _SELF_, typename _CHROM_, typename _BASE_>
 void uGenericNGSExperiment<_SELF_,_CHROM_, _BASE_>::addData(const _CHROM_ & inputChrom)
 {
-    //TODO remove const ref to allow move semantics?
-    _CHROM_* currentChrom;
-    std::vector<_BASE_> vecData;
-
-    currentChrom=&(ExpMap[inputChrom.getChr()]);
-    for(auto itChrom =inputChrom.begin(); itChrom!= inputChrom.end(); itChrom++)
-    {
-        currentChrom->addDataNoCheck(*itChrom);
+   /**< If chrom Already exist,  */
+   if (ExpMap.count(inputChrom.getChr()) != 0)
+   {
+       _CHROM_* currentChrom;
+        currentChrom=&(ExpMap[inputChrom.getChr()]);
+        for (auto itChrom =inputChrom.begin(); itChrom!= inputChrom.end(); itChrom++)
+        {
+            currentChrom->addDataNoCheck(*itChrom);
+        }
     }
+    else /**< Make deep copy */
+    {
+        ExpMap.insert(std::pair<std::string,_CHROM_>(inputChrom.getChr(),inputChrom));
+    }
+    //TODO remove const ref to allow move semantics?
 }
 
 
@@ -1039,8 +1045,7 @@ _SELF_ uGenericNGSExperiment<_SELF_,_CHROM_,_BASE_>::getOverlapping(_SELF_ &comp
 
         if (compareExp.isChrom(iterMap->first)){
             pChrom = compareExp.getpChrom(iterMap->first); // TODO: check if chrom exists before getting ptr to avoid throw
-//        returnExp.combineChr(iterMap->second.getOverlapping(*pChrom));
-            returnExp.addData(iterMap->second.getOverlapping(*pChrom)); // TODO: does not seem to work, but at least it compiles
+            returnExp.addData(iterMap->second.getOverlapping(*pChrom));
         }
     }
     return returnExp;
@@ -1061,7 +1066,7 @@ _SELF_ uGenericNGSExperiment<_SELF_, _CHROM_,_BASE_>::getOverlapping(_CHROM_ &co
         _SELF_ tempExp;
 
 //        tempExp.combineChr(compareChrom);
-	tempExp.addData(compareChrom); // TODO: does not seem to work, but at least it compiles
+    tempExp.addData(compareChrom); // TODO: does not seem to work, but at least it compiles
         return getOverlapping(tempExp,type);
     }
     catch(std::exception & e)
