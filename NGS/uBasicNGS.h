@@ -75,7 +75,7 @@ uBasicNGS(uToken pToken) try : uGenericNGS(pToken)
     uBasicNGS(uRegion p_region);
     bool isEqual(const  uBasicNGS & pCompared) const;
 
-    uBasicNGS& getCopy();
+    uBasicNGS getCopy();
 
 };
 

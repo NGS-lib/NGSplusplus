@@ -379,7 +379,7 @@ public:
      *
      */
     template<class UnaryFunction>
-    void loadWithParserAndRun(std::ifstream& pStream, std::string pType, UnaryFunction f , int pBlockSize=1)
+    void loadWithParserAndRun(std::ifstream& pStream, std::string pType, UnaryFunction funct , int pBlockSize=1)
     {
         try
         {
@@ -393,13 +393,14 @@ public:
                 /**< Load a block of data */
                 while ((curLoaded<pBlockSize)&&(!Curparser.eof()))
                 {
-                    loadedTokens.push_back(Curparser.getNextEntry());
+                    loadedTokens.at(curLoaded)=Curparser.getNextEntry();
+
                     curLoaded++;
                 }
                 /**< Operate */
                 for(const uToken & curToken:loadedTokens)
                 {
-                    f( (_BASE_)(curToken) );
+                    funct( (_BASE_)(curToken) );
                 }
             }
         }

@@ -33,7 +33,7 @@ std::vector<std::string> uHeader::getParamVector(header_param name) const
     else
     {
         param_not_found e;
-        std::string error = "Tried to getParam that is not set: " + _convertHeaderParamToString(name) + "\n";
+        std::string error = "In getParamVector(header_param name). Tried to getParam that is not set: " + _convertHeaderParamToString(name) + "\n";
         e << string_error(error);
         e << string_error(_convertHeaderParamToString(name));
         throw e;
@@ -54,7 +54,7 @@ std::string uHeader::getParam(header_param name) const
     else
     {
         param_not_found e;
-        std::string error = "Tried to getParam that is not set: " + _convertHeaderParamToString(name) + "\n";
+        std::string error = "In getParam(header_param name). Tried to getParam that is not set: " + _convertHeaderParamToString(name) + "\n";
         e << string_error(error);
         e << string_error(_convertHeaderParamToString(name));
         throw e;

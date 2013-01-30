@@ -419,3 +419,31 @@ TEST(uBasicNGSTestHerit, GETTOKENTEST){
     EXPECT_FALSE(ourToken.isParamSet(token_param::DENSITY));
     EXPECT_FALSE(ourToken.isParamSet(token_param::SCORE));
 }
+
+/**< isEqual */
+
+TEST(uBasicNGSTestHerit, ISEQUAL){
+    uBasicNGS uTest("chr1", 100, 119);
+    uBasicNGS uTestCopy("chr1", 100, 119);
+    uBasicNGS uTestChrChange("chr2", 100, 119);
+    uBasicNGS uTestStartChange("chr1", 110, 119);
+    uBasicNGS uTestEndChange("chr1", 100, 129);
+    uBasicNGS uTestScoreChange("chr1", 100, 119,0.4f);
+
+
+    EXPECT_TRUE(uTest.isEqual(uTestCopy));
+    EXPECT_FALSE(uTest.isEqual(uTestChrChange));
+    EXPECT_FALSE(uTest.isEqual(uTestStartChange));
+    EXPECT_FALSE(uTest.isEqual(uTestEndChange));
+    EXPECT_FALSE(uTest.isEqual(uTestScoreChange));
+
+
+}
+
+/**< GetCopy */
+
+TEST(uBasicNGSTestHerit, GETCOPY){
+    uBasicNGS uTest("chr1", 100, 119);
+
+   EXPECT_TRUE( uTest.isEqual(uTest.getCopy()));
+}

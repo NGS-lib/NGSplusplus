@@ -336,48 +336,92 @@ TEST(uBasicNGSCHR_addNRandomSite, MAKECORRECTNUMBER){
        uBasicNGSChrom retChr=ourChroms.manyChr.getOverlapping(oneItem);
        EXPECT_EQ(0,retChr.count());
  }
+/**< Get overlapping Count */
 
+ TEST(uBasicNGSCHR_getOverlappingCount, NORMAL){
+       StandardChroms ourChroms;
+       uBasicNGSChrom oneItem("chr1");
+       oneItem.addData(uBasicNGS("chr1",50,100));
+       EXPECT_EQ(ourChroms.manyChr.getOverlappingCount(oneItem),1);
+ }
+ TEST(uBasicNGSCHR_getOverlappingCount, FIRSTEMPTY){
+       StandardChroms ourChroms;
+       uBasicNGSChrom oneItem("chr1");
+       oneItem.addData(uBasicNGS("chr1",50,100));
+       EXPECT_EQ(ourChroms.emptyChr.getOverlappingCount(oneItem),0);
+ }
+ TEST(uBasicNGSCHR_getOverlappingCount, SECONDEMPTY){
+       StandardChroms ourChroms;
+       uBasicNGSChrom oneItem("chr1");
+       EXPECT_EQ(ourChroms.manyChr.getOverlappingCount(oneItem),0);
+ }
+ TEST(uBasicNGSCHR_getOverlappingCount, SOMEOVERLAP){
+       StandardChroms ourChroms;
+       uBasicNGSChrom oneItem("chr1");
+       oneItem.addData(uBasicNGS("chr1",0,220));
+       EXPECT_EQ(ourChroms.manyChr.getOverlappingCount(oneItem),2);
+ }
+  TEST(uBasicNGSCHR_getOverlappingCount, ALLOVERLAP){
+       StandardChroms ourChroms;
+       uBasicNGSChrom twoItems("chr1");
+       twoItems.addData(uBasicNGS("chr1",0,220));
+       twoItems.addData(uBasicNGS("chr1",230,420));
+       EXPECT_EQ(ourChroms.manyChr.getOverlappingCount(twoItems),3);
+ }
+ TEST(uBasicNGSCHR_getOverlappingCount, NOOVERLAP){
+       StandardChroms ourChroms;
+       uBasicNGSChrom oneItem("chr1");
+       oneItem.addData(uBasicNGS("chr1",500,1000));
+       EXPECT_EQ(ourChroms.manyChr.getOverlappingCount(oneItem),0);
+ }
+ TEST(uBasicNGSCHR_getOverlappingCount, DIFFERENTCHR){
+       StandardChroms ourChroms;
+       uBasicNGSChrom oneItem("chr2");
+       oneItem.addData(uBasicNGS("chr2",0,1000));
+       EXPECT_EQ(ourChroms.manyChr.getOverlappingCount(oneItem),0);
+ }
 
+/**< Get not Overlapping */
  TEST(uBasicNGSCHR_getNotOverlapping, NORMAL){
        StandardChroms ourChroms;
        uBasicNGSChrom oneItem("chr1");
        oneItem.addData(uBasicNGS("chr1",50,100));
        uBasicNGSChrom retChr=ourChroms.manyChr.getNotOverlapping(oneItem);
-       EXPECT_EQ(2,retChr.count());
+       EXPECT_EQ(retChr.count(),2);
  }
  TEST(uBasicNGSCHR_getNotOverlapping, FIRSTEMPTY){
        StandardChroms ourChroms;
        uBasicNGSChrom oneItem("chr1");
        oneItem.addData(uBasicNGS("chr1",50,100));
        uBasicNGSChrom retChr=ourChroms.emptyChr.getNotOverlapping(oneItem);
-       EXPECT_EQ(0,retChr.count());
+       EXPECT_EQ(retChr.count(),0);
  }
   TEST(uBasicNGSCHR_getNotOverlapping, SECONDEMPTY){
        StandardChroms ourChroms;
        uBasicNGSChrom noItems("chr1");
        uBasicNGSChrom retChr=ourChroms.manyChr.getNotOverlapping(noItems);
-       EXPECT_EQ(3,retChr.count());
+       EXPECT_EQ(retChr.count(),3);
  }
   TEST(uBasicNGSCHR_getNotOverlapping, SOMEOVERLAP){
        StandardChroms ourChroms;
        uBasicNGSChrom oneItem("chr1");
        oneItem.addData(uBasicNGS("chr1",0,220));
        uBasicNGSChrom retChr=ourChroms.manyChr.getNotOverlapping(oneItem);
-       EXPECT_EQ(1,retChr.count());
+       EXPECT_EQ(retChr.count(),1);
  }
   TEST(uBasicNGSCHR_getNotOverlapping, NOOVERLAP){
        StandardChroms ourChroms;
        uBasicNGSChrom oneItem("chr1");
        oneItem.addData(uBasicNGS("chr1",500,1000));
        uBasicNGSChrom retChr=ourChroms.manyChr.getNotOverlapping(oneItem);
-       EXPECT_EQ(3,retChr.count());
+       EXPECT_EQ(retChr.count(),3);
  }
  TEST(uBasicNGSCHR_getNotOverlapping, DIFFERENTCHR){
        StandardChroms ourChroms;
        uBasicNGSChrom oneItem("chr2");
        oneItem.addData(uBasicNGS("chr2",0,1000));
        uBasicNGSChrom retChr=ourChroms.manyChr.getNotOverlapping(oneItem);
-       EXPECT_EQ(3,retChr.count());
+       EXPECT_EQ(retChr.count(),3);
  }
 
 /**<  getDistinct*/
@@ -732,15 +776,5 @@ TEST(uBasicNGSCHR_RemoveSite, ITR_RANGE)
         newChroms.manyChr.removeSite(itr,itr2);
         EXPECT_EQ(1,newChroms.manyChr.count());
         EXPECT_TRUE(newChroms.manyChr.begin()->isEqual(uBasicNGS("chr1",120,250)));
-        std::cout<< newChroms.manyChr.begin()->getStart() <<std::endl;
-}
-TEST(uBasicNGSCHR_RemoveSite, EMPTY)
-{
-     ASSERT_TRUE(false);
 }
 
-TEST(uBasicNGSCHR_RemoveSite, INVALID)
-{
-     ASSERT_TRUE(false);
-}
-/**<  */

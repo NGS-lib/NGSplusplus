@@ -114,7 +114,7 @@ std::string uToken::getParam(token_param name) const
     else
     {
         param_not_found e;
-        std::string error = "Tried to getParam that is not set: " + _convertTokenParamToString(name) + "\n";
+        std::string error = "In uToken::getParam(token_param name). Tried to getParam that is not set: " + _convertTokenParamToString(name) + "\n";
         addStringError(e,error);
         throw e;
     }
@@ -150,7 +150,7 @@ std::string uToken::getParam(const std::string& name) const
     else
     {
         param_not_found e;
-        std::string error = "Tried to getParam that is not set: " + name + "\n";
+        std::string error = "In uToken::getParam(const std::string& name).Tried to getParam that is not set: " + name + "\n";
         addStringError(e, error);
         throw e;
     }

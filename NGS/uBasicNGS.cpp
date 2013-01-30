@@ -36,6 +36,13 @@ namespace NGS {
                 (this->getEnd()==pCompared.getEnd())&&
                 (this->getScoreVector()==pCompared.getScoreVector()));
     }
+
+
+    uBasicNGS uBasicNGS::getCopy(){
+        uBasicNGS returnCopy = *this;
+        return returnCopy;
+    }
+
 /**< uBasicNGSChrom */
 
 
@@ -82,6 +89,7 @@ namespace NGS {
 
         return *this;
     }
+
 
     uBasicNGSChrom uBasicNGSChrom::getCopy()const
     {

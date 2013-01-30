@@ -144,6 +144,11 @@ public:
     template <class _OTHER_>
     _SELF_ getOverlapping(_OTHER_ &pCompareChr,OverlapType pOverlap=OverlapType::OVERLAP_PARTIAL) const;
     template <class _OTHER_>
+    long long int getOverlappingCount(_OTHER_ &pCompareChr,OverlapType pOverlap=OverlapType::OVERLAP_PARTIAL) const;
+
+
+
+    template <class _OTHER_>
     _SELF_ getNotOverlapping(_OTHER_ &compareChr,OverlapType pOverlap=OverlapType::OVERLAP_PARTIAL) const;
 
 
@@ -1122,6 +1127,7 @@ _SELF_ uGenericNGSChrom<_SELF_,_BASE_>::removeSubset(double p_start, double p_en
  * \param OverlapType overlap  : type of overlap
  * \return Chrom collection containing all overlapping elements.
  * \sa getNotOverlapping
+ * \sa getOverlappingCount
  */
 template <class _SELF_,class _BASE_>
 template <class _OTHER_>
@@ -1146,6 +1152,40 @@ _SELF_ uGenericNGSChrom<_SELF_,_BASE_>::getOverlapping(_OTHER_ &pCompareChr,Over
     return returnChr;
 }
 
+
+/**< Return the number of elements of A that overlap B */
+/** \brief Wrapper function that returns the number of elements of that overlap another chrom structur
+ *
+ *      This function return a collection. This collection contains every element of THIS that overlaps an element of pCompareChr. This comparison
+ *      is always based on genomic positions ( start end )
+ *
+ * \param _OTHER_ & pCompareChr : A compatible chrom collection
+ * \param OverlapType overlap  : type of overlap
+ * \return Chrom collection containing all overlapping elements.
+ * \sa getOverlapping
+ */
+template <class _SELF_,class _BASE_>
+template <class _OTHER_>
+long long int uGenericNGSChrom<_SELF_,_BASE_>::getOverlappingCount(_OTHER_ &pCompareChr,OverlapType pOverlap) const
+{
+
+        long long int overlapCount=0;
+        if (getChr()!=pCompareChr.getChr())
+            return overlapCount;
+
+        for(auto it= VecSites.begin(); it!=VecSites.end(); it++)
+        {
+            for(auto compit= pCompareChr.begin(); compit!=pCompareChr.end(); compit++)
+            {
+                if (utility::isOverlap(it->getStart(), it->getEnd(),compit->getStart(),compit->getEnd(),pOverlap))
+                {
+                    overlapCount++;
+                    break;
+                }
+            }
+        }
+    return overlapCount;
+}
 
 
 
