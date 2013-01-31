@@ -227,11 +227,10 @@ void uParserSam::_parseHeader()
                 {
                     if (SORT)
                         throw uParser_invalid_Sam_header()<<string_error("Multiple SO tags in @SO line: \n"+lineString);
-                    //TODO validate sort
                     SORT=true;
                     data.erase(0,3);
 
-                    if (sortType!="unsorted")||(sortType!="queryname")||(sortType!="unknown")||(sortType!="coordinate")
+                    if ((sortType!="unsorted")||(sortType!="queryname")||(sortType!="unknown")||(sortType!="coordinate"))
                          throw uParser_invalid_Sam_header()<<string_error("Invalid sorting value in @SO line: \n"+lineString);
                     sortType=data;
                 }
