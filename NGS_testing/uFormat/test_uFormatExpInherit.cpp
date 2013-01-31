@@ -452,6 +452,65 @@ TEST(uBasicNGSEXP_setChrSize, INVALIDCHRNAME){
 }
 
 /*
+ * Tests for the function:
+ *	     _CHROM_ getSubset(std::string pChr, float pStart, float pEnd, OverlapType options=OverlapType::OVERLAP_PARTIAL);
+ *
+ *	Valid cases:
+ *		VALIDCHROMNAME
+ *		NONAMECHROM
+ *		NOELEMINSUBSET
+ *	Invalid cases:
+ *		CHROMDONTEXISTS
+ *		NOTSORTED
+ */
+
+TEST(uBasicNGSEXP_getSubset, VALIDCHROMNAME) {
+	validExperiments myExperiments;
+	myExperiments.getExperiment("MultipleChroms")->getpChrom("chr4")->sortSites();
+	uBasicNGSChrom aChrom = myExperiments.getExperiment("MultipleChroms")->getSubset("chr4", 100, 200);
+//	auto it = aChrom.findNextSite(0);
+//	EXPECT_EQ(aChrom.getSite(it).getChr(), "chr4"); // TODO: we need to code a getSite with an iterator
+//	EXPECT_EQ(aChrom.getSite(it).getStart(), 100);
+//	EXPECT_EQ(aChrom.getSite(it).getEnd(), 200);
+	EXPECT_EQ(aChrom.getSite(0).getChr(), "chr4");
+	EXPECT_EQ(aChrom.getSite(0).getStart(), 100);
+	EXPECT_EQ(aChrom.getSite(0).getEnd(), 200);
+}
+
+TEST(uBasicNGSEXP_getSubset, NONAMECHROM) {
+	validExperiments myExperiments;
+	myExperiments.getExperiment("MultipleChroms")->getpChrom("")->sortSites();
+	uBasicNGSChrom aChrom = myExperiments.getExperiment("MultipleChroms")->getSubset("", 150, 250);
+
+	EXPECT_EQ(aChrom.getSite(0).getChr(), "");
+	EXPECT_EQ(aChrom.getSite(0).getStart(), 100);
+	EXPECT_EQ(aChrom.getSite(0).getEnd(), 200);
+	EXPECT_EQ(aChrom.getSite(1).getChr(), "");
+	EXPECT_EQ(aChrom.getSite(1).getStart(), 200);
+	EXPECT_EQ(aChrom.getSite(1).getEnd(), 300);
+	EXPECT_THROW(aChrom.getSite(2), param_throw);
+}
+
+TEST(uBasicNGSEXP_getSubset, NOELEMINSUBSET) {
+	validExperiments myExperiments;
+	myExperiments.getExperiment("MultipleChroms")->getpChrom("")->sortSites();
+	uBasicNGSChrom aChrom = myExperiments.getExperiment("MultipleChroms")->getSubset("", 1000, 2000);
+
+	EXPECT_THROW(aChrom.getSite(0), param_throw);
+}
+
+TEST(uBasicNGSEXP_getSubset, CHROMDONTEXISTS) {
+	validExperiments myExperiments;
+	uBasicNGSChrom aChrom = myExperiments.getExperiment("NoName_Empty")->getSubset("chr1", 1000, 2000);
+	EXPECT_THROW(aChrom.getSite(0), param_throw);
+}
+
+TEST(uBasicNGSEXP_getSubset, NOTSORTED) {
+	validExperiments myExperiments;
+	EXPECT_THROW(uBasicNGSChrom aChrom = myExperiments.getExperiment("MultipleChroms")->getSubset("", 1000, 2000), unsorted_throw);
+}
+
+/*
  * Test for the function:
  *		int getSubsetCount(const std::string & chr, const float start, const float end, const OverlapType overlap=OverlapType::OVERLAP_PARTIAL);
  *		int getSubsetCount(const _BASE_ & subsetReg, const OverlapType overlap=OverlapType::OVERLAP_PARTIAL);
