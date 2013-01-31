@@ -44,7 +44,6 @@ class uGenericNGSExperiment
     typedef typename std::vector<_BASE_>::iterator VecGenIter;
     typedef typename std::vector<_BASE_>::const_iterator VecGenConstIter;
 
-    //TODO, const iterators public
 private:
 
     /**< Comparison functors */
@@ -678,7 +677,7 @@ void uGenericNGSExperiment<_SELF_,_CHROM_, _BASE_>::loadWithParser(std::string f
 template<class _SELF_, typename _CHROM_, typename _BASE_>
 void uGenericNGSExperiment<_SELF_,_CHROM_, _BASE_>::writeAsBedFile(std::ostream& out) const
 {
-    applyOnAllChroms(bind2nd(mem_fun_ref(&_CHROM_::outputBedFormat), out));
+    applyOnAllChroms(bind2nd(mem_fun_ref(&_CHROM_::outputBedFormat)   , out));
 }
 
 

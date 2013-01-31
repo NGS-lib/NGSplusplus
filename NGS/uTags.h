@@ -16,7 +16,6 @@ class uTags: public uGenericNGS<uTags>
 
 private:
     //0 = FORWARD, 1 = REVERSE
-
     //Optional
     //Map score, quality of the alignement.
     short int mapScore=255; /*!<Total mapping quality of the read */
@@ -38,11 +37,9 @@ public:
     uTags(const uRegion & otherItem);
     uTags(uToken pToken);
 
-
     uTags(std::string pChr, long long int pStart, long long int pEnd, float pScore);
     uTags(std::string pChr, long long int pStart, long long int pEnd, StrandDir pStrand=StrandDir::FORWARD);
     uTags(std::string pChr, long long int pStart, long long int pEnd, StrandDir pStrand, float pScore);
-
 
     uTags(const uTags& copy_from);
     uTags& operator=  (uTags const& assign_from);
@@ -53,16 +50,18 @@ public:
 
     bool isEqual(const uTags & pCompared)const;
 
+    //TODO
+    uTags getCompletedTag();
+    uToken createToken()const;
+
+
     void writetoBedCompletePE( std::ostream &out);
     void writeCompletedPESamToOutput(std::ostream &out);
     bool writeTrimmedSamToOutput(std::ostream &out, int left, int right);
     void loadfromSamString(std::string peakInfo, bool minimal);
     void writeSamToOutput(std::ostream &out) const;
 
-    void setMate(uTags* pTag);
-
-    void debugElem() const;
-
+    void print(std::ostream &pOut) const; /**< Prints a human readable version of the data */
 
     /** \brief Returns true if the tag is unmapped or incorrectly mapped
      *

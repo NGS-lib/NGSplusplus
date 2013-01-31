@@ -777,4 +777,12 @@ TEST(uBasicNGSCHR_RemoveSite, ITR_RANGE)
         EXPECT_EQ(1,newChroms.manyChr.count());
         EXPECT_TRUE(newChroms.manyChr.begin()->isEqual(uBasicNGS("chr1",120,250)));
 }
+/**< writeWithWriter */
+
+TEST(uBasicNGSCHR_writeWithWriter, NORMALBED)
+{
+       StandardChroms ourChroms;
+       uWriter bedWriter(&cout,"BED4");
+       EXPECT_NO_THROW(ourChroms.manyChr.writeWithWriter(bedWriter));
+}
 

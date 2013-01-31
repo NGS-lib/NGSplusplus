@@ -52,6 +52,7 @@ public:
 
      virtual void writeToOutput(uWriter& pWriter) const;
      virtual uToken createToken()const;
+     virtual void print(std::ostream &pOut)const;
 
     /**< Get/Set */
 
@@ -83,7 +84,6 @@ public:
     //If we want to Change the dimensions of our site
     void extendSite(int extend);
     void extendSite(int extendLeft, int extendRight);
-    //TODO Add parameters on behavior
     void trimSite(int trim);
     void trimSite(int trimLeft,int trimRight);
 
@@ -560,7 +560,6 @@ void uGenericNGS<_SELF_>::writeToOutput(uWriter& pWriter) const
         addStringError(e,"Failed while calling writeToken in writeToOutput");
         throw e;
     }
-
 }
 
 
@@ -780,7 +779,13 @@ uToken uGenericNGS<_SELF_>::createToken() const
 {
     std::stringstream ss;
     ss << "CHR\t"<<this->getChr()<<"\nSTART_POS\t"<<this->getStart()<<"\n" << "END_POS\t"<<this->getEnd()<<"\n";
-    if (getScore()!=std::numeric_limits<float>::infinity())
+
+    if (getStrand()==StrandDir::FORWARD)
+        ss << "STRAND\t"<<"+"<<"\n";
+    else
+         ss << "STRAND\t"<<"-"<<"\n";
+
+    if (getScoreCount()>0)
     {
         ss << "SCORE\t"<<this->getScore()<<"\n";
     }
@@ -795,7 +800,35 @@ uToken uGenericNGS<_SELF_>::createToken() const
 
  }
 
+/**<  */
+
+ /** \brief Prints a human readable version of the element in no particular format.
+  *
+  * \param pOut std::ostream& Output to write to.
+  * \return void
+  *
+  */
+template <class _SELF_>
+ void  uGenericNGS<_SELF_>::print(std::ostream &pOut)const{
+    pOut<<"Chrom: "<<getChr()<<std::endl;
+    pOut<<"Start: "<<utility::to_string(getStart())<<std::endl;
+    pOut<<"End: " <<utility::to_string(getEnd())<<std::endl;
+
+    if (m_score.size()>0){
+         pOut<<"Scores: ";
+        for(auto value: m_score )
+             pOut<<value<<" ";
+          pOut<<std::endl;
+        }
+
+ }
+
 } // End of namespace NGS
+
+
+
+
+
 
 /**< Legacy code, will return a uGenericNGS from  a tab delimited code. Deprecated, will be removed */
 namespace factory
@@ -824,5 +857,8 @@ namespace factory
         }
     }
 }
+
+
+
 
 #endif // UFORMATBASE_H_INCLUDED

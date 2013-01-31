@@ -141,7 +141,7 @@ inline static void  GetTokens(std::vector<std::string>& tokens, const std::strin
  std:: string buff;
 
  size_t from = 0;
-while( from < line.length()-1 )
+while( from < line.length() )
  {
   GetNextToken( buff, from,line );
   if (buff!="")

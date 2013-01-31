@@ -154,7 +154,7 @@ uToken uParserWig::getNextEntry()
                             break;
                         case  wigInformation::stepType::FIXED:
                             //if (!ss.eof())
-                            if(m_tokens.size()>1)
+                            if(m_tokens.size()!=1)
                                 throw uParser_invalid_line()<<string_error("Invalid line in file \n");
 
                             start_pos=m_Info.getCurPos();
@@ -179,7 +179,7 @@ uToken uParserWig::getNextEntry()
                         ourToken._setParamNoValidate(token_param::CHR,m_Info.getChrom());
 						ourToken._setParamNoValidate(token_param::START_POS,utility::to_string(start_pos));
 						ourToken._setParamNoValidate(token_param::END_POS,utility::to_string(end_pos));
-						ourToken._setParamNoValidate(token_param::SCORE,m_tokens.at(score));
+						ourToken._setParamNoValidate(token_param::SCORE,utility::to_string(score));
 
                         foundToken=true;
 
@@ -210,7 +210,10 @@ uToken uParserWig::getNextEntry()
         catch(std::exception & e)
         {
           //  std::cerr << "Throwing in getnextEntry, exception" <<std::endl;
-            throw e;
+          throw uParser_exception_base()<<string_error(e.what());
+
+        // string_error("Caught std::exception in uToken uParserWig::getNextEntry(), swallowed and re-thrown\n. What message was : ");
+
         }
         std::cerr <<"Fatal error in _getNextEntryCustom(), should not reach here" <<std::endl;
         abort();

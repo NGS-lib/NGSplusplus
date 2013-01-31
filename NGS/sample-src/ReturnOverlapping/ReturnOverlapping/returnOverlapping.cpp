@@ -47,7 +47,7 @@ int main(int argc, char **argv)
     Note that [&] in the signature means will be be capturing by reference whatever outside
     object we care to use.
     */
-    auto functOverlap=[&](uBasicNGS & item)
+    auto functOverlap=[&](uBasicNGS  item)
     {
         /**< Validate the item we are comparing is from a scaffold present in our previously loaded EXP */
         if (loadedFile.isChrom(item.getChr()))

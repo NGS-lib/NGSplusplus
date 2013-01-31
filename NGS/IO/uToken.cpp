@@ -168,7 +168,8 @@ void uToken::_setParamNoValidate(const token_param& name, const std::string& val
 */
 void uToken::_setParam(const token_param& name, const std::string& value)
 {
-// TODO: What should we do in case the name is already setted? Overwrite silently, warning or error?
+//What should we do in case the name is already setted? Overwrite silently, warning or error?
+//Silently overwrite for now.
     try
     {
         if (_validateParam(name, value) == false)
@@ -279,7 +280,7 @@ bool uToken::_validateParam(const token_param& name, const std::string& value) c
     {
         return false;
     }
-    //TODO numerical checks?
+    //TODO numerical checks? Is float and so on
     /**< Then we do basic check for every type of parameters */
     switch(name)
     {

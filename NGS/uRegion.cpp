@@ -119,6 +119,7 @@ bool uRegion::isEqual(const uRegion & pCompared)const{
             (this->getStrand()==pCompared.getStrand())&&
             (this->getStart()==pCompared.getStart())&&
             (this->getEnd()==pCompared.getEnd())&&
+            (this->getScoreVector()==pCompared.getScoreVector())&&
             (this->getIdent()==pCompared.getIdent())&&
             (this->getDensity()==pCompared.getDensity())&&
             (this->getCount()==pCompared.getCount())&&

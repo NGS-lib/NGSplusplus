@@ -135,7 +135,6 @@ uToken uParserSam::getNextEntry()
 {
     try
     {
-		//TODO Replace dynamic regex with static
         std::string strLine;
         std::getline(*m_pIostream, strLine);
 		//std::stringstream token_infos;
@@ -227,10 +226,13 @@ void uParserSam::_parseHeader()
                 else if (data.find("SO:")!=std::string::npos)
                 {
                     if (SORT)
-                        throw uParser_invalid_Sam_header()<<string_error("Multiple SO tags in @HD line: \n"+lineString);
+                        throw uParser_invalid_Sam_header()<<string_error("Multiple SO tags in @SO line: \n"+lineString);
                     //TODO validate sort
                     SORT=true;
                     data.erase(0,3);
+
+                    if (sortType!="unsorted")||(sortType!="queryname")||(sortType!="unknown")||(sortType!="coordinate")
+                         throw uParser_invalid_Sam_header()<<string_error("Invalid sorting value in @SO line: \n"+lineString);
                     sortType=data;
                 }
                 else

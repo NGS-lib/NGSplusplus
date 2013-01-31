@@ -4,7 +4,8 @@
 #include "uTags.h"
 #include "uBasicNGS.h"
 #include "uRegion.h"
-namespace NGS {
+namespace NGS
+{
 
 using namespace std;
 /** \brief Default constructor, not PE and positive strand
@@ -13,26 +14,28 @@ uTags::uTags():uGenericNGS()
 {}
 
 /**< From uTokens */
-uTags::uTags(uToken pToken)try:uGenericNGS(pToken){
+uTags::uTags(uToken pToken)try:
+    uGenericNGS(pToken)
+{
 
-if (pToken.isParamSet(token_param::CIGAR))
-    setCigar(pToken.getParam(token_param::CIGAR));
- if (pToken.isParamSet(token_param::MAP_SCORE))
+    if (pToken.isParamSet(token_param::CIGAR))
+        setCigar(pToken.getParam(token_param::CIGAR));
+    if (pToken.isParamSet(token_param::MAP_SCORE))
         setMapQual(utility::stoi(pToken.getParam(token_param::MAP_SCORE)));
- if (pToken.isParamSet(token_param::PHRED_SCORE))
+    if (pToken.isParamSet(token_param::PHRED_SCORE))
         setPhred(pToken.getParam(token_param::PHRED_SCORE));
- if (pToken.isParamSet(token_param::SEQUENCE))
+    if (pToken.isParamSet(token_param::SEQUENCE))
         setSequence(pToken.getParam(token_param::SEQUENCE));
- if (pToken.isParamSet(token_param::FLAGS))
+    if (pToken.isParamSet(token_param::FLAGS))
         setFlag(utility::stoi(pToken.getParam(token_param::FLAGS)));
 }
 catch(ugene_exception_base &e)
 {
-        #ifdef DEBUG
-        std::cerr << "Error in uTags(uToken)." <<std::endl;
-        #endif
-        e<<tag_error(*this);
-        throw e;
+#ifdef DEBUG
+    std::cerr << "Error in uTags(uToken)." <<std::endl;
+#endif
+    e<<tag_error(*this);
+    throw e;
 }
 
 
@@ -60,20 +63,21 @@ uTags::uTags(const uRegion & otherItem):uGenericNGS(otherItem.getChr(),otherItem
  */
 uTags::uTags(std::string pChr, long long int pStart, long long int pEnd, StrandDir pStrand):name(nullptr),phredScore(nullptr),cigar(nullptr)
 {
-   try {
-     setStartEnd(pStart,pEnd);
-     setChr(pChr);
-     setStrand(pStrand);
+    try
+    {
+        setStartEnd(pStart,pEnd);
+        setChr(pChr);
+        setStrand(pStrand);
     }
     catch(elem_throw & e)
     {
-        #ifdef DEBUG
-               cerr << "Throwing in uTags constructor" <<endl;
-        #endif
+#ifdef DEBUG
+        cerr << "Throwing in uTags constructor" <<endl;
+#endif
 
         string trace;
         if (std::string const * ste =boost::get_error_info<string_error>(e) )
-                trace=*ste;
+            trace=*ste;
 
         e << string_error(trace+"Failling in uTags constructor, parameters are"+pChr+" "+std::to_string(pStart)+" "+std::to_string(pEnd)+"\n");
 
@@ -81,27 +85,37 @@ uTags::uTags(std::string pChr, long long int pStart, long long int pEnd, StrandD
     }
 }
 
-uTags::uTags(std::string pChr, long long int pStart, long long int pEnd, StrandDir pStrand, float pScore):name(nullptr),phredScore(nullptr),cigar(nullptr)
+uTags::uTags(std::string pChr, long long int pStart, long long int pEnd, StrandDir pStrand, float pScore)try : uGenericNGS(pChr,pStart,pEnd,pStrand,pScore),name(nullptr),phredScore(nullptr),cigar(nullptr)
 {
-   try {
-     setStartEnd(pStart,pEnd);
-     setChr(pChr);
-     setStrand(pStrand);
-     setScore(pScore);
-    }
-    catch(elem_throw & e)
+   /* try
     {
-        #ifdef DEBUG
-               cerr << "Throwing in uTags constructor" <<endl;
-        #endif
+        setStartEnd(pStart,pEnd);
+        setChr(pChr);
+        setStrand(pStrand);
+        setScore(pScore);
+    }*/
+}
+catch(construct_elem_throw & e)
+{
+#ifdef DEBUG
+    cerr << "Throwing in uTags constructor" <<endl;
+#endif
+    string trace;
+    addStringError(e,("Failling in uTags constructor, parameters are"+pChr+" "+std::to_string(pStart)+" "+std::to_string(pEnd)+"\n") );
+    e << tag_error(*this);
+    throw e;
+}
 
-        string trace;
-        if (std::string const * ste =boost::get_error_info<string_error>(e) )
-                trace=*ste;
-
-        e << string_error(trace+"Failling in uTags constructor, parameters are"+pChr+" "+std::to_string(pStart)+" "+std::to_string(pEnd)+"\n");
-        throw e;
-    }
+uTags::uTags(std::string pChr, long long int pStart, long long int pEnd, float pScore)try : uGenericNGS(pChr,pStart,pEnd,pScore),name(nullptr),phredScore(nullptr),cigar(nullptr)
+{}
+catch(construct_elem_throw &e)
+{
+    #ifdef DEBUG
+    cerr << "Throwing in uTags constructor" <<endl;
+    #endif
+    addStringError(e,"Throwing in uTags(string,long long int, long long int,float)");
+    e << tag_error(*this);
+    throw e;
 }
 
 
@@ -110,17 +124,20 @@ uTags::uTags(std::string pChr, long long int pStart, long long int pEnd, StrandD
 uTags::~uTags()
 {
 
-    if (name!=nullptr) {
+    if (name!=nullptr)
+    {
         delete []name;
         name = nullptr;
     }
 
-    if (phredScore!=nullptr) {
+    if (phredScore!=nullptr)
+    {
         delete []phredScore;
         phredScore = nullptr;
     }
 
-    if (cigar!=nullptr) {
+    if (cigar!=nullptr)
+    {
         delete []cigar;
         cigar = nullptr;
     }
@@ -132,43 +149,47 @@ uTags::~uTags()
  */
 uTags::uTags(const uTags& copy_from):uGenericNGS(copy_from),name(nullptr),phredScore(nullptr),cigar(nullptr)
 {
-    try {
-    if (copy_from.name!=nullptr)
+    try
     {
-        name = new char[(strlen(copy_from.name)+1)];
-        strcpy(name,copy_from.name);
-    }
+        if (copy_from.name!=nullptr)
+        {
+            name = new char[(strlen(copy_from.name)+1)];
+            strcpy(name,copy_from.name);
+        }
 
-    if (copy_from.cigar!=nullptr)
-    {
-        cigar = new char[(strlen(copy_from.cigar)+1)];
-        strcpy(cigar,copy_from.cigar);
-    }
+        if (copy_from.cigar!=nullptr)
+        {
+            cigar = new char[(strlen(copy_from.cigar)+1)];
+            strcpy(cigar,copy_from.cigar);
+        }
 
-    if (copy_from.phredScore!=nullptr)
+        if (copy_from.phredScore!=nullptr)
+        {
+            phredScore = new char[(strlen(copy_from.phredScore)+1)];
+            strcpy(phredScore,copy_from.phredScore);
+        }
+        m_strand=copy_from.m_strand;
+        PELenght=copy_from.PELenght;
+        sequence=copy_from.sequence;
+        mapScore=copy_from.mapScore;
+        Unmapped= copy_from.Unmapped;
+    }
+    catch(elem_throw & e)
     {
-        phredScore = new char[(strlen(copy_from.phredScore)+1)];
-        strcpy(phredScore,copy_from.phredScore);
-    }
-    m_strand=copy_from.m_strand;
-    PELenght=copy_from.PELenght;
-    sequence=copy_from.sequence;
-    mapScore=copy_from.mapScore;
-    Unmapped= copy_from.Unmapped;
-    }
-    catch(elem_throw & e){
-        #ifdef DEBUG
-              cerr << " Failling in copy constructor, uTags(uTags&) " <<endl;
-        #endif
+#ifdef DEBUG
+        cerr << " Failling in copy constructor, uTags(uTags&) " <<endl;
+#endif
         string trace;
         if (std::string const * ste =boost::get_error_info<string_error>(e) )
-                trace=*ste;
+            trace=*ste;
         e << string_error(trace+"Failling in copy constructor, uTags(uTags&) \n");
         e<< tag_error(copy_from);
         throw e;
     }
     catch(std::exception &e)
-    {throw e;};
+    {
+        throw e;
+    };
 }
 
 /** \brief Overloaded assignement operator
@@ -181,17 +202,20 @@ uTags& uTags::operator= (uTags const& assign_from)
 
     uGenericNGS::operator= (assign_from);
 
-    if (name!=nullptr) {
+    if (name!=nullptr)
+    {
         delete []name;
         name = nullptr;
     }
 
-    if (phredScore!=nullptr) {
+    if (phredScore!=nullptr)
+    {
         delete []phredScore;
         phredScore = nullptr;
     }
 
-    if (cigar!=nullptr) {
+    if (cigar!=nullptr)
+    {
         delete []cigar;
         cigar = nullptr;
     }
@@ -217,18 +241,19 @@ uTags& uTags::operator= (uTags const& assign_from)
     PELenght=assign_from.PELenght;
     sequence=assign_from.sequence;
     mapScore=assign_from.mapScore;
-     Unmapped= assign_from.Unmapped;
+    Unmapped= assign_from.Unmapped;
     return *this;
 }
 
 
 uTags uTags::getCopy() const
 {
-   uTags copyObj=*this;
-   return copyObj;
+    uTags copyObj=*this;
+    return copyObj;
 }
 
-bool uTags::isEqual(const uTags & pCompared) const{
+bool uTags::isEqual(const uTags & pCompared) const
+{
     return ((this->getChr()==pCompared.getChr())&&
             (this->getStrand()==pCompared.getStrand())&&
             (this->getStart()==pCompared.getStart())&&
@@ -339,23 +364,103 @@ void uTags::writeSamToOutput(std::ostream &out) const
         peLenght=0;
 
     out <<  getName() << "\t" << getFlag() << "\t" << getChr() << "\t" << getStart() << "\t" <<getMapQual()
-    << "\t" <<cigar << "\t" << '*' << "\t" << 0 << "\t" << peLenght << "\t" ;
+        << "\t" <<cigar << "\t" << '*' << "\t" << 0 << "\t" << peLenght << "\t" ;
 
     out << sequence  << "\t"<< phred;
     out <<endl;
 }
-/** \brief Function used for debugging
- */
-void uTags::debugElem() const
+ /** \brief Prints a human readable version of the element in no particular format.
+  *
+  * \param pOut std::ostream& Output to write to.
+  * \return void
+  *
+  */
+void uTags::print(std::ostream &pOut) const
 {
-    using namespace utility;
-    stringTocerr("Outputting elem data");
-    stringTocerr("Chrom "+getChr());
-    stringTocerr("Start "+utility::to_string(getStart()));
-    stringTocerr("End " +utility::to_string(getEnd()));
-    stringTocerr("PELenght " +utility::to_string(getPeLenght()));
-    stringTocerr("Flag " +utility::to_string(getFlag()));
+    pOut<<"Chrom: "<<getChr()<<std::endl;
+    pOut<<"Start: "<<utility::to_string(getStart())<<std::endl;
+    pOut<<"End: " <<utility::to_string(getEnd())<<std::endl;
+    if (Unmapped){
+          pOut<<"Tag is not mapped to reference or mapped with errors"<<std::endl;
+    }
+    if (m_score.size()>0){
+         pOut<<"Scores: ";
+        for(auto value: m_score )
+             pOut<<value<<" ";
+          pOut<<std::endl;
+        }
+    if (name!=nullptr)
+    {
+        pOut<<"Name: " <<name<<std::endl;
+    }
+    if (phredScore!=nullptr)
+    {
+        pOut<<"Pred Score: " <<phredScore<<std::endl;
+    }
+
+    if (cigar!=nullptr)
+    {
+        pOut<<"cigar: " <<cigar<<std::endl;
+    }
+    if (this->isPE())
+    {
+        pOut<<"Is paired, PE lenght is " <<utility::to_string(getPeLenght())<<std::endl;
+    }
+    else
+    {
+        pOut<<"Is not paired "<<std::endl;
+    }
+    pOut<<"Map score: " <<utility::to_string(getMapQual())<<std::endl;
+    pOut<<"Flag: " <<utility::to_string(getFlag())<<std::endl;
+    pOut<<"Seq: " <<getSequence()<<std::endl;
+
 }
+
+/** \brief Create the parser Token associated with Element
+ *
+ * \return uToken The token returned
+ *
+ */
+uToken uTags::createToken() const
+{
+    std::stringstream ss;
+    ss << "CHR\t"<<this->getChr()<<"\nSTART_POS\t"<<this->getStart()<<"\n" << "END_POS\t"<<this->getEnd()<<"\n";
+    if (getScoreCount()>0)
+    {
+        ss << "SCORE\t"<<this->getScore()<<"\n";
+    }
+    if (getStrand()==StrandDir::FORWARD)
+        ss << "STRAND\t"<<"+"<<"\n";
+    else
+         ss << "STRAND\t"<<"-"<<"\n";
+
+    ss << "MAP_SCORE\t"<<utility::to_string(this->getMapQual())<<"\nFLAGS\t"<<utility::to_string(this->getFlag())<<"\n";
+    if (getSequence()!="")
+        ss << "SEQUENCE\t"<<getSequence();
+
+    if (name!=nullptr)
+    {
+       ss<<"SEQ_NAME\t"<<name<<"\n";
+    }
+    if (phredScore!=nullptr)
+    {
+        ss<<"PHRED_SCORE\t"<<phredScore<<"\n";
+    }
+    if (cigar!=nullptr)
+    {
+        ss<<"CIGAR\t" <<cigar<<"\n";
+    }
+    try {
+        return uToken(ss);
+    }
+    catch(uToken_exception_base &e)
+    {
+        addStringError(e, "Failed while creating token in uGenericNGS::getToken()");
+        throw e;
+    }
+
+ }
+
 
 // TODO: Move this to output class
 /** \brief Write our PE tags as a sam tag that is the lenght of the fragment associated with our PE
@@ -366,41 +471,43 @@ void uTags::debugElem() const
  */
 void uTags::writeCompletedPESamToOutput(std::ostream &out)
 {
-/**< Write function, do not trust for diverse use. */
-try {
-    int peLenght;
-    peLenght= getPeLenght();
+    /**< Write function, do not trust for diverse use. */
+    try
+    {
+        int peLenght;
+        peLenght= getPeLenght();
 
-      if (flag&0x10)
+        if (flag&0x10)
             peLenght = (-peLenght);
 
         //TODO, introducting try catch
-        if ((flag&0x10)||(peLenght<0)){
-           #ifdef DEBUG
-               cerr << " negative Strand??"<<endl;
-            #endif
-
-            debugElem();
-          //  utility::pause_input();
+        if ((flag&0x10)||(peLenght<0))
+        {
+#ifdef DEBUG
+            cerr << " negative Strand??"<<endl;
+#endif
+         //   print();
+            //  utility::pause_input();
         }
         else /**< Do not write cigar for now */
-        if (peLenght!=0)
-        {
-            out <<  getName() << "\t" << 0 << "\t" << getChr() << "\t" << getStart() << "\t" <<getMapQual()
-            << "\t" << peLenght<<'M' << "\t" << '*' << "\t" << 0 << "\t" << 0 << "\t" ;
-            for (int i=0; i<peLenght; i++ )
-                out << '=' ;
-            out  << "\t"<< '*';
+            if (peLenght!=0)
+            {
+                out <<  getName() << "\t" << 0 << "\t" << getChr() << "\t" << getStart() << "\t" <<getMapQual()
+                    << "\t" << peLenght<<'M' << "\t" << '*' << "\t" << 0 << "\t" << 0 << "\t" ;
+                for (int i=0; i<peLenght; i++ )
+                    out << '=' ;
+                out  << "\t"<< '*';
 
-            out <<endl;
-        }
-}
-catch(std::exception & e ){
-        #ifdef DEBUG
-            cerr << " Catching in writeCompletedPESamToOutput"<<endl;
-        #endif
-    throw e;
-}
+                out <<endl;
+            }
+    }
+    catch(std::exception & e )
+    {
+#ifdef DEBUG
+        cerr << " Catching in writeCompletedPESamToOutput"<<endl;
+#endif
+        throw e;
+    }
 
 }
 
@@ -430,7 +537,7 @@ bool uTags::writeTrimmedSamToOutput(std::ostream &out, int left, int right)
         trimSite(left,right);
     }    /**< Do not write cigar for now */
     out <<  getName() << "\t" << 0 << "\t" << getChr() << "\t" << getStart() << "\t" << getMapQual()
-    << "\t" <<   getLenght()<<'M' << "\t" << '*' << "\t" << 0 << "\t" << 0;// << "\t" << '*' << "\t" << '*';
+        << "\t" <<   getLenght()<<'M' << "\t" << '*' << "\t" << 0 << "\t" << 0;// << "\t" << '*' << "\t" << '*';
     out  << "\t";
     for (int i=0; i<getLenght(); i++ )
         out << '=' ;
@@ -456,7 +563,8 @@ uTagsChrom::uTagsChrom(const uGenericNGSChrom<uTagsChrom,uTags> & copyCop)
     chromSize=copyCop.getChromSize();
 }
 
-uTagsChrom::uTagsChrom(const uTagsChrom& initFrom){
+uTagsChrom::uTagsChrom(const uTagsChrom& initFrom)
+{
 
     VecSites=initFrom.returnVecData();
     chr= initFrom.getChr();
@@ -483,24 +591,26 @@ uTagsChrom& uTagsChrom::operator=(const uTagsChrom& copFrom)
 
 uTagsChrom uTagsChrom::getCopy() const
 {
-   uTagsChrom copyObj=*this;
-   return copyObj;
+    uTagsChrom copyObj=*this;
+    return copyObj;
 }
 
- uTagsChrom::uTagsChrom(const uRegionChrom & pCopyChrom){
-        setChr(pCopyChrom.getChr());
-        chromSize=pCopyChrom.getChromSize();
-        for (auto itr= pCopyChrom.begin(); itr!=pCopyChrom.end(); itr++  )
-            addData(uTags(*itr));
+uTagsChrom::uTagsChrom(const uRegionChrom & pCopyChrom)
+{
+    setChr(pCopyChrom.getChr());
+    chromSize=pCopyChrom.getChromSize();
+    for (auto itr= pCopyChrom.begin(); itr!=pCopyChrom.end(); itr++  )
+        addData(uTags(*itr));
 
- }
+}
 
- uTagsChrom::uTagsChrom(const uBasicNGSChrom & pCopyChrom){
-            setChr(pCopyChrom.getChr());
-            chromSize=pCopyChrom.getChromSize();
-            for (auto itr= pCopyChrom.begin(); itr!=pCopyChrom.end(); itr++  )
-                addData(uTags(*itr));
- }
+uTagsChrom::uTagsChrom(const uBasicNGSChrom & pCopyChrom)
+{
+    setChr(pCopyChrom.getChr());
+    chromSize=pCopyChrom.getChromSize();
+    for (auto itr= pCopyChrom.begin(); itr!=pCopyChrom.end(); itr++  )
+        addData(uTags(*itr));
+}
 
 /** \brief Output the chrom to bed format
  *
@@ -510,7 +620,7 @@ uTagsChrom uTagsChrom::getCopy() const
  */
 void uTagsChrom::outputBedFormat(std::ostream& out) const
 {
-   // std::vector<uTags>::iterator iterVec;
+    // std::vector<uTags>::iterator iterVec;
     for (auto iterVec = VecSites.begin(); iterVec != VecSites.end(); ++iterVec)
     {
         //iterVec->writeBedToOuput(out);
@@ -543,17 +653,17 @@ void uTagsChrom::writeTrimmedSamToOutput(std::ostream &out, int left, int right)
 {
     int errorcount=0;
     std::vector<uTags>::iterator iterVec;
-   // if (VecSites.size())
-   //     out << "@SQ	SN:" << getChr() << "\t"<<"LN:"<<getChromSize() <<endl;
+    // if (VecSites.size())
+    //     out << "@SQ	SN:" << getChr() << "\t"<<"LN:"<<getChromSize() <<endl;
     for (iterVec = VecSites.begin(); iterVec != VecSites.end(); ++iterVec)
     {
         if (iterVec->writeTrimmedSamToOutput(out, left, right)==false)
             errorcount++;
     }
-    #ifdef DEBUG
+#ifdef DEBUG
     if (errorcount)
         cerr << "Skipped " << errorcount << " tags as trim would reduce them to 0. On Chrom " << this->getChr();
-    #endif
+#endif
 
 }
 
@@ -568,7 +678,7 @@ void uTagsChrom::writeCompletedPESamToOutput(std::ostream &out)
 
     std::vector<uTags>::iterator iterVec;
 
-/**< Do not output unmapped tags */
+    /**< Do not output unmapped tags */
 
     for (iterVec = VecSites.begin(); iterVec != VecSites.end(); ++iterVec)
     {
@@ -586,7 +696,7 @@ void uTagsChrom::writeCompletedPESamToOutput(std::ostream &out)
  */
 void uTagsChrom::writeSamHeaderLine(std::ostream &out) const
 {
-     if (VecSites.size())
+    if (VecSites.size())
         out << "@SQ	SN:" << getChr() << "\t"<<"LN:"<<getChromSize() <<endl;
 }
 
@@ -631,7 +741,7 @@ std::vector<float> uTagsChrom::getRegionSignal(int start, int end, bool overlap)
     /**< We go one Kb earlier in our experiment, make sure we get all overlapping tags. */
 
     //TODO fix this
-  //  pos = this->findPrecedingSite((start-1000), 0 , this->count()-1);
+    //  pos = this->findPrecedingSite((start-1000), 0 , this->count()-1);
 
     /**< If no tag leftwise, we start at beginning */
     if (pos==-1)
@@ -732,18 +842,22 @@ void uTagsExperiment::loadFromSamWithParser(std::string filepath)
     uParser ourParser(filepath, "SAM");
     auto chrList=ourParser.getHeaderParamVector(header_param::CHR);
     auto chrSizes=ourParser.getHeaderParamVector(header_param::CHR_SIZE);
-try {
+    try
+    {
 //        std::cerr << "name and size are :" <<chrList.at(i) <<" "<<chrSizes.at(i)<<std::endl;
-    for (int i=0; i<(int)chrList.size();i++){
-        this->setChromSize(chrList.at(i), utility::stoi(chrSizes.at(i)));
-    }
+        for (int i=0; i<(int)chrList.size(); i++)
+        {
+            this->setChromSize(chrList.at(i), utility::stoi(chrSizes.at(i)));
+        }
 
-    while (ourParser.eof()==false){
-        auto Token =ourParser.getNextEntry();
-        this->addData(uTags(Token));
+        while (ourParser.eof()==false)
+        {
+            auto Token =ourParser.getNextEntry();
+            this->addData(uTags(Token));
+        }
     }
-}
-    catch(...){
+    catch(...)
+    {
         throw;
     }
 }
@@ -991,7 +1105,7 @@ void uTagsExperiment::writeCompletedPESamToOutput(std::ostream &out)
  */
 void  uTagsExperiment::writeSamToOutput(std::ostream &out) const
 {
-   // std::map<std::string,uTagsChrom>::iterator iterMap;
+    // std::map<std::string,uTagsChrom>::iterator iterMap;
     //ChipPeakVectorMap::iterator iterMap;
 
     for (auto iterMap = ExpMap.begin(); iterMap != ExpMap.end(); ++iterMap)
@@ -1068,8 +1182,8 @@ void uTagsExperiment::writeTrimmedSamToOutput(std::ostream &out, int left, int r
 
 uTagsExperiment uTagsExperiment::getCopy() const
 {
-   uTagsExperiment copyObj=*this;
-   return copyObj;
+    uTagsExperiment copyObj=*this;
+    return copyObj;
 }
 
 
@@ -1088,129 +1202,130 @@ NGS::uTags makeTagfromSamString(std::string samString, bool minimal)
     std::string phre, cig, seq;
     std::string temp,tempname;
     /**< Read name */
-try {
-    if (!minimal)
+    try
     {
-        Infostream>> tempname;
-        if (tempname.find("/")!=std::string::npos)
+        if (!minimal)
         {
-            tempname.erase(tempname.find("/"));
-        }
-        ourName=tempname;
-    }
-    else
-        Infostream>>temp;
-
-    /**< Read flag */
-    Infostream>>ourFlag;
-    Infostream>>ourChr;
-
-    //returnTag.setChr(ourChr);
-
-    Infostream>>ourStart;
-
-    int mapScore;
-    Infostream>>mapScore;
-    /**< Cigar */
-    Infostream>>cig;
-
-    /**<  Parse Cigar here */
-    /**< Find first letter , read number before, repeat */
-    /**< Easier with Regex,  but what the hell */
-    int curPos=0;
-    std::string substr;
-    size=0;
-    for (unsigned int i=0; i< cig.size(); i++)
-    {
-        /**< If isAlpha then check previous numbers */
-        if (isalpha(cig.at(i)))
-        {
-            /**< If a count value */
-            char temp;
-            temp = cig.at(i);
-            if ((temp=='M')||(temp=='I')||(temp=='S')||(temp=='X')||(temp=='+'))
+            Infostream>> tempname;
+            if (tempname.find("/")!=std::string::npos)
             {
-                substr= cig.substr(curPos, (i-curPos));
-                size+= atoi(substr.c_str());
+                tempname.erase(tempname.find("/"));
             }
-            curPos=(i+1);
+            ourName=tempname;
         }
-    }
+        else
+            Infostream>>temp;
 
- //   ourEnd=(utility::stoi(ourStart)+(size-1));
-    NGS::uTags returnTag(ourChr,utility::stoi(ourStart),utility::stoi(ourStart)+(size-1) );
-    returnTag.setName(ourName);
-    returnTag.setFlag(ourFlag);
-    returnTag.setMapQual(mapScore);
-    /**< name of next mate */
-    Infostream>>temp;
-    /**< Pos of next mate */
-    Infostream>>temp;
-    /**< Template lenght for PE readas */
-    int PELenght;
-    Infostream>>PELenght;
-    PELenght= abs(PELenght);
-   // cerr << "PeLenght is" <<
-    /**< Sequence */
-    Infostream>>seq;
-    /**< Pred score of every position. */
-    Infostream>>phre;
-    /**< Sam flag */
-    /**< StrongType this */
-     if (ourFlag&0x10)
-         returnTag.setStrand(NGS::StrandDir::REVERSE);// ='-';
-     else
-         returnTag.setStrand(NGS::StrandDir::FORWARD);// ='+'; */
-    if (ourFlag&0x4)
-        returnTag.setMapped(false);
-    else
-        returnTag.setMapped(true);
+        /**< Read flag */
+        Infostream>>ourFlag;
+        Infostream>>ourChr;
 
-    /**< PE validation */
-    /**< If PE and mate is aligned */
-    if ((ourFlag&0x1)&&(ourFlag&0x2))
-    {
-        returnTag.setPELenght(PELenght);
-    }
-    else
-    {
-        returnTag.setPELenght(0);
-    }
+        //returnTag.setChr(ourChr);
+
+        Infostream>>ourStart;
+
+        int mapScore;
+        Infostream>>mapScore;
+        /**< Cigar */
+        Infostream>>cig;
+
+        /**<  Parse Cigar here */
+        /**< Find first letter , read number before, repeat */
+        /**< Easier with Regex,  but what the hell */
+        int curPos=0;
+        std::string substr;
+        size=0;
+        for (unsigned int i=0; i< cig.size(); i++)
+        {
+            /**< If isAlpha then check previous numbers */
+            if (isalpha(cig.at(i)))
+            {
+                /**< If a count value */
+                char temp;
+                temp = cig.at(i);
+                if ((temp=='M')||(temp=='I')||(temp=='S')||(temp=='X')||(temp=='+'))
+                {
+                    substr= cig.substr(curPos, (i-curPos));
+                    size+= atoi(substr.c_str());
+                }
+                curPos=(i+1);
+            }
+        }
+
+//   ourEnd=(utility::stoi(ourStart)+(size-1));
+        NGS::uTags returnTag(ourChr,utility::stoi(ourStart),utility::stoi(ourStart)+(size-1) );
+        returnTag.setName(ourName);
+        returnTag.setFlag(ourFlag);
+        returnTag.setMapQual(mapScore);
+        /**< name of next mate */
+        Infostream>>temp;
+        /**< Pos of next mate */
+        Infostream>>temp;
+        /**< Template lenght for PE readas */
+        int PELenght;
+        Infostream>>PELenght;
+        PELenght= abs(PELenght);
+        // cerr << "PeLenght is" <<
+        /**< Sequence */
+        Infostream>>seq;
+        /**< Pred score of every position. */
+        Infostream>>phre;
+        /**< Sam flag */
+        /**< StrongType this */
+        if (ourFlag&0x10)
+            returnTag.setStrand(NGS::StrandDir::REVERSE);// ='-';
+        else
+            returnTag.setStrand(NGS::StrandDir::FORWARD);// ='+'; */
+        if (ourFlag&0x4)
+            returnTag.setMapped(false);
+        else
+            returnTag.setMapped(true);
+
+        /**< PE validation */
+        /**< If PE and mate is aligned */
+        if ((ourFlag&0x1)&&(ourFlag&0x2))
+        {
+            returnTag.setPELenght(PELenght);
+        }
+        else
+        {
+            returnTag.setPELenght(0);
+        }
 //    pMate = NULL;
-    /**< if we want to keep, we store, otherwise scope will erase our data */
-    if (!minimal)
-    {
-        returnTag.setPhred(phre) ;
+        /**< if we want to keep, we store, otherwise scope will erase our data */
+        if (!minimal)
+        {
+            returnTag.setPhred(phre) ;
 
-        returnTag.setCigar(cig);
+            returnTag.setCigar(cig);
+        }
+        /**< Move semantics */
+        return returnTag;
+
     }
-    /**< Move semantics */
-    return returnTag;
+    catch(NGS::elem_throw & e)
+    {
+        std::string trace;
+#ifdef DEBUG
+        cerr << "catching in factory on elem_throw" <<endl;
+#endif
 
-}
-	catch(NGS::elem_throw & e)
-	{
-	    std::string trace;
-	     #ifdef DEBUG
-                 cerr << "catching in factory on elem_throw" <<endl;
-        #endif
+        if (std::string const * ste =boost::get_error_info<NGS::string_error>(e) )
+            trace=*ste;
 
-	  if (std::string const * ste =boost::get_error_info<NGS::string_error>(e) )
-			trace=*ste;
+        e << NGS::string_error(trace+"Failling in factory:makeTagfromSamString constructor,  on string \n"+samString);
+        throw e;
+    }
+    catch(...)
+    {
+#ifdef DEBUG
+        cerr << "catching in factory on general throw" <<endl;
+#endif
 
-	   e << NGS::string_error(trace+"Failling in factory:makeTagfromSamString constructor,  on string \n"+samString);
-	  throw e;
-	}
-	catch(...)
-	{
-                #ifdef DEBUG
-                     cerr << "catching in factory on general throw" <<endl;
-        #endif
-
-	    NGS::elem_throw e;
-	    e << NGS::string_error("we threw in makeTagfromSamString trying the next string \n"+samString);
-	    throw e;
-	}
+        NGS::elem_throw e;
+        e << NGS::string_error("we threw in makeTagfromSamString trying the next string \n"+samString);
+        throw e;
+    }
 
 }
 }

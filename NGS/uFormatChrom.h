@@ -57,7 +57,6 @@ protected:
     long long int chromSize=0; /*!< Size of the scaffold */
 
 private :
-    //TODO move to utility
     template <class Container>
     typename Container::iterator to_mutable_iterator(Container& c, typename Container::const_iterator it)
     {
@@ -146,8 +145,6 @@ public:
     template <class _OTHER_>
     long long int getOverlappingCount(_OTHER_ &pCompareChr,OverlapType pOverlap=OverlapType::OVERLAP_PARTIAL) const;
 
-
-
     template <class _OTHER_>
     _SELF_ getNotOverlapping(_OTHER_ &compareChr,OverlapType pOverlap=OverlapType::OVERLAP_PARTIAL) const;
 
@@ -169,7 +166,8 @@ public:
     //_SELF_ getDistinct(std::vector<std::pair<double,double>>, OverlapType options=OverlapType::OVERLAP_PARTIAL) const;
     //_SELF_ removeDistinct(std::vector<std::pair<double,double>>, OverlapType options=OverlapType::OVERLAP_PARTIAL);
 
-
+    /**< Write using Writer */
+    void writeWithWriter(uWriter& pWriter) const;
 
 
     /**< Function to add a unitary element */
@@ -466,8 +464,20 @@ void uGenericNGSChrom<_SELF_,_BASE_>::addData(const _BASE_& newSite)
     }
 }
 
-template <class _SELF_,class _BASE_>
 
+   /** \brief Write every element of the collection using the createToken() function and the passed Writer
+    *
+    * \param pWriter uWriter& The writer to use, will determine format.
+    * \return void
+    *
+    */
+    template <class _SELF_,class _BASE_>
+    void uGenericNGSChrom<_SELF_,_BASE_>::writeWithWriter(uWriter& pWriter) const{
+        auto writeFunct= std::bind(&_BASE_::writeToOutput,std::placeholders::_1, pWriter);
+        applyOnAllSites(writeFunct);
+    }
+
+template <class _SELF_,class _BASE_>
 /** \brief Overload for internal use, skips check
 *
 *
@@ -1349,7 +1359,6 @@ void uGenericNGSChrom<_SELF_,_BASE_>::divideItemsIntoNBins(int N, SplitType type
  * \return void
  *
  */
-//TODO check this again
 template <class _SELF_,class _BASE_>
 void uGenericNGSChrom<_SELF_,_BASE_>::divideItemsIntoBinofSize(int N, SplitType type)
 {

@@ -430,14 +430,11 @@ TEST(uBasicNGSTestHerit, ISEQUAL){
     uBasicNGS uTestEndChange("chr1", 100, 129);
     uBasicNGS uTestScoreChange("chr1", 100, 119,0.4f);
 
-
     EXPECT_TRUE(uTest.isEqual(uTestCopy));
     EXPECT_FALSE(uTest.isEqual(uTestChrChange));
     EXPECT_FALSE(uTest.isEqual(uTestStartChange));
     EXPECT_FALSE(uTest.isEqual(uTestEndChange));
     EXPECT_FALSE(uTest.isEqual(uTestScoreChange));
-
-
 }
 
 /**< GetCopy */
@@ -446,4 +443,12 @@ TEST(uBasicNGSTestHerit, GETCOPY){
     uBasicNGS uTest("chr1", 100, 119);
 
    EXPECT_TRUE( uTest.isEqual(uTest.getCopy()));
+}
+
+
+/**< Print */
+
+TEST(uBasicNGSTestHerit, PRINT){
+    uBasicNGS uTest("chr1", 100, 119);
+   EXPECT_NO_THROW( uTest.print(cout));
 }

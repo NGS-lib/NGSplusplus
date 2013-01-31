@@ -18,6 +18,7 @@ TEST(newParserWig, CorrectlyFormatedVariableWIG) {
 	int count=0;
 	uToken Token = ourParser.getNextEntry();
 	count++;
+
 	EXPECT_EQ(Token.getParam(token_param::CHR), "chr19");
 	EXPECT_EQ(Token.getParam(token_param::START_POS), "49304701");
 	EXPECT_EQ(Token.getParam(token_param::END_POS), std::to_string(49304701+150));
@@ -81,15 +82,19 @@ TEST(newParserWig, CorrectFormatBoth) {
     vector<float> comparescores{10.0,12.5,15.0,17.5,20.0,17.5,15.0,12.5,10.0,12.3,8,2,4.2,5,9,2,30,25,12};
     vector<float> scores;
     vector<int> starts;
-EXPECT_NO_THROW(
-	while(!(ourParser.eof())){
-    uToken Token = ourParser.getNextEntry();
-	scores.push_back(std::stof(Token.getParam(token_param::SCORE)));
-	starts.push_back(std::stoi(Token.getParam(token_param::START_POS)));
-	count++;
-	}
+    try {
+        while(!(ourParser.eof())){
+        uToken Token = ourParser.getNextEntry();
+        scores.push_back(std::stof(Token.getParam(token_param::SCORE)));
+        starts.push_back(std::stoi(Token.getParam(token_param::START_POS)));
+        count++;
+        }
+    }
+    catch(uParser_exception_base &e)
+    {
+        std::cout<< fetchStringError(e)<<std::endl;
+    }
 
-);
 EXPECT_EQ(count, 19);
 EXPECT_EQ(comparescores, scores);
 EXPECT_EQ(compareStart, starts);
