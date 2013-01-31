@@ -452,6 +452,112 @@ TEST(uBasicNGSEXP_setChrSize, INVALIDCHRNAME){
 }
 
 /*
+ * Tests for the function:
+ *	     _CHROM_ getSubset(std::string pChr, float pStart, float pEnd, OverlapType options=OverlapType::OVERLAP_PARTIAL);
+ *
+ *	Valid cases:
+ *		VALIDCHROMNAME
+ *		NONAMECHROM
+ *		NOELEMINSUBSET
+ *	Invalid cases:
+ *		CHROMDONTEXISTS
+ *		NOTSORTED
+ */
+
+TEST(uBasicNGSEXP_getSubset, VALIDCHROMNAME) {
+	validExperiments myExperiments;
+	myExperiments.getExperiment("MultipleChroms")->getpChrom("chr4")->sortSites();
+	uBasicNGSChrom aChrom = myExperiments.getExperiment("MultipleChroms")->getSubset("chr4", 100, 200);
+//	auto it = aChrom.findNextSite(0);
+//	EXPECT_EQ(aChrom.getSite(it).getChr(), "chr4"); // TODO: we need to code a getSite with an iterator
+//	EXPECT_EQ(aChrom.getSite(it).getStart(), 100);
+//	EXPECT_EQ(aChrom.getSite(it).getEnd(), 200);
+	EXPECT_EQ(aChrom.getSite(0).getChr(), "chr4");
+	EXPECT_EQ(aChrom.getSite(0).getStart(), 100);
+	EXPECT_EQ(aChrom.getSite(0).getEnd(), 200);
+}
+
+TEST(uBasicNGSEXP_getSubset, NONAMECHROM) {
+	validExperiments myExperiments;
+	myExperiments.getExperiment("MultipleChroms")->getpChrom("")->sortSites();
+	uBasicNGSChrom aChrom = myExperiments.getExperiment("MultipleChroms")->getSubset("", 150, 250);
+
+	EXPECT_EQ(aChrom.getSite(0).getChr(), "");
+	EXPECT_EQ(aChrom.getSite(0).getStart(), 100);
+	EXPECT_EQ(aChrom.getSite(0).getEnd(), 200);
+	EXPECT_EQ(aChrom.getSite(1).getChr(), "");
+	EXPECT_EQ(aChrom.getSite(1).getStart(), 200);
+	EXPECT_EQ(aChrom.getSite(1).getEnd(), 300);
+	EXPECT_THROW(aChrom.getSite(2), param_throw);
+}
+
+TEST(uBasicNGSEXP_getSubset, NOELEMINSUBSET) {
+	validExperiments myExperiments;
+	myExperiments.getExperiment("MultipleChroms")->getpChrom("")->sortSites();
+	uBasicNGSChrom aChrom = myExperiments.getExperiment("MultipleChroms")->getSubset("", 1000, 2000);
+
+	EXPECT_THROW(aChrom.getSite(0), param_throw);
+}
+
+TEST(uBasicNGSEXP_getSubset, CHROMDONTEXISTS) {
+	validExperiments myExperiments;
+	uBasicNGSChrom aChrom = myExperiments.getExperiment("NoName_Empty")->getSubset("chr1", 1000, 2000);
+	EXPECT_THROW(aChrom.getSite(0), param_throw);
+}
+
+TEST(uBasicNGSEXP_getSubset, NOTSORTED) {
+	validExperiments myExperiments;
+	EXPECT_THROW(myExperiments.getExperiment("MultipleChroms")->getSubset("", 1000, 2000), unsorted_throw);
+}
+
+/*
+ * Tests for the function:
+ *		_SELF_ getDistinct( std::string pChr, float pStart, float pEnd, OverlapType type=OverlapType::OVERLAP_PARTIAL);
+ *	Valid Cases:
+ *		VALIDCHROMNAME
+ *		NONAMECHROM
+ *		NOELEMINSUBSET
+ *	Invalid Cases:
+ *		CHROMDONTEXISTS
+ *		NOTSORTED
+ */
+
+TEST(uBasicNGSEXP_getDistinct, VALIDCHROMNAME) {
+	validExperiments myExperiments;
+	EXPECT_EQ(myExperiments.getExperiment("MultipleChroms")->count(), 13);
+	myExperiments.getExperiment("MultipleChroms")->getpChrom("chr4")->sortSites();
+	uBasicNGSExperiment distinctExp = myExperiments.getExperiment("MultipleChroms")->getDistinct("chr4", 100, 200);
+	EXPECT_EQ(distinctExp.count(), 12);
+	EXPECT_THROW(distinctExp.getpChrom("chr4")->getSite(0), param_throw);
+}
+
+TEST(uBasicNGSEXP_getDistinct, NONAMECHROM) {
+	validExperiments myExperiments;
+	myExperiments.getExperiment("MultipleChroms")->getpChrom("")->sortSites();
+	uBasicNGSExperiment distinctExp = myExperiments.getExperiment("MultipleChroms")->getDistinct("", 100, 250);
+	EXPECT_EQ(distinctExp.count(), 11);
+	EXPECT_NO_THROW(distinctExp.getpChrom(""));
+}
+
+TEST(uBasicNGSEXP_getDistinct, NOELEMINSUBSET) {
+	validExperiments myExperiments;
+	myExperiments.getExperiment("MultipleChroms")->getpChrom("")->sortSites();
+	uBasicNGSExperiment distinctExp = myExperiments.getExperiment("MultipleChroms")->getDistinct("", 1000, 2000);
+	EXPECT_EQ(distinctExp.count(), 13);
+}
+
+TEST(uBasicNGSEXP_getDistinct, CHROMDONTEXISTS) {
+	validExperiments myExperiments;
+	uBasicNGSExperiment distinctExp = myExperiments.getExperiment("NoName_Empty")->getDistinct("", 1000, 2000);
+	EXPECT_THROW(distinctExp.getpChrom("chr1"), ugene_operation_throw);
+}
+
+TEST(uBasicNGSEXP_getDistinct, NOTSORTED) {
+	validExperiments myExperiments;
+	EXPECT_THROW(myExperiments.getExperiment("MultipleChroms")->getDistinct("", 1000, 2000), unsorted_throw);
+}
+
+/*
  * Test for the function:
  *		int getSubsetCount(const std::string & chr, const float start, const float end, const OverlapType overlap=OverlapType::OVERLAP_PARTIAL);
  *		int getSubsetCount(const _BASE_ & subsetReg, const OverlapType overlap=OverlapType::OVERLAP_PARTIAL);
@@ -490,3 +596,78 @@ TEST(uBasicNGSEXP_getSubsetCount, CHROMNOEXIST){
 	EXPECT_THROW(myExperiments.getExperiment("NoName_Empty")->getSubsetCount("chr4", 100, 200), ugene_operation_throw);
 }
 
+/*
+ * Tests for the function:
+ *		void setChrSize(std::string chr, int chrSize);
+ *		int getChrSize(std::string chr);
+ *	Valid cases:
+ *		CHRSIZEWASNOTSET
+ *		CHRSIZEWASSET
+ *	Invalid cases:
+ *		CHROMDONTEXISTS
+ */
+
+TEST(uBasicNGSEXP_setChrSize, CHRSIZEWASNOTSET) {
+	validExperiments myExperiments;
+	myExperiments.getExperiment("MultipleChroms")->setChrSize("", 2000);
+	EXPECT_EQ(myExperiments.getExperiment("MultipleChroms")->getChrSize(""), 2000);
+}
+
+TEST(uBasicNGSEXP_setChrSize, CHRSIZEWASSET) {
+	validExperiments myExperiments;
+	myExperiments.getExperiment("MultipleChroms")->setChrSize("", 2000);
+	EXPECT_EQ(myExperiments.getExperiment("MultipleChroms")->getChrSize(""), 2000);
+	myExperiments.getExperiment("MultipleChroms")->setChrSize("", 200);
+	EXPECT_EQ(myExperiments.getExperiment("MultipleChroms")->getChrSize(""), 200);
+}
+
+TEST(uBasicNGSEXP_setChrSize, CHROMDONTEXISTS) {
+	validExperiments myExperiments;
+	EXPECT_THROW(myExperiments.getExperiment("NoName_Empty")->setChrSize("chr1", 2000), ugene_operation_throw);
+}
+
+/*
+ * Tests for the function:
+ *		void divideItemsIntoBinofSize(int N, SplitType type=SplitType::STRICT);
+ *	Valid cases:
+ *		EXPWITHELEMS
+ *		EXPWITHOUTELEM
+ *	Invalid cases:
+ */
+
+TEST(uBasicNGSEXP_divideItemsIntoBinofSize, EXPWITHELEMS) {
+	validExperiments myExperiments;
+	EXPECT_EQ(myExperiments.getExperiment("NoName_1elem")->count(), 1);
+	myExperiments.getExperiment("NoName_1elem")->divideItemsIntoBinofSize(51, SplitType::ADD);
+	EXPECT_EQ(myExperiments.getExperiment("NoName_1elem")->count(), 2);
+}
+
+TEST(uBasicNGSEXP_divideItemsIntoBinofSize, EXPWITHOUTELEM) {
+	validExperiments myExperiments;
+	EXPECT_EQ(myExperiments.getExperiment("NoName_Empty")->count(), 0);
+	myExperiments.getExperiment("NoName_Empty")->divideItemsIntoBinofSize(51, SplitType::ADD);
+	EXPECT_EQ(myExperiments.getExperiment("NoName_Empty")->count(), 0);
+}
+
+/*
+ * Tests for the function:
+ *		void divideItemsIntoNBins(int N, SplitType type=SplitType::STRICT);
+ *	Valid cases:
+ *		EXPWITHELEMS
+ *		EXPWITHOUTELEM
+ *	Invalid cases:
+ */
+
+TEST(uBasicNGSEXP_divideItemsIntoNBins, EXPWITHELEMS) {
+	validExperiments myExperiments;
+	EXPECT_EQ(myExperiments.getExperiment("MultipleChroms")->count(), 13);
+	myExperiments.getExperiment("MultipleChroms")->divideItemsIntoNBins(2, SplitType::IGNORE);
+	EXPECT_EQ(myExperiments.getExperiment("MultipleChroms")->count(), 26);
+}
+
+TEST(uBasicNGSEXP_divideItemsIntoNBins, EXPWITHOUTELEM) {
+	validExperiments myExperiments;
+	EXPECT_EQ(myExperiments.getExperiment("NoName_Empty")->count(), 0);
+	myExperiments.getExperiment("NoName_Empty")->divideItemsIntoNBins(51, SplitType::ADD);
+	EXPECT_EQ(myExperiments.getExperiment("NoName_Empty")->count(), 0);
+}
