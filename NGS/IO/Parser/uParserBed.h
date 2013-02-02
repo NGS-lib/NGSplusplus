@@ -5,7 +5,7 @@
 #include "../../uGeneException.h"
 #include "../uHeader.h"
 #include <iostream>
-
+//#include "uParserFactory.h"
 namespace NGS
 {
 
@@ -17,7 +17,7 @@ public :
 
     virtual void init(const std::string& filename, bool header = false);
     virtual void init(std::istream* stream, bool header = false);
-
+    static uParserBase * Create() { return new uParserBed(); }
     uToken getNextEntry();
 
 protected:
@@ -33,7 +33,7 @@ private:
 
     int m_numberOfColumn = 0;
     bool m_headerParsed = false;
-    static DerivedParserRegister<uParserBed> reg;
+  //  static DerivedParserRegister<uParserBed> reg;
 };
 
 } // End of namespace NGS

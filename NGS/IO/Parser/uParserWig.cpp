@@ -317,6 +317,6 @@ void uParserWig::_processVariabledWigLine(std::vector<std::string> & curSStream)
 }
 
 
-DerivedParserRegister<uParserWig> uParserWig::reg("WIG");
+//DerivedParserRegister<uParserWig> uParserWig::reg("WIG");
 
 }

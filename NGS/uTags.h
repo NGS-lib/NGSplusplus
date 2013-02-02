@@ -379,7 +379,7 @@ private:
     // void loadSamStream(std::ifstream& ourStream){samStream =ourStream;};
     void parseSamHeader();
 public:
-    void loadFromSam(std::ifstream& ourStream, bool minimal= false);
+   // void loadFromSam(std::ifstream& ourStream, bool minimal= false);
     void loadFromSamWithParser(std::string);
     void loadSamHeader(std::ifstream& ourStream);
     void writeToBed(std::ostream& out) const;

@@ -125,5 +125,5 @@ bool uParserBedGraph::_parseHeader()
     }
 }
 
-DerivedParserRegister<uParserBedGraph> uParserBedGraph::reg("BEDGRAPH");
+//DerivedParserRegister<uParserBedGraph> uParserBedGraph::reg("BEDGRAPH");
 } // End of namespace NGS

@@ -5,6 +5,7 @@
 #include "../../utility/utility.h"
 #include <iostream>
 #include "../../boost-include/boost/xpressive/xpressive.hpp"
+//#include "uParserFactory.h"
 namespace NGS
 {
 
@@ -26,8 +27,9 @@ public :
 
     uToken getNextEntry();
 	uToken getNextEntryWithRegex();
+	static uParserBase * Create() { return new uParserSam(); }
 private:
-    static DerivedParserRegister<uParserSam> reg;
+ //   static DerivedParserRegister<uParserSam> reg;
     samInformation m_Info;
     void _parseHeader();
     /**< String for dynamic parsing of Sam */

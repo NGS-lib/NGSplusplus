@@ -1,7 +1,7 @@
 #include "uParserSam.h"
 #include "../utility/utility.h"
 #include <sstream>
-
+#include "uParserFactory.h"
 namespace NGS
 {
 
@@ -327,6 +327,5 @@ void uParserSam::_parseHeader()
     }
 
 }
-DerivedParserRegister<uParserSam> uParserSam::reg("SAM");
-
+//DerivedParserRegister<uParserSam> uParserSam::reg("SAM");
 }

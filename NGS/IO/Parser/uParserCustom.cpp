@@ -179,5 +179,5 @@ void uParserCustom::_customParserCopyFields(const std::vector<std::string>& fiel
     }
 }
 
-DerivedParserRegister<uParserCustom> uParserCustom::reg("CUSTOM");
+//DerivedParserRegister<uParserCustom> uParserCustom::reg("CUSTOM");
 } // End of namespace NGS

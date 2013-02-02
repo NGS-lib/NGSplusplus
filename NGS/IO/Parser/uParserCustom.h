@@ -5,7 +5,7 @@
 #include "../../uGeneException.h"
 #include "../uHeader.h"
 #include <iostream>
-
+//#include "uParserFactory.h"
 namespace NGS
 {
 
@@ -19,7 +19,7 @@ public :
     virtual void init(std::istream* stream, bool header = false);
     void init(const std::string& filename, const std::vector<std::string>& fieldsNames, char delimiter = '\t');
     void init(std::istream* stream, const std::vector<std::string>& fieldsNames, char delimiter = '\t');
-
+    static uParserBase * Create() { return new uParserCustom(); }
     virtual uToken getNextEntry();
 
 private:
@@ -29,7 +29,7 @@ private:
     void _convertLineToTokenInfosCustom(char* line, std::stringstream& token_infos);
     bool _paramExists(const std::string& name, const std::vector<std::string>& list) const;
 
-    static DerivedParserRegister<uParserCustom> reg;
+ //   static DerivedParserRegister<uParserCustom> reg;
 };
 
 } // End of namespace NGS

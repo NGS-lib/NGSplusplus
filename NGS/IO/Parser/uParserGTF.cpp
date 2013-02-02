@@ -106,5 +106,5 @@ uToken uParserGTF::_getTokenInfoFromGTFString(const std::string& line)
 
 }
 
-DerivedParserRegister<uParserGTF> uParserGTF::reg("GTF");
+//DerivedParserRegister<uParserGTF> uParserGTF::reg("GTF");
 } // End of namespace NGS
