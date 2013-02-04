@@ -4,7 +4,7 @@
 #include "uParserBase.h"
 #include "../../utility/utility.h"
 #include <iostream>
-
+//#include "uParserFactory.h"
 namespace NGS
 {
 
@@ -78,8 +78,10 @@ public :
 
     virtual uToken getNextEntry();
 
+     static uParserBase * Create() { return new uParserWig(); }
+
 private:
-    static DerivedParserRegister<uParserWig> reg;
+  //  static DerivedParserRegister<uParserWig> reg;
     wigInformation m_Info;
     void _processFixedWigLine(std::vector<std::string> & curSStream);
     void _processVariabledWigLine(std::vector<std::string> & curSStream);

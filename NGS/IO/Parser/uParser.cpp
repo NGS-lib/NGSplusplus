@@ -1,6 +1,8 @@
 #include "../../uGeneException.h"
 #include "uParser.h"
 #include "uParserBase.h"
+//#include "uParserBed.h"
+#include "uParserFactory.h"
 namespace NGS
 {
 
@@ -12,10 +14,13 @@ namespace NGS
 uParser::uParser(const std::string& filename, const std::string & type, bool header)
 {
 
-    uParserBaseFactory myFact;
+   // uParserBaseFactory myFact;
+  //  DerivedParserRegister<uParserBed> uParserBed::reg("BED");
+
     try
     {
-        m_pParserBase=myFact.createInstance(type);
+         m_pParserBase=uParserBaseFactory::GetFact()->createInstance(type);
+     //   m_pParserBase=myFact.createInstance(type);
         m_pParserBase->init(filename, header);
     }
     catch(...)
@@ -33,8 +38,9 @@ uParser::uParser(const std::string& filename, const std::string & type, bool hea
 uParser::uParser(std::istream* stream, const std::string & type, bool header)
 {
 
-    uParserBaseFactory myFact;
-    m_pParserBase=myFact.createInstance(type);
+  //  uParserBaseFactory myFact;
+  m_pParserBase= uParserBaseFactory::GetFact()->createInstance(type);
+   // m_pParserBase=myFact.createInstance(type);
     m_pParserBase->init(stream, header);
 
 }
@@ -47,8 +53,9 @@ uParser::uParser(std::istream* stream, const std::string & type, bool header)
 uParser::uParser(const std::string& filename, const std::vector<std::string>& fieldsNames, char delimiter)
 {
 
-    uParserBaseFactory myFact;
-    m_pParserBase=myFact.createInstance("CUSTOM");
+   // uParserBaseFactory myFact;
+    m_pParserBase=uParserBaseFactory::GetFact()->createInstance("CUSTOM");
+  //  m_pParserBase=myFact.createInstance("CUSTOM");
     m_pParserBase->init(filename, fieldsNames, delimiter);
 
 }
@@ -61,8 +68,9 @@ uParser::uParser(const std::string& filename, const std::vector<std::string>& fi
 uParser::uParser(std::istream* stream, const std::vector<std::string>& fieldsNames, char delimiter)
 {
 
-    uParserBaseFactory myFact;
-    m_pParserBase=myFact.createInstance("CUSTOM");
+    //uParserBaseFactory myFact;
+     m_pParserBase=uParserBaseFactory::GetFact()->createInstance("CUSTOM");
+   // m_pParserBase=myFact.createInstance("CUSTOM");
     m_pParserBase->init(stream, fieldsNames, delimiter);
 
 }

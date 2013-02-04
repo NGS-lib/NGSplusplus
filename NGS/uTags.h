@@ -23,7 +23,7 @@ private:
     std::string sequence=""; /*!<Sequence associated with the read. Optional */
     char* name=nullptr;  /*!<Name or ID associated with read. not guaranteed to be unique*/
     char* phredScore=nullptr; /*!<PhredScore associated with each position of the read*/
-    char* cigar=nullptr; /*!<Cigar flag as defined by the SAM format*/
+    char* m_cigar=nullptr; /*!<Cigar flag as defined by the SAM format*/
     bool Unmapped=true;
     //Using Samtools definition here. Replace above variables by this when possible.
     int flag=0;  /*!<Sam flag as defined by the SAM format*/
@@ -90,18 +90,21 @@ public:
      * \return void
      *
      */
-    void setCigar(std::string pcigar)
+    void setCigar(std::string pCigar)
     {
-        if (cigar!=nullptr)
+
+    //   if (!( utility::validateCigar(pCigar))
+   //         throw param_throw()<<string_error("Invalide m_cigar flag passed to SetCigar. Flag is: "+pCigar+"\n" )
+        if (m_cigar!=nullptr)
         {
-            delete []cigar;
-            cigar = nullptr;
+            delete []m_cigar;
+            m_cigar = nullptr;
         }
         try
         {
-            cigar = new char[pcigar.size()+1];
-            int lenght=pcigar.copy(cigar,pcigar.size(),0 );
-            cigar[lenght]='\0';
+            m_cigar = new char[pCigar.size()+1];
+            int lenght=pCigar.copy(m_cigar,pCigar.size(),0 );
+            m_cigar[lenght]='\0';
 
         }
         catch(std::exception & e)
@@ -121,10 +124,10 @@ public:
     std::string getCigar() const
     {
         std::string returnStr;
-        if (cigar==nullptr)
+        if (m_cigar==nullptr)
             returnStr="";
         else
-            returnStr=cigar;
+            returnStr=m_cigar;
         return returnStr;
     };
 
@@ -379,7 +382,7 @@ private:
     // void loadSamStream(std::ifstream& ourStream){samStream =ourStream;};
     void parseSamHeader();
 public:
-    void loadFromSam(std::ifstream& ourStream, bool minimal= false);
+   // void loadFromSam(std::ifstream& ourStream, bool minimal= false);
     void loadFromSamWithParser(std::string);
     void loadSamHeader(std::ifstream& ourStream);
     void writeToBed(std::ostream& out) const;

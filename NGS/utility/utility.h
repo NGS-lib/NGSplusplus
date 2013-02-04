@@ -62,6 +62,10 @@ static void  GetTokens(std::vector<std::string>& tokens, const std::string & lin
 /**< Format tests */
 static bool is_posnumber(const std::string& s);
 
+
+namespace SAM
+{
+
 /** \brief Check and return if a specified sam flag is set from a received sam flag (int)
  *
  * \param flag const int SamFlag
@@ -69,49 +73,50 @@ static bool is_posnumber(const std::string& s);
  * \return bool True if flag is set
  *
  */
+
+
 static inline bool querySamFlag(const int flag, const SamQuery toQuery)
 {
-bool query_result;
+    bool query_result;
     switch(toQuery)
     {
     case SamQuery::IS_PAIRED:
-            query_result=(flag&0x1);
-            break;
+        query_result=(flag&0x1);
+        break;
     case SamQuery::ALL_ALIGNED_OK:
-            query_result=(flag&0x2);
-            break;
+        query_result=(flag&0x2);
+        break;
     case SamQuery::UNMAPPED:
-            query_result=(flag&0x4);
-            break;
+        query_result=(flag&0x4);
+        break;
     case SamQuery::NEXT_UNMAPPED:
-            query_result=(flag&0x8);
-            break;
+        query_result=(flag&0x8);
+        break;
     case SamQuery::SEQ_REV_STRAND:
-            query_result=(flag&0x10);
-            break;
+        query_result=(flag&0x10);
+        break;
     case SamQuery::SEQ_NEXT_REV_STRAND:
-            query_result=(flag&0x20);
-            break;
+        query_result=(flag&0x20);
+        break;
     case SamQuery::FIRST_SEG:
-            query_result=(flag&0x40);
-            break;
+        query_result=(flag&0x40);
+        break;
     case SamQuery::LAST_SEG:
-            query_result=(flag&0x80);
-            break;
+        query_result=(flag&0x80);
+        break;
     case SamQuery::SECOND_ALIGN:
-            query_result=(flag&0x100);
-            break;
+        query_result=(flag&0x100);
+        break;
     case SamQuery::FAIL_QUAL:
-            query_result=(flag&0x200);
-            break;
+        query_result=(flag&0x200);
+        break;
     case SamQuery::DUPLICATE:
-            query_result=(flag&0x400);
-            break;
+        query_result=(flag&0x400);
+        break;
     }
-return query_result;
+    return query_result;
 }
-
-
+}
 /** \brief Simple tokenizer class that can sometimes be handy to use
  */
 class Tokenizer
@@ -137,29 +142,29 @@ protected:
 
 inline static void  GetTokens(std::vector<std::string>& tokens, const std::string & line )
 {
- tokens.clear();
- std:: string buff;
+    tokens.clear();
+    std:: string buff;
 
- size_t from = 0;
-while( from < line.length() )
- {
-  GetNextToken( buff, from,line );
-  if (buff!="")
-    tokens.push_back( buff );
- }
+    size_t from = 0;
+    while( from < line.length() )
+    {
+        GetNextToken( buff, from,line );
+        if (buff!="")
+            tokens.push_back( buff );
+    }
 }
 /**< Hardcoded delimiters are blank space, tab and return (not neewline) */
 inline static void  GetNextToken( std::string& container, size_t& from,const std::string & line )
 {
- size_t to = from;
- while( from < line.length() && ( line.at(from) == ' ' || line.at(from) == '\t' || line.at(from) == '\r' ) )
-  from++;
- to = from + 1;
- while( to < line.length() && line.at(to) != ' ' && line.at(to) != '\t' && line.at(to) != '\r' )
-  to++;
- // std::cout <<from <<"\t"<<to<<std::endl;
- container = line.substr( from, to - from );
- from = to;
+    size_t to = from;
+    while( from < line.length() && ( line.at(from) == ' ' || line.at(from) == '\t' || line.at(from) == '\r' ) )
+        from++;
+    to = from + 1;
+    while( to < line.length() && line.at(to) != ' ' && line.at(to) != '\t' && line.at(to) != '\r' )
+        to++;
+// std::cout <<from <<"\t"<<to<<std::endl;
+    container = line.substr( from, to - from );
+    from = to;
 }
 
 
@@ -269,7 +274,7 @@ inline static bool checkOverlap(int X1, int X2, int Y1, int Y2)
  * \return Size of overlap segment, can be 0
  *
  */
- inline static int overlapCount(int X1, int X2, int Y1, int Y2)
+inline static int overlapCount(int X1, int X2, int Y1, int Y2)
 {
 
     int overlap=0;
@@ -356,7 +361,7 @@ inline static float getSd(std::vector<float> ourVec, const float & mean)
 
     for (float & floatVal:ourVec )
     {
-       floatVal=(floatVal-mean);
+        floatVal=(floatVal-mean);
     }
     for (auto floatit=ourVec.begin(); floatit < ourVec.end(); floatit++ )
     {
@@ -505,71 +510,85 @@ static inline std::string clean_WString(const std::string & input_string)
     return return_string;
 }
 
-    static inline bool is_posnumber(const std::string& s)
+static inline bool is_posnumber(const std::string& s)
+{
+    return !s.empty() && std::find_if(s.begin(),
+                                      s.end(), [](char c)
     {
-        return !s.empty() && std::find_if(s.begin(),
-            s.end(), [](char c) { return !std::isdigit(c); }) == s.end();
-    }
+        return !std::isdigit(c);
+    }) == s.end();
+}
 
-    static inline int stoi(const std::string& s) {
-        std::stringstream ss;
-	ss << s;
-	int toReturn;
-        if (ss >> toReturn) {
-            return toReturn;
-        }
-	throw std::logic_error("utility::stoi -> invalid value in string.");
+static inline int stoi(const std::string& s)
+{
+    std::stringstream ss;
+    ss << s;
+    int toReturn;
+    if (ss >> toReturn)
+    {
+        return toReturn;
     }
+    throw std::logic_error("utility::stoi -> invalid value in string.");
+}
 
-    static inline long long stoll(const std::string& s) {
-        std::stringstream ss;
-	ss << s;
-	long long toReturn;
-        if (ss >> toReturn) {
-            return toReturn;
-        }
-	throw std::logic_error("utility::stoll -> invalid value in string.");
+static inline long long stoll(const std::string& s)
+{
+    std::stringstream ss;
+    ss << s;
+    long long toReturn;
+    if (ss >> toReturn)
+    {
+        return toReturn;
     }
+    throw std::logic_error("utility::stoll -> invalid value in string.");
+}
 
-    static inline float stof(const std::string& s) {
-        std::stringstream ss;
-	ss << s;
-	float toReturn;
-        if (ss >> toReturn) {
-            return toReturn;
-        }
-	throw std::logic_error("utility::stof -> invalid value in string.");
+static inline float stof(const std::string& s)
+{
+    std::stringstream ss;
+    ss << s;
+    float toReturn;
+    if (ss >> toReturn)
+    {
+        return toReturn;
     }
+    throw std::logic_error("utility::stof -> invalid value in string.");
+}
 
-    static inline std::string to_string(int v) {
-        std::stringstream ss;
-	ss << v;
-	return ss.str();
-    }
+static inline std::string to_string(int v)
+{
+    std::stringstream ss;
+    ss << v;
+    return ss.str();
+}
 
-    static inline std::string to_string(float v) {
-        std::stringstream ss;
-	ss << v;
-	return ss.str();
-    }
+static inline std::string to_string(float v)
+{
+    std::stringstream ss;
+    ss << v;
+    return ss.str();
+}
 
-    static inline std::string to_string(long v) {
-        std::stringstream ss;
-	ss << v;
-	return ss.str();
-    }
+static inline std::string to_string(long v)
+{
+    std::stringstream ss;
+    ss << v;
+    return ss.str();
+}
 
-    static inline std::string to_string(long long v) {
-        std::stringstream ss;
-	ss << v;
-	return ss.str();
-    }
+static inline std::string to_string(long long v)
+{
+    std::stringstream ss;
+    ss << v;
+    return ss.str();
+}
 
-    static inline std::string to_string(size_t v) {
-        std::stringstream ss;
-	ss << v;
-	return ss.str();
-    }
+static inline std::string to_string(size_t v)
+{
+    std::stringstream ss;
+    ss << v;
+    return ss.str();
+}
 }
 
 /**< Clustering contains odd and ends, distance measures and such */

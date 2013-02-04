@@ -6,6 +6,7 @@
 #include "../uHeader.h"
 #include <iostream>
 #include "../../boost-include/boost/xpressive/xpressive.hpp"
+//#include "uParserFactory.h"
 namespace NGS
 {
 
@@ -18,10 +19,10 @@ public :
     virtual void init(const std::string& filename, bool header = false);
     virtual void init(std::istream* stream, bool header = false);
     uToken getNextEntry();
-
+    static uParserBase * Create() { return new uParserGTF(); }
 private:
     uToken _getTokenInfoFromGTFString(const std::string & line);
-    static DerivedParserRegister<uParserGTF> reg;
+//    static DerivedParserRegister<uParserGTF> reg;
     boost::xpressive::sregex GTFRegex;
     const std::string GTFregString="^(\\.|[\\w_-]+)\t(\\.|[\\w_-]+)\t(\\.|[\\w_-]+)\t(\\d+)\t(\\d+)\t([-+]?[0-9]*\\.?[0-9]+|.)\t(\\+|\\-|\\.)\t([012\\.])(?:\t(.+))?";
 };

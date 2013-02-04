@@ -66,5 +66,5 @@ void uWriterWig::setValueType(const token_param type){
 	}
 }
 
-DerivedRegister<uWriterWig> uWriterWig::reg("WIG");
+//DerivedRegister<uWriterWig> uWriterWig::reg("WIG");
 } // End of namespace NGS

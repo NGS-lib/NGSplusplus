@@ -14,8 +14,9 @@ public:
 	uWriterSam() {}
 	void writeToken(const uToken& token);
     void writeHeader();
+    static uWriterBase * Create() { return new uWriterSam(); }
 private:
-	static DerivedRegister<uWriterSam> reg;
+//	static DerivedRegister<uWriterSam> reg;
     bool chrValidate(const std::string& chr);
     bool hasStarted=false;
 

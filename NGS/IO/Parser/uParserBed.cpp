@@ -222,5 +222,5 @@ std::string uParserBed::_getNextEntry(char* line)
     return toReturn;
 }
 
-DerivedParserRegister<uParserBed> uParserBed::reg("BED");
+//DerivedParserRegister<uParserBed> uParserBed::reg("BED");
 } // End of namespace NGS

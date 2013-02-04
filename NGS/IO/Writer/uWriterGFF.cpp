@@ -72,5 +72,5 @@ void uWriterGFF::writeToken(const uToken& token)
         throw e;
     }
 }
-DerivedRegister<uWriterGFF> uWriterGFF::reg("GFF");
+//DerivedRegister<uWriterGFF> uWriterGFF::reg("GFF");
 } // End of namespace NGS

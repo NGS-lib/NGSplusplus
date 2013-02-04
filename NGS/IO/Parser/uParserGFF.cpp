@@ -129,5 +129,5 @@ uToken uParserGFF::_getTokenFromGFFString(const std::string & line)
 }
 
 
-DerivedParserRegister<uParserGFF> uParserGFF::reg("GFF");
+//DerivedParserRegister<uParserGFF> uParserGFF::reg("GFF");
 } // End of namespace NGS

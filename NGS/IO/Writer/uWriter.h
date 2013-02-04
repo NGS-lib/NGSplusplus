@@ -8,6 +8,7 @@
 //#include "../../NGS++.h"
 #include "uWriterBase.h"
 
+
 namespace NGS
 {
 

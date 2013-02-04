@@ -113,5 +113,5 @@ void uWriterSam::writeToken(const uToken& token) {
     }
 return true;
 }
-DerivedRegister<uWriterSam> uWriterSam::reg("SAM");
+//DerivedRegister<uWriterSam> uWriterSam::reg("SAM");
 } // End of namespace NGS

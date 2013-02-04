@@ -1,5 +1,6 @@
 #include "uWriter.h"
-
+#include "uWriterBase.h"
+#include "uWriterFactory.h"
 namespace NGS
 {
 
@@ -9,10 +10,11 @@ namespace NGS
   */
 uWriter::uWriter(const std::string& filename, const std::string& type)
 {
-    uWriterBaseFactory myFactory;
-    m_pWriterBase = myFactory.createInstance(type);
+   // uWriterBaseFactory myFactory;
+   // m_pWriterBase = myFactory.createInstance(type);
     try
     {
+        m_pWriterBase=uWriterBaseFactory::GetFact()->createInstance(type);
         m_pWriterBase->init(filename);
     }
     catch (std::runtime_error& e)
@@ -27,8 +29,9 @@ uWriter::uWriter(const std::string& filename, const std::string& type)
   */
 uWriter::uWriter(std::ostream* os, const std::string& type)
 {
-    uWriterBaseFactory myFactory;
-    m_pWriterBase = myFactory.createInstance(type);
+  //  uWriterBaseFactory myFactory;
+   // m_pWriterBase = myFactory.createInstance(type);
+    m_pWriterBase=uWriterBaseFactory::GetFact()->createInstance(type);
     m_pWriterBase->init(os);
 }
 
@@ -39,10 +42,11 @@ uWriter::uWriter(std::ostream* os, const std::string& type)
   */
 uWriter::uWriter(const std::string& filename, const std::vector<std::string>& fieldsNames, char delimiter)
 {
-    uWriterBaseFactory myFactory;
-    m_pWriterBase = myFactory.createInstance("CUSTOM");
+   // uWriterBaseFactory myFactory;
+   // m_pWriterBase = myFactory.createInstance("CUSTOM");
     try
     {
+        m_pWriterBase=uWriterBaseFactory::GetFact()->createInstance("CUSTOM");
         m_pWriterBase->init(filename);
     }
     catch (std::runtime_error& e)
@@ -60,8 +64,9 @@ uWriter::uWriter(const std::string& filename, const std::vector<std::string>& fi
   */
 uWriter::uWriter(std::ostream* os, const std::vector<std::string>& fieldsNames, char delimiter)
 {
-    uWriterBaseFactory myFactory;
-    m_pWriterBase = myFactory.createInstance("CUSTOM");
+   // uWriterBaseFactory myFactory;
+   // m_pWriterBase = myFactory.createInstance("CUSTOM");
+    m_pWriterBase=uWriterBaseFactory::GetFact()->createInstance("CUSTOM");
     m_pWriterBase->init(os);
     m_pWriterBase->setFieldsNames(fieldsNames);
     m_pWriterBase->setDelimiter(delimiter);

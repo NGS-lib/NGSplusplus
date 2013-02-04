@@ -2,7 +2,7 @@
 #define UFORMATEXPERIMENT_H_INCLUDED
 #include <fstream>
 #include "IO/Parser/uParser.h"
-
+#include <functional>
 namespace NGS
 {
 
@@ -117,6 +117,10 @@ public:
    // virtual void loadWithParser(uParser&, std::string);
     virtual void loadWithParser(std::ifstream&, std::string);
     virtual void loadWithParser(std::string, std::string);
+
+    void writeWithWriter(uWriter& pWriter) const;
+
+
     void writeAsBedFile(std::ostream& out)const;
 
     auto begin()->decltype(ExpMap.begin())
@@ -368,6 +372,19 @@ void uGenericNGSExperiment<_SELF_,_CHROM_, _BASE_>::writeAsBedFile(std::ostream&
     applyOnAllChroms(bind2nd(mem_fun_ref(&_CHROM_::outputBedFormat)   , out));
 }
 
+/** \brief Write our data as a legal bed file, filling only the first three columns
+ *          DEPRECATED
+ * \param out std::ofstream& stream to write to
+ * \return void
+ *
+ */
+template<class _SELF_, typename _CHROM_, typename _BASE_>
+void uGenericNGSExperiment<_SELF_,_CHROM_, _BASE_>::writeWithWriter(uWriter& pWriter) const
+{
+     auto writeFunct= std::bind(&_CHROM_::writeWithWriter,std::placeholders::_1, std::ref(pWriter));
+     applyOnAllChroms(writeFunct);
+}
+
 
 /** \brief Check if a chrom collection associated with the passed ID exist
  * \param const std::string & chrom: the name of the collection.
@@ -377,6 +394,8 @@ template<class _SELF_, typename _CHROM_, typename _BASE_>
 bool uGenericNGSExperiment<_SELF_,_CHROM_, _BASE_>::isChrom(const std::string & pChrom) const{
     return (ExpMap.count(pChrom));
 }
+
+
 
 
 //TODO: Make sure the return is ok
@@ -564,7 +583,7 @@ template<class _SELF_, typename _CHROM_, typename _BASE_>
 bool uGenericNGSExperiment<_SELF_,_CHROM_, _BASE_>::isSorted()const
 {
     bool sorted=true;
-    applyOnAllChroms([&](_CHROM_& chrom)
+    applyOnAllChroms([&](const _CHROM_& chrom)
     {
         if (chrom.isSorted(m_comptFunc)==false)
             sorted=false;

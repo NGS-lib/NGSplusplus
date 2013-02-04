@@ -36,5 +36,5 @@ void uWriterBedGraph::writeHeader(){
 }
 
 
-DerivedRegister<uWriterBedGraph> uWriterBedGraph::reg("BEDGRAPH");
+//DerivedRegister<uWriterBedGraph> uWriterBedGraph::reg("BEDGRAPH");
 } // End of namespace NGS

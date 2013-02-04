@@ -1,5 +1,5 @@
-#ifndef IuParserBase_H_INCLUDED
-#define IuParserBase_H_INCLUDED
+#ifndef IUPARSERBASE_H_INCLUDED
+#define IUPARSERBASE_H_INCLUDED
 
 #include <map>
 #include <string>
@@ -53,51 +53,51 @@ protected:
 };
 
 //Thank you Stack Overflow for this basic structure
-
-template<typename T> uParserBase * createT() { return new T; }
-
-struct uParserBaseFactory {
-    typedef std::map<std::string, std::function<uParserBase*()> > parser_map_type;
-    virtual ~uParserBaseFactory(){};
-    static std::shared_ptr<uParserBase> createInstance(std::string const& s) {
-        parser_map_type::iterator it = getParserMap()->find(s);
-
-        if(it == getParserMap()->end()){
-            throw uParser_exception_base()<<string_error("Asked for unregistered type: "+s+" in Parser, failling");
-        }
-      //  std::cerr << "Returning" <<std::endl;
-        return std::shared_ptr<uParserBase>(it->second());
-    }
-
-protected:
-    static parser_map_type * mapItem;
-    static parser_map_type * getParserMap()
-    {
-        if(!mapItem)
-	{
-	    mapItem= new parser_map_type;
-	}
-        return mapItem;
-    };
-
-};
-
-template<typename T>
-struct DerivedParserRegister : uParserBaseFactory
-{
-    ~DerivedParserRegister(){};
-    DerivedParserRegister(std::string const& s)
-    {
-        auto it = getParserMap()->find(s);
-        if(it == getParserMap()->end())
-	{
-             getParserMap()->insert(std::pair<std::string, std::function<uParserBase*() >> (s, &createT<T>));
-        }
-	else
-        {
-            throw uParser_exception_base()<<string_error("Duplicated type registering in Parser, failling\n Type is:"+s+"\n");
-        }
-    }
-};
+//
+//template<typename T> uParserBase * createT() { return new T; }
+//
+//struct uParserBaseFactory {
+//    typedef std::map<std::string, std::function<uParserBase*()> > parser_map_type;
+//    virtual ~uParserBaseFactory(){};
+//    static std::shared_ptr<uParserBase> createInstance(std::string const& s) {
+//        parser_map_type::iterator it = getParserMap()->find(s);
+//
+//        if(it == getParserMap()->end()){
+//            throw uParser_exception_base()<<string_error("Asked for unregistered type: "+s+" in Parser, failling");
+//        }
+//      //  std::cerr << "Returning" <<std::endl;
+//        return std::shared_ptr<uParserBase>(it->second());
+//    }
+//
+//protected:
+//    static parser_map_type * mapItem;
+//    static parser_map_type * getParserMap()
+//    {
+//        if(!mapItem)
+//	{
+//	    mapItem= new parser_map_type;
+//	}
+//        return mapItem;
+//    };
+//
+//};
+//
+//template<typename T>
+//struct DerivedParserRegister : uParserBaseFactory
+//{
+//    ~DerivedParserRegister(){};
+//    DerivedParserRegister(std::string const& s)
+//    {
+//        auto it = getParserMap()->find(s);
+//        if(it == getParserMap()->end())
+//	{
+//             getParserMap()->insert(std::pair<std::string, std::function<uParserBase*() >> (s, &createT<T>));
+//        }
+//	else
+//        {
+//            throw uParser_exception_base()<<string_error("Duplicated type registering in Parser, failling\n Type is:"+s+"\n");
+//        }
+//    }
+//};
 }
 #endif // IuParserBase_H_INCLUDED

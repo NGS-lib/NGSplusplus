@@ -59,6 +59,6 @@ void uWriterCustom::writeToken(const uToken& token)
     *m_pOstream << std::endl;
 }
 
-DerivedRegister<uWriterCustom> uWriterCustom::reg("CUSTOM");
+//DerivedRegister<uWriterCustom> uWriterCustom::reg("CUSTOM");
 
 } // End of namespace NGS

@@ -42,6 +42,7 @@ public :
     bool isHeaderParamSet(const header_param& name) const { return m_pParserBase->isHeaderParamSet(name); }
 private:
     std::shared_ptr<uParserBase> m_pParserBase=nullptr;
+ //   static uParserBaseFactory myFact;
 
 };
 }

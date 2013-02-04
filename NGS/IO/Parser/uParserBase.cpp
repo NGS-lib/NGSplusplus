@@ -1,5 +1,5 @@
 #include "uParserBase.h"
-
+#include "uParserFactory.h"
 namespace NGS
 {
 

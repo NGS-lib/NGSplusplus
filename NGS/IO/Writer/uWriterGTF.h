@@ -12,8 +12,9 @@ public:
 	  */
 	uWriterGTF() {}
 	void writeToken(const uToken& token);
+    static uWriterBase * Create() { return new uWriterGTF(); }
 private:
-	static DerivedRegister<uWriterGTF> reg;
+	//static DerivedRegister<uWriterGTF> reg;
     bool hasStarted=false;
 
 };

@@ -34,5 +34,5 @@ void uWriterBed6::writeToken(const uToken& token)
     *m_pOstream << std::endl;
 }
 
-DerivedRegister<uWriterBed6> uWriterBed6::reg("BED6");
+//DerivedRegister<uWriterBed6> uWriterBed6::reg("BED6");
 } // End of namespace NGS

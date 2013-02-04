@@ -587,8 +587,8 @@ bool uToken::_cigarIsValid(const std::string& value) const
     {
         return false;
     }
-    /**< First item of value has to be a digit.  */
     if (_isDigit(value[0]) != true)
+    /**< First item of value has to be a digit.  */
     {
         return false;
     }
