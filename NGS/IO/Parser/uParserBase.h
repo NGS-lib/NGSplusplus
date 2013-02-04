@@ -1,5 +1,5 @@
-#ifndef IuParserBase_H_INCLUDED
-#define IuParserBase_H_INCLUDED
+#ifndef IUPARSERBASE_H_INCLUDED
+#define IUPARSERBASE_H_INCLUDED
 
 #include <map>
 #include <string>

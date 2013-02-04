@@ -104,7 +104,8 @@ private:
     bool _isDigit(char value) const
     {
         return std::isdigit(value);
-    }//(value >= '0' && value <= '9'); }
+    }
+    //(value >= '0' && value <= '9'); }
     bool _cigarValueIsValid(char value) const;
     bool _isStreamEmpty(const std::istream& stream) const;
 

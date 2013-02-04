@@ -13,9 +13,11 @@ public:
 	uWriterBedGraph() {}
 	void writeToken(const uToken& token);
 	void writeHeader();
+    static uWriterBase * Create() { return new uWriterBedGraph(); }
 private:
-	static DerivedRegister<uWriterBedGraph> reg;
+	//static DerivedRegister<uWriterBedGraph> reg;
     const std::string m_bedGraphHeader="track type=bedGraph";
+
 }; // End of class uWriterBed4
 
 } // End of namespace NGS

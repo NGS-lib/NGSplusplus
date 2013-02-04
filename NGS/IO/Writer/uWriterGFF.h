@@ -14,8 +14,9 @@ public:
 	  */
 	uWriterGFF() {}
 	void writeToken(const uToken& token);
+    static uWriterBase * Create() { return new uWriterGFF(); }
 private:
-	static DerivedRegister<uWriterGFF> reg;
+//	static DerivedRegister<uWriterGFF> reg;
     bool hasStarted=false;
 
 }; // End of class uWriterBed4

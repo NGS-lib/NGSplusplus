@@ -167,7 +167,7 @@ uToken uParserSam::getNextEntry()
             throw uParser_invalid_Sam_line()<<string_error("SAM line, failling validation. Line is:\n"+strLine);
         }
         std::string strand="+";
-        if (utility::querySamFlag(utility::stoi(what[2]),SamQuery::SEQ_REV_STRAND))
+        if (utility::SAM::querySamFlag(utility::stoi(what[2]),SamQuery::SEQ_REV_STRAND))
             strand="-";
 		ourToken._setParamNoValidate(token_param::STRAND, strand);
 		//token_infos << "STRAND\t" << strand << "\n";
@@ -230,7 +230,7 @@ void uParserSam::_parseHeader()
                     SORT=true;
                     data.erase(0,3);
 
-                    if ((sortType!="unsorted")||(sortType!="queryname")||(sortType!="unknown")||(sortType!="coordinate"))
+                    if ((data!="unsorted")&&(data!="queryname")&&(data!="unknown")&&(data!="coordinate"))
                          throw uParser_invalid_Sam_header()<<string_error("Invalid sorting value in @SO line: \n"+lineString);
                     sortType=data;
                 }

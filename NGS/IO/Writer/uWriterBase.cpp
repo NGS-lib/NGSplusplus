@@ -1,5 +1,5 @@
 #include "uWriterBase.h"
-
+#include "uWriterFactory.h"
 namespace NGS
 {
 

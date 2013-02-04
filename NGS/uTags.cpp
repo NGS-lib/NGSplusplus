@@ -17,15 +17,14 @@ uTags::uTags():uGenericNGS()
 uTags::uTags(uToken pToken)try:
     uGenericNGS(pToken)
 {
-
+    if (pToken.isParamSet(token_param::SEQUENCE))
+        setSequence(pToken.getParam(token_param::SEQUENCE));
     if (pToken.isParamSet(token_param::CIGAR))
         setCigar(pToken.getParam(token_param::CIGAR));
     if (pToken.isParamSet(token_param::MAP_SCORE))
         setMapQual(utility::stoi(pToken.getParam(token_param::MAP_SCORE)));
     if (pToken.isParamSet(token_param::PHRED_SCORE))
         setPhred(pToken.getParam(token_param::PHRED_SCORE));
-    if (pToken.isParamSet(token_param::SEQUENCE))
-        setSequence(pToken.getParam(token_param::SEQUENCE));
     if (pToken.isParamSet(token_param::FLAGS))
         setFlag(utility::stoi(pToken.getParam(token_param::FLAGS)));
 }
@@ -42,7 +41,7 @@ catch(ugene_exception_base &e)
 /** \brief Copy constructor, with init list
  * \param otherItem: uBasicNGS  object
  */
-uTags::uTags(const uBasicNGS & otherItem):uGenericNGS(otherItem.getChr(),otherItem.getStart(),otherItem.getEnd(),otherItem.getStrand()),name(nullptr),phredScore(nullptr),cigar(nullptr)
+uTags::uTags(const uBasicNGS & otherItem):uGenericNGS(otherItem.getChr(),otherItem.getStart(),otherItem.getEnd(),otherItem.getStrand()),name(nullptr),phredScore(nullptr),m_cigar(nullptr)
 {
     this->setScoreVector(otherItem.getScoreVector());
 }
@@ -50,7 +49,7 @@ uTags::uTags(const uBasicNGS & otherItem):uGenericNGS(otherItem.getChr(),otherIt
 /** \brief Copy constructor, with init list
  * \param otherItem: uRegion  object
  */
-uTags::uTags(const uRegion & otherItem):uGenericNGS(otherItem.getChr(),otherItem.getStart(),otherItem.getEnd(),otherItem.getStrand()),name(nullptr),phredScore(nullptr),cigar(nullptr)
+uTags::uTags(const uRegion & otherItem):uGenericNGS(otherItem.getChr(),otherItem.getStart(),otherItem.getEnd(),otherItem.getStrand()),name(nullptr),phredScore(nullptr),m_cigar(nullptr)
 {
     this->setScoreVector(otherItem.getScoreVector());
 }
@@ -61,7 +60,7 @@ uTags::uTags(const uRegion & otherItem):uGenericNGS(otherItem.getChr(),otherItem
  * \param start: beginning position of the tag
  * \param end: ending position of the tag
  */
-uTags::uTags(std::string pChr, long long int pStart, long long int pEnd, StrandDir pStrand):name(nullptr),phredScore(nullptr),cigar(nullptr)
+uTags::uTags(std::string pChr, long long int pStart, long long int pEnd, StrandDir pStrand):name(nullptr),phredScore(nullptr),m_cigar(nullptr)
 {
     try
     {
@@ -85,7 +84,7 @@ uTags::uTags(std::string pChr, long long int pStart, long long int pEnd, StrandD
     }
 }
 
-uTags::uTags(std::string pChr, long long int pStart, long long int pEnd, StrandDir pStrand, float pScore)try : uGenericNGS(pChr,pStart,pEnd,pStrand,pScore),name(nullptr),phredScore(nullptr),cigar(nullptr)
+uTags::uTags(std::string pChr, long long int pStart, long long int pEnd, StrandDir pStrand, float pScore)try : uGenericNGS(pChr,pStart,pEnd,pStrand,pScore),name(nullptr),phredScore(nullptr),m_cigar(nullptr)
 {
    /* try
     {
@@ -106,7 +105,7 @@ catch(construct_elem_throw & e)
     throw e;
 }
 
-uTags::uTags(std::string pChr, long long int pStart, long long int pEnd, float pScore)try : uGenericNGS(pChr,pStart,pEnd,pScore),name(nullptr),phredScore(nullptr),cigar(nullptr)
+uTags::uTags(std::string pChr, long long int pStart, long long int pEnd, float pScore)try : uGenericNGS(pChr,pStart,pEnd,pScore),name(nullptr),phredScore(nullptr),m_cigar(nullptr)
 {}
 catch(construct_elem_throw &e)
 {
@@ -136,10 +135,10 @@ uTags::~uTags()
         phredScore = nullptr;
     }
 
-    if (cigar!=nullptr)
+    if (m_cigar!=nullptr)
     {
-        delete []cigar;
-        cigar = nullptr;
+        delete []m_cigar;
+        m_cigar = nullptr;
     }
 }
 
@@ -147,7 +146,7 @@ uTags::~uTags()
 /** \brief Copy Constructor for UTags, necessary due to our char*
  * \param UTags& const copy_from: tag to copy
  */
-uTags::uTags(const uTags& copy_from):uGenericNGS(copy_from),name(nullptr),phredScore(nullptr),cigar(nullptr)
+uTags::uTags(const uTags& copy_from):uGenericNGS(copy_from),name(nullptr),phredScore(nullptr),m_cigar(nullptr)
 {
     try
     {
@@ -157,10 +156,10 @@ uTags::uTags(const uTags& copy_from):uGenericNGS(copy_from),name(nullptr),phredS
             strcpy(name,copy_from.name);
         }
 
-        if (copy_from.cigar!=nullptr)
+        if (copy_from.m_cigar!=nullptr)
         {
-            cigar = new char[(strlen(copy_from.cigar)+1)];
-            strcpy(cigar,copy_from.cigar);
+            m_cigar = new char[(strlen(copy_from.m_cigar)+1)];
+            strcpy(m_cigar,copy_from.m_cigar);
         }
 
         if (copy_from.phredScore!=nullptr)
@@ -214,10 +213,10 @@ uTags& uTags::operator= (uTags const& assign_from)
         phredScore = nullptr;
     }
 
-    if (cigar!=nullptr)
+    if (m_cigar!=nullptr)
     {
-        delete []cigar;
-        cigar = nullptr;
+        delete []m_cigar;
+        m_cigar = nullptr;
     }
 
     if (assign_from.name!=nullptr)
@@ -226,10 +225,10 @@ uTags& uTags::operator= (uTags const& assign_from)
         strcpy(name,assign_from.name);
     }
 
-    if (assign_from.cigar!=nullptr)
+    if (assign_from.m_cigar!=nullptr)
     {
-        cigar = new char[(strlen(assign_from.cigar)+1)];
-        strcpy(cigar,assign_from.cigar);
+        m_cigar = new char[(strlen(assign_from.m_cigar)+1)];
+        strcpy(m_cigar,assign_from.m_cigar);
     }
 
     if (assign_from.phredScore!=nullptr)
@@ -398,9 +397,9 @@ void uTags::print(std::ostream &pOut) const
         pOut<<"Pred Score: " <<phredScore<<std::endl;
     }
 
-    if (cigar!=nullptr)
+    if (m_cigar!=nullptr)
     {
-        pOut<<"cigar: " <<cigar<<std::endl;
+        pOut<<"cigar: " <<m_cigar<<std::endl;
     }
     if (this->isPE())
     {
@@ -436,7 +435,7 @@ uToken uTags::createToken() const
 
     ss << "MAP_SCORE\t"<<utility::to_string(this->getMapQual())<<"\nFLAGS\t"<<utility::to_string(this->getFlag())<<"\n";
     if (getSequence()!="")
-        ss << "SEQUENCE\t"<<getSequence();
+        ss << "SEQUENCE\t"<<getSequence()<<"\n";
 
     if (name!=nullptr)
     {
@@ -446,9 +445,9 @@ uToken uTags::createToken() const
     {
         ss<<"PHRED_SCORE\t"<<phredScore<<"\n";
     }
-    if (cigar!=nullptr)
+    if (m_cigar!=nullptr)
     {
-        ss<<"CIGAR\t" <<cigar<<"\n";
+        ss<<"CIGAR\t" <<m_cigar<<"\n";
     }
     try {
         return uToken(ss);

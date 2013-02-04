@@ -60,5 +60,5 @@ void uWriterGTF::writeToken(const uToken& token)
         throw e;
     }
 }
-DerivedRegister<uWriterGTF> uWriterGTF::reg("GTF");
+//DerivedRegister<uWriterGTF> uWriterGTF::reg("GTF");
 } // End of namespace NGS

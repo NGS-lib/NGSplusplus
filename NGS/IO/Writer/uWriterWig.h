@@ -12,8 +12,9 @@ public:
 	uWriterWig() {}
 	void writeToken(const uToken& token);
     void setValueType(const token_param type);
+    static uWriterBase * Create() { return new uWriterWig(); }
 private:
-	static DerivedRegister<uWriterWig> reg;
+	//static DerivedRegister<uWriterWig> reg;
     bool chrValidate(const std::string& chr);
     int m_span=0;
     std::string m_chr="";
