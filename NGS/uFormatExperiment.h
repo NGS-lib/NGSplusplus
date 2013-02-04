@@ -164,100 +164,16 @@ public:
     void divideItemsIntoBinofSize(int N, SplitType type=SplitType::STRICT);
     void divideItemsIntoNBins(int N, SplitType type=SplitType::STRICT);
 
-
-    /** \brief Remove sites from every chrom for which the predicate is true.
-     *
-     * \param pred UnaryPredicate Predicate to test, follows standard pattern
-     * \return void
-     *
-     */
     template<class UnaryPredicate>
-    void removeSpecificSites(UnaryPredicate pred)
-    {
-        try
-        {
-            for(auto& x : ExpMap)
-            {
-                x.second.removeSpecificSites(pred);
-            }
-        }
-        catch(uChrom_operation_throw &e)
-        {
-#ifdef DEBUG
-            std::cerr << "Failed in divideItemsIntoBinofSize"<<std::endl;
-#endif
-            throw uExp_operation_throw()<<string_error("Throwing while trying to call removeSpecificSites() on all chroms");
-        }
-
-    }
+    void removeSpecificSites(UnaryPredicate pred);
     /**< Wrappers around the STL algorithms */
-    /** \brief Accumulate information by querying all chromosomes
-      *
-      * Passes the given function to std::accumulate and runs it on every chrom element. Note that the passed
-      * function needs to take directly a chrom structure as argument and an "accumulator" paramator. the function must return the new value
-      * of the accumulator
-      * \param binary_op BinaryOperation : Querying function to perform on the chromosomes collection
-      * \param init InitialValue The initial value of the "accumulator"
-      * \return The information accumulated by querying all the chromosomes
-      */
     template<class BinaryOperation, class InitialValue>
-    InitialValue accumulateChromsInfo(BinaryOperation binary_op, InitialValue init) const
-    {
-        // Force using sequential version for accumulate as parallel version
-        // doesn't work if actual data type of InitialValue and _CHROM_ cannot be
-        // converted back and forth.
-        return __gnu_parallel::accumulate(std::begin(ExpMap), std::end(ExpMap), init,
-                                          [&binary_op, &init] (decltype(init) partial, NGSExpPair element)
-                                          -> decltype(binary_op(partial, element.second))
-        {
-            return binary_op(partial, element.second);
-        }, __gnu_parallel::sequential_tag());
-    }
-
-    /** \brief Compute a value for all chromosomes in the experiment and return the resulting collection
-      *
-      * Takes the pased functions and passes it to std::transform. Stores the result in a Map structure
-      * with each result mapping to the equivalent string. The passed function must return a non-void value.
-      *
-      * \param unary_op UnaryOperation : Unary operation to perform on all the chromosomes of the experiment
-      * \return A collection of values computed on each chromosome by unary_op
-      */
+    InitialValue accumulateChromsInfo(BinaryOperation binary_op, InitialValue init) const;
     template<class UnaryOperation>
-    auto computeOnAllChroms(UnaryOperation unary_op) const -> std::map<std::string, decltype(unary_op(_CHROM_()))>
-    {
-        std::map<std::string, decltype(unary_op(_CHROM_()))> results;
-        transform(std::begin(ExpMap), std::end(ExpMap), std::inserter(results, begin(results)), [&unary_op](NGSExpPair element)
-        {
-            return make_pair(element.first, unary_op(element.second));
-        });
-        return results;
-    }
-
-    /** \brief Compute a value for all chromosomes in the experiment and return the resulting collection
-      *
-      * Takes the passed function and uses it to run std::transform on the specified chrom structure. The passed function
-      * must return a non void value.
-      *
-      * \param unary_op UnaryOperation : Unary operation to perform on all the chromosomes of the experiment.
-      * \param pChr std::string : Chrom/Scaffold name to call the transform on.
-      * \exception param_throw : Thrown if the given pChr does not exist.
-      * \return A collection of values computed on each chromosome by unary_op
-      */
-    //TODO re-write this to call dirrectly on child function
+    auto computeOnAllChroms(UnaryOperation unary_op) const -> std::map<std::string, decltype(unary_op(_CHROM_()))>;
     template<class UnaryOperation>
-    auto computeOnOneChrom(UnaryOperation unary_op, const std::string & pChr) const -> std::map<std::string, decltype(unary_op(_CHROM_()))>
-    {
-        std::map<std::string, decltype(unary_op(_CHROM_()))> results;
-        if (ExpMap.count(pChr))
-        {
-            transform(std::begin(ExpMap), std::end(ExpMap), std::inserter(results, begin(results)), [&unary_op](NGSExpPair element)
-            {
-                return make_pair(element.first, unary_op(element.second));
-            });
-        }
-        return results;
-    }
-
+    auto computeOnOneChrom(UnaryOperation unary_op, const std::string & pChr) const -> std::map<std::string, decltype(unary_op(_CHROM_()))>;
+    template<class UnaryPredicate>
     /** \brief Get the chromosomes for which a certain predicate is true
       *
       *  Returns a subset of the chromosome structures that evaluated true to the given predicate.
@@ -267,13 +183,11 @@ public:
       * \param p UnaryPredicate : Unary predicate to evaluate on all chromosomes
       * \return A collection containing all the chromosomes for which the predicate is true
       */
-
+    
     //TODO, make this return an EXPERIMENT
-    template<class UnaryPredicate>
     auto getSpecificChroms(UnaryPredicate pred) const->decltype(ExpMap)
-    // NGSExpMap getSpecificChroms(UnaryPredicate pred) const
     {
-//         auto begin()->decltype(ExpMap.begin()){return ExpMap.begin();};
+    //         auto begin()->decltype(ExpMap.begin()){return ExpMap.begin();};
 
         // NGSExpMap copyColl;
         decltype(ExpMap) copyColl;
@@ -283,257 +197,31 @@ public:
         });
         return copyColl;
     }
-
-    /** \brief Transform the chromosomes collection by applying a certain function to all chromosomes
-      *
-      *  Takes the passed function and run them on every chromosome structure, via std::for_each.
-      *
-      * \param unary_op UnaryOperation : Unary operation to perform on the chromosomes collection
-      * \return unary_op, the operation that was performed on all chromosomes
-      */
     template<class UnaryFunction>
-    UnaryFunction applyOnAllChroms(UnaryFunction f)
-    {
-        for_each(std::begin(ExpMap), std::end(ExpMap), [&f](NGSExpPair& element)
-        {
-            f(element.second);
-        });
-        return f;
-    }
-
-    /** \brief Transform the chromosomes collection by applying a certain function to all chromosomes
-      *
-      * \param unary_op UnaryOperation : Unary operation to perform on the chromosomes collection
-      * \return unary_op, the operation that was performed on all chromosomes
-      * \sa applyOnOneChrom
-      * \sa applyOnAllChroms
-      */
+    UnaryFunction applyOnAllChroms(UnaryFunction f);
     template<class UnaryFunction>
-    UnaryFunction applyOnAllChroms(const UnaryFunction f)const
-    {
-        for_each(std::begin(ExpMap), std::end(ExpMap), [&f](NGSExpPair element)
-        {
-            f(element.second);
-        });
-        return f;
-    }
-
-
-    /** \brief Transform the chromosomes collection by applying a certain function to one chromosomes
-      *
-      *  Identical to applyOnAllChroms, but the function is run on the specified chrom structure.
-      *
-      * \param unary_op UnaryOperation : Unary operation to perform on the chromosomes collection
-      * \exception param_throw
-      * \return unary_op, the operation that was performed on all chromosomes
-      * \sa applyOnAllChroms
-      */
+    UnaryFunction applyOnAllChroms(const UnaryFunction f)const;
     template<class UnaryFunction>
-    UnaryFunction applyOnOneChrom(UnaryFunction f, const std::string & chr)
-    {
-        if (ExpMap.count(chr))
-        {
-            auto & elem = ExpMap[chr];
-            f(elem);
-        }
-        return f;
-    }
-
-    /** \brief Transform the sites of the EXP by applying a certain function
-      *
-      *  The passed function is given to applyOnAllSites for each chromosome structure.
-      *
-      * \param unary_op UnaryOperation : Unary operation to perform on the sites collection
-      * \return unary_op, the operation that was performed on all sites
-      */
+    UnaryFunction applyOnOneChrom(UnaryFunction f, const std::string & chr);
     template<class UnaryFunction>
-    UnaryFunction applyOnSites(UnaryFunction f)
-    {
-        for_each(std::begin(ExpMap), std::end(ExpMap), [&f](NGSExpPair& element)
-        {
-            element.second.applyOnAllSites(f);
-        });
-        return f;
-    }
-    /**< Const version of its equivalent */
+    UnaryFunction applyOnSites(UnaryFunction f);
     template<class UnaryFunction>
-    UnaryFunction applyOnSites(const UnaryFunction f)const
-    {
-        for_each(std::begin(ExpMap), std::end(ExpMap), [&f](NGSExpPair& element)
-        {
-            element.second.applyOnAllSites(f);
-            //f(element.second);
-        });
-        return f;
-    }
-
-
-    // We where HERE!
-
-    // TODO: there should not be 2 versions, only one that use a parser in paramaters
-    /** \brief load data from Parser, convert to unitary and execute the given function. Does -not- necessarily add to EXP
-     *
-     * \param stream std::ifstream& file to load from
-     * \return void
-     *
-     */
+    UnaryFunction applyOnSites(const UnaryFunction f)const;
     template<class UnaryFunction>
-    void loadWithParserAndRun(std::ifstream& pStream, std::string pType, UnaryFunction funct , int pBlockSize=1)
-    {
-        try
-        {
-            std::istream& refStream = pStream;
-            uParser Curparser(&refStream, pType);
-            std::vector<uToken> loadedTokens;
-            loadedTokens.resize(pBlockSize);
-            while(!Curparser.eof())
-            {
-                int curLoaded=0;
-                /**< Load a block of data */
-                while ((curLoaded<pBlockSize)&&(!Curparser.eof()))
-                {
-                    loadedTokens.at(curLoaded)=Curparser.getNextEntry();
-
-                    curLoaded++;
-                }
-                /**< Operate */
-                for(const uToken & curToken:loadedTokens)
-                {
-                    funct( (_BASE_)(curToken) );
-                }
-            }
-        }
-        catch (uParser_exception_base& e) // TODO: check if there is something else that can be thrown
-        {
-            throw e;
-        }
-    }
-
-    /** \brief load data from Parser, convert to unitary and execute the given function. Does -not- necessarily add to EXP
-     *
-     * \param stream std::string filepath path to the file to load from
-     * \return void
-     *
-     */
+    void loadWithParserAndRun(std::ifstream& pStream, std::string pType, UnaryFunction funct , int pBlockSize=1);
     template<class UnaryFunction>
-    void loadWithParserAndRun(std::string filepath, std::string pType, UnaryFunction f, int pBlockSize=1)
-    {
-        try
-        {
-            uParser Curparser(filepath, pType);
-            std::vector<uToken> loadedTokens;
-            loadedTokens.resize(pBlockSize);
-            while(!Curparser.eof())
-            {
-                int curLoaded=0;
-                /**< Load a block of data */
-                while ((curLoaded<pBlockSize)&&(!Curparser.eof()))
-                {
-                    loadedTokens.at(curLoaded)=(Curparser.getNextEntry());
-                    curLoaded++;
-                }
-                /**< Operate */
-                for(const uToken & curToken:loadedTokens)
-                {
-                    f( (_BASE_)(curToken) );
-                }
-            }
-        }
-        catch (uParser_exception_base& e) // TODO: check if there is something else that can be thrown
-        {
-            throw e;
-        }
-    }
-
-    /** \brief Count the chromosomes for which a certain predicate is true
-      *
-      * This function take a pointer to a predicate function; this function
-      * pointer can either be a) * the name of a function taking a chromosome by
-      * reference, b) a lambda function taking a chromosome by reference or c) a
-      * member method of a chromosome using "mem_fun_ref". In all cases, the
-      * function must return a boolean; true is the predicate is true, false
-      * otherwise.
-      *
-      * \param p UnaryPredicate : Unary predicate to evaluate on all chromosomes
-      * \return The number of chromosomes for which the predicate is true
-      */
+    void loadWithParserAndRun(std::string filepath, std::string pType, UnaryFunction f, int pBlockSize=1);
     template <class UnaryPredicate>
     typename std::iterator_traits<NGSExpIter>::difference_type
-    countChromsWithProperty(UnaryPredicate pred) const
-    {
-        return count_if(std::begin(ExpMap), std::end(ExpMap), [&pred](const NGSExpPair& element)
-        {
-            return pred(element.second);
-        });
-    }
-
-    /** \brief Find the maximal chromosome according to a certain comparison
-      *
-      * This function take a pointer to a function to find the maximal chromosome;
-      * this function pointer can either be a) the name of a function taking two
-      * chromosomes as parameters, b) a lambda function taking two chromosomes as parameters
-      * or c) a member method of a chromosome taking another chromosome as parameter using
-      * "mem_fun_ref". In all cases, the function must return a boolean: true if
-      * the first element is "lower" than the second, false otherwise.
-      *
-      * \param comp Compare : Binary comparison operation to perform on the chromosomes collection
-      * \return An iterator to the maximal chromosome
-      */
+    countChromsWithProperty(UnaryPredicate pred) const;
     template<class Compare>
-    NGSExpConstIter maxChrom(Compare comp) const
-    {
-        return max_element(std::begin(ExpMap), std::end(ExpMap),
-                           [&comp](const NGSExpPair& element1, const NGSExpPair& element2) -> bool
-        {
-            return comp(element1.second, element2.second);
-        });
-    }
-
-    /** \brief Find the minimal chromosome according to a certain comparison
-      *
-      * This function take a pointer to a function to find the minimal chromosome;
-      * this function pointer can either be a) the name of a function taking two
-      * chromosomes as parameters, b) a lambda function taking two chromosomes as parameters
-      * or c) a member method of a chromosome taking another chromosome as parameter using
-      * "mem_fun_ref". In all cases, the function must return a boolean: true if
-      * the first element is "lower" than the second, false otherwise.
-      *
-      * \param comp Compare : Binary comparison operation to perform on the chromosomes collection
-      * \return An iterator to the minimal chromosome
-      */
+    NGSExpConstIter maxChrom(Compare comp) const;
     template<class Compare>
-    NGSExpConstIter minChrom(Compare comp) const
-    {
-        return min_element(std::begin(ExpMap), std::end(ExpMap),
-                           [&comp](const NGSExpPair& element1, const NGSExpPair& element2) -> bool
-        {
-            return comp(element1.second, element2.second);
-        });
-    }
-
-    /** \brief Find the minimal and maximal chromosomes according to a certain comparison
-      *
-      * This function take a pointer to a function to find the minimal and
-      * maximal chromosomes; this function pointer can either be a) the name of a
-      * function taking two chromosomes as parameters, b) a lambda function taking two
-      * chromosomes as parameters or c) a member method of a chromosome taking another chromosome
-      * as parameter using "mem_fun_ref". In all cases, the function must return
-      * a boolean: true if the first element is "lower" than the second, false
-      * otherwise.
-      *
-      * \param comp Compare : Binary comparison operation to perform on the chromosomes collection
-      * \return A pair of iterators: the first indicates the minimal chromosome and the second, the maximal chromosome
-      */
+    NGSExpConstIter minChrom(Compare comp) const;
     template<class Compare>
-    std::pair<NGSExpConstIter, NGSExpConstIter> minAndMaxChroms(Compare comp) const
-    {
-        return minmax_element(std::begin(ExpMap), std::end(ExpMap),
-                              [&comp](const NGSExpPair& element1, const NGSExpPair& element2) -> bool
-        {
-            return comp(element1.second, element2.second);
-        });
-    }
-    /**< End STL wrappers */
+    std::pair<NGSExpConstIter, NGSExpConstIter> minAndMaxChroms(Compare comp) const;
+//    template<class _SELF_, typename _CHROM_, typename _BASE_>
+   /**< End STL wrappers */
 
     uGenericNGSExperiment():op_mode(ReadMode::DEFAULT) {};
 
@@ -1149,5 +837,389 @@ void uGenericNGSExperiment<_SELF_,_CHROM_,_BASE_>::divideItemsIntoBinofSize(int 
     }
 }
 
+/** \brief Remove sites from every chrom for which the predicate is true.
+ *
+ * \param pred UnaryPredicate Predicate to test, follows standard pattern
+ * \return void
+ *
+ */
+template<class _SELF_, typename _CHROM_, typename _BASE_>
+template<class UnaryPredicate>
+void uGenericNGSExperiment<_SELF_,_CHROM_,_BASE_>::removeSpecificSites(UnaryPredicate pred)
+{
+    try
+    {
+        for(auto& x : ExpMap)
+        {
+            x.second.removeSpecificSites(pred);
+        }
+    }
+    catch(uChrom_operation_throw &e)
+    {
+#ifdef DEBUG
+        std::cerr << "Failed in divideItemsIntoBinofSize"<<std::endl;
+#endif
+        throw uExp_operation_throw()<<string_error("Throwing while trying to call removeSpecificSites() on all chroms");
+    }
+
+}
+
+/** uGenericNGSExperiment<_SELF_,_CHROM_,_BASE_>::\brief Accumulate information by querying all chromosomes
+  *
+  * Passes the given function to std::accumulate and runs it on every chrom element. Note that the passed
+  * function needs to take directly a chrom structure as argument and an "accumulator" paramator. the function must return the new value
+  * of the accumulator
+  * \param binary_op BinaryOperation : Querying function to perform on the chromosomes collection
+  * \param init InitialValue The initial value of the "accumulator"
+  * \return The information accumulated by querying all the chromosomes
+  */
+template<class _SELF_, typename _CHROM_, typename _BASE_>
+template<class BinaryOperation, class InitialValue>
+InitialValue uGenericNGSExperiment<_SELF_,_CHROM_,_BASE_>::accumulateChromsInfo(BinaryOperation binary_op, InitialValue init) const
+{
+    // Force using sequential version for accumulate as parallel version
+    // doesn't work if actual data type of InitialValue and _CHROM_ cannot be
+    // converted back and forth.
+    return __gnu_parallel::accumulate(std::begin(ExpMap), std::end(ExpMap), init,
+                                      [&binary_op, &init] (decltype(init) partial, NGSExpPair element)
+                                      -> decltype(binary_op(partial, element.second))
+    {
+        return binary_op(partial, element.second);
+    }, __gnu_parallel::sequential_tag());
+}
+
+/** \brief Compute a value for all chromosomes in the experiment and return the resulting collection
+  *
+  * Takes the pased functions and passes it to std::transform. Stores the result in a Map structure
+  * with each result mapping to the equivalent string. The passed function must return a non-void value.
+  *
+  * \param unary_op UnaryOperation : Unary operation to perform on all the chromosomes of the experiment
+  * \return A collection of values computed on each chromosome by unary_op
+  */
+template<class _SELF_, typename _CHROM_, typename _BASE_>
+template<class UnaryOperation>
+auto uGenericNGSExperiment<_SELF_,_CHROM_,_BASE_>::computeOnAllChroms(UnaryOperation unary_op) const -> std::map<std::string, decltype(unary_op(_CHROM_()))>
+{
+    std::map<std::string, decltype(unary_op(_CHROM_()))> results;
+    transform(std::begin(ExpMap), std::end(ExpMap), std::inserter(results, begin(results)), [&unary_op](NGSExpPair element)
+    {
+        return make_pair(element.first, unary_op(element.second));
+    });
+    return results;
+}
+
+/** \brief Compute a value for all chromosomes in the experiment and return the resulting collection
+  *
+  * Takes the passed function and uses it to run std::transform on the specified chrom structure. The passed function
+  * must return a non void value.
+  *
+  * \param unary_op UnaryOperation : Unary operation to perform on all the chromosomes of the experiment.
+  * \param pChr std::string : Chrom/Scaffold name to call the transform on.
+  * \exception param_throw : Thrown if the given pChr does not exist.
+  * \return A collection of values computed on each chromosome by unary_op
+  */
+//TODO re-write this to call dirrectly on child function
+template<class _SELF_, typename _CHROM_, typename _BASE_>
+template<class UnaryOperation>
+auto uGenericNGSExperiment<_SELF_,_CHROM_,_BASE_>::computeOnOneChrom(UnaryOperation unary_op, const std::string & pChr) const -> std::map<std::string, decltype(unary_op(_CHROM_()))>
+{
+    std::map<std::string, decltype(unary_op(_CHROM_()))> results;
+    if (ExpMap.count(pChr))
+    {
+        transform(std::begin(ExpMap), std::end(ExpMap), std::inserter(results, begin(results)), [&unary_op](NGSExpPair element)
+        {
+            return make_pair(element.first, unary_op(element.second));
+        });
+    }
+    return results;
+}
+
+/** \brief Get the chromosomes for which a certain predicate is true
+  *
+  *  Returns a subset of the chromosome structures that evaluated true to the given predicate.
+  *  The passed predicated must return true or false.
+  *
+  *
+  * \param p UnaryPredicate : Unary predicate to evaluate on all chromosomes
+  * \return A collection containing all the chromosomes for which the predicate is true
+  */
+
+//TODO, make this return an EXPERIMENT
+/*
+template<class _SELF_, typename _CHROM_, typename _BASE_>
+template<class UnaryPredicate>
+auto uGenericNGSExperiment<_SELF_,_CHROM_,_BASE_>::getSpecificChroms(UnaryPredicate pred) const->decltype(ExpMap)
+// NGSExpMap getSpecificChroms(UnaryPredicate pred) const
+{
+//         auto begin()->decltype(ExpMap.begin()){return ExpMap.begin();};
+
+    // NGSExpMap copyColl;
+    decltype(ExpMap) copyColl;
+    copy_if(std::begin(ExpMap), std::end(ExpMap), std::inserter(copyColl, std::begin(copyColl)), [&pred]( const typename decltype(ExpMap)::value_type& element)
+    {
+        return pred(element.second);
+    });
+    return copyColl;
+}
+*/
+/** \brief Transform the chromosomes collection by applying a certain function to all chromosomes
+  *
+  *  Takes the passed function and run them on every chromosome structure, via std::for_each.
+  *
+  * \param unary_op UnaryOperation : Unary operation to perform on the chromosomes collection
+  * \return unary_op, the operation that was performed on all chromosomes
+  */
+template<class _SELF_, typename _CHROM_, typename _BASE_>
+template<class UnaryFunction>
+UnaryFunction uGenericNGSExperiment<_SELF_,_CHROM_,_BASE_>::applyOnAllChroms(UnaryFunction f)
+{
+    for_each(std::begin(ExpMap), std::end(ExpMap), [&f](NGSExpPair& element)
+    {
+        f(element.second);
+    });
+    return f;
+}
+
+/** \brief Transform the chromosomes collection by applying a certain function to all chromosomes
+  *
+  * \param unary_op UnaryOperation : Unary operation to perform on the chromosomes collection
+  * \return unary_op, the operation that was performed on all chromosomes
+  * \sa applyOnOneChrom
+  * \sa applyOnAllChroms
+  */
+template<class _SELF_, typename _CHROM_, typename _BASE_>
+template<class UnaryFunction>
+UnaryFunction uGenericNGSExperiment<_SELF_,_CHROM_,_BASE_>::applyOnAllChroms(const UnaryFunction f)const
+{
+    for_each(std::begin(ExpMap), std::end(ExpMap), [&f](NGSExpPair element)
+    {
+        f(element.second);
+    });
+    return f;
+}
+
+
+/** \brief Transform the chromosomes collection by applying a certain function to one chromosomes
+  *
+  *  Identical to applyOnAllChroms, but the function is run on the specified chrom structure.
+  *
+  * \param unary_op UnaryOperation : Unary operation to perform on the chromosomes collection
+  * \exception param_throw
+  * \return unary_op, the operation that was performed on all chromosomes
+  * \sa applyOnAllChroms
+  */
+template<class _SELF_, typename _CHROM_, typename _BASE_>
+template<class UnaryFunction>
+UnaryFunction uGenericNGSExperiment<_SELF_,_CHROM_,_BASE_>::applyOnOneChrom(UnaryFunction f, const std::string & chr)
+{
+    if (ExpMap.count(chr))
+    {
+        auto & elem = ExpMap[chr];
+        f(elem);
+    }
+    return f;
+}
+
+/** \brief Transform the sites of the EXP by applying a certain function
+  *
+  *  The passed function is given to applyOnAllSites for each chromosome structure.
+  *
+  * \param unary_op UnaryOperation : Unary operation to perform on the sites collection
+  * \return unary_op, the operation that was performed on all sites
+  */
+template<class _SELF_, typename _CHROM_, typename _BASE_>
+template<class UnaryFunction>
+UnaryFunction uGenericNGSExperiment<_SELF_,_CHROM_,_BASE_>::applyOnSites(UnaryFunction f)
+{
+    for_each(std::begin(ExpMap), std::end(ExpMap), [&f](NGSExpPair& element)
+    {
+        element.second.applyOnAllSites(f);
+    });
+    return f;
+}
+/**< Const version of its equivalent */
+template<class _SELF_, typename _CHROM_, typename _BASE_>
+template<class UnaryFunction>
+UnaryFunction uGenericNGSExperiment<_SELF_,_CHROM_,_BASE_>::applyOnSites(const UnaryFunction f)const
+{
+    for_each(std::begin(ExpMap), std::end(ExpMap), [&f](NGSExpPair& element)
+    {
+        element.second.applyOnAllSites(f);
+        //f(element.second);
+    });
+    return f;
+}
+
+
+// TODO: there should not be 2 versions, only one that use a parser in paramaters
+/** \brief load data from Parser, convert to unitary and execute the given function. Does -not- necessarily add to EXP
+ *
+ * \param stream std::ifstream& file to load from
+ * \return void
+ *
+ */
+template<class _SELF_, typename _CHROM_, typename _BASE_>
+template<class UnaryFunction>
+void uGenericNGSExperiment<_SELF_,_CHROM_,_BASE_>::loadWithParserAndRun(std::ifstream& pStream, std::string pType, UnaryFunction funct , int pBlockSize)
+{
+    try
+    {
+        std::istream& refStream = pStream;
+        uParser Curparser(&refStream, pType);
+        std::vector<uToken> loadedTokens;
+        loadedTokens.resize(pBlockSize);
+        while(!Curparser.eof())
+        {
+            int curLoaded=0;
+            /**< Load a block of data */
+            while ((curLoaded<pBlockSize)&&(!Curparser.eof()))
+            {
+                loadedTokens.at(curLoaded)=Curparser.getNextEntry();
+
+                curLoaded++;
+            }
+            /**< Operate */
+            for(const uToken & curToken:loadedTokens)
+            {
+                funct( (_BASE_)(curToken) );
+            }
+        }
+    }
+    catch (uParser_exception_base& e) // TODO: check if there is something else that can be thrown
+    {
+        throw e;
+    }
+}
+
+/** \brief load data from Parser, convert to unitary and execute the given function. Does -not- necessarily add to EXP
+ *
+ * \param stream std::string filepath path to the file to load from
+ * \return void
+ *
+ */
+template<class _SELF_, typename _CHROM_, typename _BASE_>
+template<class UnaryFunction>
+void uGenericNGSExperiment<_SELF_,_CHROM_,_BASE_>::loadWithParserAndRun(std::string filepath, std::string pType, UnaryFunction f, int pBlockSize)
+{
+    try
+    {
+        uParser Curparser(filepath, pType);
+        std::vector<uToken> loadedTokens;
+        loadedTokens.resize(pBlockSize);
+        while(!Curparser.eof())
+        {
+            int curLoaded=0;
+            /**< Load a block of data */
+            while ((curLoaded<pBlockSize)&&(!Curparser.eof()))
+            {
+                loadedTokens.at(curLoaded)=(Curparser.getNextEntry());
+                curLoaded++;
+            }
+            /**< Operate */
+            for(const uToken & curToken:loadedTokens)
+            {
+                f( (_BASE_)(curToken) );
+            }
+        }
+    }
+    catch (uParser_exception_base& e) // TODO: check if there is something else that can be thrown
+    {
+        throw e;
+    }
+}
+
+/** \brief Count the chromosomes for which a certain predicate is true
+  *
+  * This function take a pointer to a predicate function; this function
+  * pointer can either be a) * the name of a function taking a chromosome by
+  * reference, b) a lambda function taking a chromosome by reference or c) a
+  * member method of a chromosome using "mem_fun_ref". In all cases, the
+  * function must return a boolean; true is the predicate is true, false
+  * otherwise.
+  *
+  * \param p UnaryPredicate : Unary predicate to evaluate on all chromosomes
+  * \return The number of chromosomes for which the predicate is true
+  */
+template<class _SELF_, typename _CHROM_, typename _BASE_>
+template <class UnaryPredicate>
+typename std::iterator_traits<typename std::map<std::string,_CHROM_>::iterator>::difference_type
+uGenericNGSExperiment<_SELF_,_CHROM_,_BASE_>::countChromsWithProperty(UnaryPredicate pred) const
+{
+    return count_if(std::begin(ExpMap), std::end(ExpMap), [&pred](const NGSExpPair& element)
+    {
+        return pred(element.second);
+    });
+}
+
+/** \brief Find the maximal chromosome according to a certain comparison
+  *
+  * This function take a pointer to a function to find the maximal chromosome;
+  * this function pointer can either be a) the name of a function taking two
+  * chromosomes as parameters, b) a lambda function taking two chromosomes as parameters
+  * or c) a member method of a chromosome taking another chromosome as parameter using
+  * "mem_fun_ref". In all cases, the function must return a boolean: true if
+  * the first element is "lower" than the second, false otherwise.
+  *
+  * \param comp Compare : Binary comparison operation to perform on the chromosomes collection
+  * \return An iterator to the maximal chromosome
+  */
+template<class _SELF_, typename _CHROM_, typename _BASE_>
+template<class Compare>
+typename std::map<std::string,_CHROM_>::const_iterator uGenericNGSExperiment<_SELF_,_CHROM_,_BASE_>::maxChrom(Compare comp) const
+{
+    return max_element(std::begin(ExpMap), std::end(ExpMap),
+                       [&comp](const NGSExpPair& element1, const NGSExpPair& element2) -> bool
+    {
+        return comp(element1.second, element2.second);
+    });
+}
+
+/** \brief Find the minimal chromosome according to a certain comparison
+  *
+  * This function take a pointer to a function to find the minimal chromosome;
+  * this function pointer can either be a) the name of a function taking two
+  * chromosomes as parameters, b) a lambda function taking two chromosomes as parameters
+  * or c) a member method of a chromosome taking another chromosome as parameter using
+  * "mem_fun_ref". In all cases, the function must return a boolean: true if
+  * the first element is "lower" than the second, false otherwise.
+  *
+  * \param comp Compare : Binary comparison operation to perform on the chromosomes collection
+  * \return An iterator to the minimal chromosome
+  */
+template<class _SELF_, typename _CHROM_, typename _BASE_>
+template<class Compare>
+typename std::map<std::string,_CHROM_>::const_iterator uGenericNGSExperiment<_SELF_,_CHROM_,_BASE_>::minChrom(Compare comp) const
+{
+    return min_element(std::begin(ExpMap), std::end(ExpMap),
+                       [&comp](const NGSExpPair& element1, const NGSExpPair& element2) -> bool
+    {
+        return comp(element1.second, element2.second);
+    });
+}
+
+/** \brief Find the minimal and maximal chromosomes according to a certain comparison
+  *
+  * This function take a pointer to a function to find the minimal and
+  * maximal chromosomes; this function pointer can either be a) the name of a
+  * function taking two chromosomes as parameters, b) a lambda function taking two
+  * chromosomes as parameters or c) a member method of a chromosome taking another chromosome
+  * as parameter using "mem_fun_ref". In all cases, the function must return
+  * a boolean: true if the first element is "lower" than the second, false
+  * otherwise.
+  *
+  * \param comp Compare : Binary comparison operation to perform on the chromosomes collection
+  * \return A pair of iterators: the first indicates the minimal chromosome and the second, the maximal chromosome
+  */
+template<class _SELF_, typename _CHROM_, typename _BASE_>
+template<class Compare>
+std::pair<typename std::map<std::string,_CHROM_>::const_iterator, typename std::map<std::string,_CHROM_>::const_iterator> uGenericNGSExperiment<_SELF_,_CHROM_,_BASE_>::minAndMaxChroms(Compare comp) const
+{
+    return minmax_element(std::begin(ExpMap), std::end(ExpMap),
+                          [&comp](const NGSExpPair& element1, const NGSExpPair& element2) -> bool
+    {
+        return comp(element1.second, element2.second);
+    });
+} 
+ 
 } // End of namespace NGS
 #endif // UFORMATEXPERIMENT_H_INCLUDED
