@@ -75,7 +75,7 @@ uBasicNGS(uToken pToken) try : uGenericNGS(pToken)
     uBasicNGS(uRegion p_region);
     bool isEqual(const  uBasicNGS & pCompared) const;
 
-    uBasicNGS getCopy();
+    uBasicNGS getCopy()const;
 
 };
 
@@ -108,7 +108,6 @@ class uBasicNGSExperiment : public uGenericNGSExperiment<uBasicNGSExperiment,uBa
 {
 
     uBasicNGSExperiment& getCopy();
-
 };
 
 } // End of namespace NGS

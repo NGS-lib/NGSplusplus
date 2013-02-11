@@ -46,8 +46,10 @@ void uParserBed::init(std::istream* stream, bool header)
 uToken uParserBed::getNextEntry()
 {
     char line[4096];
+
     if (m_pIostream->getline(line, 4096))
     {
+            m_rawString=line;
         /**< We start by fetching the infos from the line */
         std::stringstream token_infos;
         _convertLineToTokenInfosBed(line, token_infos);

@@ -33,6 +33,7 @@ class uParserBase
       */
     bool eof() const;
     virtual uToken getNextEntry()=0;
+    std::string getPreviousRaw(){return m_rawString;};
     /** \brief Get an unformated version of header (i.e.: a single string containing the whole header)
     */
     std::string getUnformatedHeader() const { return m_headerData.getUnformatedHeader(); }
@@ -49,6 +50,7 @@ protected:
     bool m_dynamicStream = false;
     std::istream* m_pIostream=nullptr;
     uHeader m_headerData;
+    std::string m_rawString="";
 
 };
 

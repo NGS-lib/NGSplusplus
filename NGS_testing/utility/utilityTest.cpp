@@ -37,11 +37,11 @@ TEST(utility, querySamTest)
  //   const int UNMAPPED=4;
     const int MINUS_STRAND=16;
 
-   EXPECT_TRUE( utility::querySamFlag(PAIRED,SamQuery::IS_PAIRED) );
-   EXPECT_FALSE( utility::querySamFlag(PAIRED,SamQuery::NEXT_UNMAPPED) );
+   EXPECT_TRUE( utility::SAM::querySamFlag(PAIRED,SamQuery::IS_PAIRED) );
+   EXPECT_FALSE( utility::SAM::querySamFlag(PAIRED,SamQuery::NEXT_UNMAPPED) );
 
-   EXPECT_FALSE( utility::querySamFlag(MINUS_STRAND,SamQuery::FAIL_QUAL) );
-   EXPECT_TRUE( utility::querySamFlag(MINUS_STRAND,SamQuery::SEQ_REV_STRAND) );
+   EXPECT_FALSE( utility::SAM::querySamFlag(MINUS_STRAND,SamQuery::FAIL_QUAL) );
+   EXPECT_TRUE( utility::SAM::querySamFlag(MINUS_STRAND,SamQuery::SEQ_REV_STRAND) );
 
 }
 

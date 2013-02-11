@@ -15,7 +15,7 @@ public:
       */
     uWriterBed4() {}
     virtual void writeToken(const uToken& token);
-     static uWriterBase * Create() { return new uWriterBed4(); }
+    static uWriterBase * Create() { return new uWriterBed4(); }
 private:
    // static DerivedRegister<uWriterBed4> reg;
 

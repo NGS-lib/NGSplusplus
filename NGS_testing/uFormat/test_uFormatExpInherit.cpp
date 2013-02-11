@@ -684,7 +684,7 @@ TEST(uBasicNGSEXP_divideItemsIntoNBins, EXPWITHOUTELEM) {
  *		EMPTY
  *	Invalid cases:
  */
-TEST(uBasicNGSGENCHR_removeSpecificSites, NONREMOVED) {
+TEST(uBasicNGSGENEXP_removeSpecificSites, NONREMOVED) {
 	validExperiments myExperiments;
 	auto functOp = [](const uBasicNGS & item){  return (item.getLenght()>2000); };
 	EXPECT_EQ(myExperiments.getExperiment("MultipleChroms")->count(), 13);
@@ -692,7 +692,7 @@ TEST(uBasicNGSGENCHR_removeSpecificSites, NONREMOVED) {
 	EXPECT_EQ(myExperiments.getExperiment("MultipleChroms")->count(), 13);
 }
 
-TEST(uBasicNGSGENCHR_removeSpecificSites, SOMEREMOVED) {
+TEST(uBasicNGSGENEXP_removeSpecificSites, SOMEREMOVED) {
 	validExperiments myExperiments;
 	auto functOp = [](const uBasicNGS & item){  return (item.getLenght()>101); };
 	EXPECT_EQ(myExperiments.getExperiment("MultipleChroms")->count(), 13);
@@ -700,7 +700,7 @@ TEST(uBasicNGSGENCHR_removeSpecificSites, SOMEREMOVED) {
 	EXPECT_EQ(myExperiments.getExperiment("MultipleChroms")->count(), 10);
 }
 
-TEST(uBasicNGSGENCHR_removeSpecificSites, ALLREMOVED) {
+TEST(uBasicNGSGENEXP_removeSpecificSites, ALLREMOVED) {
 	validExperiments myExperiments;
 	auto functOp = [](const uBasicNGS & item){  return (item.getLenght()>99); };
 	EXPECT_EQ(myExperiments.getExperiment("MultipleChroms")->count(), 13);
@@ -708,7 +708,7 @@ TEST(uBasicNGSGENCHR_removeSpecificSites, ALLREMOVED) {
 	EXPECT_EQ(myExperiments.getExperiment("MultipleChroms")->count(), 0);
 }
 
-TEST(uBasicNGSGENCHR_removeSpecificSites, EMPTY) {
+TEST(uBasicNGSGENEXP_removeSpecificSites, EMPTY) {
 	validExperiments myExperiments;
 	auto functOp = [](const uBasicNGS & item){  return (item.getLenght()>99); };
 	EXPECT_EQ(myExperiments.getExperiment("Empty_Exp")->count(), 0);

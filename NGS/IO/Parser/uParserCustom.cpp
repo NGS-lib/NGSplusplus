@@ -18,14 +18,14 @@ uParserCustom::~uParserCustom()
  */
 void uParserCustom::init(const std::string& filename, bool header)
 {
-    throw ugene_exception_base()<<string_error("Invalid constructor call for Custom Format");
+    throw uParser_exception_base()<<string_error("Invalid constructor call for Custom Format");
 }
 
 /** \brief Initialize the uParserCustom object (default initialization of uParserCustom is not valid).
  */
 void uParserCustom::init(std::istream* stream, bool header)
 {
-    throw ugene_exception_base()<<string_error("Invalid constructor call for Custom Format");
+    throw uParser_exception_base()<<string_error("Invalid constructor call for Custom Format");
 }
 
 /** \brief Initialize the uParserCustom object.
@@ -35,7 +35,7 @@ void uParserCustom::init(std::istream* stream, bool header)
  */
 void uParserCustom::init(const std::string& filename, const std::vector<std::string>& fieldsNames, char delimiter)
 {
-      uParserBase::init(filename);
+    uParserBase::init(filename);
     m_delimiter = delimiter;
     /**< Check if fields are in a valid format */
     try
@@ -79,7 +79,9 @@ uToken uParserCustom::getNextEntry()
     if (m_pIostream->getline(line, 4096))
     {
         /**< We start by fetching the infos from the line */
+        m_rawString=line;
         std::stringstream token_infos;
+
         _convertLineToTokenInfosCustom(line, token_infos);
         /**< We try to create a token with the infos that were fetched from the line */
         /**< If it doesn't work andit's the first token, we don't throw an error. Instead, we try again with another line */
@@ -121,8 +123,10 @@ void uParserCustom::_convertLineToTokenInfosCustom(char* line, std::stringstream
     current = strtok(l, &m_delimiter);
     for(size_t i = 0; i < m_customFieldNames.size(); i++)
     {
-        token_infos << m_customFieldNames[i] << "\t" << current << "\n";
-        current = strtok(NULL, &m_delimiter);
+        if (m_customFieldNames[i]!="JUNK"){
+            token_infos << m_customFieldNames[i] << "\t" << current << "\n";
+            current = strtok(NULL, &m_delimiter);
+        }
     }
 }
 

@@ -42,9 +42,9 @@ public:
     {
         return density;
     };
-    void setCount(int ucount)
+    void setCount(int pCount)
     {
-        count=ucount;
+        count=pCount;
     };
     int getCount()const
     {
@@ -56,8 +56,8 @@ public:
 
 
     void writeSignal(std::ostream& out) const;
-    void writeRegion(std::ostream& out) const;
-    void writeAll(std::ostream& out ) const;
+ //  void writeRegion(std::ostream& out) const;
+ //   void writeAll(std::ostream& out ) const;
 
     bool isEqual(const uRegion & pCompared)const;
 
@@ -108,8 +108,8 @@ public:
     void generateSignal(const uTagsChrom & chromToComp);
     void generateSignal(const uBasicNGSChrom & chromToComp);
 
-    void writeDensityAsTab(std::ostream& out);
-    void writeAll(std::ostream& out);
+//    void writeDensityAsTab(std::ostream& out);
+ //   void writeAll(std::ostream& out);
     void writeSignal(std::ostream& out);
 
 };
@@ -129,14 +129,12 @@ public:
     void measureDensityOverlap(const uRegionExperiment& expToComp, const OverlapType poverlap=OverlapType::OVERLAP_PARTIAL);
     void measureDensityOverlap(const uBasicNGSExperiment& expToComp, const OverlapType poverlap=OverlapType::OVERLAP_PARTIAL);
 
-
-
     void generateSignal(const uTagsExperiment& expToComp);
     void generateSignal(const uRegionExperiment & expToComp);
     void generateSignal(const uBasicNGSExperiment & expToComp);
 
-    void writeDensityAsTab(std::ostream& out);
-    void writeAll(std::ostream& out);
+ //   void writeDensityAsTab(std::ostream& out);
+//    void writeAll(std::ostream& out);
     void writeSignal(std::ostream& out);
 
     void loadFromWig(std::ifstream & inputStream);

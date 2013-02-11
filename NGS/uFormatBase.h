@@ -62,7 +62,6 @@ public:
     StrandDir getStrand() const;
     void setStrand(char pStrand);
 
-
     void setStrand(StrandDir pStrand);
     bool isReverse() const;
 

@@ -75,11 +75,9 @@ TEST(uBasicNGSChromTest, FUNCTIONS){
     EXPECT_ANY_THROW(uChromBig.getSite(0));
 }
 
-
 TEST(factoryTest, uGenericTest){
    // std::string myline("chr2 400 300");
   //  EXPECT_ANY_THROW(factory::makeNGSfromTabString(myline));
-
     uBasicNGS ourTest=factory::makeNGSfromTabString<uBasicNGS>(("chr2 200 300"));
 
     EXPECT_EQ(ourTest.getChr(), "chr2");
@@ -87,16 +85,6 @@ TEST(factoryTest, uGenericTest){
     EXPECT_EQ(ourTest.getEnd(), 300);
 }
 
-TEST(writeTest, uGenecExpTest){
-
-   // uBasicNGSExperiment testExp;
-   //uBasicNGSExperiment<uBasicNGSChrom<uBasicNGS>,uBasicNGS> testExp;
-    uTagsExperiment textExp;
-    //testExp.addData(uBasicNGS("chr21", 300, 800));
-    textExp.writeAsBedFile(cout);
-
-
-}
 
 using namespace testing;
 int main(int argc, char **argv) {

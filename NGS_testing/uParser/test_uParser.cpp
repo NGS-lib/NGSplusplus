@@ -61,3 +61,12 @@ TEST(getUnformatedHeader, WithHeader) {
 	unformated += "itemRgb=\"On\"\n";
 	ASSERT_EQ(Parser.getUnformatedHeader(), unformated);
 }
+
+TEST(uParser_getRawData, Normal) {
+	 uParser Parser("../data/BED/test.bed", "BED");
+
+	EXPECT_NO_THROW(Parser.getNextEntry());
+	EXPECT_NO_THROW(Parser.getPreviousRaw());
+
+    std::cout << Parser.getPreviousRaw()<<"\n";
+}

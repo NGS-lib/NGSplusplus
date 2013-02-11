@@ -84,15 +84,16 @@ uTags::uTags(std::string pChr, long long int pStart, long long int pEnd, StrandD
     }
 }
 
-uTags::uTags(std::string pChr, long long int pStart, long long int pEnd, StrandDir pStrand, float pScore)try : uGenericNGS(pChr,pStart,pEnd,pStrand,pScore),name(nullptr),phredScore(nullptr),m_cigar(nullptr)
+uTags::uTags(std::string pChr, long long int pStart, long long int pEnd, StrandDir pStrand, float pScore)try :
+    uGenericNGS(pChr,pStart,pEnd,pStrand,pScore),name(nullptr),phredScore(nullptr),m_cigar(nullptr)
 {
-   /* try
-    {
-        setStartEnd(pStart,pEnd);
-        setChr(pChr);
-        setStrand(pStrand);
-        setScore(pScore);
-    }*/
+    /* try
+     {
+         setStartEnd(pStart,pEnd);
+         setChr(pChr);
+         setStrand(pStrand);
+         setScore(pScore);
+     }*/
 }
 catch(construct_elem_throw & e)
 {
@@ -105,13 +106,14 @@ catch(construct_elem_throw & e)
     throw e;
 }
 
-uTags::uTags(std::string pChr, long long int pStart, long long int pEnd, float pScore)try : uGenericNGS(pChr,pStart,pEnd,pScore),name(nullptr),phredScore(nullptr),m_cigar(nullptr)
+uTags::uTags(std::string pChr, long long int pStart, long long int pEnd, float pScore)try :
+    uGenericNGS(pChr,pStart,pEnd,pScore),name(nullptr),phredScore(nullptr),m_cigar(nullptr)
 {}
 catch(construct_elem_throw &e)
 {
-    #ifdef DEBUG
+#ifdef DEBUG
     cerr << "Throwing in uTags constructor" <<endl;
-    #endif
+#endif
     addStringError(e,"Throwing in uTags(string,long long int, long long int,float)");
     e << tag_error(*this);
     throw e;
@@ -269,6 +271,295 @@ bool uTags::isEqual(const uTags & pCompared) const
 
 }
 
+/** \brief Returns true if the tag is unmapped or incorrectly mapped
+ *
+ * \return bool
+ *
+ */
+bool uTags::isMapped() const
+{
+    return Unmapped;
+}
+/** \brief Set the mapped value of the tag.
+ *
+ * \param pmapped bool : Value to set the status to
+ * \return void
+ *
+ */
+void uTags::setMapped(bool pmapped)
+{
+    Unmapped=pmapped;
+}
+
+
+/** \brief Set the cigar value
+ *
+ * \param pcigar std::string : String to set cigar to
+ * \return void
+ *
+ */
+void uTags::setCigar(std::string pCigar)
+{
+
+    //   if (!( utility::validateCigar(pCigar))
+    //         throw param_throw()<<string_error("Invalide m_cigar flag passed to SetCigar. Flag is: "+pCigar+"\n" )
+    if (m_cigar!=nullptr)
+    {
+        delete []m_cigar;
+        m_cigar = nullptr;
+    }
+    try
+    {
+        m_cigar = new char[pCigar.size()+1];
+        int lenght=pCigar.copy(m_cigar,pCigar.size(),0 );
+        m_cigar[lenght]='\0';
+
+    }
+    catch(std::exception & e)
+    {
+#ifdef DEBUG
+        std::cerr <<"Failled allocation in setCigar()";
+#endif
+        throw  e;
+    }
+}
+
+/** \brief get the Cigar string associated with the sequence
+ *
+ * \return std::string
+ *
+ */
+std::string uTags::getCigar() const
+{
+    std::string returnStr;
+    if (m_cigar==nullptr)
+        returnStr="";
+    else
+        returnStr=m_cigar;
+    return returnStr;
+}
+
+/** \brief Set the Sam Flag associated with the sequence
+ *
+ * \param pflag int : The sam flag to set
+ * \return void
+ *
+ */
+void uTags::setFlag(int pflag)
+{
+    flag=pflag;
+}
+/** \brief Get the Sam flag associated with the sequence.
+ *
+ * \return int : The Sam flag associated.
+ *
+ */
+int uTags::getFlag() const
+{
+    return flag;
+}
+
+/** \brief Set the sequence associated with the element
+ *
+ *  Sets the sequence associated with the element. The sequence needs to be either
+ *  null ("") or of size equal to the element.
+ * \exception param_throw : Thrown when parameter size neighter null or equal to element getLenght()
+ * \param pSeq std::string : The sequence to set
+ * \return void
+ *
+ */
+void uTags::setSequence(std::string pSeq)
+{
+    if(((int)pSeq.size()!=0)&&((int)pSeq.size()!=getLenght()))
+        throw param_throw()<< string_error("Failling in seqSequence. Sequence size neither null or equal to element size.");
+    sequence=pSeq;
+}
+/** \brief Get the sequence associated with the element.
+ *
+ * \return std::string : The sequence associated with the element.
+ *
+ */
+std::string uTags::getSequence() const
+{
+    return sequence;
+}
+
+/** \brief Set the PhredScore assocaited with the sequence
+ *
+ * \param Phred std::string : The sequence to set
+ * \exception
+ * \return void
+ *
+ */
+void uTags::setPhred(std::string Phred)
+{
+    if (phredScore!=nullptr)
+    {
+        delete []phredScore;
+        phredScore = nullptr;
+    }
+
+    try
+    {
+        phredScore = new char[Phred.size()+1];
+        int lenght=Phred.copy(phredScore,Phred.size(),0 );
+        phredScore[lenght]='\0';
+    }
+    catch(std::exception & e)
+    {
+#ifdef DEBUG
+        std::cerr <<"Failled allocation in setPhred()";
+#endif
+        throw e;
+    }
+
+
+}
+
+/** \brief get the PhredScore associated with the sequence
+ *
+ * \return std::string : The PhredScore vector
+ *
+ */
+std::string uTags::getPhred() const
+{
+    std::string returnStr;
+    if (phredScore==nullptr)
+        returnStr=="";
+    else
+        returnStr=phredScore;
+    return returnStr;
+}
+
+/** \brief Set the ID associated with the element.
+ *
+ *  This sets the ID associated with the element. There are no conditions attached to the ID
+ *
+ * \param pName std::string : ID to set the name to
+ * \exception Thrown when new allocations fails.
+ * \return void
+ *
+ */
+void uTags::setName(std::string pName)
+{
+    if (name!=nullptr)
+    {
+        delete []name;
+        name = nullptr;
+    }
+
+    try
+    {
+        name= new char [pName.size()+1];
+        int lenght = pName.copy(name, pName.size(),0);
+        name[lenght]='\0';
+    }
+    catch(std::exception & e)
+    {
+#ifdef DEBUG
+        std::cerr <<"Failled allocation in setName()";
+#endif
+
+        throw e ;
+    }
+
+}
+
+/** \brief Get the name/ID associated with the element
+ *
+ * \return std::string : The returned ID
+ *
+ */
+std::string uTags::getName() const
+{
+    std::string returnStr;
+    if (name==nullptr)
+        returnStr="";
+    else
+        returnStr=name;
+    return returnStr;
+}
+
+/** \brief True if the paired end lenght is above 0
+ *
+ * \return bool True if PElenght is set
+ *
+ */
+bool uTags::isPE() const
+{
+    return PELenght;
+}
+
+/** \brief
+ *
+ * \param lenght int : Value to set PELenght to.
+ * \exception : param_throw(): Throw if parameter is < 0.
+ * \return void
+ *
+ */
+void uTags::setPELenght(int lenght)
+{
+
+    if  (lenght <0)
+        throw param_throw()<<string_error("Throwing in setPELenght. Set an invalid PE lenght<0");
+    PELenght=lenght;
+
+}
+/** \brief Return the PELenght of the element
+ *
+ * \return int
+ *
+ */
+int uTags::getPeLenght() const
+{
+    return PELenght;
+}
+
+/** \brief Set the mapping quality of the element, max value is 255
+ *
+ * \param score short int : Value to set MapQuality to
+ * \return void
+ *
+ */
+void uTags::setMapQual(short int score)
+{
+    mapScore=score;
+}
+
+/** \brief Return the mapping quality of the element.
+ *
+ * \return short int: Mapping value
+ *
+ */
+short int uTags::getMapQual() const
+{
+    return mapScore;
+}
+
+uTags uTags::getCompletedCopy()const
+{
+    try
+    {
+        if (PELenght==0)
+            return this->getCopy();
+        else
+        {
+            uTags rtnCopy= this->getCopy();
+            if (rtnCopy.getStrand()==StrandDir::FORWARD)
+                rtnCopy.setEnd(rtnCopy.getEnd()+rtnCopy.getPeLenght());
+            else
+                rtnCopy.setStart(rtnCopy.getStart()-rtnCopy.getPeLenght());
+            return rtnCopy;
+        }
+    }
+    catch(ugene_exception_base & e)
+    {
+        addStringError(e, "Failling in getCompletedTag, completing tag would invalid start or end position");
+        e <<tag_error(*this);
+        throw e;
+    }
+
+}
 
 // TODO: Should this be in parser code?
 /** \brief Load a tag from a string formated in Sam format and enter in member data
@@ -277,10 +568,10 @@ bool uTags::isEqual(const uTags & pCompared) const
  * \param minimal : if true, do not load certain information for space contraints
  *
  */
-void uTags::loadfromSamString(std::string samString, bool minimal=false)
-{
-    *this=factory::makeTagfromSamString(samString,minimal);
-}
+//void uTags::loadfromSamString(std::string samString, bool minimal=false)
+//{
+//    *this=factory::makeTagfromSamString(samString,minimal);
+//}
 
 // TODO: Move this to output class
 ///** \brief Write our tag in bed format, using our Tag Name/ID as the misc 4th column
@@ -316,15 +607,15 @@ void uTags::loadfromSamString(std::string samString, bool minimal=false)
  * \param out : Output stream to use.
  *
  */
-void uTags::writetoBedCompletePE( std::ostream &out)
-{
-
-    if ((this->isPE())&&(this->getStrand()==StrandDir::FORWARD))
-    {
-        out << getChr() << "\t" << this->getStart() << "\t" << ( this->getStart()+this->getPeLenght()) <<endl;;
-    }
-
-}
+//void uTags::writetoBedCompletePE( std::ostream &out)
+//{
+//
+//    if ((this->isPE())&&(this->getStrand()==StrandDir::FORWARD))
+//    {
+//        out << getChr() << "\t" << this->getStart() << "\t" << ( this->getStart()+this->getPeLenght()) <<endl;;
+//    }
+//
+//}
 
 // TODO: Move this to output class
 /** \brief Write our data in Sam format, with some minor details missing
@@ -332,62 +623,64 @@ void uTags::writetoBedCompletePE( std::ostream &out)
  * \param out : Output stream to use.
  *
  */
-void uTags::writeSamToOutput(std::ostream &out) const
-{
-
-    int peLenght;
-    string cigar, sequence, phred;
-
-    cigar = this->getCigar();
-    if (cigar.size()==0)
-        cigar=utility::concatStringInt("M", getLenght(), false);
-    sequence = this->getSequence();
-    phred= getPhred();
-    if (phred.size()==0)
-        phred="*";
-    /**< Since Picard tools poorly validates a sequence lenght, we must pad with = if we did not store sequences */
-    if (sequence.size()==0)
-    {
-        for (int i=0; i<getLenght(); i++ )
-            sequence.push_back('=');
-    }
-
-    if (isPE())
-    {
-        peLenght= getPeLenght();
-        /**< We store lenght as positive, but in Sam format it can be negative */
-        if (flag&0x10)
-            peLenght = (-peLenght);
-    }
-    else
-        peLenght=0;
-
-    out <<  getName() << "\t" << getFlag() << "\t" << getChr() << "\t" << getStart() << "\t" <<getMapQual()
-        << "\t" <<cigar << "\t" << '*' << "\t" << 0 << "\t" << peLenght << "\t" ;
-
-    out << sequence  << "\t"<< phred;
-    out <<endl;
-}
- /** \brief Prints a human readable version of the element in no particular format.
-  *
-  * \param pOut std::ostream& Output to write to.
-  * \return void
-  *
-  */
+//void uTags::writeSamToOutput(std::ostream &out) const
+//{
+//
+//    int peLenght;
+//    string cigar, sequence, phred;
+//
+//    cigar = this->getCigar();
+//    if (cigar.size()==0)
+//        cigar=utility::concatStringInt("M", getLenght(), false);
+//    sequence = this->getSequence();
+//    phred= getPhred();
+//    if (phred.size()==0)
+//        phred="*";
+//    /**< Since Picard tools poorly validates a sequence lenght, we must pad with = if we did not store sequences */
+//    if (sequence.size()==0)
+//    {
+//        for (int i=0; i<getLenght(); i++ )
+//            sequence.push_back('=');
+//    }
+//
+//    if (isPE())
+//    {
+//        peLenght= getPeLenght();
+//        /**< We store lenght as positive, but in Sam format it can be negative */
+//        if (flag&0x10)
+//            peLenght = (-peLenght);
+//    }
+//    else
+//        peLenght=0;
+//
+//    out <<  getName() << "\t" << getFlag() << "\t" << getChr() << "\t" << getStart() << "\t" <<getMapQual()
+//        << "\t" <<cigar << "\t" << '*' << "\t" << 0 << "\t" << peLenght << "\t" ;
+//
+//    out << sequence  << "\t"<< phred;
+//    out <<endl;
+//}
+/** \brief Prints a human readable version of the element in no particular format.
+ *
+ * \param pOut std::ostream& Output to write to.
+ * \return void
+ *
+ */
 void uTags::print(std::ostream &pOut) const
 {
     pOut<<"Chrom: "<<getChr()<<std::endl;
     pOut<<"Start: "<<utility::to_string(getStart())<<std::endl;
     pOut<<"End: " <<utility::to_string(getEnd())<<std::endl;
-    if (Unmapped){
-          pOut<<"Tag is not mapped to reference or mapped with errors"<<std::endl;
+    if (Unmapped)
+    {
+        pOut<<"Tag is not mapped to reference or mapped with errors"<<std::endl;
     }
-    if (m_score.size()>0){
-         pOut<<"Scores: ";
+    if (m_score.size()>0)
+    {
+        pOut<<"Scores: ";
         for(auto value: m_score )
-             pOut<<value<<" ";
-          pOut<<std::endl;
-        }
+            pOut<<value<<" ";
+        pOut<<std::endl;
+    }
     if (name!=nullptr)
     {
         pOut<<"Name: " <<name<<std::endl;
@@ -431,7 +724,7 @@ uToken uTags::createToken() const
     if (getStrand()==StrandDir::FORWARD)
         ss << "STRAND\t"<<"+"<<"\n";
     else
-         ss << "STRAND\t"<<"-"<<"\n";
+        ss << "STRAND\t"<<"-"<<"\n";
 
     ss << "MAP_SCORE\t"<<utility::to_string(this->getMapQual())<<"\nFLAGS\t"<<utility::to_string(this->getFlag())<<"\n";
     if (getSequence()!="")
@@ -439,7 +732,7 @@ uToken uTags::createToken() const
 
     if (name!=nullptr)
     {
-       ss<<"SEQ_NAME\t"<<name<<"\n";
+        ss<<"SEQ_NAME\t"<<name<<"\n";
     }
     if (phredScore!=nullptr)
     {
@@ -449,7 +742,8 @@ uToken uTags::createToken() const
     {
         ss<<"CIGAR\t" <<m_cigar<<"\n";
     }
-    try {
+    try
+    {
         return uToken(ss);
     }
     catch(uToken_exception_base &e)
@@ -458,7 +752,7 @@ uToken uTags::createToken() const
         throw e;
     }
 
- }
+}
 
 
 // TODO: Move this to output class
@@ -468,47 +762,47 @@ uToken uTags::createToken() const
  * \param out : Output stream to use.
  *
  */
-void uTags::writeCompletedPESamToOutput(std::ostream &out)
-{
-    /**< Write function, do not trust for diverse use. */
-    try
-    {
-        int peLenght;
-        peLenght= getPeLenght();
-
-        if (flag&0x10)
-            peLenght = (-peLenght);
-
-        //TODO, introducting try catch
-        if ((flag&0x10)||(peLenght<0))
-        {
-#ifdef DEBUG
-            cerr << " negative Strand??"<<endl;
-#endif
-         //   print();
-            //  utility::pause_input();
-        }
-        else /**< Do not write cigar for now */
-            if (peLenght!=0)
-            {
-                out <<  getName() << "\t" << 0 << "\t" << getChr() << "\t" << getStart() << "\t" <<getMapQual()
-                    << "\t" << peLenght<<'M' << "\t" << '*' << "\t" << 0 << "\t" << 0 << "\t" ;
-                for (int i=0; i<peLenght; i++ )
-                    out << '=' ;
-                out  << "\t"<< '*';
-
-                out <<endl;
-            }
-    }
-    catch(std::exception & e )
-    {
-#ifdef DEBUG
-        cerr << " Catching in writeCompletedPESamToOutput"<<endl;
-#endif
-        throw e;
-    }
-
-}
+//void uTags::writeCompletedPESamToOutput(std::ostream &out)
+//{
+//    /**< Write function, do not trust for diverse use. */
+//    try
+//    {
+//        int peLenght;
+//        peLenght= getPeLenght();
+//
+//        if (flag&0x10)
+//            peLenght = (-peLenght);
+//
+//        //TODO, introducting try catch
+//        if ((flag&0x10)||(peLenght<0))
+//        {
+//#ifdef DEBUG
+//            cerr << " negative Strand??"<<endl;
+//#endif
+//         //   print();
+//            //  utility::pause_input();
+//        }
+//        else /**< Do not write cigar for now */
+//            if (peLenght!=0)
+//            {
+//                out <<  getName() << "\t" << 0 << "\t" << getChr() << "\t" << getStart() << "\t" <<getMapQual()
+//                    << "\t" << peLenght<<'M' << "\t" << '*' << "\t" << 0 << "\t" << 0 << "\t" ;
+//                for (int i=0; i<peLenght; i++ )
+//                    out << '=' ;
+//                out  << "\t"<< '*';
+//
+//                out <<endl;
+//            }
+//    }
+//    catch(std::exception & e )
+//    {
+//#ifdef DEBUG
+//        cerr << " Catching in writeCompletedPESamToOutput"<<endl;
+//#endif
+//        throw e;
+//    }
+//
+//}
 
 // TODO: Move this to output class
 /** \brief Write a tag in Sam specification, but trimming a certain size both left and right of it.
@@ -518,34 +812,34 @@ void uTags::writeCompletedPESamToOutput(std::ostream &out)
  * \param right : Number of bp to trim from right ( 5' direction ) of tag.
  *
  */
-bool uTags::writeTrimmedSamToOutput(std::ostream &out, int left, int right)
-{
-
-    // int ourflag;
-    if ((left + right)>=this->getLenght())
-    {
-        return false;
-    }
-    // ourflag=ourflag&
-    if (getStrand()==StrandDir::REVERSE)
-    {
-        trimSite(right, left);
-    }
-    else
-    {
-        trimSite(left,right);
-    }    /**< Do not write cigar for now */
-    out <<  getName() << "\t" << 0 << "\t" << getChr() << "\t" << getStart() << "\t" << getMapQual()
-        << "\t" <<   getLenght()<<'M' << "\t" << '*' << "\t" << 0 << "\t" << 0;// << "\t" << '*' << "\t" << '*';
-    out  << "\t";
-    for (int i=0; i<getLenght(); i++ )
-        out << '=' ;
-    out  << "\t"<< '*';
-
-
-    out <<endl;
-    return true;
-}
+//bool uTags::writeTrimmedSamToOutput(std::ostream &out, int left, int right)
+//{
+//
+//    // int ourflag;
+//    if ((left + right)>=this->getLenght())
+//    {
+//        return false;
+//    }
+//    // ourflag=ourflag&
+//    if (getStrand()==StrandDir::REVERSE)
+//    {
+//        trimSite(right, left);
+//    }
+//    else
+//    {
+//        trimSite(left,right);
+//    }    /**< Do not write cigar for now */
+//    out <<  getName() << "\t" << 0 << "\t" << getChr() << "\t" << getStart() << "\t" << getMapQual()
+//        << "\t" <<   getLenght()<<'M' << "\t" << '*' << "\t" << 0 << "\t" << 0;// << "\t" << '*' << "\t" << '*';
+//    out  << "\t";
+//    for (int i=0; i<getLenght(); i++ )
+//        out << '=' ;
+//    out  << "\t"<< '*';
+//
+//
+//    out <<endl;
+//    return true;
+//}
 
 /** \brief Copy constructor
  *
@@ -617,29 +911,29 @@ uTagsChrom::uTagsChrom(const uBasicNGSChrom & pCopyChrom)
  * \return void
  *
  */
-void uTagsChrom::outputBedFormat(std::ostream& out) const
-{
-    // std::vector<uTags>::iterator iterVec;
-    for (auto iterVec = VecSites.begin(); iterVec != VecSites.end(); ++iterVec)
-    {
-        //iterVec->writeBedToOuput(out);
-    }
-}
+//void uTagsChrom::outputBedFormat(std::ostream& out) const
+//{
+//    // std::vector<uTags>::iterator iterVec;
+//    for (auto iterVec = VecSites.begin(); iterVec != VecSites.end(); ++iterVec)
+//    {
+//        //iterVec->writeBedToOuput(out);
+//    }
+//}
 
 /** \brief Write all PE tags are complete bed regions
  *
  * \param out : Our output stream
  *
  */
-void uTagsChrom::writetoBedCompletePE(std::ostream& out)
-{
-    std::vector<uTags>::iterator iterVec;
-
-    for (iterVec = VecSites.begin(); iterVec != VecSites.end(); ++iterVec)
-    {
-        iterVec->writetoBedCompletePE(out);
-    }
-}
+//void uTagsChrom::writetoBedCompletePE(std::ostream& out)
+//{
+//    std::vector<uTags>::iterator iterVec;
+//
+//    for (iterVec = VecSites.begin(); iterVec != VecSites.end(); ++iterVec)
+//    {
+//        iterVec->writetoBedCompletePE(out);
+//    }
+//}
 
 /** \brief Write every tag in Sam format, trimming the size of every tag
  *
@@ -648,23 +942,23 @@ void uTagsChrom::writetoBedCompletePE(std::ostream& out)
  * \param right : Number of bp to trim from right ( 5' direction ) of tag.
  *
  */
-void uTagsChrom::writeTrimmedSamToOutput(std::ostream &out, int left, int right)
-{
-    int errorcount=0;
-    std::vector<uTags>::iterator iterVec;
-    // if (VecSites.size())
-    //     out << "@SQ	SN:" << getChr() << "\t"<<"LN:"<<getChromSize() <<endl;
-    for (iterVec = VecSites.begin(); iterVec != VecSites.end(); ++iterVec)
-    {
-        if (iterVec->writeTrimmedSamToOutput(out, left, right)==false)
-            errorcount++;
-    }
-#ifdef DEBUG
-    if (errorcount)
-        cerr << "Skipped " << errorcount << " tags as trim would reduce them to 0. On Chrom " << this->getChr();
-#endif
-
-}
+//void uTagsChrom::writeTrimmedSamToOutput(std::ostream &out, int left, int right)
+//{
+//    int errorcount=0;
+//    std::vector<uTags>::iterator iterVec;
+//    // if (VecSites.size())
+//    //     out << "@SQ	SN:" << getChr() << "\t"<<"LN:"<<getChromSize() <<endl;
+//    for (iterVec = VecSites.begin(); iterVec != VecSites.end(); ++iterVec)
+//    {
+//        if (iterVec->writeTrimmedSamToOutput(out, left, right)==false)
+//            errorcount++;
+//    }
+//#ifdef DEBUG
+//    if (errorcount)
+//        cerr << "Skipped " << errorcount << " tags as trim would reduce them to 0. On Chrom " << this->getChr();
+//#endif
+//
+//}
 
 /** \brief Write our PE tags as a sam file and complete
  *   Does nothing if the tag is not PE
@@ -672,20 +966,20 @@ void uTagsChrom::writeTrimmedSamToOutput(std::ostream &out, int left, int right)
  *  \param out : Output stream to use.
  *
  */
-void uTagsChrom::writeCompletedPESamToOutput(std::ostream &out)
-{
-
-    std::vector<uTags>::iterator iterVec;
-
-    /**< Do not output unmapped tags */
-
-    for (iterVec = VecSites.begin(); iterVec != VecSites.end(); ++iterVec)
-    {
-        if ((iterVec->isPE())&&(iterVec->getStrand()==StrandDir::FORWARD)&&(iterVec->isMapped()))
-            iterVec->writeCompletedPESamToOutput(out);
-    }
-
-}
+//void uTagsChrom::writeCompletedPESamToOutput(std::ostream &out)
+//{
+//
+//    std::vector<uTags>::iterator iterVec;
+//
+//    /**< Do not output unmapped tags */
+//
+//    for (iterVec = VecSites.begin(); iterVec != VecSites.end(); ++iterVec)
+//    {
+//        if ((iterVec->isPE())&&(iterVec->getStrand()==StrandDir::FORWARD)&&(iterVec->isMapped()))
+//            iterVec->writeCompletedPESamToOutput(out);
+//    }
+//
+//}
 
 /** \brief Write the @SQ line for the chromosome
  *
@@ -693,11 +987,11 @@ void uTagsChrom::writeCompletedPESamToOutput(std::ostream &out)
  * \return void
  *
  */
-void uTagsChrom::writeSamHeaderLine(std::ostream &out) const
-{
-    if (VecSites.size())
-        out << "@SQ	SN:" << getChr() << "\t"<<"LN:"<<getChromSize() <<endl;
-}
+//void uTagsChrom::writeSamHeaderLine(std::ostream &out) const
+//{
+//    if (VecSites.size())
+//        out << "@SQ	SN:" << getChr() << "\t"<<"LN:"<<getChromSize() <<endl;
+//}
 
 //void writeSamToOutput(std::ostream &out);
 
@@ -706,15 +1000,15 @@ void uTagsChrom::writeSamHeaderLine(std::ostream &out) const
  *  \param out : OfStream
  *
  */
-void uTagsChrom::writeSamToOutput(std::ostream &out) const
-{
-
-    for (auto iterVec = VecSites.begin(); iterVec != VecSites.end(); ++iterVec)
-    {
-        iterVec->writeSamToOutput(out);
-    }
-
-}
+//void uTagsChrom::writeSamToOutput(std::ostream &out) const
+//{
+//
+//    for (auto iterVec = VecSites.begin(); iterVec != VecSites.end(); ++iterVec)
+//    {
+//        iterVec->writeSamToOutput(out);
+//    }
+//
+//}
 
 //TODO Re-write this
 /** \brief For a given start and end on this Chromosome, return the it's continuous density signal
@@ -833,33 +1127,33 @@ uTags uTagsChrom::generateRandomSite
 
     return returnTag;
 }
-
-
-void uTagsExperiment::loadFromSamWithParser(std::string filepath)
-{
-    op_mode= ReadMode::DEFAULT;
-    uParser ourParser(filepath, "SAM");
-    auto chrList=ourParser.getHeaderParamVector(header_param::CHR);
-    auto chrSizes=ourParser.getHeaderParamVector(header_param::CHR_SIZE);
-    try
-    {
-//        std::cerr << "name and size are :" <<chrList.at(i) <<" "<<chrSizes.at(i)<<std::endl;
-        for (int i=0; i<(int)chrList.size(); i++)
-        {
-            this->setChromSize(chrList.at(i), utility::stoi(chrSizes.at(i)));
-        }
-
-        while (ourParser.eof()==false)
-        {
-            auto Token =ourParser.getNextEntry();
-            this->addData(uTags(Token));
-        }
-    }
-    catch(...)
-    {
-        throw;
-    }
-}
+//
+//
+//void uTagsExperiment::loadFromSamWithParser(std::string filepath)
+//{
+//    op_mode= ReadMode::DEFAULT;
+//    uParser ourParser(filepath, "SAM");
+//    auto chrList=ourParser.getHeaderParamVector(header_param::CHR);
+//    auto chrSizes=ourParser.getHeaderParamVector(header_param::CHR_SIZE);
+//    try
+//    {
+////        std::cerr << "name and size are :" <<chrList.at(i) <<" "<<chrSizes.at(i)<<std::endl;
+//        for (int i=0; i<(int)chrList.size(); i++)
+//        {
+//            this->setChromSize(chrList.at(i), utility::stoi(chrSizes.at(i)));
+//        }
+//
+//        while (ourParser.eof()==false)
+//        {
+//            auto Token =ourParser.getNextEntry();
+//            this->addData(uTags(Token));
+//        }
+//    }
+//    catch(...)
+//    {
+//        throw;
+//    }
+//}
 
 
 /** \brief Loads an entire Sam file, SE or PE
@@ -1055,68 +1349,68 @@ void uTagsExperiment::loadFromSamWithParser(std::string filepath)
  * \param out : Our output stream
  *
  */
-void uTagsExperiment::writeToBed(ostream& out) const
-{
-
-    for (auto iterMap = ExpMap.begin(); iterMap != ExpMap.end(); ++iterMap)
-    {
-        iterMap->second.outputBedFormat(out);
-    }
-}
+//void uTagsExperiment::writeToBed(ostream& out) const
+//{
+//
+//    for (auto iterMap = ExpMap.begin(); iterMap != ExpMap.end(); ++iterMap)
+//    {
+//        iterMap->second.outputBedFormat(out);
+//    }
+//}
 
 /** \brief Write our data in bed format, completing our PE tags and ignore lone mates
  *
  * \param out : Our output stream
  *
  */
-void uTagsExperiment::writetoBedCompletePE(std::ostream& out)
-{
-    std::map<std::string,uTagsChrom>::iterator iterMap;
-
-    for (iterMap = ExpMap.begin(); iterMap != ExpMap.end(); ++iterMap)
-    {
-        iterMap->second.writetoBedCompletePE(out);
-    }
-}
+//void uTagsExperiment::writetoBedCompletePE(std::ostream& out)
+//{
+//    std::map<std::string,uTagsChrom>::iterator iterMap;
+//
+//    for (iterMap = ExpMap.begin(); iterMap != ExpMap.end(); ++iterMap)
+//    {
+//        iterMap->second.writetoBedCompletePE(out);
+//    }
+//}
 
 /** \brief Write the entire dataset in completed PE Sam format
  *
  * \param out : Our output stream
  *
  */
-void uTagsExperiment::writeCompletedPESamToOutput(std::ostream &out)
-{
-    for (auto iterMap = ExpMap.begin(); iterMap != ExpMap.end(); ++iterMap)
-    {
-        iterMap->second.writeSamHeaderLine(out);
-    }
-    //ChipPeakVectorMap::iterator iterMap;
-    for (auto iterMap = ExpMap.begin(); iterMap != ExpMap.end(); ++iterMap)
-    {
-        iterMap->second.writeCompletedPESamToOutput(out);
-    }
-}
+//void uTagsExperiment::writeCompletedPESamToOutput(std::ostream &out)
+//{
+//    for (auto iterMap = ExpMap.begin(); iterMap != ExpMap.end(); ++iterMap)
+//    {
+//        iterMap->second.writeSamHeaderLine(out);
+//    }
+//    //ChipPeakVectorMap::iterator iterMap;
+//    for (auto iterMap = ExpMap.begin(); iterMap != ExpMap.end(); ++iterMap)
+//    {
+//        iterMap->second.writeCompletedPESamToOutput(out);
+//    }
+//}
 
 /** \brief Write our entire experiment in Sam format
  *
  * \param out std::ostream& : our Output stream
  * \return void
  */
-void  uTagsExperiment::writeSamToOutput(std::ostream &out) const
-{
-    // std::map<std::string,uTagsChrom>::iterator iterMap;
-    //ChipPeakVectorMap::iterator iterMap;
-
-    for (auto iterMap = ExpMap.begin(); iterMap != ExpMap.end(); ++iterMap)
-    {
-        iterMap->second.writeSamHeaderLine(out);
-    }
-
-    for (auto iterMap = ExpMap.begin(); iterMap != ExpMap.end(); ++iterMap)
-    {
-        iterMap->second.writeSamToOutput(out);
-    }
-}
+//void  uTagsExperiment::writeSamToOutput(std::ostream &out) const
+//{
+//    // std::map<std::string,uTagsChrom>::iterator iterMap;
+//    //ChipPeakVectorMap::iterator iterMap;
+//
+//    for (auto iterMap = ExpMap.begin(); iterMap != ExpMap.end(); ++iterMap)
+//    {
+//        iterMap->second.writeSamHeaderLine(out);
+//    }
+//
+//    for (auto iterMap = ExpMap.begin(); iterMap != ExpMap.end(); ++iterMap)
+//    {
+//        iterMap->second.writeSamToOutput(out);
+//    }
+//}
 
 /** \brief Set the lenght limit of a chromosome
  *
@@ -1125,13 +1419,13 @@ void  uTagsExperiment::writeSamToOutput(std::ostream &out) const
  * \return void
  *
  */
-void uTagsExperiment::setChromSize(string chrom, int size)
-{
-    uTagsChrom* ptempChrom;
-    ptempChrom=&(ExpMap[chrom]);
-    ptempChrom->setChr(chrom);
-    ptempChrom->setChromSize(size);
-}
+//void uTagsExperiment::setChromSize(string chrom, int size)
+//{
+//    uTagsChrom* ptempChrom;
+//    ptempChrom=&(ExpMap[chrom]);
+//    ptempChrom->setChr(chrom);
+//    ptempChrom->setChromSize(size);
+//}
 //TODO set where this should go?
 /** \brief Generate our density signal for a given region and chrom
  *
@@ -1156,6 +1450,10 @@ std::vector<float> uTagsExperiment::getRegionSignal(std::string chrom, int start
     return returnVec;
 }
 
+
+
+
+
 /** \brief Write our exp to sam output, trimming both sides.
  *
  * \param out std::ostream& : Our output stream
@@ -1164,20 +1462,20 @@ std::vector<float> uTagsExperiment::getRegionSignal(std::string chrom, int start
  * \return void
  *
  */
-void uTagsExperiment::writeTrimmedSamToOutput(std::ostream &out, int left, int right)
-{
-    std::map<std::string,uTagsChrom>::iterator iterMap;
-
-    for (iterMap = ExpMap.begin(); iterMap != ExpMap.end(); ++iterMap)
-    {
-        iterMap->second.writeSamHeaderLine(out);
-    }
-    //ChipPeakVectorMap::iterator iterMap;
-    for (iterMap = ExpMap.begin(); iterMap != ExpMap.end(); ++iterMap)
-    {
-        iterMap->second.writeTrimmedSamToOutput(out, left, right);
-    }
-}
+//void uTagsExperiment::writeTrimmedSamToOutput(std::ostream &out, int left, int right)
+//{
+//    std::map<std::string,uTagsChrom>::iterator iterMap;
+//
+//    for (iterMap = ExpMap.begin(); iterMap != ExpMap.end(); ++iterMap)
+//    {
+//        iterMap->second.writeSamHeaderLine(out);
+//    }
+//    //ChipPeakVectorMap::iterator iterMap;
+//    for (iterMap = ExpMap.begin(); iterMap != ExpMap.end(); ++iterMap)
+//    {
+//        iterMap->second.writeTrimmedSamToOutput(out, left, right);
+//    }
+//}
 
 uTagsExperiment uTagsExperiment::getCopy() const
 {

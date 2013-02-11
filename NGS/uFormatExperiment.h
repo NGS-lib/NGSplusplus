@@ -74,7 +74,7 @@ protected:
     ReadMode op_mode;
 //    uParser m_parser;
 
-    std::map<std::string,_CHROM_>  ExpMap;
+    std::map<std::string,_CHROM_>  ExpMap={};
 
     std::function<float(const _BASE_*)> sortGetStart=nullptr;
     std::function<float(const _BASE_*)> sortGetEnd=nullptr ;
@@ -117,11 +117,21 @@ public:
    // virtual void loadWithParser(uParser&, std::string);
     virtual void loadWithParser(std::ifstream&, std::string);
     virtual void loadWithParser(std::string, std::string);
+    virtual void loadWithParser(uParser&, long long =0);
+
+
+    template<class UnaryFunction>
+    void loadWithParserAndRun(std::ifstream& pStream, std::string pType, UnaryFunction funct , int pBlockSize=1);
+    template<class UnaryFunction>
+    void loadWithParserAndRun(std::string filepath, std::string pType, UnaryFunction f, int pBlockSize=1);
+    template<class UnaryFunction>
+    void loadWithParserAndRun(uParser& pParser, UnaryFunction funct , int pBlockSize=1);
+
 
     void writeWithWriter(uWriter& pWriter) const;
 
 
-    void writeAsBedFile(std::ostream& out)const;
+//    void writeAsBedFile(std::ostream& out)const;
 
     auto begin()->decltype(ExpMap.begin())
     {
@@ -177,7 +187,8 @@ public:
     auto computeOnAllChroms(UnaryOperation unary_op) const -> std::map<std::string, decltype(unary_op(_CHROM_()))>;
     template<class UnaryOperation>
     auto computeOnOneChrom(UnaryOperation unary_op, const std::string & pChr) const -> std::map<std::string, decltype(unary_op(_CHROM_()))>;
-    template<class UnaryPredicate>
+
+
     /** \brief Get the chromosomes for which a certain predicate is true
       *
       *  Returns a subset of the chromosome structures that evaluated true to the given predicate.
@@ -187,12 +198,12 @@ public:
       * \param p UnaryPredicate : Unary predicate to evaluate on all chromosomes
       * \return A collection containing all the chromosomes for which the predicate is true
       */
-    
+
     //TODO, make this return an EXPERIMENT
+     template<class UnaryPredicate>
     auto getSpecificChroms(UnaryPredicate pred) const->decltype(ExpMap)
     {
     //         auto begin()->decltype(ExpMap.begin()){return ExpMap.begin();};
-
         // NGSExpMap copyColl;
         decltype(ExpMap) copyColl;
         copy_if(std::begin(ExpMap), std::end(ExpMap), std::inserter(copyColl, std::begin(copyColl)), [&pred]( const typename decltype(ExpMap)::value_type& element)
@@ -211,10 +222,9 @@ public:
     UnaryFunction applyOnSites(UnaryFunction f);
     template<class UnaryFunction>
     UnaryFunction applyOnSites(const UnaryFunction f)const;
-    template<class UnaryFunction>
-    void loadWithParserAndRun(std::ifstream& pStream, std::string pType, UnaryFunction funct , int pBlockSize=1);
-    template<class UnaryFunction>
-    void loadWithParserAndRun(std::string filepath, std::string pType, UnaryFunction f, int pBlockSize=1);
+
+
+
     template <class UnaryPredicate>
     typename std::iterator_traits<NGSExpIter>::difference_type
     countChromsWithProperty(UnaryPredicate pred) const;
@@ -326,16 +336,17 @@ void uGenericNGSExperiment<_SELF_,_CHROM_, _BASE_>::loadWithParser(std::ifstream
     {
         std::istream& refStream = pStream;
         uParser Curparser(&refStream, pType);
-        while(!Curparser.eof())
-        {
-            addData(Curparser.getNextEntry());
-        }
+        loadWithParser(Curparser);
+    //    while(!Curparser.eof())
+     //   {
+    //        addData(Curparser.getNextEntry());
+     //   }
     }
     catch (uParser_exception_base& e) // TODO: check if there is something else that can be thrown
     {
         throw e;
     }
-    inferChrSize();
+   // inferChrSize();
 }
 
 /** \brief Load a file
@@ -345,12 +356,40 @@ void uGenericNGSExperiment<_SELF_,_CHROM_, _BASE_>::loadWithParser(std::ifstream
 template<class _SELF_, typename _CHROM_, typename _BASE_>
 void uGenericNGSExperiment<_SELF_,_CHROM_, _BASE_>::loadWithParser(std::string filepath, std::string pType)
 {
-    uParser ourParser(filepath, pType);
+
     try
     {
-        while (ourParser.eof()==false)
-        {
-            this->addData((ourParser.getNextEntry()));
+      uParser ourParser(filepath, pType);
+      loadWithParser(ourParser);
+    }
+    catch (...)
+    {
+        throw;
+    }
+}
+
+/** \brief Load a file
+ * \param std::string filepath: the path to the file to load
+ * \param std::string pType: the file type (i.e.: BED, SAM, BEDGRAPH, WIG, etc...)
+ */
+template<class _SELF_, typename _CHROM_, typename _BASE_>
+void uGenericNGSExperiment<_SELF_,_CHROM_, _BASE_>::loadWithParser(uParser& pParser, long long pBlockCount)
+{
+    try
+    {
+        if (pBlockCount){
+            int counter=0;
+            while ((pParser.eof()==false)||(counter!=pBlockCount))
+            {
+                this->addData((pParser.getNextEntry()));
+                counter++;
+            }
+        }
+        else{
+            {
+            while (pParser.eof()==false)
+                this->addData((pParser.getNextEntry()));
+            }
         }
     }
     catch (...)
@@ -360,20 +399,23 @@ void uGenericNGSExperiment<_SELF_,_CHROM_, _BASE_>::loadWithParser(std::string f
     inferChrSize();
 }
 
-/** \brief Write our data as a legal bed file, filling only the first three columns
- *          DEPRECATED
- * \param out std::ofstream& stream to write to
- * \return void
- *
- */
-template<class _SELF_, typename _CHROM_, typename _BASE_>
-void uGenericNGSExperiment<_SELF_,_CHROM_, _BASE_>::writeAsBedFile(std::ostream& out) const
-{
-    applyOnAllChroms(bind2nd(mem_fun_ref(&_CHROM_::outputBedFormat)   , out));
-}
 
-/** \brief Write our data as a legal bed file, filling only the first three columns
- *          DEPRECATED
+
+
+//** \brief Write our data as a legal bed file, filling only the first three columns
+// *          DEPRECATED
+// * \param out std::ofstream& stream to write to
+// * \return void
+// *
+// */
+//template<class _SELF_, typename _CHROM_, typename _BASE_>
+//void uGenericNGSExperiment<_SELF_,_CHROM_, _BASE_>::writeAsBedFile(std::ostream& out) const
+//{
+ //   applyOnAllChroms(bind2nd(mem_fun_ref(&_CHROM_::outputBedFormat)   , out));
+//}
+
+/** \brief Write our data using the provided Writer
+ *
  * \param out std::ofstream& stream to write to
  * \return void
  *
@@ -394,9 +436,6 @@ template<class _SELF_, typename _CHROM_, typename _BASE_>
 bool uGenericNGSExperiment<_SELF_,_CHROM_, _BASE_>::isChrom(const std::string & pChrom) const{
     return (ExpMap.count(pChrom));
 }
-
-
-
 
 //TODO: Make sure the return is ok
 /** \brief Returns the requested chrom object
@@ -1110,6 +1149,38 @@ void uGenericNGSExperiment<_SELF_,_CHROM_,_BASE_>::loadWithParserAndRun(std::ifs
     }
 }
 
+template<class _SELF_, typename _CHROM_, typename _BASE_>
+template<class UnaryFunction>
+void uGenericNGSExperiment<_SELF_,_CHROM_,_BASE_>::loadWithParserAndRun(uParser& pParser, UnaryFunction funct , int pBlockSize)
+{
+    try
+    {
+        std::vector<uToken> loadedTokens;
+        loadedTokens.resize(pBlockSize);
+        while(!pParser.eof())
+        {
+            int curLoaded=0;
+            /**< Load a block of data */
+            while ((curLoaded<pBlockSize)&&(!pParser.eof()))
+            {
+                loadedTokens.at(curLoaded)=pParser.getNextEntry();
+
+                curLoaded++;
+            }
+            /**< Operate */
+            for(const uToken & curToken:loadedTokens)
+            {
+                funct( (_BASE_)(curToken) );
+            }
+        }
+    }
+    catch (uParser_exception_base& e) // TODO: check if there is something else that can be thrown
+    {
+        throw e;
+    }
+}
+
+
 /** \brief load data from Parser, convert to unitary and execute the given function. Does -not- necessarily add to EXP
  *
  * \param stream std::string filepath path to the file to load from
@@ -1238,7 +1309,7 @@ std::pair<typename std::map<std::string,_CHROM_>::const_iterator, typename std::
     {
         return comp(element1.second, element2.second);
     });
-} 
- 
+}
+
 } // End of namespace NGS
 #endif // UFORMATEXPERIMENT_H_INCLUDED

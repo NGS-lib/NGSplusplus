@@ -27,7 +27,6 @@ struct uWriterBaseFactory {
       //  std::cerr << "Returning" <<std::endl;
         return std::shared_ptr<uWriterBase>(it->second());
     }
-
     static uWriterBaseFactory * GetFact()
         {
         static uWriterBaseFactory instance;

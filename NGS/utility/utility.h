@@ -25,22 +25,8 @@ enum class SamQuery
     IS_PAIRED,ALL_ALIGNED_OK, UNMAPPED, NEXT_UNMAPPED, SEQ_REV_STRAND, SEQ_NEXT_REV_STRAND, FIRST_SEG, LAST_SEG, SECOND_ALIGN, FAIL_QUAL, DUPLICATE
 };
 
-/**< Used by our parser and others, defined file types we can load/write */
-//enum class GenomicFileType
-//{
-//    BED, SAM
-//};
-
-
 namespace utility
 {
-/**< Validate if A derives from B */
-
-template<typename Child, typename Parent>
-//class IsDerivedFrom
-//{
-//    static_assert(dynamic_cast<Parent*>(static_cast<Child*>(0)) == nullptr, "First class is not derived from the second");
-//};
 /**< Debugging functions */
 static inline void stringTocerr(const std::string & value);
 /**< Overlap functions */
@@ -62,61 +48,71 @@ static void  GetTokens(std::vector<std::string>& tokens, const std::string & lin
 /**< Format tests */
 static bool is_posnumber(const std::string& s);
 
+/**< Iterator const functions */
+template <class Container>
+inline static typename Container::iterator to_mutable_iterator(Container& c, typename Container::const_iterator it);
+
 
 namespace SAM
 {
+    /** \brief Check and return if a specified sam flag is set from a received sam flag (int)
+     *
+     * \param flag const int SamFlag
+     * \param toQuery const SamQuery Flag we are checking
+     * \return bool True if flag is set
+     *
+     */
 
-/** \brief Check and return if a specified sam flag is set from a received sam flag (int)
- *
- * \param flag const int SamFlag
- * \param toQuery const SamQuery Flag we are checking
- * \return bool True if flag is set
- *
- */
 
-
-static inline bool querySamFlag(const int flag, const SamQuery toQuery)
-{
-    bool query_result;
-    switch(toQuery)
+    static inline bool querySamFlag(const int flag, const SamQuery toQuery)
     {
-    case SamQuery::IS_PAIRED:
-        query_result=(flag&0x1);
-        break;
-    case SamQuery::ALL_ALIGNED_OK:
-        query_result=(flag&0x2);
-        break;
-    case SamQuery::UNMAPPED:
-        query_result=(flag&0x4);
-        break;
-    case SamQuery::NEXT_UNMAPPED:
-        query_result=(flag&0x8);
-        break;
-    case SamQuery::SEQ_REV_STRAND:
-        query_result=(flag&0x10);
-        break;
-    case SamQuery::SEQ_NEXT_REV_STRAND:
-        query_result=(flag&0x20);
-        break;
-    case SamQuery::FIRST_SEG:
-        query_result=(flag&0x40);
-        break;
-    case SamQuery::LAST_SEG:
-        query_result=(flag&0x80);
-        break;
-    case SamQuery::SECOND_ALIGN:
-        query_result=(flag&0x100);
-        break;
-    case SamQuery::FAIL_QUAL:
-        query_result=(flag&0x200);
-        break;
-    case SamQuery::DUPLICATE:
-        query_result=(flag&0x400);
-        break;
+        bool query_result;
+        switch(toQuery)
+        {
+        case SamQuery::IS_PAIRED:
+            query_result=(flag&0x1);
+            break;
+        case SamQuery::ALL_ALIGNED_OK:
+            query_result=(flag&0x2);
+            break;
+        case SamQuery::UNMAPPED:
+            query_result=(flag&0x4);
+            break;
+        case SamQuery::NEXT_UNMAPPED:
+            query_result=(flag&0x8);
+            break;
+        case SamQuery::SEQ_REV_STRAND:
+            query_result=(flag&0x10);
+            break;
+        case SamQuery::SEQ_NEXT_REV_STRAND:
+            query_result=(flag&0x20);
+            break;
+        case SamQuery::FIRST_SEG:
+            query_result=(flag&0x40);
+            break;
+        case SamQuery::LAST_SEG:
+            query_result=(flag&0x80);
+            break;
+        case SamQuery::SECOND_ALIGN:
+            query_result=(flag&0x100);
+            break;
+        case SamQuery::FAIL_QUAL:
+            query_result=(flag&0x200);
+            break;
+        case SamQuery::DUPLICATE:
+            query_result=(flag&0x400);
+            break;
+        }
+        return query_result;
     }
-    return query_result;
 }
-}
+  template <class Container>
+  inline static typename Container::iterator to_mutable_iterator(Container& c, typename Container::const_iterator it)
+   {
+        return c.begin() + (it - c.begin());
+   }
+
+
 /** \brief Simple tokenizer class that can sometimes be handy to use
  */
 class Tokenizer

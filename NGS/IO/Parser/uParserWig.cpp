@@ -119,11 +119,10 @@ uToken uParserWig::getNextEntry()
         {
             while(foundToken==false)
             {
-               // char line[4096];
                 std::string line;
                 if (std::getline(*m_pIostream,line))
                 {
-
+                     m_rawString=line;
                     utility::GetTokens(m_tokens,line);
                     if((m_tokens.at(0)=="variableStep")||(m_tokens.at(0)=="fixedStep"))
                     {
@@ -180,7 +179,6 @@ uToken uParserWig::getNextEntry()
 						ourToken._setParamNoValidate(token_param::START_POS,utility::to_string(start_pos));
 						ourToken._setParamNoValidate(token_param::END_POS,utility::to_string(end_pos));
 						ourToken._setParamNoValidate(token_param::SCORE,utility::to_string(score));
-
                         foundToken=true;
 
                         return ourToken;
@@ -203,17 +201,11 @@ uToken uParserWig::getNextEntry()
         }
         catch(ugene_exception_base& e)
         {
-           // std::cerr << "Throwing in getnextEntry uParser" <<std::endl;
-            //std::cerr << fetchStringError(e) <<std::endl;
             throw e;
         }
         catch(std::exception & e)
         {
-          //  std::cerr << "Throwing in getnextEntry, exception" <<std::endl;
           throw uParser_exception_base()<<string_error(e.what());
-
-        // string_error("Caught std::exception in uToken uParserWig::getNextEntry(), swallowed and re-thrown\n. What message was : ");
-
         }
         std::cerr <<"Fatal error in _getNextEntryCustom(), should not reach here" <<std::endl;
         abort();

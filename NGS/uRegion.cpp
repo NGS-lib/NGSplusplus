@@ -168,17 +168,17 @@ std::vector<float> uRegion::getSignal() const
  *
  */
  //TODO use parser for all write functions
-void uRegion::writeAll(std::ostream& out) const
-{
-    std::vector<float>::iterator iterVec;
-
-    out << getChr()<<"\t" << getStart() << "\t"<< getEnd() << "\t" << getCount();
-
-    for (int i=0; i< getScoreCount() ; i++)
-        out <<  "\t" << getScore(i);
-
-    out << std::endl;
-}
+//void uRegion::writeAll(std::ostream& out) const
+//{
+//    std::vector<float>::iterator iterVec;
+//
+//    out << getChr()<<"\t" << getStart() << "\t"<< getEnd() << "\t" << getCount();
+//
+//    for (int i=0; i< getScoreCount() ; i++)
+//        out <<  "\t" << getScore(i);
+//
+//    out << std::endl;
+//}
 
 /** \brief Output our signal data with start/end
  *
@@ -188,7 +188,7 @@ void uRegion::writeAll(std::ostream& out) const
  */
 void uRegion::writeSignal(std::ostream& out) const
 {
-    out << getChr() << "\t" << getStart() << "\t" << getEnd() <<  endl;
+  //  out << getChr() << "\t" << getStart() << "\t" << getEnd() <<  endl;
     for (auto iterVec = signal.begin() ; iterVec!= signal.end(); iterVec++)
     {
         out << *iterVec <<  "\t";
@@ -202,10 +202,10 @@ void uRegion::writeSignal(std::ostream& out) const
  * \return void
  *
  */
-void uRegion::writeRegion(std::ostream& out) const
-{
-    out << getChr()<<"\t" << getStart() << "\t"<< getEnd() << "\t" << getCount() <<   std::endl;
-}
+//void uRegion::writeRegion(std::ostream& out) const
+//{
+//    out << getChr()<<"\t" << getStart() << "\t"<< getEnd() << "\t" << getCount() <<   std::endl;
+//}
 
 uRegion uRegion::getCopy() const{
 
@@ -737,46 +737,46 @@ for(auto& chrom : ExpMap)
 /** \brief Write all chromosome data to a stream
  * \param std::ostream&: Output stream to use.
  */
-void uRegionChrom::writeAll(std::ostream& out)
-{
-    for(auto& it : VecSites)
-    {
-        it.writeAll(out);
-    }
-}
+//void uRegionChrom::writeAll(std::ostream& out)
+//{
+//    for(auto& it : VecSites)
+//    {
+//        it.writeAll(out);
+//    }
+//}
 
 /** \brief Write all the experiment to a stream
  * \param std::ostream&: Output stream to use.
  */
-void uRegionExperiment::writeAll(std::ostream& out)
-{
-    for(auto& chrom : ExpMap)
-    {
-        chrom.second.writeAll(out);
-    }
-}
+//void uRegionExperiment::writeAll(std::ostream& out)
+//{
+//    for(auto& chrom : ExpMap)
+//    {
+//        chrom.second.writeAll(out);
+//    }
+//}
 
 /** \brief Write the experiment's density data as tab separated values
  * \param std::ostream&: Output stream to use.
  */
-void uRegionExperiment::writeDensityAsTab(std::ostream& out)
-{
-    for(auto& chrom : ExpMap)
-    {
-        chrom.second.writeDensityAsTab(out);
-    }
-}
+//void uRegionExperiment::writeDensityAsTab(std::ostream& out)
+//{
+//    for(auto& chrom : ExpMap)
+//    {
+//        chrom.second.writeDensityAsTab(out);
+//    }
+//}
 
 /** \brief Write the experiment's density data as tab separated values
  * \param std::ostream&: Output stream to use.
  */
-void uRegionChrom::writeDensityAsTab(std::ostream& out)
-{
-    for(auto& it : VecSites)
-    {
-        it.writeRegion(out);
-    }
-}
+//void uRegionChrom::writeDensityAsTab(std::ostream& out)
+//{
+//    for(auto& it : VecSites)
+//    {
+//        it.writeRegion(out);
+//    }
+//}
 
 
 uRegionExperiment uRegionExperiment::getCopy() const{

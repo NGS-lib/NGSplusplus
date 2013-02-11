@@ -38,27 +38,12 @@ namespace NGS {
     }
 
 
-    uBasicNGS uBasicNGS::getCopy(){
+    uBasicNGS uBasicNGS::getCopy()const{
         uBasicNGS returnCopy = *this;
         return returnCopy;
     }
 
 /**< uBasicNGSChrom */
-
-
-    /** \brief Copy constructor
-     * \param copyCop : The object to instaciate  from.
-     */
-//    uBasicNGSChrom::uBasicNGSChrom(const uGenericNGSChrom<uBasicNGSChrom,uBasicNGS> & copyCop)
-//    {
-//        VecSites=copyCop.returnVecData();
-//        chr= copyCop.getChr();
-//        m_isSorted=copyCop.getSortedStatus();
-//        sortGetStart=copyCop.getStartFunct();
-//        sortGetEnd=copyCop.getEndFunct();
-//        m_comptFunc=copyCop.getCompFunct();
-//        chromSize=copyCop.getChromSize();
-//    }
 
     /** \brief Copy constructor
      * \param const uBasicNGSChrom& initFrom: the uBasicNGSChrom to copy.

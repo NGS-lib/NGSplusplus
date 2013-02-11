@@ -28,7 +28,7 @@ public :
 
     bool eof() const ;
     uToken getNextEntry();
-
+    std::string getPreviousRaw(){return m_pParserBase->getPreviousRaw();};
     /** \brief Get an unformated version of header (i.e.: a single string containing the whole header)
     */
     std::string getUnformatedHeader() const { return m_pParserBase->getUnformatedHeader(); }
@@ -42,6 +42,7 @@ public :
     bool isHeaderParamSet(const header_param& name) const { return m_pParserBase->isHeaderParamSet(name); }
 private:
     std::shared_ptr<uParserBase> m_pParserBase=nullptr;
+
  //   static uParserBaseFactory myFact;
 
 };

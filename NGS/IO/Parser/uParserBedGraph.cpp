@@ -43,7 +43,7 @@ uToken uParserBedGraph::getNextEntry()
     /**< Do we need to parse our buffer */
     if (m_hBuffer.eof()==false)
         std::getline(m_hBuffer, strLine);
-
+        m_rawString=strLine;
         /**< If we stored something, otherwise, getline, otherwise fail */
         if ( (strLine.size()) || ( std::getline(*m_pIostream, strLine)) )
         {

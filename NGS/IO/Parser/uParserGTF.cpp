@@ -50,6 +50,7 @@ uToken uParserGTF::getNextEntry()
     //if (m_pIostream->getline(strLine))
     if (std::getline(*m_pIostream, strLine))
     {
+         m_rawString=strLine;
         return _getTokenInfoFromGTFString(strLine);
     }
     else
