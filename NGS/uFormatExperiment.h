@@ -207,6 +207,7 @@ public:
     UnaryFunction applyOnAllChroms(const UnaryFunction f)const;
     template<class UnaryFunction>
     UnaryFunction applyOnOneChrom(UnaryFunction f, const std::string & chr);
+    // TODO: No const function for applyOnOneChrom?
     template<class UnaryFunction>
     UnaryFunction applyOnSites(UnaryFunction f);
     template<class UnaryFunction>
@@ -920,7 +921,7 @@ template<class UnaryOperation>
 auto uGenericNGSExperiment<_SELF_,_CHROM_,_BASE_>::computeOnAllChroms(UnaryOperation unary_op) const -> std::map<std::string, decltype(unary_op(_CHROM_()))>
 {
     std::map<std::string, decltype(unary_op(_CHROM_()))> results;
-    transform(std::begin(ExpMap), std::end(ExpMap), std::inserter(results, begin(results)), [&unary_op](NGSExpPair element)
+    transform(std::begin(ExpMap), std::end(ExpMap), std::inserter(results, std::begin(results)), [&unary_op](NGSExpPair element)
     {
         return make_pair(element.first, unary_op(element.second));
     });
