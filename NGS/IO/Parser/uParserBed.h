@@ -5,7 +5,6 @@
 #include "../../uGeneException.h"
 #include "../uHeader.h"
 #include <iostream>
-//#include "uParserFactory.h"
 namespace NGS
 {
 

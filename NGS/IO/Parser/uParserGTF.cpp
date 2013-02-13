@@ -81,8 +81,8 @@ uToken uParserGTF::_getTokenInfoFromGTFString(const std::string& line)
         ourToken._setParamNoValidate(token_param::SOURCE, what[2]);
       //  token_infos << "SOURCE\t" << what[2] << "\n";
        if ( what[3]!=".")
-        ourToken._setParamNoValidate(token_param::FEATURE_NAME, what[3]);
-       // token_infos << "FEATURE_NAME\t" << what[3] << "\n";
+        ourToken._setParamNoValidate(token_param::FEATURE_TYPE, what[3]);
+       // token_infos << "FEATURE_TYPE\t" << what[3] << "\n";
         ourToken._setParamNoValidate(token_param::START_POS, what[4]);
        // token_infos << "START_POS\t" << what[4] << "\n";
        ourToken._setParamNoValidate(token_param::END_POS, what[5]);

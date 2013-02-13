@@ -5,6 +5,16 @@ using namespace NGS;
 
 int main(int argc, char **argv)
 {
+
+        int count;
+        auto functOp = [&](int a)
+        {
+
+                a=a+1;
+                count++;
+        };
+
+
     /**< Simple parameter validation. We heavily recommand you use a library to manage your command line parameters */
     if (argc!=2)
     {

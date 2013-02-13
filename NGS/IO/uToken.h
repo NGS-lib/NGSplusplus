@@ -16,7 +16,8 @@ namespace NGS
 /**< This list has to be updated for every new param */
 enum class token_param
 {
-    CHR, START_POS, END_POS, STRAND, MAP_SCORE, PHRED_SCORE, CIGAR, SEQUENCE, SEQ_NAME, FLAGS ,SCORE,DENSITY,FEATURE_NAME,SOURCE,PHASE,EXTRA,TEMPLATE_LENGHT,
+    CHR, START_POS, END_POS, STRAND, MAP_SCORE, PHRED_SCORE, CIGAR, SEQUENCE, SEQ_NAME,FLAGS ,SCORE,DENSITY,FEATURE_TYPE,SOURCE,PHASE,EXTRA,TEMPLATE_LENGHT,
+    FEATURE_CLASS, FEATURE_ID,GROUP_TRANSCRIPT,GROUP_ID,
     CUST_1,CUST_2,CUST_3,CUST_4,CUST_5,CUST_6,CUST_7,CUST_8,CUST_9
 };
 
@@ -43,6 +44,8 @@ public:
     std::string getParam(const std::string& name) const;
     bool isParamSet(const token_param& name) const;
     bool isParamSet(const std::string& name) const;
+    std::vector<std::string> getParamVector(token_param name) const;
+
     uToken& operator=(uToken const& assign_from);
 
     /** \brief Check if a string has a corresponding token_param value
@@ -63,17 +66,22 @@ public:
                 || param == "FLAGS"
                 || param == "DENSITY"
                 || param == "SCORE"
-                || param == "FEATURE_NAME"
+                || param == "FEATURE_TYPE"
+                || param == "FEATURE_CLASS"
+                || param == "FEATURE_ID"
+                || param == "FEATURE_TRANSCRIPT"
                 || param == "SOURCE"
                 || param == "PHASE"
                 || param == "EXTRA"
 				|| param == "TEMPLATE_LENGHT"
+				|| param == "GROUND_TRANSCRIPT"
+				|| param == "GROUND_ID"
                 );
     }
 
 private:
-	 void _setParamNoValidate(const token_param& name, const std::string& value);
-    std::map<token_param, std::string> m_params= {};
+	void _setParamNoValidate(const token_param& name, const std::string& value);
+    std::map<token_param, std::vector<std::string>> m_params= {};
     bool m_customValues = false;
     std::map<std::string, std::string> m_customParams= {};
 
@@ -126,6 +134,7 @@ private:
 	friend class uParserGFF;
 	friend class uParserBedGraph;
 	friend class uParserGTF;
+	friend class uParserGFF2;
 }; // End of class Token
 
 /**< Overloading of stream operator for token_param */
@@ -157,8 +166,16 @@ inline std::ostream & operator<<(std::ostream& Str, token_param name)
         return Str <<"SCORE";
     case token_param::DENSITY:
         return Str <<"DENSITY";
-    case token_param::FEATURE_NAME:
-        return Str <<"FEATURE_NAME";
+    case token_param::FEATURE_TYPE:
+        return Str <<"FEATURE_TYPE";
+    case token_param::FEATURE_CLASS:
+        return Str <<"FEATURE_CLASS";
+    case token_param::FEATURE_ID:
+        return Str <<"FEATURE_ID";
+    case token_param::GROUP_TRANSCRIPT:
+        return Str <<"GROUP_TRANSCRIPT";
+    case token_param::GROUP_ID:
+        return Str <<"GROUP_ID";
      case token_param::PHASE:
         return Str <<"PHASE";
      case token_param::SOURCE:
@@ -189,11 +206,15 @@ inline std::istream& operator>>(std::istream &is, token_param& name)
     else if (token == "FLAGS") name = token_param::FLAGS;
     else if (token == "SCORE") name = token_param::SCORE;
     else if (token == "DENSITY") name = token_param::DENSITY;
-    else if (token == "FEATURE_NAME") name = token_param::FEATURE_NAME;
+    else if (token == "FEATURE_TYPE") name = token_param::FEATURE_TYPE;
     else if (token == "PHASE") name = token_param::PHASE;
     else if (token == "SOURCE") name = token_param::SOURCE;
     else if (token == "EXTRA") name = token_param::EXTRA;
 	else if (token == "TEMPLATE_LENGHT") name = token_param::TEMPLATE_LENGHT;
+    else if (token == "FEATURE_CLASS") name = token_param::FEATURE_CLASS;
+    else if (token == "FEATURE_ID") name = token_param::FEATURE_ID;
+    else if (token == "GROUP_ID") name = token_param::GROUP_ID;
+    else if (token == "GROUP_TRANSCRIPT") name = token_param::GROUP_TRANSCRIPT;
     else
     {
         invalid_token_param_throw e;

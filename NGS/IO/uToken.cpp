@@ -3,7 +3,6 @@
 namespace NGS
 {
 
-
 uToken::uToken()
 {
 }
@@ -109,7 +108,7 @@ std::string uToken::getParam(token_param name) const
 {
     if(isParamSet(name))
     {
-        return (m_params.find(name)->second);
+        return (m_params.find(name)->second.at(0));
     }
     else
     {
@@ -119,6 +118,27 @@ std::string uToken::getParam(token_param name) const
         throw e;
     }
 }
+
+/** \brief Get the value associated with a token_param.
+ * \param token_param name: the name in token_param format.
+ * \exception param_not_found when the param is not setted in the token.
+ */
+std::vector<std::string> uToken::getParamVector(token_param name) const
+{
+    if(isParamSet(name))
+    {
+        return (m_params.find(name)->second);
+    }
+    else
+    {
+        param_not_found e;
+        std::string error = "In uToken::getParamVector(token_param name). Tried to getParam that is not set: " + _convertTokenParamToString(name) + "\n";
+        addStringError(e,error);
+        throw e;
+    }
+}
+
+
 
 /** \brief Get the value associated with a parameter. Can be a token_param or a custom value.
  * \param const std::string& name: the name in string format.
@@ -132,7 +152,7 @@ std::string uToken::getParam(const std::string& name) const
         token_param tokenName = _convertStringToTokenParam(name);
         if (isParamSet(tokenName))
         {
-            return m_params.find(tokenName)->second;
+            return m_params.find(tokenName)->second.at(0);
         }
     }
     catch (invalid_token_param_throw& e)
@@ -158,7 +178,7 @@ std::string uToken::getParam(const std::string& name) const
 
 void uToken::_setParamNoValidate(const token_param& name, const std::string& value)
 {
-    m_params[name] = value;
+    m_params[name].push_back(value);
     _postProcessParam(name, value);
 }
 
@@ -179,7 +199,7 @@ void uToken::_setParam(const token_param& name, const std::string& value)
             throw e;
         }
         _postProcessParam(name, value);
-        m_params[name] = value;
+        m_params[name].push_back(value);
     }
     catch(invalid_value_throw &e)
     {
@@ -237,33 +257,15 @@ void uToken::_postProcessParam(const token_param& name, const std::string& value
 {
     switch(name)
     {
-    case token_param::START_POS:
-    case token_param::END_POS:
-        break;
-    case token_param::STRAND:
-        break;
-    case token_param::MAP_SCORE:
-        break;
-    case token_param::PHRED_SCORE:
-        break;
-    case token_param::CIGAR:
-        _postProcCigar(value);
-        break;
-    case token_param::SEQUENCE:
-        _postProcSequence(value);
-        break;
-    case token_param::FLAGS:
-        _postProcFlag(value);
-        break;
-    case token_param::CHR:
-        break;
-    case token_param::SEQ_NAME:
-        break;
-    case token_param::SCORE:
-        break;
-    case token_param::DENSITY:
-        break;
-
+        case token_param::CIGAR:
+            _postProcCigar(value);
+            break;
+        case token_param::SEQUENCE:
+            _postProcSequence(value);
+            break;
+        case token_param::FLAGS:
+            _postProcFlag(value);
+            break;
     default:
         break;
     }
@@ -291,34 +293,17 @@ bool uToken::_validateParam(const token_param& name, const std::string& value) c
         return _strandIsValid(value);
     case token_param::MAP_SCORE:
         return _mapScoreIsValid(value);
-    case token_param::PHRED_SCORE:
-        return true;
     case token_param::CIGAR:
         return _cigarIsValid(value);
     case token_param::SEQUENCE:
         return _sequenceIsValid(value);
     case token_param::FLAGS:
         return _seqFlagsIsValid(value);
-    case token_param::CHR:
-        return true;
-    case token_param::SEQ_NAME:
-        return true;
     case token_param::SCORE:
         return _scoreIsValid(value);
-    case token_param::DENSITY:
-        return true;
-    case token_param::SOURCE:
-        return true;
-    case token_param::PHASE:
-        return true;
-    case token_param::FEATURE_NAME:
-        return true;
-    case token_param::EXTRA:
-        return true;
-    case token_param::TEMPLATE_LENGHT:
-        return true;
+    /**< IF we are passing a token_param, it is necessarily something valid */
     default:
-        return false;
+        return true;
     }
 }
 
@@ -339,29 +324,33 @@ void uToken::_validateToken()
 
 void uToken::_checkMandatoryValues() const
 {
-    std::string str_start_pos = getParam(token_param::START_POS);
-    std::string str_end_pos = getParam(token_param::END_POS);
-    if (str_start_pos.size() == 0 || str_end_pos.size() == 0)
-    {
-        std::string error = " START_POS and END_POS are mandatory.\n";
-        error += "START_POS: " + str_end_pos + "\n";
-        error += "END_POS: " + str_start_pos + "\n";
-        _throwInvalidToken(error);
+    try {
+    auto str_start_pos = getParamVector(token_param::START_POS);
+    auto str_end_pos = getParamVector(token_param::END_POS);
+    if (str_start_pos.size() == 0 || str_end_pos.size() == 0 || str_end_pos.size()!=str_start_pos.size() )
+        {
+            std::string error = " START_POS and END_POS are mandatory and must have the same count.\n";
+            _throwInvalidToken(error);
+        }
     }
+    catch(...){throw;}
 }
 
 void uToken::_validateStartEnd() const
 {
-    std::string str_start_pos = getParam(token_param::START_POS);
-    int int_start_pos = atoi(str_start_pos.c_str());
-    std::string str_end_pos = getParam(token_param::END_POS);
-    int int_end_pos = atoi(str_end_pos.c_str());
-    if (int_start_pos > int_end_pos)
+    auto startVector = getParamVector(token_param::START_POS);
+    auto endVector = getParamVector(token_param::END_POS);
+    /**< Previously validation insured same size vectors */
+    for (int i=0;i<startVector.size();i++)
     {
-        std::string error = "Invalid START_POS/END_POS values. \n";
-        error += "START_POS:" + str_start_pos + ". END_POS: " + str_end_pos + ".";
-        _throwInvalidToken(error);
+        if(std::stoi(startVector.at(0))>std::stoi(endVector.at(0)))
+           {
+                std::string error = "Invalid START_POS/END_POS values. \n";
+                error += "START_POS:" + startVector.at(i) + ". END_POS: " + endVector.at(i) + ".";
+                _throwInvalidToken(error);
+           }
     }
+
 }
 
 void uToken::_validateSequenceCigar() const
@@ -667,7 +656,6 @@ bool uToken::_isStreamEmpty(const std::istream& stream) const
 /** \brief Sequence length can be used to infer END_POS
  * \param sequence: The nucleotidic sequence of the entry.
  */
-
 void uToken::_postProcSequence(const std::string& sequence)
 {
     if (!(isParamSet(token_param::END_POS)))
@@ -723,7 +711,6 @@ void uToken::_postProcCigar(const std::string& cig)
         }
     }
 }
-
 
 std::string uToken::_convertTokenParamToString(const token_param& token) const
 {

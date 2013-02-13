@@ -169,9 +169,8 @@ public:
     /**< Write using Writer */
     void writeWithWriter(uWriter& pWriter) const;
 
-
     /**< Function to add a unitary element */
-    void addData(const _BASE_ & newSite);
+    virtual void addData(const _BASE_ & newSite);
 
     template<class UnaryOperation>
     std::vector<_BASE_> applyAndGetVecData(UnaryOperation unary_op);

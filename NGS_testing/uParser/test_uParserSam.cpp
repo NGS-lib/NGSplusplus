@@ -37,16 +37,27 @@ TEST(parserHeaderSamTests, getEntryUnitary) {
     const int END=START+158-1;
     EXPECT_NO_THROW(uParser ourParser("../data/SAM/UnitaryValid.sam", "SAM"));
 	uParser ourParser("../data/SAM/UnitaryValid.sam", "SAM");
-
     uToken Token =ourParser.getNextEntry();
-
     EXPECT_EQ(CHR,Token.getParam(token_param::CHR));
     EXPECT_EQ(START,std::stoi(Token.getParam(token_param::START_POS)));
     EXPECT_EQ(END,std::stoi(Token.getParam(token_param::END_POS)));
 
 
-    //cout << Token.getParam(token_param::CHR) <<Token.getParam(token_param::START_POS) << Token.getParam(token_param::END_POS) <<endl;
 }
+
+
+TEST(parserSamTests, BIGFILE) {
+      EXPECT_NO_THROW(uParser ourParser("../data/SAM/UnitaryValid.sam", "SAM");
+
+                        while (ourParser.eof()==false){
+                            uToken tempToken=ourParser.getNextEntry();
+                        }
+
+
+                      );
+
+}
+
 
 	TEST(parserHeaderSamTests, 5ITEMCOUNT) {
     const int ITEMCOUNT=5;
@@ -61,7 +72,6 @@ TEST(parserHeaderSamTests, getEntryUnitary) {
     }
     catch(std::exception &e)
     {
-         cout << "haha"<<endl;
         cout << e.what();
     }
 

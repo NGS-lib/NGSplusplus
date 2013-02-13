@@ -1,86 +1,147 @@
 #include "uBasicNGS.h"
 #include "uTags.h"
 #include "uRegion.h"
-namespace NGS {
+namespace NGS
+{
 
-    /** \brief Constructor taking a uTags as parameter.
-     * \param uTags p_tags: the tag to add to create the uBasicNGS object from.
+/** \brief Constructor taking a uTags as parameter.
+ * \param uTags p_tags: the tag to add to create the uBasicNGS object from.
+ */
+uBasicNGS::uBasicNGS(uTags p_tags)
+    : uGenericNGS(p_tags.getChr(),p_tags.getStart(), p_tags.getEnd(), p_tags.getStrand())
+{
+    setScoreVector(p_tags.getScoreVector());
+}
+
+/** \brief Constructor taking a uRegion as parameter.
+ * \param uRegion p_region: the region to add to create the uBasicNGS object from.
+ */
+uBasicNGS::uBasicNGS(uRegion p_region)
+    : uGenericNGS(p_region.getChr(),p_region.getStart(), p_region.getEnd(), p_region.getStrand())
+{
+    setScoreVector(p_region.getScoreVector());
+}
+
+/** \brief Constructor from parser Token
+* \param uToken Valid Token with data. We assumed the token is valid, so skip some checks here to avoid duplication
+*/
+uBasicNGS::uBasicNGS(uToken pToken) try :
+    uGenericNGS(pToken)
+{}
+catch(construct_elem_throw &e)
+{
+    addStringError(e,"Throwing in uBasicNGS(uToken)");
+    e << basic_error(*this);
+    throw e;
+}
+
+    /** \brief Constructor overload with basic region infos with optional strand direction
+     * \param std::string chr: the name of the chromosome
+     * \param long long int start: the starting position of the element to add.
+     * \param long long int end: the ending position of the element to add.
+     * \param StrandDir dir: the strand of the element to add.
+     * \exception construct_elem_throw: When the start and/or end position are invalid.
      */
-    uBasicNGS::uBasicNGS(uTags p_tags)
-        : uGenericNGS(p_tags.getChr(),p_tags.getStart(), p_tags.getEnd(), p_tags.getStrand())
+    uBasicNGS::uBasicNGS(std::string pChr, long long int pStart, long long int pEnd, StrandDir pStrand) try : uGenericNGS(pChr,pStart,pEnd,pStrand)
+    { }
+    catch(construct_elem_throw &e)
     {
-        setScoreVector(p_tags.getScoreVector());
+        addStringError(e,"Throwing in uBasicNGS(string, long long int, long long int, Strandir)");
+        e << basic_error(*this);
+        throw e;
     }
 
-    /** \brief Constructor taking a uRegion as parameter.
-     * \param uRegion p_region: the region to add to create the uBasicNGS object from.
+    /** \brief Constructor with basic region infos plus strand and score
+     * \param std::string chr: the name of the chromosome
+     * \param long long int start: the starting position of the element to add.
+     * \param long long int end: the ending position of the element to add.
+     * \param StrandDir dir: the strand of the element to add.
+     * \param float pScore: the score of the element to add.
+     * \exception construct_elem_throw: When the start and/or end position are invalid.
      */
-    uBasicNGS::uBasicNGS(uRegion p_region)
-        : uGenericNGS(p_region.getChr(),p_region.getStart(), p_region.getEnd(), p_region.getStrand())
-    {
-        setScoreVector(p_region.getScoreVector());
-    }
+    uBasicNGS::uBasicNGS(std::string pChr, long long int pStart, long long int pEnd, StrandDir pStrand, float pScore )
+        : uGenericNGS(pChr, pStart, pEnd,pStrand,pScore)
+    { }
 
-    /** \brief Checks if the content of elements are identical
-     *
-     * \param pCompared const &_SELF_ Item to compare
-     * \return bool True if identical
-     *
+
+    /** \brief Constructor with basic region infos plus score
+     * \param std::string chr: the name of the chromosome
+     * \param long long int start: the starting position of the element to add.
+     * \param long long int end: the ending position of the element to add.
+     * \param float pScore: the score of the element to add.
+     * \exception construct_elem_throw: When the start and/or end position are invalid.
      */
+    uBasicNGS::uBasicNGS(std::string pChr, long long int pStart, long long int pEnd, float pScore )
+        : uGenericNGS(pChr, pStart, pEnd,pScore)
+    { }
 
-    bool uBasicNGS::isEqual(const uBasicNGS  &  pCompared) const{
+/** \brief Checks if the content of elements are identical
+ *
+ * \param pCompared const &_SELF_ Item to compare
+ * \return bool True if identical
+ *
+ */
 
-        return ((this->getChr()==pCompared.getChr())&&
-                (this->getStrand()==pCompared.getStrand())&&
-                (this->getStart()==pCompared.getStart())&&
-                (this->getEnd()==pCompared.getEnd())&&
-                (this->getScoreVector()==pCompared.getScoreVector()));
-    }
+bool uBasicNGS::isEqual(const uBasicNGS  &  pCompared) const
+{
+
+    return ((this->getChr()==pCompared.getChr())&&
+            (this->getStrand()==pCompared.getStrand())&&
+            (this->getStart()==pCompared.getStart())&&
+            (this->getEnd()==pCompared.getEnd())&&
+            (this->getScoreVector()==pCompared.getScoreVector()));
+}
 
 
-    uBasicNGS uBasicNGS::getCopy()const{
-        uBasicNGS returnCopy = *this;
-        return returnCopy;
-    }
+uBasicNGS uBasicNGS::getCopy()const
+{
+    uBasicNGS returnCopy = *this;
+    return returnCopy;
+}
+
+
+
+
+
 
 /**< uBasicNGSChrom */
 
-    /** \brief Copy constructor
-     * \param const uBasicNGSChrom& initFrom: the uBasicNGSChrom to copy.
-     */
-    uBasicNGSChrom::uBasicNGSChrom(const uBasicNGSChrom& initFrom)
-    {
-        VecSites=initFrom.returnVecData();
-        chr= initFrom.getChr();
-        m_isSorted=initFrom.m_isSorted;
-        sortGetStart=initFrom.sortGetStart;
-        sortGetEnd=initFrom.sortGetEnd;
-        m_comptFunc=initFrom.m_comptFunc;
-        chromSize=initFrom.chromSize;
-    }
+/** \brief Copy constructor
+ * \param const uBasicNGSChrom& initFrom: the uBasicNGSChrom to copy.
+ */
+uBasicNGSChrom::uBasicNGSChrom(const uBasicNGSChrom& initFrom)
+{
+    VecSites=initFrom.returnVecData();
+    chr= initFrom.getChr();
+    m_isSorted=initFrom.m_isSorted;
+    sortGetStart=initFrom.sortGetStart;
+    sortGetEnd=initFrom.sortGetEnd;
+    m_comptFunc=initFrom.m_comptFunc;
+    chromSize=initFrom.chromSize;
+}
 
-    /** \brief Assignment operator overload to copy a uBagicNGSChrom.
-     * \param const uBasicNGSChrom& copFrom: the uBasicNGSChrom to copy.
-     */
-    uBasicNGSChrom& uBasicNGSChrom::operator=(const uBasicNGSChrom& copFrom)
-    {
-        VecSites=copFrom.returnVecData();
-        chr= copFrom.getChr();
-        m_isSorted=copFrom.m_isSorted;
-        sortGetStart=copFrom.sortGetStart;
-        sortGetEnd=copFrom.sortGetEnd;
-        m_comptFunc=copFrom.m_comptFunc;
-        chromSize=copFrom.chromSize;
+/** \brief Assignment operator overload to copy a uBagicNGSChrom.
+ * \param const uBasicNGSChrom& copFrom: the uBasicNGSChrom to copy.
+ */
+uBasicNGSChrom& uBasicNGSChrom::operator=(const uBasicNGSChrom& copFrom)
+{
+    VecSites=copFrom.returnVecData();
+    chr= copFrom.getChr();
+    m_isSorted=copFrom.m_isSorted;
+    sortGetStart=copFrom.sortGetStart;
+    sortGetEnd=copFrom.sortGetEnd;
+    m_comptFunc=copFrom.m_comptFunc;
+    chromSize=copFrom.chromSize;
 
-        return *this;
-    }
+    return *this;
+}
 
 
-    uBasicNGSChrom uBasicNGSChrom::getCopy()const
-    {
-        uBasicNGSChrom returnCopy = *this;
-        return returnCopy;
-    }
+uBasicNGSChrom uBasicNGSChrom::getCopy()const
+{
+    uBasicNGSChrom returnCopy = *this;
+    return returnCopy;
+}
 
 
 }

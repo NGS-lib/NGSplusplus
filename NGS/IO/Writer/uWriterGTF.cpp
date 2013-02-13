@@ -38,8 +38,8 @@ void uWriterGTF::writeToken(const uToken& token)
 		if (token.isParamSet(token_param::SEQ_NAME))
             { seqname = token.getParam(token_param::SEQ_NAME); }
 
-		if(token.isParamSet(token_param::FEATURE_NAME))
-			{ feature = token.getParam(token_param::FEATURE_NAME); }
+		if(token.isParamSet(token_param::FEATURE_TYPE))
+			{ feature = token.getParam(token_param::FEATURE_TYPE); }
         /**< If score is not set, but strand is, we replace score by "." */
         if (token.isParamSet(token_param::STRAND))
         {  strand = token.getParam(token_param::STRAND);   }

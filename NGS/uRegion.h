@@ -3,7 +3,7 @@
 
 /**< A region, is a fairly generic entity */
 #include "uFormats.h"
-#include "uTags.h"
+//#include "uTags.h"
 #include <limits>
 #include "utility/utility.h"
 namespace NGS
@@ -13,7 +13,9 @@ class uParser;
 class uBasicNGS;
 class uBasicNGSChrom;
 class uBasicNGSExperiment;
-
+class uTags;
+class uTagsChrom;
+class uTagsExperiment;
 
 class uRegion : public uGenericNGS<uRegion>
 {
