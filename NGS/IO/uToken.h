@@ -17,7 +17,7 @@ namespace NGS
 enum class token_param
 {
     CHR, START_POS, END_POS, STRAND, MAP_SCORE, PHRED_SCORE, CIGAR, SEQUENCE, SEQ_NAME,FLAGS ,SCORE,DENSITY,FEATURE_TYPE,SOURCE,PHASE,EXTRA,TEMPLATE_LENGHT,
-    FEATURE_CLASS, FEATURE_ID,GROUP_TRANSCRIPT,GROUP_ID,
+    FEATURE_CLASS, FEATURE_ID,GROUP_TRANSCRIPT,GROUP_ID,OFFSET,
     CUST_1,CUST_2,CUST_3,CUST_4,CUST_5,CUST_6,CUST_7,CUST_8,CUST_9
 };
 
@@ -40,12 +40,15 @@ public:
      */
     //TODO Does this throw correctly?
 
-    std::string getParam(token_param name) const;
-    std::string getParam(const std::string& name) const;
-    bool isParamSet(const token_param& name) const;
-    bool isParamSet(const std::string& name) const;
-    std::vector<std::string> getParamVector(token_param name) const;
+    std::string getParam(token_param name,unsigned int paramPos=0) const;
+    std::string getParam(const std::string& name,unsigned int paramPos=0) const;
 
+
+    bool isParamSet(const token_param& name, int pos=0) const;
+    int  paramCount(const token_param& name) const;
+    bool isParamSet(const std::string& name, int pos=0) const;
+    int  paramCount(const std::string& name) const;
+    std::vector<std::string> getParamVector(token_param name) const;
     uToken& operator=(uToken const& assign_from);
 
     /** \brief Check if a string has a corresponding token_param value
@@ -76,6 +79,7 @@ public:
 				|| param == "TEMPLATE_LENGHT"
 				|| param == "GROUND_TRANSCRIPT"
 				|| param == "GROUND_ID"
+				|| param == "OFFSET"
                 );
     }
 
@@ -135,6 +139,7 @@ private:
 	friend class uParserBedGraph;
 	friend class uParserGTF;
 	friend class uParserGFF2;
+	friend class uParserGenePred;
 }; // End of class Token
 
 /**< Overloading of stream operator for token_param */
@@ -184,6 +189,8 @@ inline std::ostream & operator<<(std::ostream& Str, token_param name)
         return Str <<"EXTRA";
 	case token_param::TEMPLATE_LENGHT:
         return Str <<"TEMPLATE_LENGHT";
+    case token_param::OFFSET:
+        return Str <<"OFFSET";
 
     default:
         return Str << (int) name;
@@ -215,6 +222,7 @@ inline std::istream& operator>>(std::istream &is, token_param& name)
     else if (token == "FEATURE_ID") name = token_param::FEATURE_ID;
     else if (token == "GROUP_ID") name = token_param::GROUP_ID;
     else if (token == "GROUP_TRANSCRIPT") name = token_param::GROUP_TRANSCRIPT;
+    else if (token == "OFFSET") name = token_param::OFFSET;
     else
     {
         invalid_token_param_throw e;

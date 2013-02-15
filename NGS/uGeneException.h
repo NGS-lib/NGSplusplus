@@ -73,9 +73,10 @@ struct uParser_invalid_GFF_line : virtual uParser_invalid_line{};
 struct uParser_invalid_GTF_line : virtual uParser_invalid_line{};
 /**<  BedGraph exceptions*/
 struct uParser_invalid_BedGraph_line : virtual uParser_invalid_line{};
+/**< GenePred exceptions */
+struct uParser_invalid_GenePred_line  : virtual uParser_invalid_line{};
 
 /**< uHeader Exceptions */
-
 struct invalid_header_param_throw : virtual uParser_exception_base{};
 
 

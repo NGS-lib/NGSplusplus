@@ -20,10 +20,20 @@ class uTags;
 class uTagsChrom;
 class uTagsExperiment;
 
-
-
 //class uGeneChrom;
 //class uGeneExperiment;
+
+    enum class featureType: uint_least16_t
+    {
+        EXON,INTRON, CODING, NCODING, LOOP, PROMOTER, ENHANCER,UTR3,UTR5, CUST_1, CUST_2, CUST_3, CUST_4, CUST_5, CUST_6, CUST_7, CUST_8, CUST_9, OTHER
+    };
+
+    featureType mapFeature(const std::string &);
+
+    static const std::map<std::string,featureType> featureMap{ {"EXON",featureType::EXON},{"INTRON",featureType::INTRON},{"CODING",featureType::CODING},{"NCODING",featureType::NCODING  },
+    {"LOOP",featureType::LOOP}, {"ENHANCER",featureType::ENHANCER},
+    {"UTR3",featureType::UTR3},{"UTR5",featureType::UTR5}};
+
 class uGene : public uGenericNGS<uGene>
 {
 public:
@@ -39,11 +49,12 @@ public:
 
     ~uGene(){};
 
-    enum class featureType: uint_least16_t
-    {
-        EXON,INTRON, CODING, NCODING, LOOP, PROMOTER, ENHANCER, CUST_1, CUST_2, CUST_3, CUST_4, CUST_5, CUST_6, CUST_7, CUST_8, CUST_9
-    };
+
+
+
 private:
+
+
 
     std::string m_class=""; /**<  Class of our type. */
     std::string m_ID=""; /**<  Name for the gene group. */
@@ -71,6 +82,10 @@ private:
             void setClass(std::string pClass){m_class = pClass;}; /**< Set Class ID */
             void setStart(long long pStart){m_start = pStart;}; /**< Set Start of the feature */
             void setEnd(long long pEnd){m_end = pEnd;};/**< Set End of the feature */
+
+            bool operator==(const uFeature &other) const;
+            bool operator!=(const uFeature &other) const;
+
         };
         std::vector<uFeature> m_featureVector;  /**< List of features associated with our gene. Kept as sorted */
 
@@ -88,8 +103,6 @@ public :
     bool isOverlappingFeature(long long, long long);
     bool isOverlappingFeature(long long, long long, featureType pType);
 
-
-
     bool isEqual(const uGene & pCompared)const;
     uGene getCopy()const;
 
@@ -99,7 +112,7 @@ public :
     void removeFeature(std::vector<uFeature>::const_iterator,std::vector<uFeature>::const_iterator);
     bool hasFeatureType(featureType);
 
-    int featureCount(){return m_featureVector.size();};
+    unsigned int featureCount()const{return m_featureVector.size();};
 
     typename std::vector<uFeature>::const_iterator featureBegin()const;
     typename std::vector<uFeature>::const_iterator featureEnd()const;
@@ -129,21 +142,27 @@ public:
 
     uGeneChrom getCopy()const;
 
-    typename std::vector<uGene>::const_iterator findNextGeneWithFeature(long long pPosition, uGene::featureType pType)const;
-    typename std::vector<uGene>::const_iterator finPrecedingGeneWithFeature(long long pPosition, uGene::featureType pType)const;
-    typename std::vector<uGene>::const_iterator findNextGeneWithFeature(typename std::vector<uGene>::const_iterator pPosition, uGene::featureType pType)const;
-    typename std::vector<uGene>::const_iterator finPrecedingGeneWithFeature(typename std::vector<uGene>::const_iterator pPosition, uGene::featureType pType)const;
+    typename std::vector<uGene>::const_iterator findNextGeneWithFeature(long long pPosition, featureType pType)const;
+    typename std::vector<uGene>::const_iterator finPrecedingGeneWithFeature(long long pPosition, featureType pType)const;
+    typename std::vector<uGene>::const_iterator findNextGeneWithFeature(typename std::vector<uGene>::const_iterator pPosition, featureType pType)const;
+    typename std::vector<uGene>::const_iterator finPrecedingGeneWithFeature(typename std::vector<uGene>::const_iterator pPosition, featureType pType)const;
 
 
-    typename std::vector<uGene>::const_iterator findNextFeature(long long pPosition, uGene::featureType pType)const;
-    typename std::vector<uGene>::const_iterator finPrecedingFeature(long long pPosition, uGene::featureType pType)const;
-    typename std::vector<uGene>::const_iterator findNextFeature(typename std::vector<uGene>::const_iterator pPosition, uGene::featureType pType)const;
-    typename std::vector<uGene>::const_iterator finPrecedingFeature(typename std::vector<uGene>::const_iterator pPosition, uGene::featureType pType)const;
+    typename std::vector<uGene>::const_iterator findNextFeature(long long pPosition, featureType pType)const;
+    typename std::vector<uGene>::const_iterator finPrecedingFeature(long long pPosition, featureType pType)const;
+    typename std::vector<uGene>::const_iterator findNextFeature(typename std::vector<uGene>::const_iterator pPosition, featureType pType)const;
+    typename std::vector<uGene>::const_iterator findPrecedingFeature(typename std::vector<uGene>::const_iterator pPosition, featureType pType)const;
 
 
     long long getIDCount(const std::string & pId, const std::string & pTranscript);
     void addData(uToken);
     void addData(const uGene&);
+
+private:
+
+
+    typename std::vector<uGene>::iterator findGene(const std::string&,const std::string&);
+
 };
 
 class uGeneExperiment: public uGenericNGSExperiment<uGeneExperiment,uGeneChrom, uGene>

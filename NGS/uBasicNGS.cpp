@@ -125,6 +125,8 @@ uBasicNGSChrom::uBasicNGSChrom(const uBasicNGSChrom& initFrom)
  */
 uBasicNGSChrom& uBasicNGSChrom::operator=(const uBasicNGSChrom& copFrom)
 {
+
+    if (this == &copFrom) return *this;
     VecSites=copFrom.returnVecData();
     chr= copFrom.getChr();
     m_isSorted=copFrom.m_isSorted;

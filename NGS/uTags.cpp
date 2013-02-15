@@ -871,6 +871,8 @@ uTagsChrom::uTagsChrom(const uTagsChrom& initFrom)
 
 uTagsChrom& uTagsChrom::operator=(const uTagsChrom& copFrom)
 {
+    if (this == &copFrom) return *this;
+
     VecSites=copFrom.returnVecData();
     chr= copFrom.getChr();
     m_isSorted=copFrom.m_isSorted;

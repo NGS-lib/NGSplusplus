@@ -104,9 +104,9 @@ uToken& uToken::operator=(uToken const& assign_from)
  * \param token_param name: the name in token_param format.
  * \exception param_not_found when the param is not setted in the token.
  */
-std::string uToken::getParam(token_param name) const
+std::string uToken::getParam(token_param name,unsigned int paramPos) const
 {
-    if(isParamSet(name))
+    if(isParamSet(name) && paramPos<paramCount(name))
     {
         return (m_params.find(name)->second.at(0));
     }
@@ -144,7 +144,7 @@ std::vector<std::string> uToken::getParamVector(token_param name) const
  * \param const std::string& name: the name in string format.
  * \exception param_not_found when the param is not setted in the token.
  */
-std::string uToken::getParam(const std::string& name) const
+std::string uToken::getParam(const std::string& name, unsigned int paramPos) const
 {
 
     try
@@ -220,16 +220,53 @@ void uToken::_setParamCustom(const std::string& name, const std::string& value)
  * \param const token_param& name: the name of the param in token_param format.
  * \return true if the param is set, otherwise return false.
  */
-bool uToken::isParamSet(const token_param& name) const
+bool uToken::isParamSet(const token_param& name, int pos) const
 {
-    return m_params.count(name);
+    if (m_params.count(name))
+        return (pos<m_params.at(name).size());
+    else
+        return false;
+}
+
+/** \brief Check number of parameters associated
+ * \param const token_param& name: the name of the param in token_param format.
+ * \return true if the param is set, otherwise return false.
+ */
+int uToken::paramCount(const token_param& name) const
+{
+    if (isParamSet(name))
+        return m_params.at(name).size();
+    else
+        return 0;
 }
 
 /** \brief Check is the param is set.
  * \param const std::string& name: the name of the param in string format.
  * \return true if the param is set, otherwise return false.
  */
-bool uToken::isParamSet(const std::string& name) const
+bool uToken::isParamSet(const std::string& name, int pos) const
+{
+    try
+    {
+        token_param tokenName = _convertStringToTokenParam(name);
+        return isParamSet(tokenName,pos);
+    }
+    catch (invalid_token_param_throw& e)
+    {
+        if (m_customValues == true)
+        {
+            return m_customParams.count(name);
+        }
+    }
+    return false;
+}
+//TODO
+//FINISHHH!
+/** \brief Check number of parameters associated
+ * \param const token_param& name: the name of the param in token_param format.
+ * \return true if the param is set, otherwise return false.
+ */
+int uToken::paramCount(const std::string& name) const
 {
     try
     {
@@ -245,6 +282,7 @@ bool uToken::isParamSet(const std::string& name) const
     }
     return false;
 }
+
 
 /** \brief Operate any necessary post_processing on our values. Note this may include setting values to the token
  *

@@ -47,7 +47,7 @@ TEST(parserHeaderSamTests, getEntryUnitary) {
 
 
 TEST(parserSamTests, BIGFILE) {
-      EXPECT_NO_THROW(uParser ourParser("../data/SAM/UnitaryValid.sam", "SAM");
+      EXPECT_NO_THROW(uParser ourParser("../data/SAM/H2AZFinal_downsample.sam", "SAM");
 
                         while (ourParser.eof()==false){
                             uToken tempToken=ourParser.getNextEntry();

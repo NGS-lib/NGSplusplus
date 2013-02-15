@@ -8,4 +8,4 @@
 #include "NGS/uGeneException.h"
 #include "NGS/uTags.h"
 #include "NGS/uBasicNGS.h"
-
+#include "NGS/uGene.h"

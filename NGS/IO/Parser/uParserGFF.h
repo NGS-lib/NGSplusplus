@@ -1,11 +1,12 @@
 #ifndef UPARSERGFF_H_INCLUDED
 #define UPARSERGFF_H_INCLUDED
 
-#include "../../uGeneException.h"
-#include "../uHeader.h"
-#include <iostream>
-#include "../../boost-include/boost/xpressive/xpressive.hpp"
+//#include "../../uGeneException.h"
+//#include "../uHeader.h"
+//#include <iostream>
 #include "uParserBase.h"
+//#include "../../boost-include/boost/xpressive/xpressive.hpp"
+
 namespace NGS
 {
 
@@ -25,7 +26,7 @@ namespace NGS
         boost::xpressive::sregex GFFRegex;
         const std::string GFFregString="^(\\.|[\\w_-]+)\t(\\.|[\\w_-]+)\t(\\.|[\\w_-]+)\t(\\d+)\t(\\d+)\t([-+]?[0-9]*\\.?[0-9]+|.)\t(\\+|\\-|\\.)\t([012\\.])(?:\t(.+))?";
     };
-
+#include "uParserBase.h"
 } // End of namespace NGS
 
 #endif // UPARSERGFF_H_INCLUDED

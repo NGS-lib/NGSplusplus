@@ -249,7 +249,7 @@ uRegion uRegion::getCopy() const{
     }
     uRegionChrom& uRegionChrom::operator=(const uRegionChrom& copFrom)
     {
-
+         if (this == &copFrom) return *this;
         VecSites=copFrom.returnVecData();
         chr= copFrom.getChr();
         m_isSorted=copFrom.m_isSorted;
