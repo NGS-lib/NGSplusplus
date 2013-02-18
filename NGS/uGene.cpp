@@ -277,6 +277,7 @@ void uGeneChrom::addData(const uToken pToken)
         }
         for (; i<pToken.paramCount(token_param::START_POS); i++)
         {
+            //TODO : Accessor
             StrandDir dir=StrandDir::FORWARD;
             // float score=0.0f;
             /**< Others as supplementary feature */
@@ -310,29 +311,13 @@ void uGeneChrom::addData(const uToken pToken)
     {
 
         /**< Otherwise normal group */
-
+        uGenericNGSChrom::addData(pToken);
 
 
     }
 
 }
-/**< No Group/Transcript ID, add as a regular entry */
-else
-{
-    uGenericNGSChrom::addData(pToken);
-}
-//        setEnd(utility::stoi(pToken.getParam(token_param::END_POS)));
-//        setStart( utility::stoi(pToken.getParam(token_param::START_POS)));
-//        /**< Default forward */
-//        if (pToken.isParamSet(token_param::STRAND))
-//        {
-//            setStrand(pToken.getParam(token_param::STRAND).at(0));
-//        }
-//        if ((pToken.isParamSet(token_param::SCORE))&&(pToken.getParam(token_param::SCORE)!="." ) )
-//        {
-//            setScore(utility::stof (pToken.getParam(token_param::SCORE) ) );
-//        }
-}
+
 
 long long uGeneChrom::getIDCount(const std::string & pId, const std::string & pTranscript)
 {

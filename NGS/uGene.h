@@ -69,6 +69,7 @@ private:
             std::string m_ID=""; /**< ID of the feature */
             std::string m_class="";/**< Class of the feature */
             short int m_offset=0;
+            StrandDir m_strand= StrandDir::FORWARD;
         public:
 
             uFeature(long long pStart, long long pEnd, featureType pType,std::string pID ,std::string pClass, short int pOffset );
