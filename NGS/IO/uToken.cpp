@@ -108,7 +108,7 @@ std::string uToken::getParam(token_param name,unsigned int paramPos) const
 {
     if(isParamSet(name) && paramPos<paramCount(name))
     {
-        return (m_params.find(name)->second.at(0));
+        return (m_params.find(name)->second.at(paramPos));
     }
     else
     {

@@ -170,7 +170,7 @@ class uGeneExperiment: public uGenericNGSExperiment<uGeneExperiment,uGeneChrom, 
 {
 public:
 
-
+    void addData(uToken &);
     uGeneExperiment& operator=(const uGeneExperiment& copFrom)=default;
     uGeneExperiment(const uGeneExperiment&) = default;
     uGeneExperiment()=default;

@@ -121,7 +121,8 @@ uGene uGene::getCopy()const
 
 void uGene::addFeature(long long pFeatureStart, long long pFeatureEnd, featureType pType,std::string pID, std::string pClass , short int pOffset)
 {
-    m_featureVector.push_back(uFeature(pFeatureStart,pFeatureEnd,pType, pID, pClass, pOffset));
+    uFeature test(pFeatureStart,pFeatureEnd,pType, pID, pClass, pOffset);
+    m_featureVector.push_back(test);
     stable_sort(m_featureVector.begin(),m_featureVector.end(),[](const uFeature & item1, const uFeature & item2)
     {
         return item1.getStart()<item2.getStart();
@@ -201,7 +202,7 @@ bool uGene::isOverlappingFeature(long long pStart, long long pEnd, featureType p
 featureType mapFeature(const std::string & pType )
 {
     if (featureMap.count(pType))
-        return featureMap.at(pType);
+        return featureMap.find(pType)->second;
     else
         return featureType::OTHER;
 
@@ -250,8 +251,7 @@ void uGeneChrom::addData(const uToken pToken)
         tokID=pToken.getParam(token_param::GROUP_ID);
         if (pToken.isParamSet(token_param::GROUP_TRANSCRIPT))
             tokTranscript= pToken.getParam(token_param::GROUP_TRANSCRIPT);
-
-        auto mainItr=VecSites.end();
+        std::vector<uGene>::iterator mainItr;
         int i=0;
         /**< Case where the ID is not  associated, we add first as main feature */
         if (getIDCount(tokID,tokTranscript)==0)
@@ -267,7 +267,7 @@ void uGeneChrom::addData(const uToken pToken)
             newItem.setTranscript(tokTranscript);
             this->VecSites.push_back(newItem);
             this->m_isSorted=false;
-            auto mainItr=VecSites.end();
+            mainItr=VecSites.end();
             mainItr--;
             i++;
         }
@@ -297,7 +297,6 @@ void uGeneChrom::addData(const uToken pToken)
                 featureID=pToken.getParam(token_param::FEATURE_ID,i);
 
             mainItr->addFeature(std::stoll(pToken.getParam(token_param::START_POS)),std::stoll(pToken.getParam(token_param::END_POS)),mapFeature(pToken.getParam(token_param::FEATURE_TYPE,i)),featureID,featureClass );
-
             if ( pToken.isParamSet(token_param::SCORE))
                 mainItr->setScore(std::stof(pToken.getParam(token_param::SCORE)));
 
@@ -305,15 +304,11 @@ void uGeneChrom::addData(const uToken pToken)
             mainItr->setTranscript(tokTranscript);
 
         }
-
-
     }
+    else
     {
-
         /**< Otherwise normal group */
         uGenericNGSChrom::addData(pToken);
-
-
     }
 
 }
@@ -379,6 +374,29 @@ uGeneChrom uGeneChrom::getCopy()const
 {
     uGeneChrom returnCopy = *this;
     return returnCopy;
+}
+
+/**< uGeneExperiment */
+
+void uGeneExperiment::addData(uToken & pToken){
+
+ try
+    {
+        std::string chr = pToken.getParam(token_param::CHR);
+
+        uGeneChrom* ptempChrom;
+        ptempChrom=&(ExpMap[chr]);
+        ptempChrom->setChr(chr);
+        ptempChrom->addData(pToken);
+    }
+    catch(std::exception & e)
+    {
+#ifdef DEBUG
+        std::cerr << "Catching and re-throwing in uGeneExperiment::addData()" <<std::endl;
+#endif
+        throw ugene_exception_base();
+    }
+
 }
 
 

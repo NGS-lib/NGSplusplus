@@ -74,10 +74,11 @@ protected:
 
 public:
 
-     virtual _SELF_ getCopy()const{
+    virtual _SELF_ getCopy()const
+    {
         assert (false);
     };
-   /**< Comparison functors */
+    /**< Comparison functors */
     static bool comparePosStart(const _BASE_ &item, const int & value)
     {
         return item.getStart() < value;
@@ -108,7 +109,10 @@ public:
 
     uGenericNGSChrom& operator=(const uGenericNGSChrom& copFrom);
     uGenericNGSChrom(const uGenericNGSChrom&);
-    virtual ~uGenericNGSChrom<_SELF_,_BASE_> (){;}
+    virtual ~uGenericNGSChrom<_SELF_,_BASE_> ()
+    {
+        ;
+    }
 
     /**< Utility wrappers to query collection */
     unsigned long long avgSiteSize() const;
@@ -151,18 +155,18 @@ public:
 
     /**< Functions to manipulate generically ranges of our elements. Requires the collection to be sorted */
     _SELF_ getSubset(double p_start, double p_end, OverlapType overlap=OverlapType::OVERLAP_PARTIAL) const;
-     long int getSubsetCount(double p_start, double p_end, OverlapType overlap=OverlapType::OVERLAP_PARTIAL)const;
+    long int getSubsetCount(double p_start, double p_end, OverlapType overlap=OverlapType::OVERLAP_PARTIAL)const;
 
     _SELF_ removeSubset(double p_start, double p_end, OverlapType overlap=OverlapType::OVERLAP_PARTIAL);
+    _SELF_ removeDistinct(double p_start, double p_end, OverlapType options=OverlapType::OVERLAP_PARTIAL);
+
     _SELF_ getDistinct(double p_start, double p_end, OverlapType options=OverlapType::OVERLAP_PARTIAL) const;
-    //TODO code this
-    //long int getDistinctCount(double p_start, double p_end, OverlapType overlap=OverlapType::OVERLAP_PARTIAL)const;
-    //TODO
-   // _SELF_ removeDistinct(double p_start, double p_end, OverlapType options=OverlapType::OVERLAP_PARTIAL);
+    long int getDistinctCount(double p_start, double p_end, OverlapType overlap=OverlapType::OVERLAP_PARTIAL)const;
+
 
     //TODO Vector overloads,
-    // _SELF_ getSubset(std::vector<std::pair<double,double>>, OverlapType overlap=OverlapType::OVERLAP_PARTIAL) const;
-   // _SELF_ removeSubset(std::vector<std::pair<double,double>>, OverlapType overlap=OverlapType::OVERLAP_PARTIAL);
+    // SELF_ getSubset(std::vector<std::pair<double,double>>, OverlapType overlap=OverlapType::OVERLAP_PARTIAL) const;
+    // _SELF_ removeSubset(std::vector<std::pair<double,double>>, OverlapType overlap=OverlapType::OVERLAP_PARTIAL);
     //_SELF_ getDistinct(std::vector<std::pair<double,double>>, OverlapType options=OverlapType::OVERLAP_PARTIAL) const;
     //_SELF_ removeDistinct(std::vector<std::pair<double,double>>, OverlapType options=OverlapType::OVERLAP_PARTIAL);
 
@@ -175,7 +179,7 @@ public:
     template<class UnaryOperation>
     std::vector<_BASE_> applyAndGetVecData(UnaryOperation unary_op);
 
-     template<class UnaryOperation>
+    template<class UnaryOperation>
     _SELF_ applyAndGetChrom(UnaryOperation unary_op);
 
 
@@ -261,13 +265,13 @@ public:
         return VecSites.end();
     };
 
-   /** \brief Return a copy of the functor  used to access to current Start value
-     *
-     *  This will return a copy of the assigned functor to access the start value. Will equal nullptr if not set
-     *
-     *
-     * \return std::function<float(const _BASE_*)> const Copy of the fucntor to access start.
-     */
+    /** \brief Return a copy of the functor  used to access to current Start value
+      *
+      *  This will return a copy of the assigned functor to access the start value. Will equal nullptr if not set
+      *
+      *
+      * \return std::function<float(const _BASE_*)> const Copy of the fucntor to access start.
+      */
     std::function<float(const _BASE_*)> getStartFunct() const
     {
         return sortGetStart;
@@ -464,17 +468,18 @@ void uGenericNGSChrom<_SELF_,_BASE_>::addData(const _BASE_& newSite)
 }
 
 
-   /** \brief Write every element of the collection using the createToken() function and the passed Writer
-    *
-    * \param pWriter uWriter& The writer to use, will determine format.
-    * \return void
-    *
-    */
-    template <class _SELF_,class _BASE_>
-    void uGenericNGSChrom<_SELF_,_BASE_>::writeWithWriter(uWriter& pWriter) const{
-        auto writeFunct= std::bind(&_BASE_::writeToOutput,std::placeholders::_1, pWriter);
-        applyOnAllSites(writeFunct);
-    }
+/** \brief Write every element of the collection using the createToken() function and the passed Writer
+ *
+ * \param pWriter uWriter& The writer to use, will determine format.
+ * \return void
+ *
+ */
+template <class _SELF_,class _BASE_>
+void uGenericNGSChrom<_SELF_,_BASE_>::writeWithWriter(uWriter& pWriter) const
+{
+    auto writeFunct= std::bind(&_BASE_::writeToOutput,std::placeholders::_1, pWriter);
+    applyOnAllSites(writeFunct);
+}
 
 template <class _SELF_,class _BASE_>
 /** \brief Overload for internal use, skips check
@@ -623,7 +628,7 @@ _BASE_ uGenericNGSChrom<_SELF_,_BASE_>::generateRandomSite
     {
         _BASE_ returnTag;
 
-            exclList.sortSites();
+        exclList.sortSites();
 
         bool found=false;
         int size = pSize;
@@ -740,9 +745,9 @@ void uGenericNGSChrom<_SELF_,_BASE_>::addNRandomSite
 template <class _SELF_,class _BASE_>
 unsigned long long uGenericNGSChrom<_SELF_,_BASE_>::avgSiteSize() const
 {
-        if (this->count() == 0)
-            return 0;
-        return sumSiteSize()/this->count();
+    if (this->count() == 0)
+        return 0;
+    return sumSiteSize()/this->count();
 }
 
 template <class _SELF_, class _BASE_>
@@ -773,9 +778,9 @@ template <class _SELF_, class _BASE_>
  */
 unsigned long long uGenericNGSChrom<_SELF_ ,_BASE_>::minSiteSize() const
 {
-        if (this->count() == 0)
-            return 0;
-        return minSite(compareLenght)->getLenght();
+    if (this->count() == 0)
+        return 0;
+    return minSite(compareLenght)->getLenght();
 }
 
 template <class _SELF_, class _BASE_>
@@ -894,7 +899,7 @@ typename std::vector<_BASE_>::const_iterator uGenericNGSChrom<_SELF_,_BASE_>::fi
         /**< If result is our first item, then no item precedes it */
         if ((lower==VecSites.begin()))
             return VecSites.end();
-         /**< If result is end, every idem precedes the value */
+        /**< If result is end, every idem precedes the value */
         /**<Return item precedes and as such is LESS then position. if no item was found, last item is closest to value  */
         lower--;
         return (lower);
@@ -1126,6 +1131,76 @@ _SELF_ uGenericNGSChrom<_SELF_,_BASE_>::removeSubset(double p_start, double p_en
         throw e;
     }
 }
+
+/** \brief Remove all elements not in an interval based on the current comparison value. Returns the removed elements as a new container
+ *
+ * \param p_start float : Start of interval
+ * \param p_end float : End of internval
+ * \param overlap OverlapType : Type of comparison
+ * \return uGenericNGSChrom<_BASE_> : Chrom structure containing the removed elements
+ *
+ */
+template <class _SELF_,class _BASE_>
+_SELF_ uGenericNGSChrom<_SELF_,_BASE_>::removeDistinct(double p_start, double p_end, OverlapType options)
+{
+    try
+    {
+
+        _SELF_ returnChrom;
+        returnChrom.setChr(this->getChr());
+
+        auto posIter = this->findPrecedingSite(p_start);
+        /**< Backtrack if needed */
+
+        while (posIter!=this->begin() && sortGetEnd(&(*posIter))>p_start )
+        {
+            posIter--;
+        }
+
+        /**<  Remove elements before our interval, if any*/
+        if (posIter!=this->end())
+        {
+            for (auto curCopy=this->begin(); curCopy!=posIter; curCopy++)
+                returnChrom.addDataNoCheck(*curCopy);
+
+            /**< Validate the element itself */
+            if (!(utility::checkOverlap(sortGetStart(&(*posIter)),sortGetEnd(&(*posIter)), p_start, p_end)))
+            {
+                returnChrom.addDataNoCheck(*posIter);
+                posIter++;
+                std::cout<< "removed border"<<std::endl;
+            }
+            std::cout<< "removed before"<<std::endl;
+            this->removeSite(this->begin(),posIter);
+        }
+
+        /**< Check elements until past the interval */
+        for (posIter=this->begin(); posIter != this->end(); posIter++)
+        {
+            if (sortGetStart(&(*posIter))> p_end)
+                break;
+        }
+        /**< Past the elements we keep, remove all */
+        if(posIter!=this->end())
+        {
+            for (auto curCopy=posIter; curCopy!=this->end(); curCopy++)
+                returnChrom.addDataNoCheck(*curCopy);
+            std::cout<< "removed after"<<std::endl;
+            this->removeSite(posIter,this->end());
+        }
+        return returnChrom;
+    }
+    catch (unsorted_throw & e)
+    {
+        throw e;
+    }
+    catch (ugene_exception_base & e)
+    {
+        throw e;
+    }
+
+}
+
 /**< Return elements of A that overlap B */
 /** \brief Wrapper function that returns a chrom structure containing the elements of that overlap another chrom structur
  *
@@ -1142,22 +1217,22 @@ template <class _SELF_,class _BASE_>
 template <class _OTHER_>
 _SELF_ uGenericNGSChrom<_SELF_,_BASE_>::getOverlapping(_OTHER_ &pCompareChr,OverlapType pOverlap) const
 {
-        _SELF_ returnChr;
+    _SELF_ returnChr;
 
-        if (getChr()!=pCompareChr.getChr())
-            return returnChr;
+    if (getChr()!=pCompareChr.getChr())
+        return returnChr;
 
-        for(auto it= VecSites.begin(); it!=VecSites.end(); it++)
+    for(auto it= VecSites.begin(); it!=VecSites.end(); it++)
+    {
+        for(auto compit= pCompareChr.begin(); compit!=pCompareChr.end(); compit++)
         {
-            for(auto compit= pCompareChr.begin(); compit!=pCompareChr.end(); compit++)
+            if (utility::isOverlap(it->getStart(), it->getEnd(),compit->getStart(),compit->getEnd(),pOverlap))
             {
-                if (utility::isOverlap(it->getStart(), it->getEnd(),compit->getStart(),compit->getEnd(),pOverlap))
-                {
-                    returnChr.addDataNoCheck(*it);
-                    break;
-                }
+                returnChr.addDataNoCheck(*it);
+                break;
             }
         }
+    }
     return returnChr;
 }
 
@@ -1178,21 +1253,21 @@ template <class _OTHER_>
 long long int uGenericNGSChrom<_SELF_,_BASE_>::getOverlappingCount(_OTHER_ &pCompareChr,OverlapType pOverlap) const
 {
 
-        long long int overlapCount=0;
-        if (getChr()!=pCompareChr.getChr())
-            return overlapCount;
+    long long int overlapCount=0;
+    if (getChr()!=pCompareChr.getChr())
+        return overlapCount;
 
-        for(auto it= VecSites.begin(); it!=VecSites.end(); it++)
+    for(auto it= VecSites.begin(); it!=VecSites.end(); it++)
+    {
+        for(auto compit= pCompareChr.begin(); compit!=pCompareChr.end(); compit++)
         {
-            for(auto compit= pCompareChr.begin(); compit!=pCompareChr.end(); compit++)
+            if (utility::isOverlap(it->getStart(), it->getEnd(),compit->getStart(),compit->getEnd(),pOverlap))
             {
-                if (utility::isOverlap(it->getStart(), it->getEnd(),compit->getStart(),compit->getEnd(),pOverlap))
-                {
-                    overlapCount++;
-                    break;
-                }
+                overlapCount++;
+                break;
             }
         }
+    }
     return overlapCount;
 }
 
@@ -1216,8 +1291,9 @@ _SELF_ uGenericNGSChrom<_SELF_,_BASE_>::getNotOverlapping(_OTHER_ &pCompareChr,O
     try
     {
 
-        if (getChr()!=pCompareChr.getChr()){
-              return this->getCopy();
+        if (getChr()!=pCompareChr.getChr())
+        {
+            return this->getCopy();
 //            return (returnChr=*this);
         }
         _SELF_ returnChr;
@@ -1244,14 +1320,14 @@ _SELF_ uGenericNGSChrom<_SELF_,_BASE_>::getNotOverlapping(_OTHER_ &pCompareChr,O
     }
 }
 
-/** \brief
+/** \brief Removes the elements that overlap the given interval and return a Chrom containing the leftover. Based on the current sort.
  *
- * \param p_start double
- * \param p_end double
- * \param overlap OverlapType
- * \return _SELF_
+ * \param p_start double starting value of interval
+ * \param p_end double end value of the interval
+ * \param overlap OverlapType How to determine if the overlap is true or false
+ * \return _SELF_ Chrom without the elements that overlap the interval
  */
- template <class _SELF_,class _BASE_>
+template <class _SELF_,class _BASE_>
 _SELF_ uGenericNGSChrom<_SELF_,_BASE_>::getDistinct(double p_start, double p_end, OverlapType overlap) const
 {
     try
@@ -1298,9 +1374,9 @@ _SELF_ uGenericNGSChrom<_SELF_,_BASE_>::getDistinct(double p_start, double p_end
     }
     catch (unsorted_throw & e)
     {
-    #ifdef DEBUG
-            std::cerr << "getDistinct called on unsorted vector" <<std::endl;
-    #endif
+#ifdef DEBUG
+        std::cerr << "getDistinct called on unsorted vector" <<std::endl;
+#endif
         throw e;
     }
     catch (ugene_exception_base & e)
@@ -1311,6 +1387,56 @@ _SELF_ uGenericNGSChrom<_SELF_,_BASE_>::getDistinct(double p_start, double p_end
         throw e;
     }
 }
+
+
+/** \brief Count the number of element that do not overlap the given interval based on the current sort.
+ *
+ * \param p_start double starting value of interval
+ * \param p_end double end value of the interval
+ * \param overlap OverlapType How to determine if the overlap is true or false
+ * \return _SELF_ Chrom without the elements that overlap the interval
+ */
+template <class _SELF_,class _BASE_>
+long int uGenericNGSChrom<_SELF_,_BASE_>::getDistinctCount(double p_start, double p_end, OverlapType overlap)const
+{
+    try
+    {
+
+
+        int overlapCount = this->count();
+        auto posIter = this->findPrecedingSite(p_start);
+
+        /**<  If no tag leftwise, we start at beginning*/
+        if (posIter== this->end())
+            posIter= this->begin();
+        for (; posIter !=  this->end(); posIter++)
+        {
+            if (sortGetStart(&(*posIter))> p_end)
+                break;
+
+            if (utility::isOverlap(sortGetStart(&(*posIter)), sortGetEnd(&(*posIter)),p_start, p_end,overlap))
+            {
+                overlapCount--;
+            }
+        }
+        return overlapCount;
+    }
+    catch (unsorted_throw & e)
+    {
+#ifdef DEBUG
+        std::cerr << "getDistinctCount called on unsorted vector" <<std::endl;
+#endif
+        throw e;
+    }
+    catch (ugene_exception_base & e)
+    {
+#ifdef DEBUG
+        std::cerr << "Calling getDistinctCount and you did not provide an appropriate get function" <<std::endl;
+#endif
+        throw e;
+    }
+}
+
 
 
 /** \brief Split each item into smaller equal size members and replace our vector of items with the new one.
@@ -1395,384 +1521,384 @@ void uGenericNGSChrom<_SELF_,_BASE_>:: inferChrSize()
         this->setChromSize(0);
 }
 
- /**<  Wrappers around STL algorithms*/
-    /** \brief Compute a value for all sites in the chromosome and return the resulting collection
-      *
-      * This function take a pointer to a functor to perform on all the
-      * sites in the collection. Specifically, this will make an std::vector copy
-      * of all elements. It will then run the functor using for_each and return the resulting results.
-      *
-      * \param unary_op UnaryOperation : Unary operation to perform on all the sites of the chromosome
-      * \return A collection of values computed on each site by unary_op
-      */
-    template <class _SELF_,class _BASE_>
-    template<class UnaryOperation>
-    std::vector<_BASE_> uGenericNGSChrom<_SELF_,_BASE_>::applyAndGetVecData(UnaryOperation unary_op)
+/**<  Wrappers around STL algorithms*/
+/** \brief Compute a value for all sites in the chromosome and return the resulting collection
+  *
+  * This function take a pointer to a functor to perform on all the
+  * sites in the collection. Specifically, this will make an std::vector copy
+  * of all elements. It will then run the functor using for_each and return the resulting results.
+  *
+  * \param unary_op UnaryOperation : Unary operation to perform on all the sites of the chromosome
+  * \return A collection of values computed on each site by unary_op
+  */
+template <class _SELF_,class _BASE_>
+template<class UnaryOperation>
+std::vector<_BASE_> uGenericNGSChrom<_SELF_,_BASE_>::applyAndGetVecData(UnaryOperation unary_op)
+{
+    std::vector<_BASE_> copyVec(VecSites);
+    std::for_each(std::begin(copyVec), std::end(copyVec), unary_op);
+    return copyVec;
+}
+
+/**<  Wrappers around STL algorithms*/
+/** \brief Compute a value for all sites in the chromosome and return the resulting collection
+  *
+  * This function take a pointer to a functor to perform on all the
+  * sites in the collection. Specifically, this will make an std::vector copy
+  * of all elements. It will then run the functor using for_each and return the resulting results.
+  *
+  * \param unary_op UnaryOperation : Unary operation to perform on all the sites of the chromosome
+  * \return A collection of values computed on each site by unary_op
+  */
+template <class _SELF_,class _BASE_>
+template<class UnaryOperation>
+_SELF_ uGenericNGSChrom<_SELF_,_BASE_>::applyAndGetChrom(UnaryOperation unary_op)
+{
+
+    _SELF_ returnChrom = this->getCopy();
+    returnChrom.applyOnAllSites(unary_op);
+    return returnChrom;
+}
+
+/** \brief Create a copy of the sites vector, transform it and return the copy
+    *
+    * This function take a pointer to a function to transform the copied sites
+    * vector; It will operator transform() on the elements and return a vector of results.
+    * The vector will contain the elements specified by the functor, so may be any value.
+    * Please note, the standard requires the functor given to transform() to be side-effect free.
+    *
+    * The function  passed must have a return value.
+    *
+    * \exception std::exception : Any exception throw by reserve() or transform()
+    * \param unary_op UnaryOperation : Unary operation to perform on the copied sites vector
+    * \return A vector of the same type and length as the sites vector but with its sites transformed by unary_op
+    */
+template <class _SELF_,class _BASE_>
+template<class UnaryOperation>
+auto uGenericNGSChrom<_SELF_,_BASE_>::computeOnAllSites(UnaryOperation unary_op) -> std::vector<decltype(unary_op(_BASE_()))>
+{
+    try{
+        std::vector<decltype(unary_op(_BASE_()))> results;
+        results.reserve(VecSites.size());
+        transform(std::begin(VecSites), std::end(VecSites), std::back_inserter(results), unary_op);
+        return results;
+    }
+    catch(...)
     {
-        std::vector<_BASE_> copyVec(VecSites);
-        std::for_each(std::begin(copyVec), std::end(copyVec), unary_op);
+        throw;
+    }
+}
+/** \brief Get the sites for which a certain predicate is true
+  *
+  * This function take a pointer to a predicate function. It return a vector containing
+  * the elements of our collection that evalue true when the predicate is applied.
+  *
+  * The function passed must return a boolean; true if the predicate is true, false otherwise.
+  *
+  * \param p UnaryPredicate : Unary predicate to evaluate on all sites
+  * \return A collection containing all the sites for which the predicate is true
+  */
+//TODO return chrom?,
+template <class _SELF_,class _BASE_>
+template<class UnaryPredicate>
+std::vector<_BASE_> uGenericNGSChrom<_SELF_,_BASE_>::getSpecificSites(UnaryPredicate pred) const
+{
+    try
+    {
+        std::vector<_BASE_> copyVec {};
+        // copyVec.reserve(VecSites.size());
+        copy_if(std::begin(VecSites), std::end(VecSites), std::back_inserter(copyVec), pred);
         return copyVec;
     }
-
-    /**<  Wrappers around STL algorithms*/
-    /** \brief Compute a value for all sites in the chromosome and return the resulting collection
-      *
-      * This function take a pointer to a functor to perform on all the
-      * sites in the collection. Specifically, this will make an std::vector copy
-      * of all elements. It will then run the functor using for_each and return the resulting results.
-      *
-      * \param unary_op UnaryOperation : Unary operation to perform on all the sites of the chromosome
-      * \return A collection of values computed on each site by unary_op
-      */
-    template <class _SELF_,class _BASE_>
-    template<class UnaryOperation>
-    _SELF_ uGenericNGSChrom<_SELF_,_BASE_>::applyAndGetChrom(UnaryOperation unary_op)
+    catch(std::exception & e)
     {
-
-        _SELF_ returnChrom = this->getCopy();
-        returnChrom.applyOnAllSites(unary_op);
-        return returnChrom;
-    }
-
-  /** \brief Create a copy of the sites vector, transform it and return the copy
-      *
-      * This function take a pointer to a function to transform the copied sites
-      * vector; It will operator transform() on the elements and return a vector of results.
-      * The vector will contain the elements specified by the functor, so may be any value.
-      * Please note, the standard requires the functor given to transform() to be side-effect free.
-      *
-      * The function  passed must have a return value.
-      *
-      * \exception std::exception : Any exception throw by reserve() or transform()
-      * \param unary_op UnaryOperation : Unary operation to perform on the copied sites vector
-      * \return A vector of the same type and length as the sites vector but with its sites transformed by unary_op
-      */
-    template <class _SELF_,class _BASE_>
-    template<class UnaryOperation>
-    auto uGenericNGSChrom<_SELF_,_BASE_>::computeOnAllSites(UnaryOperation unary_op) -> std::vector<decltype(unary_op(_BASE_()))>
-    {
-        try{
-            std::vector<decltype(unary_op(_BASE_()))> results;
-            results.reserve(VecSites.size());
-            transform(std::begin(VecSites), std::end(VecSites), std::back_inserter(results), unary_op);
-            return results;
-        }
-        catch(...)
-        {
-            throw;
-        }
-    }
-    /** \brief Get the sites for which a certain predicate is true
-      *
-      * This function take a pointer to a predicate function. It return a vector containing
-      * the elements of our collection that evalue true when the predicate is applied.
-      *
-      * The function passed must return a boolean; true if the predicate is true, false otherwise.
-      *
-      * \param p UnaryPredicate : Unary predicate to evaluate on all sites
-      * \return A collection containing all the sites for which the predicate is true
-      */
-    //TODO return chrom?,
-    template <class _SELF_,class _BASE_>
-    template<class UnaryPredicate>
-    std::vector<_BASE_> uGenericNGSChrom<_SELF_,_BASE_>::getSpecificSites(UnaryPredicate pred) const
-    {
-        try
-        {
-            std::vector<_BASE_> copyVec {};
-           // copyVec.reserve(VecSites.size());
-            copy_if(std::begin(VecSites), std::end(VecSites), std::back_inserter(copyVec), pred);
-            return copyVec;
-        }
-        catch(std::exception & e)
-        {
 #ifdef DEBUG
-            std::cerr << "Throwing in getSpecificSites()" <<std::endl;
+        std::cerr << "Throwing in getSpecificSites()" <<std::endl;
 #endif
-            throw ugene_exception_base()<<string_error("Caugh std::exception, throwing in getSpecificSites()");
-        }
+        throw ugene_exception_base()<<string_error("Caugh std::exception, throwing in getSpecificSites()");
     }
-    /** \brief Remove sites for which the predicate is true.
+}
+/** \brief Remove sites for which the predicate is true.
+ *
+ *  This function calls remove_if using the supplied predicated, followed by erase(). This will
+ *  remove every element that evaluates true from the container  . This will preserve the relative order of the non-removed elements.
+ *
+ *  The function must return a boolean; true if the predicate is true, false otherwise.
+ *
+ * \exception std::exception : Any exception throw by erase() or remove_if()
+ * \param pred UnaryPredicate Predicate to test, follows standard pattern
+ * \return void
+ *
+ */
+template <class _SELF_,class _BASE_>
+template<class UnaryPredicate>
+void uGenericNGSChrom<_SELF_,_BASE_>::removeSpecificSites(UnaryPredicate pred)
+{
+    try
+    {
+        VecSites.erase(std::remove_if(VecSites.begin(), VecSites.end(), pred), VecSites.end());
+    }
+    catch(...)
+    {
+#ifdef DEBUG
+        std::cerr << "Throwing in removeSpecificSites()" <<std::endl;
+#endif
+        throw;
+    }
+}
+
+/** \brief applyOnAllSites: Transform the sites collection by applying a certain function to all sites
+    *
+    * In-place complement to applyAndGetVecData. This function will run the given functor
+    * on every element of the collection, using for_each.
+    *
+    * If collection is empty, nothing will be done.
+    *
+    * The function must return void (any other return value will be ignored).
+    *
+    * \param unary_op UnaryOperation : Unary operation to perform on the sites collection
+    * \return unary_op, the operation that was performed on all sites
+    */
+template <class _SELF_,class _BASE_>
+template<class UnaryOperation>
+UnaryOperation uGenericNGSChrom<_SELF_,_BASE_>::applyOnAllSites(UnaryOperation f)
+{
+    try
+    {
+        if (VecSites.size()>0)
+            return for_each(std::begin(VecSites), std::end(VecSites), f);
+        else
+            return f;
+    }
+    catch(...)
+    {
+        throw ;
+    }
+}
+
+/** \brief applyOnAllSitesConst: Pool the sites collection by applying a certain function to all sites
+  *
+  *  Const version, see non-const for doc.
+  *
+  * \sa applyOnAllSites
+  */
+template <class _SELF_,class _BASE_>
+template<class UnaryOperation>
+UnaryOperation uGenericNGSChrom<_SELF_,_BASE_>::applyOnAllSites(const UnaryOperation f) const
+{
+    try
+    {
+        if (VecSites.size()>0)
+            return for_each(std::begin(VecSites), std::end(VecSites), f);
+        else
+            return f;
+    }
+    catch(...)
+    {
+        throw ;
+    }
+}
+
+/** \brief Accumulate information by querying all sites
+  *
+  *  Runs accumulate() on the elements of the collection with the given functor. This allows the
+  *  querying of every site in a way that returns a single value. ex : adding every elem lenght to
+  *  obtain the total lenght of all contigs in the collection.
+  *
+  *  The function must return the new value of the accumulator.
+  *
+  * \param binary_op BinaryOperation : Querying function to perform on the sites collection
+  * \param init InitialValue The initial value of the "accumulator". Typically 0 if working with an int.
+  * \return The information accumulated by querying all the sites
+  */
+template <class _SELF_,class _BASE_>
+template<class BinaryOperation, class InitialValue>
+InitialValue uGenericNGSChrom<_SELF_,_BASE_>::accumulateSitesInfo(BinaryOperation binary_op, InitialValue init) const
+{
+    // Force using sequential version for accumulate as parallel version
+    // doesn't work if actual data type of InitialValue and _BASE_ cannot be
+    // converted back and forth.
+    return __gnu_parallel::accumulate(std::begin(VecSites), std::end(VecSites), init, binary_op, __gnu_parallel::sequential_tag());
+
+}
+
+
+/** \brief Compute the number of sites for which a certain predicate is true
+  *
+  * Thie function predicate passed is used to count how many elements in the collection correspond to
+  * a given collection.
+  *
+  * The function must return a boolean; true is the predicate is true, false otherwise.
+  *
+  * \param p UnaryPredicate : Unary predicate to evaluate on all sites
+  * \return The number of sites for which a certain predicate is true
+  */
+template <class _SELF_,class _BASE_>
+template <class UnaryPredicate>
+typename std::iterator_traits<typename std::vector<_BASE_>::iterator>::difference_type uGenericNGSChrom<_SELF_,_BASE_>::countSitesWithProperty(UnaryPredicate p) const
+{
+    try
+    {
+        return count_if(std::begin(VecSites), std::end(VecSites), p);
+    }
+    catch(...)
+    {
+        throw;
+    }
+}
+
+/**< End wrappers */
+
+/** \brief Sort the sites vector by applying a certain comparison
      *
-     *  This function calls remove_if using the supplied predicated, followed by erase(). This will
-     *  remove every element that evaluates true from the container  . This will preserve the relative order of the non-removed elements.
+     * Sort the elements of the collection according to the given binary comparison operator.
      *
-     *  The function must return a boolean; true if the predicate is true, false otherwise.
+     * Additionally, one may provide a pointer to related getters. This enables the use of getSubset()
+     * and removeSubset() on the appropriate type of sort. If only get_start_funct is provided, getEnd_funct is set to get_start_funct
      *
-     * \exception std::exception : Any exception throw by erase() or remove_if()
-     * \param pred UnaryPredicate Predicate to test, follows standard pattern
+     *\
+     * \param getStart_funct : function object taking a _BASE_ as member object and returning a value used to sort
+     * \param getEnd_funct: function object taking a _BASE_ as member object and returning a value used to break sorting ties.
+     * \param comp Compare : Binary comparison operation to perform on the sites collection
      * \return void
-     *
      */
-    template <class _SELF_,class _BASE_>
-    template<class UnaryPredicate>
-    void uGenericNGSChrom<_SELF_,_BASE_>::removeSpecificSites(UnaryPredicate pred)
+template <class _SELF_,class _BASE_>
+template <class Compare>
+void uGenericNGSChrom<_SELF_,_BASE_>::sortSites(Compare comp,std::function<float(const _BASE_*)> getStart_funct,std::function<float(const _BASE_*)> getEnd_funct)
+{
+    try
     {
-        try
-        {
-            VecSites.erase(std::remove_if(VecSites.begin(), VecSites.end(), pred), VecSites.end());
-        }
-        catch(...)
-        {
-#ifdef DEBUG
-            std::cerr << "Throwing in removeSpecificSites()" <<std::endl;
-#endif
-            throw;
-        }
+        this->m_isSorted=true;
+        sortGetStart=getStart_funct;
+        if (getEnd_funct==nullptr)
+            sortGetEnd=getStart_funct;
+        else
+            sortGetEnd= getEnd_funct;
+        m_comptFunc=comp;
+
+        return std::sort(std::begin(VecSites), std::end(VecSites), comp);
+    }
+    catch(...)
+    {
+        throw;
+    }
+}
+
+/** \brief Default sort using the start position as a the comparison point
+  *
+  * \return void
+  */
+template <class _SELF_,class _BASE_>
+void uGenericNGSChrom<_SELF_,_BASE_>::sortSites()
+{
+    try
+    {
+        return sortSites(compareStart,&_BASE_::getStart,&_BASE_::getEnd);
+    }
+    catch (...)
+    {
+        throw;
     }
 
-  /** \brief applyOnAllSites: Transform the sites collection by applying a certain function to all sites
-      *
-      * In-place complement to applyAndGetVecData. This function will run the given functor
-      * on every element of the collection, using for_each.
-      *
-      * If collection is empty, nothing will be done.
-      *
-      * The function must return void (any other return value will be ignored).
-      *
-      * \param unary_op UnaryOperation : Unary operation to perform on the sites collection
-      * \return unary_op, the operation that was performed on all sites
-      */
-    template <class _SELF_,class _BASE_>
-    template<class UnaryOperation>
-    UnaryOperation uGenericNGSChrom<_SELF_,_BASE_>::applyOnAllSites(UnaryOperation f)
+}
+/** \brief Indicates if the sites collection is sorted according to a certain comparison
+  *
+  * The function passed must return a boolean: true if the first element is "lower" than the second, false
+  * otherwise.
+  *
+  * \param comp Compare : Binary comparison operation to perform on the sites collection
+  * \return true if the sites are sorted, false otherwise.
+  */
+template <class _SELF_,class _BASE_>
+template<class Compare>
+bool uGenericNGSChrom<_SELF_,_BASE_>::isSorted(Compare comp) const
+{
+    return is_sorted(std::begin(VecSites), std::end(VecSites), comp);
+}
+
+/** \brief Indicates if the sites collection is sorted ascendingly according the function
+  * that was used for the sort (by default: compareStart, which is a sort based on the
+  * position of the element on the chromosome).
+  *
+  * \return true if the sites are sorted, false otherwise.
+  */
+template <class _SELF_,class _BASE_>
+bool uGenericNGSChrom<_SELF_,_BASE_>::isSorted() const
+{
+    return isSorted(m_comptFunc);
+}
+/** \brief Find the minimum site according to a certain comparison
+  *
+  *  The function must return a boolean: true if the first element is "lower" than the second, false otherwise.
+  *
+  * \param comp Compare : Binary comparison operation to perform on the sites collection
+  * \return An iterator to the maximal site
+  * \sa maxSite
+  * \sa minAndMaxSites
+  */
+template <class _SELF_,class _BASE_>
+template<class Compare>
+typename std::vector<_BASE_>::const_iterator uGenericNGSChrom<_SELF_,_BASE_>::minSite(Compare comp) const
+{
+    try
     {
-        try
-        {
-            if (VecSites.size()>0)
-                return for_each(std::begin(VecSites), std::end(VecSites), f);
-            else
-                return f;
-        }
-        catch(...)
-        {
-            throw ;
-        }
+        return min_element(std::begin(VecSites), std::end(VecSites), comp);
+    }
+    catch(...)
+    {
+        throw;
+    }
+}
+/** \brief Find the maximal site according to a certain comparison
+  *
+  *  The function must return a boolean: true if the first element is "lower" than the second, false otherwise.
+  *
+  * \param comp Compare : Binary comparison operation to perform on the sites collection
+  * \return An iterator to the maximal site
+  * \sa minSite
+  * \sa minAndMaxSites
+  */
+template <class _SELF_,class _BASE_>
+template<class Compare>
+typename std::vector<_BASE_>::const_iterator uGenericNGSChrom<_SELF_,_BASE_>::maxSite(Compare comp) const
+{
+    try
+    {
+        return max_element(std::begin(VecSites), std::end(VecSites), comp);
+    }
+    catch(std::exception & e)
+    {
+        throw e;
+    }
+}
+
+/** \brief Find the minimal and maximal sites according to a certain comparison
+  *
+  * This function take a pointer to a function to find the minimal and
+  * maximal sites; this function pointer can either be a) the name of a
+  * function taking two sites as parameters, b) a lambda function taking two
+  * sites as parameters or c) a member method of a site taking another site
+  * as parameter using "mem_fun_ref". In all cases, the function must return
+  * a boolean: true if the first element is "lower" than the second, false
+  * otherwise.
+  *
+  * \param comp Compare : Binary comparison operation to perform on the sites collection
+  * \return A pair of iterators: the first indicates the minimal site and the second, the maximal site
+  */
+template <class _SELF_,class _BASE_>
+template<class Compare>
+std::pair<typename std::vector<_BASE_>::const_iterator, typename std::vector<_BASE_>::const_iterator> uGenericNGSChrom<_SELF_,_BASE_>::minAndMaxSites(Compare comp) const
+{
+    try
+    {
+        return minmax_element(std::begin(VecSites), std::end(VecSites), comp);
+    }
+    catch(std::exception & e)
+    {
+        throw e;
     }
 
-    /** \brief applyOnAllSitesConst: Pool the sites collection by applying a certain function to all sites
-      *
-      *  Const version, see non-const for doc.
-      *
-      * \sa applyOnAllSites
-      */
-    template <class _SELF_,class _BASE_>
-    template<class UnaryOperation>
-    UnaryOperation uGenericNGSChrom<_SELF_,_BASE_>::applyOnAllSites(const UnaryOperation f) const
-    {
-        try
-        {
-            if (VecSites.size()>0)
-                return for_each(std::begin(VecSites), std::end(VecSites), f);
-            else
-                return f;
-        }
-        catch(...)
-        {
-            throw ;
-        }
-    }
-
-    /** \brief Accumulate information by querying all sites
-      *
-      *  Runs accumulate() on the elements of the collection with the given functor. This allows the
-      *  querying of every site in a way that returns a single value. ex : adding every elem lenght to
-      *  obtain the total lenght of all contigs in the collection.
-      *
-      *  The function must return the new value of the accumulator.
-      *
-      * \param binary_op BinaryOperation : Querying function to perform on the sites collection
-      * \param init InitialValue The initial value of the "accumulator". Typically 0 if working with an int.
-      * \return The information accumulated by querying all the sites
-      */
-    template <class _SELF_,class _BASE_>
-    template<class BinaryOperation, class InitialValue>
-    InitialValue uGenericNGSChrom<_SELF_,_BASE_>::accumulateSitesInfo(BinaryOperation binary_op, InitialValue init) const
-    {
-        // Force using sequential version for accumulate as parallel version
-        // doesn't work if actual data type of InitialValue and _BASE_ cannot be
-        // converted back and forth.
-        return __gnu_parallel::accumulate(std::begin(VecSites), std::end(VecSites), init, binary_op, __gnu_parallel::sequential_tag());
-
-    }
-
-
-    /** \brief Compute the number of sites for which a certain predicate is true
-      *
-      * Thie function predicate passed is used to count how many elements in the collection correspond to
-      * a given collection.
-      *
-      * The function must return a boolean; true is the predicate is true, false otherwise.
-      *
-      * \param p UnaryPredicate : Unary predicate to evaluate on all sites
-      * \return The number of sites for which a certain predicate is true
-      */
-    template <class _SELF_,class _BASE_>
-    template <class UnaryPredicate>
-    typename std::iterator_traits<typename std::vector<_BASE_>::iterator>::difference_type uGenericNGSChrom<_SELF_,_BASE_>::countSitesWithProperty(UnaryPredicate p) const
-    {
-        try
-        {
-            return count_if(std::begin(VecSites), std::end(VecSites), p);
-        }
-        catch(...)
-        {
-            throw;
-        }
-    }
-
-    /**< End wrappers */
-
- /** \brief Sort the sites vector by applying a certain comparison
-      *
-      * Sort the elements of the collection according to the given binary comparison operator.
-      *
-      * Additionally, one may provide a pointer to related getters. This enables the use of getSubset()
-      * and removeSubset() on the appropriate type of sort. If only get_start_funct is provided, getEnd_funct is set to get_start_funct
-      *
-      *\
-      * \param getStart_funct : function object taking a _BASE_ as member object and returning a value used to sort
-      * \param getEnd_funct: function object taking a _BASE_ as member object and returning a value used to break sorting ties.
-      * \param comp Compare : Binary comparison operation to perform on the sites collection
-      * \return void
-      */
-    template <class _SELF_,class _BASE_>
-    template <class Compare>
-    void uGenericNGSChrom<_SELF_,_BASE_>::sortSites(Compare comp,std::function<float(const _BASE_*)> getStart_funct,std::function<float(const _BASE_*)> getEnd_funct)
-    {
-        try
-        {
-            this->m_isSorted=true;
-            sortGetStart=getStart_funct;
-            if (getEnd_funct==nullptr)
-                sortGetEnd=getStart_funct;
-            else
-                sortGetEnd= getEnd_funct;
-            m_comptFunc=comp;
-
-            return std::sort(std::begin(VecSites), std::end(VecSites), comp);
-        }
-        catch(...)
-        {
-            throw;
-        }
-    }
-
-    /** \brief Default sort using the start position as a the comparison point
-      *
-      * \return void
-      */
-    template <class _SELF_,class _BASE_>
-    void uGenericNGSChrom<_SELF_,_BASE_>::sortSites()
-    {
-        try
-        {
-            return sortSites(compareStart,&_BASE_::getStart,&_BASE_::getEnd);
-        }
-        catch (...)
-        {
-            throw;
-        }
-
-    }
-    /** \brief Indicates if the sites collection is sorted according to a certain comparison
-      *
-      * The function passed must return a boolean: true if the first element is "lower" than the second, false
-      * otherwise.
-      *
-      * \param comp Compare : Binary comparison operation to perform on the sites collection
-      * \return true if the sites are sorted, false otherwise.
-      */
-    template <class _SELF_,class _BASE_>
-    template<class Compare>
-    bool uGenericNGSChrom<_SELF_,_BASE_>::isSorted(Compare comp) const
-    {
-        return is_sorted(std::begin(VecSites), std::end(VecSites), comp);
-    }
-
-    /** \brief Indicates if the sites collection is sorted ascendingly according the function
-      * that was used for the sort (by default: compareStart, which is a sort based on the
-      * position of the element on the chromosome).
-      *
-      * \return true if the sites are sorted, false otherwise.
-      */
-    template <class _SELF_,class _BASE_>
-    bool uGenericNGSChrom<_SELF_,_BASE_>::isSorted() const
-    {
-        return isSorted(m_comptFunc);
-    }
-    /** \brief Find the minimum site according to a certain comparison
-      *
-      *  The function must return a boolean: true if the first element is "lower" than the second, false otherwise.
-      *
-      * \param comp Compare : Binary comparison operation to perform on the sites collection
-      * \return An iterator to the maximal site
-      * \sa maxSite
-      * \sa minAndMaxSites
-      */
-    template <class _SELF_,class _BASE_>
-    template<class Compare>
-    typename std::vector<_BASE_>::const_iterator uGenericNGSChrom<_SELF_,_BASE_>::minSite(Compare comp) const
-    {
-        try
-        {
-            return min_element(std::begin(VecSites), std::end(VecSites), comp);
-        }
-        catch(...)
-        {
-            throw;
-        }
-    }
-    /** \brief Find the maximal site according to a certain comparison
-      *
-      *  The function must return a boolean: true if the first element is "lower" than the second, false otherwise.
-      *
-      * \param comp Compare : Binary comparison operation to perform on the sites collection
-      * \return An iterator to the maximal site
-      * \sa minSite
-      * \sa minAndMaxSites
-      */
-    template <class _SELF_,class _BASE_>
-    template<class Compare>
-    typename std::vector<_BASE_>::const_iterator uGenericNGSChrom<_SELF_,_BASE_>::maxSite(Compare comp) const
-    {
-        try
-        {
-            return max_element(std::begin(VecSites), std::end(VecSites), comp);
-        }
-        catch(std::exception & e)
-        {
-            throw e;
-        }
-    }
-
-    /** \brief Find the minimal and maximal sites according to a certain comparison
-      *
-      * This function take a pointer to a function to find the minimal and
-      * maximal sites; this function pointer can either be a) the name of a
-      * function taking two sites as parameters, b) a lambda function taking two
-      * sites as parameters or c) a member method of a site taking another site
-      * as parameter using "mem_fun_ref". In all cases, the function must return
-      * a boolean: true if the first element is "lower" than the second, false
-      * otherwise.
-      *
-      * \param comp Compare : Binary comparison operation to perform on the sites collection
-      * \return A pair of iterators: the first indicates the minimal site and the second, the maximal site
-      */
-    template <class _SELF_,class _BASE_>
-    template<class Compare>
-    std::pair<typename std::vector<_BASE_>::const_iterator, typename std::vector<_BASE_>::const_iterator> uGenericNGSChrom<_SELF_,_BASE_>::minAndMaxSites(Compare comp) const
-    {
-        try
-        {
-            return minmax_element(std::begin(VecSites), std::end(VecSites), comp);
-        }
-        catch(std::exception & e)
-        {
-            throw e;
-        }
-
-    }
+}
 
 } // End of namespace NGS
 #endif // UFORMATCHROM_H_INCLUDED
