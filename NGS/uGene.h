@@ -29,6 +29,7 @@ class uTagsExperiment;
     };
 
     featureType mapFeature(const std::string &);
+    std::string featureStr(const featureType&);
 
     static const std::map<std::string,featureType> featureMap{ {"EXON",featureType::EXON},{"INTRON",featureType::INTRON},{"CODING",featureType::CODING},{"NCODING",featureType::NCODING  },
     {"LOOP",featureType::LOOP}, {"ENHANCER",featureType::ENHANCER},
@@ -47,10 +48,8 @@ public:
     uGene(uRegion);
     uGene(uToken);
 
+
     ~uGene(){};
-
-
-
 
 private:
 
@@ -78,6 +77,8 @@ private:
             featureType getType()const{return m_type;};  /**< Return the type of the feature */
             std::string getID()const{return m_ID;}; /**< Return ID of the feature */
             std::string getClass()const{return m_class;}; /**< Return ID of the feature */
+
+            void setStrand(StrandDir );
             void setType(featureType pType){m_type=pType;}; /**< Set Type of the feature */
             void setID(std::string pID){m_ID = pID;}; /**< Set string ID of the feature */
             void setClass(std::string pClass){m_class = pClass;}; /**< Set Class ID */
@@ -93,13 +94,12 @@ private:
 public :
 
 
-    std::string getTranscript()const{return m_transcript;}; /**< Return ID of the gene */
+    std::string getTranscript()const{return m_transcript;}; /**< Return Transcript ID of the gene */
     std::string getID()const{return m_ID;}; /**< Return ID of the gene */
-    std::string getClass()const{return m_class;}; /**< Return ID of the gene */
+    std::string getClass()const{return m_class;}; /**< Return class of the gene */
     void setID(std::string pID){m_ID = pID;}; /**< Set string ID of the gene */
     void setClass(std::string pClass){m_class = pClass;}; /**< Set Class ID */
     void setTranscript(std::string pTranscript){m_transcript=pTranscript;}; /**< Set Transcript ID */
-
 
     bool isOverlappingFeature(long long, long long);
     bool isOverlappingFeature(long long, long long, featureType pType);
@@ -111,7 +111,7 @@ public :
 
     void removeFeature(std::vector<uFeature>::const_iterator);
     void removeFeature(std::vector<uFeature>::const_iterator,std::vector<uFeature>::const_iterator);
-    bool hasFeatureType(featureType);
+    bool hasFeatureType(featureType) const ;
 
     unsigned int featureCount()const{return m_featureVector.size();};
 
@@ -144,9 +144,11 @@ public:
     uGeneChrom getCopy()const;
 
     typename std::vector<uGene>::const_iterator findNextGeneWithFeature(long long pPosition, featureType pType)const;
-    typename std::vector<uGene>::const_iterator finPrecedingGeneWithFeature(long long pPosition, featureType pType)const;
+    typename std::vector<uGene>::const_iterator findPrecedingGeneWithFeature(long long pPosition, featureType pType)const;
+
+    //TODO all siz following
     typename std::vector<uGene>::const_iterator findNextGeneWithFeature(typename std::vector<uGene>::const_iterator pPosition, featureType pType)const;
-    typename std::vector<uGene>::const_iterator finPrecedingGeneWithFeature(typename std::vector<uGene>::const_iterator pPosition, featureType pType)const;
+    typename std::vector<uGene>::const_iterator findPrecedingGeneWithFeature(typename std::vector<uGene>::const_iterator pPosition, featureType pType)const;
 
 
     typename std::vector<uGene>::const_iterator findNextFeature(long long pPosition, featureType pType)const;
@@ -171,10 +173,15 @@ class uGeneExperiment: public uGenericNGSExperiment<uGeneExperiment,uGeneChrom, 
 public:
 
     void addData(uToken &);
+    void addData(const uGeneChrom&);
     uGeneExperiment& operator=(const uGeneExperiment& copFrom)=default;
     uGeneExperiment(const uGeneExperiment&) = default;
     uGeneExperiment()=default;
     uGeneExperiment getCopy() const;
+
+
+    typename std::vector<uGene>::const_iterator findNextGeneWithFeature(std::string pChr, long long pPosition, featureType pType)const;
+    typename std::vector<uGene>::const_iterator findPrecedingGeneWithFeature(std::string pChr,long long pPosition, featureType pType)const;
 
 };
 } // End of namespace NGS

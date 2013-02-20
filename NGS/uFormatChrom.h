@@ -123,15 +123,13 @@ public:
 
     void inferChrSize();
 
-
-
     /**< In place, creates items */
     void divideItemsIntoNBins(int N, SplitType type=SplitType::STRICT);
     void divideItemsIntoBinofSize(int N, SplitType type=SplitType::STRICT);
 
     /**< Find according to sort value */
-    VecGenConstIter findPrecedingSite(const float position) const;
-    VecGenConstIter findNextSite(const float position) const;
+    VecGenConstIter findPrecedingSite(const float pPosition) const;
+    VecGenConstIter findNextSite(const float pPosition) const;
     /**< removeSites overloads */
     void removeSite(VecGenConstIter pItrPos);
     void removeSite(VecGenConstIter pStartItr,VecGenConstIter pEndItr);
@@ -175,6 +173,8 @@ public:
 
     /**< Function to add a unitary element */
     virtual void addData(const _BASE_ & newSite);
+    virtual void addData(const uToken &);
+
 
     template<class UnaryOperation>
     std::vector<_BASE_> applyAndGetVecData(UnaryOperation unary_op);
@@ -460,6 +460,21 @@ void uGenericNGSChrom<_SELF_,_BASE_>::addData(const _BASE_& newSite)
             throw ugene_exception_base()<<string_error("adding base to Chrom with non-matching scaffold/chr name");
         m_isSorted=false;
         VecSites.push_back(newSite);
+    }
+    catch(ugene_exception_base & e)
+    {
+        throw e;
+    }
+}
+template <class _SELF_,class _BASE_>
+void uGenericNGSChrom<_SELF_,_BASE_>::addData(const uToken & pToken)
+{
+    try
+    {
+        if (pToken.getParam(token_param::CHR)!=this->getChr())
+            throw ugene_exception_base()<<string_error("adding base to Chrom with non-matching scaffold/chr name");
+        m_isSorted=false;
+        VecSites.push_back(_BASE_(pToken));
     }
     catch(ugene_exception_base & e)
     {
@@ -876,7 +891,7 @@ void uGenericNGSChrom<_SELF_,_BASE_>::printStats(std::ostream& out) const
  *
  */
 template <class _SELF_,class _BASE_>
-typename std::vector<_BASE_>::const_iterator uGenericNGSChrom<_SELF_,_BASE_>::findPrecedingSite(const float position) const
+typename std::vector<_BASE_>::const_iterator uGenericNGSChrom<_SELF_,_BASE_>::findPrecedingSite(const float pPosition) const
 {
     try
     {
@@ -894,13 +909,13 @@ typename std::vector<_BASE_>::const_iterator uGenericNGSChrom<_SELF_,_BASE_>::fi
         };
 
         /**< Compare, sort Value */
-        auto lower = std::lower_bound(VecSites.begin(), VecSites.end(), position, comp);
+        auto lower = std::lower_bound(VecSites.begin(), VecSites.end(), pPosition, comp);
 
         /**< If result is our first item, then no item precedes it */
         if ((lower==VecSites.begin()))
             return VecSites.end();
         /**< If result is end, every idem precedes the value */
-        /**<Return item precedes and as such is LESS then position. if no item was found, last item is closest to value  */
+        /**<Return item precedes and as such is LESS then pPosition. if no item was found, last item is closest to value  */
         lower--;
         return (lower);
     }
@@ -934,7 +949,7 @@ typename std::vector<_BASE_>::const_iterator uGenericNGSChrom<_SELF_,_BASE_>::fi
  *
  */
 template <class _SELF_,class _BASE_>
-typename std::vector<_BASE_>::const_iterator uGenericNGSChrom<_SELF_,_BASE_>::findNextSite(const float position) const
+typename std::vector<_BASE_>::const_iterator uGenericNGSChrom<_SELF_,_BASE_>::findNextSite(const float pPosition) const
 {
     try
     {
@@ -955,7 +970,7 @@ typename std::vector<_BASE_>::const_iterator uGenericNGSChrom<_SELF_,_BASE_>::fi
         };
 
         /**< Compare, sort Value */
-        auto upper = std::upper_bound(VecSites.begin(), VecSites.end(), position, comp);
+        auto upper = std::upper_bound(VecSites.begin(), VecSites.end(), pPosition, comp);
 
         /**< If no result*/
         if (upper==VecSites.end())
@@ -979,7 +994,6 @@ typename std::vector<_BASE_>::const_iterator uGenericNGSChrom<_SELF_,_BASE_>::fi
         throw e;
     }
 }
-
 
 /** \brief Return the count of a data subset, based on the current sort type.
  *

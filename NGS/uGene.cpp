@@ -19,7 +19,6 @@ uGene::uFeature::uFeature(long long pStart, long long pEnd, featureType pType,st
 {
     if ( pStart < 0 || pStart > pEnd )
         throw ugene_exception_base();
-
 }
 
 /**< uGene */
@@ -169,7 +168,7 @@ typename std::vector<uGene::uFeature>::const_iterator uGene::featureEnd()const
     return m_featureVector.cend();
 }
 
-bool uGene::hasFeatureType(featureType pType)
+bool uGene::hasFeatureType(featureType pType)const
 {
     return  ( std::find_if(m_featureVector.begin(), m_featureVector.end(), [&](const uFeature & item)
     {
@@ -208,15 +207,21 @@ featureType mapFeature(const std::string & pType )
 
 }
 
+std::string featureStr(const featureType& pType)
+{
+    for (auto & curPar:featureMap)
+    {
+        if (curPar.second==pType)
+            return curPar.first;
+
+    }
+    return "";
+}
+
 
 /**< uGeneChrom */
 
-/** \brief Parsing from a token is quite a bit more complex in this representation, as a given token may already be associated with a given ID or transcript.
- *
- * \param pToken const uToken
- * \return void
- *
- */
+
 void uGeneChrom::addData(const uGene& newSite)
 try
 {
@@ -240,10 +245,19 @@ catch(ugene_exception_base & e)
 
 
 
-
+/** \brief Parsing from a token is quite a bit more complex in this representation, as a given token may already be associated with a given ID or transcript.
+ *
+ * \param pToken const uToken
+ * \return void
+ *
+ */
 void uGeneChrom::addData(const uToken pToken)
 {
     /**< We first validate if there is a ID and potentially a Transcript associated. If not, treat it as normal */
+//std::cout <<pToken.getParam(token_param::CHR)<<"in "<<this->getChr()<<std::endl;
+    if (pToken.getParam(token_param::CHR)!=this->getChr())
+        throw ugene_exception_base()<<string_error("adding base to Chrom with non-matching scaffold/chr name");
+
     if (pToken.isParamSet(token_param::GROUP_ID))
     {
         std::string tokID="",tokTranscript="";
@@ -281,8 +295,6 @@ void uGeneChrom::addData(const uToken pToken)
             StrandDir dir=StrandDir::FORWARD;
             // float score=0.0f;
             /**< Others as supplementary feature */
-            auto startVec=  pToken.getParam(token_param::START_POS,i);
-            auto endVec=  pToken.getParam(token_param::END_POS,i);
 
             if ( pToken.isParamSet(token_param::STRAND) && pToken.getParam(token_param::STRAND)=="-")
                 dir=StrandDir::REVERSE;
@@ -296,7 +308,7 @@ void uGeneChrom::addData(const uToken pToken)
             if (pToken.isParamSet(token_param::OFFSET))
                 featureID=pToken.getParam(token_param::FEATURE_ID,i);
 
-            mainItr->addFeature(std::stoll(pToken.getParam(token_param::START_POS)),std::stoll(pToken.getParam(token_param::END_POS)),mapFeature(pToken.getParam(token_param::FEATURE_TYPE,i)),featureID,featureClass );
+            mainItr->addFeature(std::stoll(pToken.getParam(token_param::START_POS,i)),std::stoll(pToken.getParam(token_param::END_POS,i)),mapFeature(pToken.getParam(token_param::FEATURE_TYPE,i)),featureID,featureClass );
             if ( pToken.isParamSet(token_param::SCORE))
                 mainItr->setScore(std::stof(pToken.getParam(token_param::SCORE)));
 
@@ -359,13 +371,13 @@ uGeneChrom& uGeneChrom::operator=(const uGeneChrom& copFrom)
         return *this;
 
     VecSites=copFrom.returnVecData();
+
     chr= copFrom.getChr();
     m_isSorted=copFrom.m_isSorted;
     sortGetStart=copFrom.sortGetStart;
     sortGetEnd=copFrom.sortGetEnd;
     m_comptFunc=copFrom.m_comptFunc;
     chromSize=copFrom.chromSize;
-
     return *this;
 }
 
@@ -376,11 +388,158 @@ uGeneChrom uGeneChrom::getCopy()const
     return returnCopy;
 }
 
+
+typename std::vector<uGene>::const_iterator uGeneChrom::findNextGeneWithFeature(long long pPosition, featureType pType)const
+{
+    try
+    {
+        /**< If unsorted, fail */
+
+        if (VecSites.size()==0)
+            return VecSites.end();
+
+        if (m_isSorted==false)
+            throw unsorted_throw() <<string_error("findNextGeneWithFeature called on unsorted vector \n") ;
+        if ((sortGetStart==nullptr)||(sortGetEnd==nullptr))
+            throw ugene_exception_base() <<string_error(" findNextGeneWithFeature called on chrom without appropriate start or end function\n") ;
+
+        /**< Return true comparitor if value smaller then item 2 */
+        auto comp = [&] (const float &posGiven, const uGene &item2)
+        {
+
+            return ( posGiven< sortGetStart(&item2) && item2.hasFeatureType(pType) );
+        };
+        /**< Compare, sort Value */
+        auto upper = std::upper_bound(VecSites.begin(), VecSites.end(), pPosition, comp);
+
+        /**< If no result*/
+        if (upper==VecSites.end())
+            return VecSites.end();
+
+        /**<Found the upper bound, we now start iterating */
+        return (upper);
+    }
+    catch (unsorted_throw & e)
+    {
+#ifdef DEBUG
+        std::cerr << "findNextGeneWithFeature called on unsorted vector" <<std::endl;
+#endif
+        throw e;
+    }
+    catch (ugene_exception_base & e)
+    {
+#ifdef DEBUG
+        std::cerr << "Calling findNextGeneWithFeature and you did not provide an aproriate get function" <<std::endl;
+#endif
+        throw e;
+    }
+
+}
+
+typename std::vector<uGene>::const_iterator uGeneChrom::findPrecedingGeneWithFeature(long long pPosition, featureType pType)const
+{
+
+    try
+    {
+        /**< If unsorted, fail */
+
+        if (VecSites.size()==0)
+            return VecSites.end();
+        if (m_isSorted==false)
+            throw unsorted_throw() <<string_error("findPrecedingSite called on unsorted vector \n") ;
+        if ((sortGetStart==nullptr)||(sortGetEnd==nullptr))
+            throw ugene_exception_base() <<string_error(" findPrecedingSite called on chrom without appropriate start or end function\n") ;
+        auto comp = [&] (const uGene &item1, const float &pPos)
+        {
+            return ( sortGetStart(&item1)< pPos && item1.hasFeatureType(pType) );
+        };
+
+        /**< Compare, sort Value */
+        auto lower = std::lower_bound(VecSites.begin(), VecSites.end(), pPosition, comp);
+
+        /**< If result is our first item, then no item precedes it */
+        if ((lower==VecSites.begin()))
+            return VecSites.end();
+        /**< If result is end, every idem precedes the value */
+        /**<Return item precedes and as such is LESS then position. if no item was found, last item is closest to value  */
+        lower--;
+        return (lower);
+    }
+    catch (unsorted_throw & e)
+    {
+#ifdef DEBUG
+        std::cerr << "FindPrecedingSite called on unsorted vector" <<std::endl;
+#endif
+        throw e;
+    }
+    catch (ugene_exception_base & e)
+    {
+#ifdef DEBUG
+        std::cerr << "Calling findPrecedingSite and you did not provide an aproriate get function" <<std::endl;
+#endif
+        throw e;
+    }
+}
+
+//    typename std::vector<uGene>::const_iterator findNextGeneWithFeature(typename std::vector<uGene>::const_iterator pPosition, featureType pType)const;
+//    typename std::vector<uGene>::const_iterator finPrecedingGeneWithFeature(typename std::vector<uGene>::const_iterator pPosition, featureType pType)const;
+//
+
+
 /**< uGeneExperiment */
+ typename std::vector<uGene>::const_iterator uGeneExperiment::findNextGeneWithFeature(std::string pChr, long long pPosition, featureType pType)const
+ {
+     try {
+    if (!ExpMap.count(pChr))
+    {
+        throw param_throw()<<string_error("Failling in uGenericNGSExperiment::findPrecedingSite, value "+pChr+" does not exist.\n");
+    }
+    auto tempChrom = getpChrom(pChr);
+    return tempChrom->findNextGeneWithFeature(pPosition,pType);
+    }
+    catch(...){
+        throw;
+    }
 
-void uGeneExperiment::addData(uToken & pToken){
+ }
 
- try
+typename std::vector<uGene>::const_iterator uGeneExperiment::findPrecedingGeneWithFeature(std::string pChr,long long pPosition, featureType pType)const
+{
+ try {
+    if (!ExpMap.count(pChr))
+    {
+        throw param_throw()<<string_error("Failling in uGenericNGSExperiment::findNextSite, value "+pChr+" does not exist.\n");
+    }
+    auto tempChrom = getpChrom(pChr);
+    return tempChrom->findPrecedingGeneWithFeature(pPosition,pType);
+    }
+        catch(...){
+        throw;
+    }
+}
+
+//TODO validate this
+void uGeneExperiment::addData(const uGeneChrom& pChrom){
+ /**< If chrom Already exist,  */
+   if (ExpMap.count(pChrom.getChr()) != 0)
+   {
+        uGeneChrom* currentChrom;
+        currentChrom=&(ExpMap[pChrom.getChr()]);
+        for (auto itChrom =pChrom.begin(); itChrom!= pChrom.end(); itChrom++)
+        {
+            currentChrom->addData(*itChrom);
+        }
+    }
+    else /**< Make deep copy */
+    {
+        ExpMap.insert(std::pair<std::string,uGeneChrom>(pChrom.getChr(),pChrom));
+    }
+}
+
+void uGeneExperiment::addData(uToken & pToken)
+{
+
+    try
     {
         std::string chr = pToken.getParam(token_param::CHR);
 

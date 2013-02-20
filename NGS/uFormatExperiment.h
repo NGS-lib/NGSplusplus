@@ -93,10 +93,11 @@ public:
     uGenericNGSExperiment(const uGenericNGSExperiment&)=default;
 
     //TODO code these overloads
-    void addData(const _BASE_ &);
+     void addData(const _BASE_ &);
     // TODO: if chr do not exist, we keep sorted status. Otherwise sorted status should be false and size should be set to highest value between both chr.
-    void addData(const _CHROM_ &);
-    void addData(const _SELF_ &);
+     virtual void addData(const _CHROM_ &);
+     void addData(const _SELF_ &);
+     virtual void addData(const uToken &);
     //TODO Code this
     void replaceChr(const _CHROM_ &);
 
@@ -267,6 +268,29 @@ void uGenericNGSExperiment<_SELF_,_CHROM_, _BASE_>::addData(const _BASE_ & newSi
         throw e;
     }
 }
+template<class _SELF_, typename _CHROM_, typename _BASE_>
+void uGenericNGSExperiment<_SELF_,_CHROM_, _BASE_>::addData(const uToken & pToken){
+    try
+    {
+        std::string chr = pToken.getParam(token_param::CHR);
+        _CHROM_* ptempChrom;
+        ptempChrom=&(ExpMap[chr]);
+        ptempChrom->setChr(chr);
+        ptempChrom->addData(pToken);
+    }
+    catch(std::exception & e)
+    {
+#ifdef DEBUG
+        std::cerr << "Catching and re-throwing in uFormatExp::addData()" <<std::endl;
+#endif
+        throw e;
+    }
+
+
+}
+
+
+
 
 // TODO: keep only removeSite and getSite with iterator public, others should be private
 /** \brief Remove a specific number from the specific subtype. //TODO Should this be public?
@@ -382,7 +406,7 @@ void uGenericNGSExperiment<_SELF_,_CHROM_, _BASE_>::loadWithParser(uParser& pPar
             int counter=0;
             while ((pParser.eof()==false)||(counter!=pBlockCount))
             {
-                this->addData((pParser.getNextEntry()));
+                this->addData(pParser.getNextEntry());
                 counter++;
             }
         }
@@ -664,12 +688,16 @@ typename std::vector<_BASE_>::const_iterator uGenericNGSExperiment<_SELF_,_CHROM
 template<class _SELF_, typename _CHROM_, typename _BASE_>
 typename std::vector<_BASE_>::const_iterator uGenericNGSExperiment<_SELF_,_CHROM_, _BASE_>::findNextSite(std::string chr, int position)const
 {
+    try {
     if (!ExpMap.count(chr))
     {
         throw param_throw()<<string_error("Failling in uGenericNGSExperiment::findNextSite, value "+chr+" does not exist.\n");
     }
     auto tempChrom = getpChrom(chr);
     return tempChrom->findNextSite(position); // TODO: try catch for exception in findNextSite?
+    }
+    catch(...)
+    {    throw;  }
 }
 
 /** \brief Get a specific site from a specific chrom. Overloaded to work with position, typically got from findPrecedingor findNext
