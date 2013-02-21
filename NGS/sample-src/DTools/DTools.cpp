@@ -105,7 +105,7 @@ try{
          tagExp.applyOnAllChroms(writeDensityWig);
 
         }
-    }
+        }
     }
     /**< Various exception management */
     catch (elem_throw & e)

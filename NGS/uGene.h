@@ -74,9 +74,16 @@ private:
             uFeature(long long pStart, long long pEnd, featureType pType,std::string pID ,std::string pClass, short int pOffset );
             long long getStart()const{return m_start;};  /**< Return Start of the feature */
             long long getEnd()const{return m_end;};/**< Return End of the feature */
+
+
+
+
             featureType getType()const{return m_type;};  /**< Return the type of the feature */
             std::string getID()const{return m_ID;}; /**< Return ID of the feature */
             std::string getClass()const{return m_class;}; /**< Return ID of the feature */
+
+
+
 
             void setStrand(StrandDir );
             void setType(featureType pType){m_type=pType;}; /**< Set Type of the feature */
@@ -100,6 +107,10 @@ public :
     void setID(std::string pID){m_ID = pID;}; /**< Set string ID of the gene */
     void setClass(std::string pClass){m_class = pClass;}; /**< Set Class ID */
     void setTranscript(std::string pTranscript){m_transcript=pTranscript;}; /**< Set Transcript ID */
+    long long getBoundaryStart()const{return m_BoundaryStart;};  /**< Return Start of the feature */
+    long long getBoundaryEnd()const{return m_BoundaryEnd;};/**< Return End of the feature */
+
+
 
     bool isOverlappingFeature(long long, long long);
     bool isOverlappingFeature(long long, long long, featureType pType);
@@ -143,19 +154,11 @@ public:
 
     uGeneChrom getCopy()const;
 
-    typename std::vector<uGene>::const_iterator findNextGeneWithFeature(long long pPosition, featureType pType)const;
-    typename std::vector<uGene>::const_iterator findPrecedingGeneWithFeature(long long pPosition, featureType pType)const;
-
-    //TODO all siz following
-    typename std::vector<uGene>::const_iterator findNextGeneWithFeature(typename std::vector<uGene>::const_iterator pPosition, featureType pType)const;
-    typename std::vector<uGene>::const_iterator findPrecedingGeneWithFeature(typename std::vector<uGene>::const_iterator pPosition, featureType pType)const;
-
+    typename std::vector<uGene>::const_iterator findNextWithFeature(long long pPosition, featureType pType)const;
+    typename std::vector<uGene>::const_iterator findPrecedingWithFeature(long long pPosition, featureType pType)const;
 
     typename std::vector<uGene>::const_iterator findNextFeature(long long pPosition, featureType pType)const;
     typename std::vector<uGene>::const_iterator finPrecedingFeature(long long pPosition, featureType pType)const;
-    typename std::vector<uGene>::const_iterator findNextFeature(typename std::vector<uGene>::const_iterator pPosition, featureType pType)const;
-    typename std::vector<uGene>::const_iterator findPrecedingFeature(typename std::vector<uGene>::const_iterator pPosition, featureType pType)const;
-
 
     long long getIDCount(const std::string & pId, const std::string & pTranscript);
     void addData(uToken);

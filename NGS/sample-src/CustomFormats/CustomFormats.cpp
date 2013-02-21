@@ -3,10 +3,24 @@
 #include "NGS++.h"
 using namespace std;
 using namespace NGS;
+
+vector<string> validChoices={"START_POS","END_POS","CHR","SCORE","STRAND","SEQ_NAME","JUNK"};
+bool isStringinVector(const string & value, vector<string> vectorCheck)
+{
+     if ( find (vectorCheck.begin(), vectorCheck.end(),value)==vectorCheck.end())
+        return false;
+    else
+        return true;
+}
+
+bool isValid(const string &value)
+{
+    return isStringinVector(value, validChoices);
+
+}
 int main(int argc, char **argv)
 {
      /**< Simple parameter validation. We heavily recommand you use a library to manage your command line parameters */
-
     ifstream firstStream;
     ifstream secondStream;
     {
@@ -14,30 +28,26 @@ int main(int argc, char **argv)
         /**< Load each file in a corresponding stream. Will throw if path is invalid */
         utility::loadStream(firstPath,firstStream);
         utility::loadStream(firstPath,secondStream);
-
     }
-    /**< This determines the order that we will store the read data */
-    std::vector<std::string> columnFormat={"START_POS","END_POS","SCORE","CHR"};
+    vector<string> loadedOrder;
+    char strSep = (argv[2][0]);
+
+    for (int i=3; i<argc;i++)
+    {
+        std::string curValue(argv[i]);
+
+        if (isValid(curValue) && isStringinVector(curValue,loadedOrder)==false )
+            loadedOrder.push_back(curValue);
+    }
+
+
     /**< As we are passing a vector rather then a type, the parser automatically sets itself to "CUSTOM" */
-    /**< As an optional third parameter, we pass ',', this is our custome delimiter. By default, \t is used */
-    uParser customParser(&firstStream, columnFormat,',');
+    uParser customParser(&firstStream, loadedOrder,strSep);
 
     uWriter bedWriter(&cout,"BED6");
     /**< Write every read line as Bed 6 format */
     while (!customParser.eof()){
         bedWriter.writeToken(customParser.getNextEntry());
     }
-
-    cout <<"Same data in custom Format" <<endl;
-    /**< Load a second parser.  */
-    uParser secondParser(&secondStream, columnFormat,',');
-
-    std::vector<std::string> outputFormat={"SCORE","START_POS","END_POS","CHR"};
-
-    uWriter cusTomWriter(&cout,outputFormat,'-');
-    while (!(secondParser.eof())){
-        cusTomWriter.writeToken(secondParser.getNextEntry());
-    }
-
 }
 

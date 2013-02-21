@@ -389,7 +389,14 @@ uGeneChrom uGeneChrom::getCopy()const
 }
 
 
-typename std::vector<uGene>::const_iterator uGeneChrom::findNextGeneWithFeature(long long pPosition, featureType pType)const
+/** \brief Similair to findNext, but will only find an item that contains a feature matching pType. Still works on current sort.
+ *
+ * \param pPosition long long  Position to from
+ * \param pType featureType Feature type to filter on
+ * \return typename std::vector<uGene>::const_iterator Iterator to the item, returns end() if not found.
+ *
+ */
+typename std::vector<uGene>::const_iterator uGeneChrom::findNextWithFeature(long long pPosition, featureType pType)const
 {
     try
     {
@@ -436,13 +443,19 @@ typename std::vector<uGene>::const_iterator uGeneChrom::findNextGeneWithFeature(
 
 }
 
-typename std::vector<uGene>::const_iterator uGeneChrom::findPrecedingGeneWithFeature(long long pPosition, featureType pType)const
-{
 
+/** \brief Similair to findPreceding, but will only find an item that contains a feature matching pType. Still works on current sort.
+ *
+ * \param pPosition long long  Position to from
+ * \param pType featureType Feature type to filter on
+ * \return typename std::vector<uGene>::const_iterator Iterator to the item, returns end() if not found.
+ *
+ */
+typename std::vector<uGene>::const_iterator uGeneChrom::findPrecedingWithFeature(long long pPosition, featureType pType)const
+{
     try
     {
         /**< If unsorted, fail */
-
         if (VecSites.size()==0)
             return VecSites.end();
         if (m_isSorted==false)
@@ -456,7 +469,6 @@ typename std::vector<uGene>::const_iterator uGeneChrom::findPrecedingGeneWithFea
 
         /**< Compare, sort Value */
         auto lower = std::lower_bound(VecSites.begin(), VecSites.end(), pPosition, comp);
-
         /**< If result is our first item, then no item precedes it */
         if ((lower==VecSites.begin()))
             return VecSites.end();
@@ -481,48 +493,79 @@ typename std::vector<uGene>::const_iterator uGeneChrom::findPrecedingGeneWithFea
     }
 }
 
-//    typename std::vector<uGene>::const_iterator findNextGeneWithFeature(typename std::vector<uGene>::const_iterator pPosition, featureType pType)const;
-//    typename std::vector<uGene>::const_iterator finPrecedingGeneWithFeature(typename std::vector<uGene>::const_iterator pPosition, featureType pType)const;
-//
+/** \brief Greedy search as our data is not sorted. In fact, we need to pass every element to check if it's boundary overlaps. Will search passed on current sort
+ *
+ * \param pPosition long long  Position to from
+ * \param pType featureType Feature type to filter on
+ * \return typename std::vector<uGene>::const_iterator Iterator to the item, returns end() if not found.
+ *
+ */
+typename std::vector<uGene>::const_iterator uGeneChrom::findNextFeature(long long pPosition, featureType pType)const
+{
+    typename std::vector<uGene>::const_iterator curGene=VecSites.end();
+    long long curPos=0;
+    for(auto it= VecSites.begin(); it!=VecSites.end(); it++)
+    {
+        if (it->hasFeatureType(pType) && it->getBoundaryEnd() > pPosition)
+        {
+            for (auto featureItr= it->featureBegin(); featureItr!=it->featureEnd(); featureItr++)
+            {
+                if (featureItr->getType()==pType && featureItr->getStart()>pPosition && featureItr->getStart()>curPos)
+                {
+                    curGene=it;
+                    curPos= featureItr->getStart();
+                }
+
+            }
+        }
+    }
+    return curGene;
+}
+
 
 
 /**< uGeneExperiment */
- typename std::vector<uGene>::const_iterator uGeneExperiment::findNextGeneWithFeature(std::string pChr, long long pPosition, featureType pType)const
- {
-     try {
-    if (!ExpMap.count(pChr))
+typename std::vector<uGene>::const_iterator uGeneExperiment::findNextGeneWithFeature(std::string pChr, long long pPosition, featureType pType)const
+{
+    try
     {
-        throw param_throw()<<string_error("Failling in uGenericNGSExperiment::findPrecedingSite, value "+pChr+" does not exist.\n");
+        if (!ExpMap.count(pChr))
+        {
+            throw param_throw()<<string_error("Failling in uGenericNGSExperiment::findPrecedingSite, value "+pChr+" does not exist.\n");
+        }
+        auto tempChrom = getpChrom(pChr);
+        return tempChrom->findNextWithFeature(pPosition,pType);
     }
-    auto tempChrom = getpChrom(pChr);
-    return tempChrom->findNextGeneWithFeature(pPosition,pType);
-    }
-    catch(...){
+    catch(...)
+    {
         throw;
     }
 
- }
+}
 
 typename std::vector<uGene>::const_iterator uGeneExperiment::findPrecedingGeneWithFeature(std::string pChr,long long pPosition, featureType pType)const
 {
- try {
-    if (!ExpMap.count(pChr))
+    try
     {
-        throw param_throw()<<string_error("Failling in uGenericNGSExperiment::findNextSite, value "+pChr+" does not exist.\n");
+        if (!ExpMap.count(pChr))
+        {
+            throw param_throw()<<string_error("Failling in uGenericNGSExperiment::findNextSite, value "+pChr+" does not exist.\n");
+        }
+        auto tempChrom = getpChrom(pChr);
+        return tempChrom->findPrecedingWithFeature(pPosition,pType);
     }
-    auto tempChrom = getpChrom(pChr);
-    return tempChrom->findPrecedingGeneWithFeature(pPosition,pType);
-    }
-        catch(...){
+    catch(...)
+    {
         throw;
     }
 }
 
 //TODO validate this
-void uGeneExperiment::addData(const uGeneChrom& pChrom){
- /**< If chrom Already exist,  */
-   if (ExpMap.count(pChrom.getChr()) != 0)
-   {
+void uGeneExperiment::addData(const uGeneChrom& pChrom)
+{
+    /**< If chrom Already exist,  */
+    if (ExpMap.count(pChrom.getChr()) != 0)
+    {
         uGeneChrom* currentChrom;
         currentChrom=&(ExpMap[pChrom.getChr()]);
         for (auto itChrom =pChrom.begin(); itChrom!= pChrom.end(); itChrom++)

@@ -28,15 +28,15 @@ template<class _SELF_>
 class uGenericNGS
 {
 
-    #define FORWARDCHAR '+'
-    #define REVERSECHAR '-'
+#define FORWARDCHAR '+'
+#define REVERSECHAR '-'
 
 protected:
     std::string m_chr=""; /*!< Name of the scaffold/chromosome  */
     long int m_startPos=0; /*!< Begining genomic position of the element  */
     long int m_endPos=0; /*!< End genomic position of the element  */
     StrandDir m_strand=StrandDir::FORWARD; /*!< Strand orientation of the element  */
-    std::vector<float> m_score={}; /*!< Values potentially associated with the element */
+    std::vector<float> m_score= {}; /*!< Values potentially associated with the element */
 
 public:
 
@@ -50,9 +50,9 @@ public:
 
     /**< End Constructor/Destructor */
 
-     virtual void writeToOutput(uWriter& pWriter) const;
-     virtual uToken createToken()const;
-     virtual void print(std::ostream &pOut)const;
+    virtual void writeToOutput(uWriter& pWriter) const;
+    virtual uToken createToken()const;
+    virtual void print(std::ostream &pOut)const;
 
     /**< Get/Set */
 
@@ -73,7 +73,7 @@ public:
     long int getEnd() const;
     long int getLenght() const;
 
-  //  virtual bool isEqual(const  _SELF_ & pCompared)const =0;
+    //  virtual bool isEqual(const  _SELF_ & pCompared)const =0;
 
     /**<  Divide our region into a certain number of subregions */
 
@@ -90,294 +90,360 @@ public:
     bool doesOverlap(_SELF_ other,OverlapType type=OverlapType::OVERLAP_PARTIAL) const;
 
     float getScore(int p_Pos) const;
-    float getScore()const{return getScore(0);};
-    int getScoreCount() const { return m_score.size();};
+    float getScore()const
+    {
+        return getScore(0);
+    };
+    int getScoreCount() const
+    {
+        return m_score.size();
+    };
 
     void setScore(float p_score, int p_Pos);
-    void setScore(float ourscore) {setScore(ourscore,0);}
-    std::vector<float> getScoreVector()const{return m_score;};
-    void setScoreVector(std::vector<float> p_Score){m_score=std::move(p_Score);};
+    void setScore(float ourscore)
+    {
+        setScore(ourscore,0);
+    }
+    std::vector<float> getScoreVector()const
+    {
+        return m_score;
+    };
+    void setScoreVector(std::vector<float> p_Score)
+    {
+        m_score=std::move(p_Score);
+    };
+
+//TODO code tests for these two Then move them
+    _SELF_ returnOverlapping(const _SELF_ &);
+    _SELF_ returnMerge(const _SELF_ &);
 
 };
 
 
-     /** \brief Constructor taking chromosome name, start, end and optionnaly a strand.
-     * \param std::string pChr: The name of the chromosome.
-     * \param int pStart: Starting position, must be greater than 0.
-     * \param int pEnd: Ending position, must be greater or equal to pStart.
-     * \param StrandDir pStrand: The strand in enum class StranDir format. Must be either FOWARD or REVERSE.
-     * \exception ugene_exception_base: When the starting position and ending position are incorrect.
-     */
-     template <class _SELF_>
-    uGenericNGS<_SELF_>::uGenericNGS(std::string pChr, int pStart, int pEnd, StrandDir pStrand):m_chr(pChr),m_strand(pStrand)
+/** \brief If overlapping, return the parts overlapping, if not raise exception
+ *
+ * \param _SELF_
+ * \return _SELF_
+ *
+ */
+template <class _SELF_>
+_SELF_ uGenericNGS<_SELF_>::returnOverlapping(const _SELF_ & otherItem)
+{
+    if (utility::isOverlap(this->getStart(),this->getEnd(), otherItem.getStart(), otherItem.getEnd()))
     {
-        try
-        {
-            setEnd(pEnd);
-            setStart(pStart);
-        }
-        catch( ugene_exception_base &e)
-        {
+        long long curStart =this->getStart(), curEnd=this->getEnd();
+        StrandDir dir=StrandDir::FORWARD;
+        /**< Only keep strand direction if both items agree, otherwise set to FORWARD */
+        if (this->getStrand()==otherItem.getStrand)
+            dir= this->getStrand();
+        if (this->getStart()<otherItem.getStart())
+            curStart=otherItem.getStart();
+        if (this->getEnd()>otherItem.getEnd())
+            curEnd=otherItem.getEnd();
+
+        return (_SELF_(this->getChr(),curStart,curEnd,dir));
+    }
+    else
+        throw param_throw();
+}
+
+/**< if overlap, combine the regions, if not, raise exception */
+template <class _SELF_>
+_SELF_ uGenericNGS<_SELF_>::returnMerge(const _SELF_ & otherItem)
+{
+    if (utility::isOverlap(this->getStart(),this->getEnd(), otherItem.getStart(), otherItem.getEnd()))
+    {
+        long long curStart =this->getStart(), curEnd=this->getEnd();
+        StrandDir dir=StrandDir::FORWARD;
+        /**< Only keep strand direction if both items agree, otherwise set to FORWARD */
+        if (this->getStrand()==otherItem.getStrand)
+            dir= this->getStrand();
+        if (this->getStart()>otherItem.getStart())
+            curStart=otherItem.getStart();
+        if (this->getEnd()<otherItem.getEnd())
+            curEnd=otherItem.getEnd();
+        return (_SELF_(this->getChr(),curStart,curEnd,dir));
+    }
+    else
+        throw param_throw();
+}
+/** \brief Constructor taking chromosome name, start, end and optionnaly a strand.
+* \param std::string pChr: The name of the chromosome.
+* \param int pStart: Starting position, must be greater than 0.
+* \param int pEnd: Ending position, must be greater or equal to pStart.
+* \param StrandDir pStrand: The strand in enum class StranDir format. Must be either FOWARD or REVERSE.
+* \exception ugene_exception_base: When the starting position and ending position are incorrect.
+*/
+template <class _SELF_>
+uGenericNGS<_SELF_>::uGenericNGS(std::string pChr, int pStart, int pEnd, StrandDir pStrand):m_chr(pChr),m_strand(pStrand)
+{
+    try
+    {
+        setEnd(pEnd);
+        setStart(pStart);
+    }
+    catch( ugene_exception_base &e)
+    {
 #ifdef DEBUG
-            std::cerr << "Error in uGenericNGS(std::string pChr, int pStart, int pEnd). data is"<< pChr<< " "
-		      << pEnd<<" "<< pStart << " "<<std::endl;
+        std::cerr << "Error in uGenericNGS(std::string pChr, int pStart, int pEnd). data is"<< pChr<< " "
+                  << pEnd<<" "<< pStart << " "<<std::endl;
 #endif
-            throw e;
-        }
+        throw e;
     }
+}
 
-     /** \brief Constructor taking chromosome name, start position, end position, strand and score.
-     * \param std::string pChr: The name of the chromosome.
-     * \param int pStart: Starting position, must be greater than 0.
-     * \param int pEnd: Ending position, must be greater or equal to pStart.
-     * \param StrandDir pStrand: The strand in enum class StranDir format. Must be either FOWARD or REVERSE.
-     * \param float pScore: The score associated with the current entry.
-     * \exception ugene_exception_base: When the starting position and ending position are incorrect.
-     */
-     template <class _SELF_>
-    uGenericNGS<_SELF_>::uGenericNGS(std::string pChr, int pStart, int pEnd, StrandDir pStrand, float pScore ):m_chr(pChr),m_strand(pStrand)
+/** \brief Constructor taking chromosome name, start position, end position, strand and score.
+* \param std::string pChr: The name of the chromosome.
+* \param int pStart: Starting position, must be greater than 0.
+* \param int pEnd: Ending position, must be greater or equal to pStart.
+* \param StrandDir pStrand: The strand in enum class StranDir format. Must be either FOWARD or REVERSE.
+* \param float pScore: The score associated with the current entry.
+* \exception ugene_exception_base: When the starting position and ending position are incorrect.
+*/
+template <class _SELF_>
+uGenericNGS<_SELF_>::uGenericNGS(std::string pChr, int pStart, int pEnd, StrandDir pStrand, float pScore ):m_chr(pChr),m_strand(pStrand)
+{
+    try
     {
-        try
-        {
-            setScore(pScore);
-            setEnd(pEnd);
-            setStart(pStart);
-        }
-        catch(ugene_exception_base &e)
-        {
+        setScore(pScore);
+        setEnd(pEnd);
+        setStart(pStart);
+    }
+    catch(ugene_exception_base &e)
+    {
 #ifdef DEBUG
-            std::cerr << "Error in uGenericNGS(std::string pChr, int pStart, int pEnd, float Score). data is"
-		      << pChr<< " "<< pEnd<<" "<< pStart << " "<<std::endl;
+        std::cerr << "Error in uGenericNGS(std::string pChr, int pStart, int pEnd, float Score). data is"
+                  << pChr<< " "<< pEnd<<" "<< pStart << " "<<std::endl;
 #endif
-            throw e;
-        }
+        throw e;
     }
+}
 
-     /** \brief Constructor taking chromosome name, start position, end position and score.
-     * \param std::string pChr: The name of the chromosome.
-     * \param int pStart: Starting position, must be greater than 0.
-     * \param int pEnd: Ending position, must be greater or equal to pStart.
-     * \param float pScore: The score associated with the current entry.
-     * \exception ugene_exception_base: When the starting position and ending position are incorrect.
-     */
-     template <class _SELF_>
-     uGenericNGS<_SELF_>::uGenericNGS(std::string pChr, int pStart, int pEnd,float pScore ):m_chr(pChr),m_strand(StrandDir::FORWARD)
+/** \brief Constructor taking chromosome name, start position, end position and score.
+* \param std::string pChr: The name of the chromosome.
+* \param int pStart: Starting position, must be greater than 0.
+* \param int pEnd: Ending position, must be greater or equal to pStart.
+* \param float pScore: The score associated with the current entry.
+* \exception ugene_exception_base: When the starting position and ending position are incorrect.
+*/
+template <class _SELF_>
+uGenericNGS<_SELF_>::uGenericNGS(std::string pChr, int pStart, int pEnd,float pScore ):m_chr(pChr),m_strand(StrandDir::FORWARD)
+{
+    try
     {
-        try
-        {
-            setScore(pScore);
-            setEnd(pEnd);
-            setStart(pStart);
-        }
-        catch( ugene_exception_base &e)
-        {
+        setScore(pScore);
+        setEnd(pEnd);
+        setStart(pStart);
+    }
+    catch( ugene_exception_base &e)
+    {
 #ifdef DEBUG
-            std::cerr << "Error in uGenericNGS(std::string pChr, int pStart, float Score). data is"
-                      << pChr<< " "<< pEnd<<" "<< pStart << " "<<std::endl;
+        std::cerr << "Error in uGenericNGS(std::string pChr, int pStart, float Score). data is"
+                  << pChr<< " "<< pEnd<<" "<< pStart << " "<<std::endl;
 #endif
-            throw e;
+        throw e;
+    }
+}
+
+/** \brief Constructor taking a token.
+   * \param const uToken & pToken: A token containing all the infos for the current region. See uToken class for more details.
+   * \exception ugene_exception_base: When the values of the token are not valid.
+   */
+template <class _SELF_>
+uGenericNGS<_SELF_>::uGenericNGS(const uToken & pToken):m_chr(pToken.getParam(token_param::CHR))
+{
+    try
+    {
+        setEnd(utility::stoi(pToken.getParam(token_param::END_POS)));
+        setStart( utility::stoi(pToken.getParam(token_param::START_POS)));
+        /**< Default forward */
+        if (pToken.isParamSet(token_param::STRAND))
+        {
+            setStrand(pToken.getParam(token_param::STRAND).at(0));
+        }
+        if ((pToken.isParamSet(token_param::SCORE))&&(pToken.getParam(token_param::SCORE)!="." ) )
+        {
+            setScore(utility::stof (pToken.getParam(token_param::SCORE) ) );
         }
     }
-
-  /** \brief Constructor taking a token.
-     * \param const uToken & pToken: A token containing all the infos for the current region. See uToken class for more details.
-     * \exception ugene_exception_base: When the values of the token are not valid.
-     */
-     template <class _SELF_>
-    uGenericNGS<_SELF_>::uGenericNGS(const uToken & pToken):m_chr(pToken.getParam(token_param::CHR))
+    catch(ugene_exception_base &e)
     {
-        try
-        {
-            setEnd(utility::stoi(pToken.getParam(token_param::END_POS)));
-            setStart( utility::stoi(pToken.getParam(token_param::START_POS)));
-            /**< Default forward */
-            if (pToken.isParamSet(token_param::STRAND))
-            {
-                setStrand(pToken.getParam(token_param::STRAND).at(0));
-            }
-            if ((pToken.isParamSet(token_param::SCORE))&&(pToken.getParam(token_param::SCORE)!="." ) )
-            {
-                setScore(utility::stof (pToken.getParam(token_param::SCORE) ) );
-            }
-        }
-        catch(ugene_exception_base &e)
-        {
 #ifdef DEBUG
-            std::cerr << "Error in uGenericNGS(uToken)." <<std::endl;
+        std::cerr << "Error in uGenericNGS(uToken)." <<std::endl;
 #endif
-            e<<string_error("Error in uGenericNGS(uToken)." );
-            throw e;
+        e<<string_error("Error in uGenericNGS(uToken)." );
+        throw e;
+    }
+}
+
+
+/** \brief Get the chromosome of the current entry.
+ * \return A string corresponding to the name of the chr. Returns an empty string if the chr value is not set.
+ */
+template <class _SELF_>
+std::string uGenericNGS<_SELF_>::getChr() const
+{
+    return m_chr;
+}
+
+/** \brief Set the name of the chromosome for the current entry.
+ * \return void
+ */
+template <class _SELF_>
+void uGenericNGS<_SELF_>::setChr(std::string ourm_chr)
+{
+    if (ourm_chr.size()==0)
+    {
+        throw param_throw() << string_error("Throwing in setChr, ID must be of size > 0");
+    }
+    m_chr=ourm_chr;
+}
+
+
+/** \brief Set the name of the chromosome for the current entry.
+ * \return A StrandDir corresponding to the strand for the current entry. The default value is FORWARD.
+ */
+template <class _SELF_>
+StrandDir uGenericNGS<_SELF_>::getStrand() const
+{
+    return m_strand;
+}
+
+/** \brief Set the strand for the current entry with a char.
+ * \param char pStrand: The value for the strand. Must be either '+' or '-'.
+ * \exception param_throw: When the user gave an incorrect value for the strand.
+ * \return void
+ */
+template <class _SELF_>
+void uGenericNGS<_SELF_>::setStrand(char pStrand)
+{
+    try
+    {
+        if (pStrand==REVERSECHAR)
+        {
+            m_strand=StrandDir::REVERSE;
+        }
+        else if (pStrand==FORWARDCHAR)
+        {
+            m_strand=StrandDir::FORWARD;
+        }
+        else
+        {
+            throw param_throw()<<string_error("Failling in setStrand(char), invalid character");
         }
     }
-
-
-    /** \brief Get the chromosome of the current entry.
-     * \return A string corresponding to the name of the chr. Returns an empty string if the chr value is not set.
-     */
-    template <class _SELF_>
-    std::string uGenericNGS<_SELF_>::getChr() const
+    catch(param_throw &e)
     {
-        return m_chr;
+        throw e;
+    }
+}
+
+/** \brief Set the strand for the current entry with a StrandDir.
+ * \param StrandDir pStrand: The value for the strand. Must be either StrandDir::FORWARD or StrandDir::REVERSE.
+ * \return void
+ */
+template <class _SELF_>
+void uGenericNGS<_SELF_>::setStrand(StrandDir pStrand)
+{
+    m_strand=pStrand;
+}
+
+/** \brief Check if the orientation of the strand for the current entry is reverse.
+ * \return bool: true if the strand is StrandDir::REVERSE. false if the strand is StrandDir::FORWARD.
+ */
+template <class _SELF_>
+bool uGenericNGS<_SELF_>::isReverse() const
+{
+    if (m_strand==StrandDir::REVERSE)
+    {
+        return true;
     }
 
-    /** \brief Set the name of the chromosome for the current entry.
-     * \return void
-     */
-    template <class _SELF_>
-    void uGenericNGS<_SELF_>::setChr(std::string ourm_chr)
+    return false;
+}
+
+/** \brief Set the start position for the current entry.
+  * \param int ourStart: The start position we wish to set.
+  * \exception param_throw: If the start position is greater than the end position or if the start position is smaller than zero.
+  * \return void
+  */
+template <class _SELF_>
+void uGenericNGS<_SELF_>::setStart(int ourStart)
+{
+    try
     {
-        if (ourm_chr.size()==0)
+        if (!((ourStart<=getEnd())&&(ourStart>=0)))
         {
-            throw param_throw() << string_error("Throwing in setChr, ID must be of size > 0");
+            throw param_throw()<<string_error("Failed in setStart, ourStart is smalled then end or under 0, start is "
+                                              +utility::to_string(ourStart)+ " end is "+ utility::to_string(getEnd()) +"\n");
         }
-        m_chr=ourm_chr;
+        m_startPos=ourStart;
     }
-
-
-    /** \brief Set the name of the chromosome for the current entry.
-     * \return A StrandDir corresponding to the strand for the current entry. The default value is FORWARD.
-     */
-    template <class _SELF_>
-    StrandDir uGenericNGS<_SELF_>::getStrand() const
+    catch(param_throw &e)
     {
-        return m_strand;
+#ifdef DEBUG
+        std::cerr << "throwing in setStart" <<std::endl;
+#endif
+        throw e;
     }
+}
 
-    /** \brief Set the strand for the current entry with a char.
-     * \param char pStrand: The value for the strand. Must be either '+' or '-'.
-     * \exception param_throw: When the user gave an incorrect value for the strand.
-     * \return void
-     */
-    template <class _SELF_>
-    void uGenericNGS<_SELF_>::setStrand(char pStrand)
+/** \brief Set the end position for the current entry.
+ * \param int ourEnd: The end position we wish to set.
+ * \exception param_throw: If the end position is smaller than the start position or if the end position is smaller than zero.
+ * \return void
+ */
+template <class _SELF_>
+void uGenericNGS<_SELF_>::setEnd(int ourEnd)
+{
+    try
     {
-        try
+        if (!((ourEnd>=getStart())&&(ourEnd>=0)))
         {
-            if (pStrand==REVERSECHAR)
-            {
-                m_strand=StrandDir::REVERSE;
-            }
-            else if (pStrand==FORWARDCHAR)
-            {
-                m_strand=StrandDir::FORWARD;
-            }
-            else
-            {
-                throw param_throw()<<string_error("Failling in setStrand(char), invalid character");
-            }
+            throw param_throw()<<string_error("throwing in setEnd(), start at "
+                                              +utility::to_string((int)getStart())+ " end is "+ utility::to_string(ourEnd) +"\n");
         }
-        catch(param_throw &e)
-        {
-            throw e;
-        }
+        m_endPos=ourEnd;
     }
-
-    /** \brief Set the strand for the current entry with a StrandDir.
-     * \param StrandDir pStrand: The value for the strand. Must be either StrandDir::FORWARD or StrandDir::REVERSE.
-     * \return void
-     */
-    template <class _SELF_>
-    void uGenericNGS<_SELF_>::setStrand(StrandDir pStrand)
+    catch(param_throw & e)
     {
-        m_strand=pStrand;
+#ifdef DEBUG
+        std::cerr << "throwing in setEnd" <<std::endl;
+#endif
+        throw e;
     }
+}
 
-    /** \brief Check if the orientation of the strand for the current entry is reverse.
-     * \return bool: true if the strand is StrandDir::REVERSE. false if the strand is StrandDir::FORWARD.
-     */
-    template <class _SELF_>
-    bool uGenericNGS<_SELF_>::isReverse() const
+/** \brief Set the start and end position for the current entry.
+ * \param int ourStart: The start position we wish to set.
+ * \param int ourEnd: The end position we wish to set.
+ * \exception param_throw: If the end position is smaller than the start position or if the start and end position are smaller than zero.
+ * \return void
+ */
+template <class _SELF_>
+void uGenericNGS<_SELF_>::setStartEnd(long int ourStart, long int ourEnd)
+{
+    try
     {
-        if (m_strand==StrandDir::REVERSE)
+        if ((ourStart>0) && (ourStart<=ourEnd))
         {
-            return true;
-        }
-
-        return false;
-    }
-
-   /** \brief Set the start position for the current entry.
-     * \param int ourStart: The start position we wish to set.
-     * \exception param_throw: If the start position is greater than the end position or if the start position is smaller than zero.
-     * \return void
-     */
-    template <class _SELF_>
-    void uGenericNGS<_SELF_>::setStart(int ourStart)
-    {
-        try
-        {
-            if (!((ourStart<=getEnd())&&(ourStart>=0)))
-            {
-                throw param_throw()<<string_error("Failed in setStart, ourStart is smalled then end or under 0, start is "
-                      +utility::to_string(ourStart)+ " end is "+ utility::to_string(getEnd()) +"\n");
-            }
             m_startPos=ourStart;
-        }
-        catch(param_throw &e)
-        {
-#ifdef DEBUG
-            std::cerr << "throwing in setStart" <<std::endl;
-#endif
-            throw e;
-        }
-    }
-
-    /** \brief Set the end position for the current entry.
-     * \param int ourEnd: The end position we wish to set.
-     * \exception param_throw: If the end position is smaller than the start position or if the end position is smaller than zero.
-     * \return void
-     */
-    template <class _SELF_>
-    void uGenericNGS<_SELF_>::setEnd(int ourEnd)
-    {
-        try
-        {
-            if (!((ourEnd>=getStart())&&(ourEnd>=0)))
-            {
-                throw param_throw()<<string_error("throwing in setEnd(), start at "
-                   +utility::to_string((int)getStart())+ " end is "+ utility::to_string(ourEnd) +"\n");
-            }
             m_endPos=ourEnd;
         }
-        catch(param_throw & e)
+        else
         {
-#ifdef DEBUG
-            std::cerr << "throwing in setEnd" <<std::endl;
-#endif
-            throw e;
+            throw param_throw() <<string_error("Throwing in set StartEnd,  ourStart="
+                                               +utility::to_string(ourStart)+" ourEnd="+utility::to_string(ourEnd)+"\n" );
         }
     }
-
-    /** \brief Set the start and end position for the current entry.
-     * \param int ourStart: The start position we wish to set.
-     * \param int ourEnd: The end position we wish to set.
-     * \exception param_throw: If the end position is smaller than the start position or if the start and end position are smaller than zero.
-     * \return void
-     */
-    template <class _SELF_>
-    void uGenericNGS<_SELF_>::setStartEnd(long int ourStart, long int ourEnd)
+    catch(param_throw &e)
     {
-        try
-        {
-            if ((ourStart>0) && (ourStart<=ourEnd))
-            {
-                m_startPos=ourStart;
-                m_endPos=ourEnd;
-            }
-            else
-            {
-                throw param_throw() <<string_error("Throwing in set StartEnd,  ourStart="
-                     +utility::to_string(ourStart)+" ourEnd="+utility::to_string(ourEnd)+"\n" );
-            }
-        }
-        catch(param_throw &e)
-        {
 #ifdef DEBUG
-            std::cerr << "throwing in setStartEnd" <<std::endl;
+        std::cerr << "throwing in setStartEnd" <<std::endl;
 #endif
-            throw e;
-        }
+        throw e;
     }
+}
 
 
 
@@ -426,7 +492,7 @@ void uGenericNGS<_SELF_>::extendSite(int extendLeft, int extendRight)
         if((extendLeft<0)||(extendRight<0))
         {
             throw param_throw()<< string_error("INIT throwing from extendSite("
-		+utility::to_string(extendLeft)+","+utility::to_string(extendRight)+"), param < 0 \n"  );;
+                                               +utility::to_string(extendLeft)+","+utility::to_string(extendRight)+"), param < 0 \n"  );;
         }
         int start=(getStart()-extendLeft);
         if (start < 0)
@@ -445,12 +511,12 @@ void uGenericNGS<_SELF_>::extendSite(int extendLeft, int extendRight)
         if ( (trace=(boost::get_error_info<string_error>(e))) )
         {
             e << string_error(*trace+"Catching and re-throwing from extendSite("
-                +utility::to_string(extendLeft)+","+utility::to_string(extendRight)+")\n");
+                              +utility::to_string(extendLeft)+","+utility::to_string(extendRight)+")\n");
         }
         else
         {
             e << string_error("Catching and re-throwing from extendSite("
-                 +utility::to_string(extendLeft)+","+utility::to_string(extendRight)+")\n");
+                              +utility::to_string(extendLeft)+","+utility::to_string(extendRight)+")\n");
             throw(e);
         }
     }
@@ -493,16 +559,16 @@ void uGenericNGS<_SELF_>::trimSite(int trimLeft, int trimRight)
         if ((trimLeft<0)||(trimRight<0)||(trimLeft+trimRight>this->getLenght()))
         {
             throw param_throw()<< string_error("PARAMERROR, throwing from trimSite("
-                  +utility::to_string(trimLeft)+","+utility::to_string(trimRight)+"), param < 0 \n"  );
+                                               +utility::to_string(trimLeft)+","+utility::to_string(trimRight)+"), param < 0 \n"  );
         }
         this->m_startPos=(this->m_startPos+trimLeft);
         this->m_endPos=(this->m_endPos-trimRight);
     }
     catch (param_throw & err)
     {
-        #ifdef DEBUG
-           std::cerr << "Throwing in trimSite(int, int)"<<std::endl;
-        #endif
+#ifdef DEBUG
+        std::cerr << "Throwing in trimSite(int, int)"<<std::endl;
+#endif
         throw(err);
     }
 }
@@ -543,15 +609,16 @@ bool uGenericNGS<_SELF_>::doesOverlap(_SELF_ other, OverlapType type) const
     return returnb;
 }
 
-    /** \brief Write contig to file using a writer.
-     * \param uWriter& pWriter: A writer is used to specify the formating of the values and save them accordingly to disk.
-     * \return void
-     */
+/** \brief Write contig to file using a writer.
+ * \param uWriter& pWriter: A writer is used to specify the formating of the values and save them accordingly to disk.
+ * \return void
+ */
 template <class _SELF_>
 void uGenericNGS<_SELF_>::writeToOutput(uWriter& pWriter) const
 {
 
-    try {
+    try
+    {
         pWriter.writeToken(this->createToken());
     }
     catch(uWriter_exception_base &e)
@@ -628,21 +695,21 @@ std::vector<_SELF_> uGenericNGS<_SELF_>::divideIntoNBin(int N,SplitType ptype)
     }
     catch(param_throw &e)
     {
-       std::string ourtrace="Failed in divideIntoNBin()";
+        std::string ourtrace="Failed in divideIntoNBin()";
         if(  std::string const * trace=boost::get_error_info<string_error>(e) )
             ourtrace+=*trace;
 
-        #ifdef DEBUG
-                std::cerr <<"Failed in divideIntoNBin()"<<std::endl;
-        #endif
+#ifdef DEBUG
+        std::cerr <<"Failed in divideIntoNBin()"<<std::endl;
+#endif
         e << string_error(ourtrace);
         throw e;
     }
     catch(std::exception &e )
     {
-        #ifdef DEBUG
-            std::cerr <<"Failed in divideIntoNBin()"<<std::endl;
-        #endif
+#ifdef DEBUG
+        std::cerr <<"Failed in divideIntoNBin()"<<std::endl;
+#endif
         throw e ;
     }
     return returnVec;
@@ -717,20 +784,20 @@ std::vector<_SELF_> uGenericNGS<_SELF_>::divideIntoBinofSize(const int N, const 
     {
         std::string ourtrace="Failed in divideIntoNBin() /n";
         if(  std::string const * trace=boost::get_error_info<string_error>(e) )
-	{
+        {
             ourtrace+=*trace;
         }
-        #ifdef DEBUG
-            std::cerr <<"Failed in divideIntoBinofSize()"<<std::endl;
-        #endif
+#ifdef DEBUG
+        std::cerr <<"Failed in divideIntoBinofSize()"<<std::endl;
+#endif
         e << string_error(ourtrace);
         throw e;
     }
     catch(std::exception & e)
     {
-         #ifdef DEBUG
-                  std::cerr <<"Failed in divideIntoBinofSize()"<<std::endl;
-        #endif
+#ifdef DEBUG
+        std::cerr <<"Failed in divideIntoBinofSize()"<<std::endl;
+#endif
         throw e;
     }
 
@@ -745,14 +812,18 @@ std::vector<_SELF_> uGenericNGS<_SELF_>::divideIntoBinofSize(const int N, const 
 template <class _SELF_>
 void uGenericNGS<_SELF_>::setScore(float p_score, int p_Pos)
 {
-    try {
+    try
+    {
         if (p_Pos>= ((int)m_score.size()))
         {
-		m_score.resize(p_Pos+1);
+            m_score.resize(p_Pos+1);
         }
         m_score.at(p_Pos)=p_score;
     }
-    catch(std::exception &e){throw e;}
+    catch(std::exception &e)
+    {
+        throw e;
+    }
 }
 
 /** \brief Fetch the score at a specific region, return infinity if not set
@@ -782,13 +853,14 @@ uToken uGenericNGS<_SELF_>::createToken() const
     if (getStrand()==StrandDir::FORWARD)
         ss << "STRAND\t"<<"+"<<"\n";
     else
-         ss << "STRAND\t"<<"-"<<"\n";
+        ss << "STRAND\t"<<"-"<<"\n";
 
     if (getScoreCount()>0)
     {
         ss << "SCORE\t"<<this->getScore()<<"\n";
     }
-    try {
+    try
+    {
         return uToken(ss);
     }
     catch(uToken_exception_base &e)
@@ -797,30 +869,32 @@ uToken uGenericNGS<_SELF_>::createToken() const
         throw e;
     }
 
- }
+}
 
 /**<  */
 
- /** \brief Prints a human readable version of the element in no particular format.
-  *
-  * \param pOut std::ostream& Output to write to.
-  * \return void
-  *
-  */
+/** \brief Prints a human readable version of the element in no particular format.
+ *
+ * \param pOut std::ostream& Output to write to.
+ * \return void
+ *
+ */
 template <class _SELF_>
- void  uGenericNGS<_SELF_>::print(std::ostream &pOut)const{
+void  uGenericNGS<_SELF_>::print(std::ostream &pOut)const
+{
     pOut<<"Chrom: "<<getChr()<<std::endl;
     pOut<<"Start: "<<utility::to_string(getStart())<<std::endl;
     pOut<<"End: " <<utility::to_string(getEnd())<<std::endl;
 
-    if (m_score.size()>0){
-         pOut<<"Scores: ";
+    if (m_score.size()>0)
+    {
+        pOut<<"Scores: ";
         for(auto value: m_score )
-             pOut<<value<<" ";
-          pOut<<std::endl;
-        }
+            pOut<<value<<" ";
+        pOut<<std::endl;
+    }
 
- }
+}
 
 } // End of namespace NGS
 
@@ -832,29 +906,29 @@ template <class _SELF_>
 /**< Legacy code, will return a uGenericNGS from  a tab delimited code. Deprecated, will be removed */
 namespace factory
 {
-    template<class _SELF_>
-    inline static _SELF_ makeNGSfromTabString(std::string tabString)
+template<class _SELF_>
+inline static _SELF_ makeNGSfromTabString(std::string tabString)
+{
+    utility::Tokenizer tabLine(tabString);
+
+    std::string m_chrm;
+    int start=0, end=0;
+    try
     {
-        utility::Tokenizer tabLine(tabString);
+        tabLine.NextToken();
+        m_chrm = tabLine.GetToken();
+        tabLine.NextToken();
+        start = utility::stoi(tabLine.GetToken());
+        tabLine.NextToken();
+        end = utility::stoi(tabLine.GetToken());
 
-        std::string m_chrm;
-        int start=0, end=0;
-        try
-        {
-            tabLine.NextToken();
-            m_chrm = tabLine.GetToken();
-            tabLine.NextToken();
-            start = utility::stoi(tabLine.GetToken());
-            tabLine.NextToken();
-            end = utility::stoi(tabLine.GetToken());
-
-            return _SELF_(m_chrm,start,end);
-        }
-        catch(...)
-        {
-            throw;
-        }
+        return _SELF_(m_chrm,start,end);
     }
+    catch(...)
+    {
+        throw;
+    }
+}
 }
 
 
