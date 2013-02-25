@@ -48,7 +48,9 @@ uToken uParserBedGraph::getNextEntry()
         if ( (strLine.size()) || ( std::getline(*m_pIostream, strLine)) )
         {
             /**< We start by fetching the infos from the line */
-            return _getTokenFromBedGraphString(strLine);
+            /**< If not commentary, parser. If commentary, skype */
+            if (strLine[0]!=PDEF::UCSCCOMMENT)
+                return _getTokenFromBedGraphString(strLine);
         }
         else
         {
@@ -96,7 +98,7 @@ uToken uParserBedGraph::_getTokenFromBedGraphString(const std::string & line)
 
 }
 
-/** \brief Parse the (theoretically) mandatory bedgraph header, report if you found it and skip line
+/** \brief Parse the (theoretically) mandatory bedgraph header and browser line and comments, report if you found it and skip line
  * \return void
  */
 bool uParserBedGraph::_parseHeader()
@@ -105,24 +107,20 @@ bool uParserBedGraph::_parseHeader()
     /**< So we load the line and if it is not a header, store it in our buffer object for parsing */
     /**< BedGraph header information is very specified to UCSC, so we do not store it. */
     std::string strLine;
-    if (std::getline(*m_pIostream, strLine))
+    while(std::getline(*m_pIostream, strLine))
     {
-        /**< If we could not find track type=bedGraph, store, otherwise discard */
-        if (strLine.find(s_bedGraphHeader)==std::string::npos){
-            m_hBuffer << strLine;
-            return false;
+
+        /**< Skip comment and browser lines, if not check if track line */
+        if (PDEF::isUCSCIgnore(strLine)!=false){
+            /**< If we could not find track type=bedGraph, store, otherwise discard */
+            if (strLine.find(s_bedGraphHeader)==std::string::npos){
+                m_hBuffer << strLine;
+                return false;
+            }
+            return true;
         }
-        return true;
     }
-    else
-    {
-#ifdef DEBUG
-        std::cerr << "Reached end of file." << std::endl;
-#endif
-        end_of_file_throw e;
-        e << string_error("Reached end of file when parsing bedGraph header.");
-        throw e;
-    }
+
 }
 
 //DerivedParserRegister<uParserBedGraph> uParserBedGraph::reg("BEDGRAPH");

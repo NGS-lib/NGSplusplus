@@ -285,6 +285,27 @@ TEST(uBasicNGSTestHerit, OVERLAPNOT){
     EXPECT_FALSE (uTest.doesOverlap(uTestNot2));
 }
 
+
+/**< Overlap, merge */
+
+TEST(uBasicNGS_returnOverlap, SIMPLE)
+{
+    uBasicNGS uTest("chr1", 100, 150);
+    uBasicNGS uTestOverlap("chr1", 130, 200);
+    uBasicNGS overlappedItem= uTest.returnOverlapping(uTestOverlap);
+    EXPECT_EQ(130,overlappedItem.getStart());
+    EXPECT_EQ(150,overlappedItem.getEnd());
+}
+TEST(uBasicNGS_returnMerge, MANY)
+{
+    uBasicNGS uTest("chr1", 100, 150);
+    uBasicNGS uTestMerge("chr1", 130, 200);
+    uBasicNGS mergedItem= uTest.returnMerge(uTestMerge);
+    EXPECT_EQ(100,mergedItem.getStart());
+    EXPECT_EQ(200,mergedItem.getEnd());
+}
+
+
 /*
  * Test for divide into bin functions
  *		bool doesOverlap(_SELF_ other,OverlapType type=OverlapType::OVERLAP_PARTIAL) const;

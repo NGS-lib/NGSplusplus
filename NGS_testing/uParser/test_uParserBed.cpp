@@ -22,6 +22,15 @@ TEST(uParserConstructorFilename, ValidFileName) {
 	ASSERT_NO_THROW(uParser Parser("../data/BED/test.bed", "BED"));
 }
 
+TEST(uParserGetNextEntry, ExtraENDL) {
+
+    uParser Parser("../data/BED/extrEndl.bed", "BED");
+	uToken Token = Parser.getNextEntry();
+	ASSERT_NO_THROW(while(!(Parser.eof()))
+                    Parser.getNextEntry();
+                 );
+}
+
 TEST(uParserConstructorFilename, CorrectlyFormatedHeaderBed) {
 	ASSERT_NO_THROW(uParser Parser("../data/BED/header.bed", "BED", true));
 }

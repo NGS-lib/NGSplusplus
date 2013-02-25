@@ -18,6 +18,33 @@
 namespace NGS
 {
 
+namespace PDEF{
+    const char UCSCCOMMENT='#';
+    const std::string UCSCBROWSER="browser";
+
+    static bool isUCSCComment(const std::string & pLine){
+        if (!pLine.size())
+            return false;
+        if (pLine.at(0)==(PDEF::UCSCCOMMENT))
+                return true;
+    }
+
+    static bool isUCSCBrowser(const std::string & pLine){
+     if (pLine.substr(0,7)==PDEF::UCSCBROWSER)
+        {
+            return true;
+        }
+    }
+    static bool isUCSCIgnore(const std::string & pLine)
+    {
+        if (isUCSCComment(pLine) || isUCSCBrowser(pLine))
+            return true;
+        else
+            return false;
+    }
+
+}
+
 class uParserBase
 {
     public :

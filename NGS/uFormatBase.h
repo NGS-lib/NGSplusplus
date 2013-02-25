@@ -114,8 +114,8 @@ public:
     };
 
 //TODO code tests for these two Then move them
-    _SELF_ returnOverlapping(const _SELF_ &);
-    _SELF_ returnMerge(const _SELF_ &);
+    _SELF_ returnOverlapping(const _SELF_ &)const;
+    _SELF_ returnMerge(const _SELF_ &)const;
 
 };
 
@@ -127,14 +127,14 @@ public:
  *
  */
 template <class _SELF_>
-_SELF_ uGenericNGS<_SELF_>::returnOverlapping(const _SELF_ & otherItem)
+_SELF_ uGenericNGS<_SELF_>::returnOverlapping(const _SELF_ & otherItem)const
 {
     if (utility::isOverlap(this->getStart(),this->getEnd(), otherItem.getStart(), otherItem.getEnd()))
     {
         long long curStart =this->getStart(), curEnd=this->getEnd();
         StrandDir dir=StrandDir::FORWARD;
         /**< Only keep strand direction if both items agree, otherwise set to FORWARD */
-        if (this->getStrand()==otherItem.getStrand)
+        if (this->getStrand()==otherItem.getStrand())
             dir= this->getStrand();
         if (this->getStart()<otherItem.getStart())
             curStart=otherItem.getStart();
@@ -149,14 +149,14 @@ _SELF_ uGenericNGS<_SELF_>::returnOverlapping(const _SELF_ & otherItem)
 
 /**< if overlap, combine the regions, if not, raise exception */
 template <class _SELF_>
-_SELF_ uGenericNGS<_SELF_>::returnMerge(const _SELF_ & otherItem)
+_SELF_ uGenericNGS<_SELF_>::returnMerge(const _SELF_ & otherItem)const
 {
     if (utility::isOverlap(this->getStart(),this->getEnd(), otherItem.getStart(), otherItem.getEnd()))
     {
         long long curStart =this->getStart(), curEnd=this->getEnd();
         StrandDir dir=StrandDir::FORWARD;
         /**< Only keep strand direction if both items agree, otherwise set to FORWARD */
-        if (this->getStrand()==otherItem.getStrand)
+        if (this->getStrand()==otherItem.getStrand())
             dir= this->getStrand();
         if (this->getStart()>otherItem.getStart())
             curStart=otherItem.getStart();

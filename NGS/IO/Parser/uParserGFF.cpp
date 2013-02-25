@@ -55,9 +55,6 @@ void uParserGFF::init(std::istream* stream, bool header)
     GFFRegex = sregex::compile(GFFregString) ;
 }
 
-
-
-
 /** \brief Produce a token with next entry in the file/stream.
  * \return uToken containing the infos of the next entry.
  */

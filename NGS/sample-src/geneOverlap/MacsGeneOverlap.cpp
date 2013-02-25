@@ -82,8 +82,6 @@ int main(int argc, char **argv)
                 }
                 cout <<std::endl;
                 /**< For each gene body overlapped, write */
-
-
                  item.writeToOutput(bedWriter);
             }
 
