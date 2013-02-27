@@ -53,7 +53,7 @@ void uWriterGTF::writeToken(const uToken& token)
 		if(token.isParamSet(token_param::EXTRA))
        		 { extra = token.getParam(token_param::EXTRA); }
 
-        *m_pOstream << seqname<<TAB<< source<<TAB << feature<<TAB << start<<TAB<<end <<TAB << score<<TAB<<strand <<TAB<< phase<<std::endl;
+        *m_pOstream << seqname<<TAB<< source<<TAB << feature<<TAB << start<<TAB<<end <<TAB << score<<TAB<<strand <<TAB<< phase<<"\n";
     }
     catch(param_not_found& e)
     {

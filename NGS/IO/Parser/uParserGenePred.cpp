@@ -72,7 +72,7 @@ uToken uParserGenePred::getNextEntry()
 {
     std::string strLine;
 
-    if (std::getline(*m_pIostream, strLine))
+    if  ( std::getline(*m_pIostream, strLine) && ( strLine.size() || m_pIostream->eof()==false) )
     {
         m_rawString=strLine;
         return _getTokenFromGenePredString(strLine);

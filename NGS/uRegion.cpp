@@ -788,161 +788,163 @@ uRegionExperiment uRegionExperiment::getCopy() const{
 
 //TODO Test our loader for Wig
 //TODO Move to parser?
+//Deprecated
+
 /** \brief Load our density data from a wig file
  *
  * \param std::ifstream valid Input stream
  * \return void
  *
  */
-void uRegionExperiment::loadFromWig(std::ifstream & inputStream)
-{
-try {
-string curChr, curLine;
-int curSpan,curStart, curStep;
-enum class wigType
-{
-    VARIABLE_STEP, FIXED_STEP, NONE
-};
-
-/**<  Validate header */
-getline(inputStream, curLine);
-if (curLine.find("track")==string::npos)
-    throw format_parsing_error() <<string_error("No track definition line in wiggle file\n");
-
-/**< At start, we do not know what to process */
-wigType curWig = wigType::NONE;
-
-/**<Load line  */
-    while(!getline(inputStream, curLine).eof()){
-{
-        utility::Tokenizer data(curLine);
-        data.NextToken();
-        string firstToken= data.GetToken();
-
-        /**< Is it a track definition line? Format forces the following two tags */
-        if((firstToken=="variableStep")||(firstToken=="variableStep"))
-        {
-            /**< Parse */
-            if (firstToken=="variableStep")
-            {
-                curWig=wigType::VARIABLE_STEP;
-                /**< Missing chrom tag */
-                if (!(data.NextToken()))
-                        throw 17;
-
-                curChr=data.GetToken();
-                /**< If invalid header */
-                if (curChr.find("chrom=")==string::npos)
-                    throw 17;
-
-                curChr=curChr.substr(curChr.find("chrom="));
-
-                /**< Optional Span parameter */
-                 curSpan=0;
-                 if(data.NextToken()){
-                    string span;
-                    span = data.GetToken();
-                    /**< If good, yay, if not, fail again*/
-                    if (span.find("span=")==string::npos)
-                        throw 18;
-
-                     span=span.substr(span.find("span="));
-                     curSpan=utility::stoi(span);
-                 }
-            }/**< Fixed Step */
-            else
-            {
-                 curWig=wigType::FIXED_STEP;
-                /**< Chrom */
-                 if (!(data.NextToken()))
-                        throw 19;
-                  curChr=data.GetToken();
-                  if (curChr.find("chrom=")==string::npos)
-                        throw 19;
-                  curChr=curChr.substr(curChr.find("chrom="));
-                    /**< Start */
-                  if (!(data.NextToken()))
-                        throw 20;
-
-                  string start= data.GetToken();
-                  if (start.find("start=")==string::npos)
-                        throw 20;
-
-                   start=start.substr(start.find("start="));
-                    curStart=utility::stoi(start);
-                    /**< Step */
-                    if (!(data.NextToken()))
-                        throw 21;
-
-                  string step= data.GetToken();
-                  if (step.find("step=")==string::npos)
-                        throw 21;
-
-                   step=step.substr(start.find("step="));
-                   curStep=utility::stoi(step);
-
-                    /**<Span  */
-
-                    /**< Optional Span parameter */
-                    curSpan=0;
-                 if(data.NextToken()){
-                    string span;
-                    span = data.GetToken();
-                    /**< If good, yay, if not, fail again*/
-                    if (span.find("span=")==string::npos)
-                        throw 22;
-
-                     span=span.substr(span.find("span="));
-                     curSpan=utility::stoi(span);
-                 }
-            }
-        }
-        else
-        {
-        /**< Process the line */
-         uRegion curReg;
-         switch (curWig)
-            {
-                /**< Crash */
-            case wigType::NONE:
-                cerr << "First line in a wig file must be track declaration, failling" <<endl;
-                throw 23;
-                break;
-            case wigType::FIXED_STEP:
-                curReg.setChr(curChr);
-                curReg.setStartEnd(curStart,curStart+curSpan);
-                curReg.setCount(utility::stoi(firstToken));
-                curStart+=curStep;
-                break;
-            case  wigType::VARIABLE_STEP:
-
-                 data.NextToken();
-                 int tagcount=utility::stoi(data.GetToken());
-                 curReg.setChr(curChr);
-                 int start=utility::stoi(firstToken);
-                 curReg.setStartEnd(start,start+curSpan);
-                 curReg.setCount(tagcount);
-                break;
-
-            }
-            addData(curReg);
-        }
-}
-
-    inferChrSize();
-    }
-
-}
-    catch(format_parsing_error & e )
-    {
-        cerr << "Catching while trying to load wiggle file, format error" <<endl;
-        throw;
-    }
-    catch(...)
-    {
-        cerr << "Catching while trying to load wiggle file, passing" <<endl;
-        throw;
-    }
-
-}
+//void uRegionExperiment::loadFromWig(std::ifstream & inputStream)
+//{
+//try {
+//string curChr, curLine;
+//int curSpan,curStart, curStep;
+//enum class wigType
+//{
+//    VARIABLE_STEP, FIXED_STEP, NONE
+//};
+//
+///**<  Validate header */
+//getline(inputStream, curLine);
+//if (curLine.find("track")==string::npos)
+//    throw format_parsing_error() <<string_error("No track definition line in wiggle file\n");
+//
+///**< At start, we do not know what to process */
+//wigType curWig = wigType::NONE;
+//
+///**<Load line  */
+//    while(!getline(inputStream, curLine).eof()){
+//{
+//        utility::Tokenizer data(curLine);
+//        data.NextToken();
+//        string firstToken= data.GetToken();
+//
+//        /**< Is it a track definition line? Format forces the following two tags */
+//        if((firstToken=="variableStep")||(firstToken=="variableStep"))
+//        {
+//            /**< Parse */
+//            if (firstToken=="variableStep")
+//            {
+//                curWig=wigType::VARIABLE_STEP;
+//                /**< Missing chrom tag */
+//                if (!(data.NextToken()))
+//                        throw 17;
+//
+//                curChr=data.GetToken();
+//                /**< If invalid header */
+//                if (curChr.find("chrom=")==string::npos)
+//                    throw 17;
+//
+//                curChr=curChr.substr(curChr.find("chrom="));
+//
+//                /**< Optional Span parameter */
+//                 curSpan=0;
+//                 if(data.NextToken()){
+//                    string span;
+//                    span = data.GetToken();
+//                    /**< If good, yay, if not, fail again*/
+//                    if (span.find("span=")==string::npos)
+//                        throw 18;
+//
+//                     span=span.substr(span.find("span="));
+//                     curSpan=utility::stoi(span);
+//                 }
+//            }/**< Fixed Step */
+//            else
+//            {
+//                 curWig=wigType::FIXED_STEP;
+//                /**< Chrom */
+//                 if (!(data.NextToken()))
+//                        throw 19;
+//                  curChr=data.GetToken();
+//                  if (curChr.find("chrom=")==string::npos)
+//                        throw 19;
+//                  curChr=curChr.substr(curChr.find("chrom="));
+//                    /**< Start */
+//                  if (!(data.NextToken()))
+//                        throw 20;
+//
+//                  string start= data.GetToken();
+//                  if (start.find("start=")==string::npos)
+//                        throw 20;
+//
+//                   start=start.substr(start.find("start="));
+//                    curStart=utility::stoi(start);
+//                    /**< Step */
+//                    if (!(data.NextToken()))
+//                        throw 21;
+//
+//                  string step= data.GetToken();
+//                  if (step.find("step=")==string::npos)
+//                        throw 21;
+//
+//                   step=step.substr(start.find("step="));
+//                   curStep=utility::stoi(step);
+//
+//                    /**<Span  */
+//
+//                    /**< Optional Span parameter */
+//                    curSpan=0;
+//                 if(data.NextToken()){
+//                    string span;
+//                    span = data.GetToken();
+//                    /**< If good, yay, if not, fail again*/
+//                    if (span.find("span=")==string::npos)
+//                        throw 22;
+//
+//                     span=span.substr(span.find("span="));
+//                     curSpan=utility::stoi(span);
+//                 }
+//            }
+//        }
+//        else
+//        {
+//        /**< Process the line */
+//         uRegion curReg;
+//         switch (curWig)
+//            {
+//                /**< Crash */
+//            case wigType::NONE:
+//                cerr << "First line in a wig file must be track declaration, failling" <<endl;
+//                throw 23;
+//                break;
+//            case wigType::FIXED_STEP:
+//                curReg.setChr(curChr);
+//                curReg.setStartEnd(curStart,curStart+curSpan);
+//                curReg.setCount(utility::stoi(firstToken));
+//                curStart+=curStep;
+//                break;
+//            case  wigType::VARIABLE_STEP:
+//
+//                 data.NextToken();
+//                 int tagcount=utility::stoi(data.GetToken());
+//                 curReg.setChr(curChr);
+//                 int start=utility::stoi(firstToken);
+//                 curReg.setStartEnd(start,start+curSpan);
+//                 curReg.setCount(tagcount);
+//                break;
+//
+//            }
+//            addData(curReg);
+//        }
+//}
+//
+//    inferChrSize();
+//    }
+//
+//}
+//    catch(format_parsing_error & e )
+//    {
+//        cerr << "Catching while trying to load wiggle file, format error" <<endl;
+//        throw;
+//    }
+//    catch(...)
+//    {
+//        cerr << "Catching while trying to load wiggle file, passing" <<endl;
+//        throw;
+//    }
+//
+//}
 } // End of namespace NGS

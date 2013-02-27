@@ -48,12 +48,26 @@ void uParserBase::init(std::istream* stream, bool header)
  */
 uParserBase::uParserBase(){}
 
-/** \brief Check if we are at the end of the file/stream
+/** \brief Check if we are at the end of the file/stream including if the last line concludes with a NL
  * \return true is we are at the end, otherwise false.
  */
-bool uParserBase::eof() const
+bool uParserBase::eof()
 {
+    if (m_pIostream->peek() == EOF)
+        return true;
+    if (m_pIostream->peek()=='\n')
+    {
+       m_pIostream->get();
+       if (m_pIostream->peek() ==EOF)
+           return true;
+       else
+       {
+        m_pIostream->unget();
+        return false;
+       }
+    }
     return m_pIostream->peek() == EOF;
+
 }
 
 std::map<std::string, std::function<uParserBase*()> > *uParserBaseFactory::mapItem;

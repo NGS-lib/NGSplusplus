@@ -2,14 +2,9 @@
 #define UPARSERGTF_H_INCLUDED
 
 #include "uParserBase.h"
-#include "../../uGeneException.h"
-#include "../uHeader.h"
 #include <iostream>
-//#include "../../boost-include/boost/xpressive/xpressive.hpp"
-//#include "uParserFactory.h"
 namespace NGS
 {
-
 class uParserGTF : public uParserBase
 {
 public :
@@ -21,10 +16,10 @@ public :
     uToken getNextEntry();
     static uParserBase * Create() { return new uParserGTF(); }
 private:
+    void _parseHeader();
     uToken _getTokenInfoFromGTFString(const std::string & line);
-//    static DerivedParserRegister<uParserGTF> reg;
     boost::xpressive::sregex GTFRegex;
-    const std::string GTFregString="^(\\.|[\\w_-]+)\t(\\.|[\\w_-]+)\t(\\.|[\\w_-]+)\t(\\d+)\t(\\d+)\t([-+]?[0-9]*\\.?[0-9]+|.)\t(\\+|\\-|\\.)\t([012\\.])(?:\t(.+))?";
+    const std::string GTFregString="^(\\.|[\\w_-]+)\t(\\.|[\\w_-]+)\t(\\.|[\\w_-]+)\t(\\d+)\t(\\d+)\t([-+]?[0-9]*\\.?[0-9]+|.)\t(\\+|\\-|\\.)\t([012\\.])\tgene_id\\s\"([^\"]*)\";\\stranscript_id\\s\"([^\"]*)\";.*";
 };
 
 } // End of namespace NGS

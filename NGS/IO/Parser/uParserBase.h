@@ -17,32 +17,33 @@
 #include "../../boost-include/boost/xpressive/xpressive.hpp"
 namespace NGS
 {
-
+//TODO REFACTOR
 namespace PDEF{
     const char UCSCCOMMENT='#';
     const std::string UCSCBROWSER="browser";
 
-    static bool isUCSCComment(const std::string & pLine){
+    inline static bool isUCSCComment(const std::string & pLine){
         if (!pLine.size())
             return false;
         if (pLine.at(0)==(PDEF::UCSCCOMMENT))
-                return true;
+            return true;
+        else
+            return false;
     }
-
-    static bool isUCSCBrowser(const std::string & pLine){
+    inline static bool isUCSCBrowser(const std::string & pLine){
      if (pLine.substr(0,7)==PDEF::UCSCBROWSER)
         {
             return true;
         }
+    return false;
     }
-    static bool isUCSCIgnore(const std::string & pLine)
+   inline  static bool isUCSCIgnore(const std::string & pLine)
     {
         if (isUCSCComment(pLine) || isUCSCBrowser(pLine))
             return true;
         else
             return false;
     }
-
 }
 
 class uParserBase
@@ -59,7 +60,7 @@ class uParserBase
     uParserBase(const uParserBase&) = delete;
     /** \brief Check if input data is at end of file.
       */
-    bool eof() const;
+    bool eof();
     virtual uToken getNextEntry()=0;
     std::string getPreviousRaw(){return m_rawString;};
     /** \brief Get an unformated version of header (i.e.: a single string containing the whole header)
@@ -75,6 +76,7 @@ class uParserBase
     bool isHeaderParamSet(const header_param& name) const { return m_headerData.isParamSet(name); }
 
 protected:
+    std::stringstream m_hBuffer;
     bool m_dynamicStream = false;
     std::istream* m_pIostream=nullptr;
     uHeader m_headerData;

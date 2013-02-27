@@ -53,6 +53,8 @@ template <class Container>
 inline static typename Container::iterator to_mutable_iterator(Container& c, typename Container::const_iterator it);
 
 
+
+
 namespace SAM
 {
     /** \brief Check and return if a specified sam flag is set from a received sam flag (int)
@@ -108,7 +110,7 @@ namespace SAM
 
 namespace STRING{
 
-        static std::string concatStringListWithSpaces(){return "";};
+        inline static std::string concatStringListWithSpaces(){return "";}
         /**< Scheme programming in C++. Who woulda thought. */
         template <typename ...Tail>
         static std::string concatStringListWithSpaces(const std::string& curTrack, Tail&&... tail){

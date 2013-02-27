@@ -23,7 +23,7 @@ void uWriterSam::writeHeader(){
         /**< Write every header */
         for (unsigned int i=0; i<chrVector.size();i++)
             {
-                *m_pOstream<<"@SQ"<<TAB<<SN<<chrVector.at(i)<<TAB<<SQ<<chrLenghts.at(i)<<std::endl;
+                *m_pOstream<<"@SQ"<<TAB<<SN<<chrVector.at(i)<<TAB<<SQ<<chrLenghts.at(i)<<"\n";
             }
     }
 }
@@ -88,7 +88,7 @@ void uWriterSam::writeToken(const uToken& token) {
         {
             cigar=utility::to_string ( (utility::stoi(end_pos)-utility::stoi(start_pos) )+1 )+"M";
         }
-		*m_pOstream <<seq_name <<TAB << flag <<TAB << chr <<TAB <<start_pos<<TAB <<MAPQual<<TAB <<cigar<<TAB << RNext<<TAB <<pNext<<TAB <<TLEN<<TAB<<seq<<TAB<<PHREDQual<<endl;
+		*m_pOstream <<seq_name <<TAB << flag <<TAB << chr <<TAB <<start_pos<<TAB <<MAPQual<<TAB <<cigar<<TAB << RNext<<TAB <<pNext<<TAB <<TLEN<<TAB<<seq<<TAB<<PHREDQual<<"\n";
 	}
 	catch(param_not_found& e) {
 		throw e;

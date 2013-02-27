@@ -39,7 +39,7 @@ uParserGFF::~uParserGFF()
 void uParserGFF::init(const std::string& filename, bool header)
 {
     uParserBase::init(filename, header);
-
+    _parseHeader();
     /**< GFF regex */
     GFFRegex = sregex::compile(GFFregString) ;
 }
@@ -51,6 +51,7 @@ void uParserGFF::init(const std::string& filename, bool header)
 void uParserGFF::init(std::istream* stream, bool header)
 {
     uParserBase::init(stream, header);
+    _parseHeader();
     /**< GFF regex */
     GFFRegex = sregex::compile(GFFregString) ;
 }
@@ -61,9 +62,11 @@ void uParserGFF::init(std::istream* stream, bool header)
 uToken uParserGFF::getNextEntry()
 {
     std::string strLine;
-    // char line[4096];
-    //if (m_pIostream->getline(strLine))
-    if (std::getline(*m_pIostream, strLine))
+
+    if (m_hBuffer.eof()==false)
+            std::getline(m_hBuffer, strLine);
+//&& ( strLine.size() || m_pIostream->eof()==false)
+    if (strLine.size() || std::getline(*m_pIostream, strLine)  )
     {
         m_rawString=strLine;
         return _getTokenFromGFFString(strLine);
@@ -80,6 +83,26 @@ uToken uParserGFF::getNextEntry()
     std::cerr <<"Fatal error in getNextEntry() from GFF parser, should not reach here." <<std::endl;
     abort();
 }
+
+
+void uParserGFF::_parseHeader()
+{
+   /**< While not specific to the GTF format, we will skip header lines that are UCSC browser tags */
+    std::string strLine;
+    while(std::getline(*m_pIostream, strLine))
+    {
+        /**< Skip comment and browser lines, if not check if track line */
+        if (PDEF::isUCSCIgnore(strLine)==false)
+        {
+            /**< No longer a commentary, store in buffer */
+          //  std::cout <<"Buffer is"<<m_hBuffer<<'\n';
+            m_hBuffer << strLine;
+            break;
+        }
+    }
+}
+
+
 
 uToken uParserGFF::_getTokenFromGFFString(const std::string & line)
 {
@@ -118,7 +141,7 @@ uToken uParserGFF::_getTokenFromGFFString(const std::string & line)
             ourToken._setParamNoValidate(token_param::PHASE, what[8]);
 
         if (what[9].matched)
-            ourToken._setParamNoValidate(token_param::EXTRA, what[9]);
+            ourToken._setParamNoValidate(token_param::GROUP_ID, what[9]);
 
         return ourToken;
     }

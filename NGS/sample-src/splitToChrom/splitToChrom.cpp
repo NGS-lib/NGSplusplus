@@ -12,7 +12,6 @@ int main(int argc, char **argv)
     cout << UCSCHeader::getUCSCLine(UCSCHeader::UCSCBrowseTypeMult::FULL_ALL,"I","WISH","TO","FULL","MANY","FULL");
     cout << UCSCHeader::getUCSCLine(UCSCHeader::UCSCBrowseTypeMult::SQUISH_ALL,"I","WISH","TO","SQUISH","MANY");
 
-
     cout << UCSCHeader::getUCSCLine(UCSCHeader::UCSCBrowseType::HIDE);
     cout << UCSCHeader::getUCSCLine(UCSCHeader::UCSCBrowseType::PACK);
     cout << UCSCHeader::getUCSCLine(UCSCHeader::UCSCBrowseType::DENSE);

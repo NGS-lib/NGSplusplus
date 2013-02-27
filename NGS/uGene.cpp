@@ -21,8 +21,22 @@ uGene::uFeature::uFeature(long long pStart, long long pEnd, featureType pType,st
         throw ugene_exception_base();
 }
 
+//TODO code this
+uToken uGene::createToken() const
+{
+assert(false);
+
+
+}
+
 /**< uGene */
 
+/** \brief Equality operator overloadeto compare features
+ *
+ * \param other const uFeature&:  Feature to compare with
+ * \return bool Comparison result
+ *
+ */
 bool uGene::uFeature::operator==(const uFeature &other) const
 {
 
@@ -34,6 +48,12 @@ bool uGene::uFeature::operator==(const uFeature &other) const
             (this->m_offset == other.m_offset));
 }
 
+/** \brief Not equal operator for Features
+ *
+ * \param other const uFeature& Feature to compare with
+ * \return bool Result of the comparison
+ *
+ */
 bool uGene::uFeature::operator!=(const uFeature &other) const
 {
     return !(*this == other);
@@ -84,7 +104,6 @@ uGene::uGene(uRegion p_region): uGenericNGS(p_region.getChr(),p_region.getStart(
  * \return bool True if identical
  *
  */
-//TODO
 bool uGene::isEqual(const uGene & pCompared) const
 {
 
@@ -101,7 +120,7 @@ bool uGene::isEqual(const uGene & pCompared) const
     }
     else
         return false;
-
+/**< Compare every other element */
     return ((this->getChr()==pCompared.getChr())&&
             (this->getStrand()==pCompared.getStrand())&&
             (this->getStart()==pCompared.getStart())&&
@@ -112,21 +131,38 @@ bool uGene::isEqual(const uGene & pCompared) const
             (this->getTranscript())==pCompared.getTranscript());
 }
 
+/** \brief Return a deep copy of this element.
+ *
+ * \return uGene Copy of current element
+ *
+ */
 uGene uGene::getCopy()const
 {
     uGene returnCopy = *this;
     return returnCopy;
 }
 
-void uGene::addFeature(long long pFeatureStart, long long pFeatureEnd, featureType pType,std::string pID, std::string pClass , short int pOffset)
+/** \brief Add a specified feature and associated with the uGene element. Also sets boundary as a byproduct if needed
+ *
+ * \param pFeatureStart long long: Start position of the feature, must be > then End pos
+ * \param pFeatureEnd long long: End position of the feature
+ * \param pStrand StrandDir : Direction of the feature
+ * \param pType featureType : Feature type from valid list
+ * \param pID std::string : Feature ID
+ * \param pClass std::string : Feature Class
+ * \param pOffset short int : Offset, typically set to 0-1-2
+ * \return void
+ *
+ */
+void uGene::addFeature(long long pFeatureStart, long long pFeatureEnd,StrandDir pStrand, featureType pType,std::string pID, std::string pClass , short int pOffset)
 {
     uFeature test(pFeatureStart,pFeatureEnd,pType, pID, pClass, pOffset);
     m_featureVector.push_back(test);
+    /**< Resort features */
     stable_sort(m_featureVector.begin(),m_featureVector.end(),[](const uFeature & item1, const uFeature & item2)
     {
         return item1.getStart()<item2.getStart();
     });
-
 
     /**< Adjust boundary */
     if (pFeatureStart<m_BoundaryStart)
@@ -135,11 +171,30 @@ void uGene::addFeature(long long pFeatureStart, long long pFeatureEnd, featureTy
         m_BoundaryEnd = pFeatureEnd;
 }
 
+
+/** \brief Private utility function, sets the boundary to the min/max of the features
+ *
+ * \return void
+ *
+ */
+ //TODO write test
+void uGene::inferBoundary(){
+    m_BoundaryStart=(std::min_element(m_featureVector.begin(),m_featureVector.end(), [](const uFeature & isSmaller, const uFeature & isBigger){return (isSmaller.getStart()<isBigger.getStart()) ;}))->getStart();
+    m_BoundaryEnd=(std::max_element(m_featureVector.begin(),m_featureVector.end(),[](const uFeature & isSmaller, const uFeature & isBigger){return (isSmaller.getEnd()<isBigger.getEnd()) ;}))->getEnd();
+}
+
+/** \brief Erase the feature pointed to by the iterator and resize boundary as needed
+ *
+ * \param pItrPos std::vector<uFeature>::const_iterator Item pointed to
+ * \return void
+ *
+ */
 void uGene::removeFeature(std::vector<uFeature>::const_iterator pItrPos)
 {
     try
     {
         m_featureVector.erase(utility::to_mutable_iterator(m_featureVector,pItrPos));
+        this->inferBoundary();
     }
     catch(...)
     {
@@ -147,11 +202,19 @@ void uGene::removeFeature(std::vector<uFeature>::const_iterator pItrPos)
     }
 
 }
+/** \brief Erase range [) pointed to by two iterators, resize boundary as needed
+ *
+ * \param pStartItr std::vector<uFeature>::const_iterator Begining of range
+ * \param pEndItr std::vector<uFeature>::const_iterator End of range, will not be erased.
+ * \return void
+ *
+ */
 void uGene::removeFeature(std::vector<uFeature>::const_iterator pStartItr,std::vector<uFeature>::const_iterator pEndItr)
 {
     try
     {
         m_featureVector.erase(utility::to_mutable_iterator(m_featureVector,pStartItr),utility::to_mutable_iterator(m_featureVector,pEndItr));
+        this->inferBoundary();
     }
     catch(...)
     {
@@ -159,15 +222,32 @@ void uGene::removeFeature(std::vector<uFeature>::const_iterator pStartItr,std::v
     }
 }
 
+/** \brief Return const iterator to the first feature
+ *
+ * \return typename std::vector<uGene::uFeature>::const_iterator
+ *
+ */
 typename std::vector<uGene::uFeature>::const_iterator uGene::featureBegin()const
 {
     return m_featureVector.cbegin();
 }
+
+/** \brief Return const iterator to end of feature vector
+ *
+ * \return typename std::vector<uGene::uFeature>::const_iterator
+ *
+ */
 typename std::vector<uGene::uFeature>::const_iterator uGene::featureEnd()const
 {
     return m_featureVector.cend();
 }
 
+/** \brief Verify if the uGene has a feature with the given featureType
+ *
+ * \param pType featureType: Type to verify
+ * \return bool: True if featureType found
+ *
+ */
 bool uGene::hasFeatureType(featureType pType)const
 {
     return  ( std::find_if(m_featureVector.begin(), m_featureVector.end(), [&](const uFeature & item)
@@ -176,6 +256,13 @@ bool uGene::hasFeatureType(featureType pType)const
     } )!=m_featureVector.end());
 }
 
+/** \brief Verifies if a feature specifically overlaps the given range. Only valide for positions
+ *
+ * \param pStart long long: Begining of range
+ * \param pEnd long long : End of range
+ * \return bool: True if at least one overlap found
+ *
+ */
 bool uGene::isOverlappingFeature(long long pStart, long long pEnd)
 {
     for(auto & feature:m_featureVector)
@@ -185,6 +272,15 @@ bool uGene::isOverlappingFeature(long long pStart, long long pEnd)
     }
     return false;
 }
+
+/** \brief Verifies if a feature of tyhe specified type specifically overlaps the given range. Only valide for positions
+ *
+ * \param pStart long long: Begining of range
+ * \param pEnd long long: End of range
+ * \param pType featureType: Type of feature to check
+ * \return bool: True if at least one overlap found
+ *
+ */
 bool uGene::isOverlappingFeature(long long pStart, long long pEnd, featureType pType)
 {
     for(auto & feature:m_featureVector)
@@ -196,8 +292,12 @@ bool uGene::isOverlappingFeature(long long pStart, long long pEnd, featureType p
 
 }
 
-
-
+/** \brief Utility function, returns the type of feature associated with a given string. OTHER returned if no match
+ *
+ * \param pType const std::string& : String to validate
+ * \return featureType Type of feature mapped to it
+ *
+ */
 featureType mapFeature(const std::string & pType )
 {
     if (featureMap.count(pType))
@@ -207,6 +307,12 @@ featureType mapFeature(const std::string & pType )
 
 }
 
+/** \brief Utility function, return the string key associated with a feature type
+ *
+ * \param pType const featureType&: Feature type to check
+ * \return std::string: associated string key
+ *
+ */
 std::string featureStr(const featureType& pType)
 {
     for (auto & curPar:featureMap)
@@ -218,10 +324,17 @@ std::string featureStr(const featureType& pType)
     return "";
 }
 
-
 /**< uGeneChrom */
 
-
+/** \brief Special function to add Data to a chrom.
+ *
+ *  As per uGene specified, an added item that shares an already used ID/Transcript combination will not be added as a new uGene but as a new feature
+ *  of the previously existing item.
+ *
+ * \param newSite const uGene&: Item to add
+ * \return void
+ *
+ */
 void uGeneChrom::addData(const uGene& newSite)
 try
 {
@@ -242,9 +355,6 @@ catch(ugene_exception_base & e)
     throw e;
 }
 
-
-
-
 /** \brief Parsing from a token is quite a bit more complex in this representation, as a given token may already be associated with a given ID or transcript.
  *
  * \param pToken const uToken
@@ -254,7 +364,6 @@ catch(ugene_exception_base & e)
 void uGeneChrom::addData(const uToken pToken)
 {
     /**< We first validate if there is a ID and potentially a Transcript associated. If not, treat it as normal */
-//std::cout <<pToken.getParam(token_param::CHR)<<"in "<<this->getChr()<<std::endl;
     if (pToken.getParam(token_param::CHR)!=this->getChr())
         throw ugene_exception_base()<<string_error("adding base to Chrom with non-matching scaffold/chr name");
 
@@ -291,11 +400,8 @@ void uGeneChrom::addData(const uToken pToken)
         }
         for (; i<pToken.paramCount(token_param::START_POS); i++)
         {
-            //TODO : Accessor
             StrandDir dir=StrandDir::FORWARD;
-            // float score=0.0f;
             /**< Others as supplementary feature */
-
             if ( pToken.isParamSet(token_param::STRAND) && pToken.getParam(token_param::STRAND)=="-")
                 dir=StrandDir::REVERSE;
 
@@ -308,7 +414,7 @@ void uGeneChrom::addData(const uToken pToken)
             if (pToken.isParamSet(token_param::OFFSET))
                 featureID=pToken.getParam(token_param::FEATURE_ID,i);
 
-            mainItr->addFeature(std::stoll(pToken.getParam(token_param::START_POS,i)),std::stoll(pToken.getParam(token_param::END_POS,i)),mapFeature(pToken.getParam(token_param::FEATURE_TYPE,i)),featureID,featureClass );
+            mainItr->addFeature(std::stoll(pToken.getParam(token_param::START_POS,i)),std::stoll(pToken.getParam(token_param::END_POS,i)),dir,mapFeature(pToken.getParam(token_param::FEATURE_TYPE,i)),featureID,featureClass );
             if ( pToken.isParamSet(token_param::SCORE))
                 mainItr->setScore(std::stof(pToken.getParam(token_param::SCORE)));
 
@@ -326,6 +432,13 @@ void uGeneChrom::addData(const uToken pToken)
 }
 
 
+/** \brief Get the number of genes that match the given ID. optionally, the number of genes that matched ID/Transcription combination (0 or 1 )
+ *
+ * \param pId const std::string&: ID to check
+ * \param pTranscript const std::string&: Transcript to check
+ * \return long long
+ *
+ */
 long long uGeneChrom::getIDCount(const std::string & pId, const std::string & pTranscript)
 {
     if (pTranscript.size()==0)
@@ -340,6 +453,13 @@ long long uGeneChrom::getIDCount(const std::string & pId, const std::string & pT
     } ));
 }
 
+/** \brief Return an iterator to the gene matching the ID/Transcript combination. return end() if none found
+ *
+ * \param pId const std::string&: GeneID to match
+ * \param pTranscript const std::string&: TranscriptID to match
+ * \return typename std::vector<uGene>::iterator :Iterator to found element
+ *
+ */
 typename std::vector<uGene>::iterator uGeneChrom::findGene(const std::string & pId, const std::string & pTranscript)
 {
     return std::find_if(std::begin(VecSites),std::end(VecSites),[&](uGene & item)
@@ -382,6 +502,11 @@ uGeneChrom& uGeneChrom::operator=(const uGeneChrom& copFrom)
 }
 
 
+/** \brief Return a copy of the uGeneChrom structur
+ *
+ * \return uGeneChrom Copy of this
+ *
+ */
 uGeneChrom uGeneChrom::getCopy()const
 {
     uGeneChrom returnCopy = *this;
@@ -525,6 +650,14 @@ typename std::vector<uGene>::const_iterator uGeneChrom::findNextFeature(long lon
 
 
 /**< uGeneExperiment */
+/** \brief Wrapper around the Chrom level function
+ *
+ * \param pChr std::string Scaffold to run the function on
+ * \param pPosition long long Position to search from
+ * \param pType featureType FeatureType to find
+ * \return typename std::vector<uGene>::const_iterator Iterator to gene
+ * \sa findNextGeneWithFeature
+ */
 typename std::vector<uGene>::const_iterator uGeneExperiment::findNextGeneWithFeature(std::string pChr, long long pPosition, featureType pType)const
 {
     try
@@ -542,7 +675,14 @@ typename std::vector<uGene>::const_iterator uGeneExperiment::findNextGeneWithFea
     }
 
 }
-
+/** \brief Wrapper around the Chrom level function
+ *
+ * \param pChr std::string Scaffold to run the function on
+ * \param pPosition long long Position to search from
+ * \param pType featureType FeatureType to find
+ * \return typename std::vector<uGene>::const_iterator Iterator to gene
+ * \sa findPrecedingGeneWithFeature
+ */
 typename std::vector<uGene>::const_iterator uGeneExperiment::findPrecedingGeneWithFeature(std::string pChr,long long pPosition, featureType pType)const
 {
     try
@@ -579,13 +719,18 @@ void uGeneExperiment::addData(const uGeneChrom& pChrom)
     }
 }
 
+/** \brief Wrapper around the chrom level function, adding a Token to uGene is mildly more complicated.
+ *
+ * \param pToken uToken& uToken to parse and add
+ * \return void
+ *
+ */
 void uGeneExperiment::addData(uToken & pToken)
 {
 
     try
     {
         std::string chr = pToken.getParam(token_param::CHR);
-
         uGeneChrom* ptempChrom;
         ptempChrom=&(ExpMap[chr]);
         ptempChrom->setChr(chr);

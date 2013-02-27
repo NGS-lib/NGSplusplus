@@ -41,9 +41,27 @@ TEST_F(TestsBedWriter, WriteToken_NoNameValueBed6) {
 	string expected = "chr1\t1\t21\t.\t111\t+\n";
 	ASSERT_TRUE(m_pOssBed6->str().find(expected) != string::npos);
 }
-
 TEST_F(TestsBedWriter, WriteToken_NoScoreStrandValuesBed6) {
 	string expected = "chr1\t1\t21\tab00001\t.\t.\n";
 	ASSERT_TRUE(m_pOssBed6->str().find(expected) != string::npos);
 }
 
+
+
+TEST(TestsBedWriter_WriteToken,TAG) {
+
+	uTags("chr1", 100, 200);
+	ASSERT_FALSE(true);
+}
+
+TEST(TestsBedWriter_WriteToken,REGION) {
+    ASSERT_FALSE(true);
+}
+
+TEST(TestsBedWriter_WriteToken,BASICNGS) {
+    ASSERT_FALSE(true);
+}
+
+TEST(TestsBedWriter_WriteToken,GENE) {
+    ASSERT_FALSE(true);
+}

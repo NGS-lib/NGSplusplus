@@ -25,7 +25,8 @@ class uTagsExperiment;
 
     enum class featureType: uint_least16_t
     {
-        EXON,INTRON, CODING, NCODING, LOOP, PROMOTER, ENHANCER,UTR3,UTR5, CUST_1, CUST_2, CUST_3, CUST_4, CUST_5, CUST_6, CUST_7, CUST_8, CUST_9, OTHER
+        EXON,INTRON, CODING, NCODING, LOOP, PROMOTER, ENHANCER,UTR3,UTR5, MRNA,OPERON,TRNA,
+        CUST_1, CUST_2, CUST_3, CUST_4, CUST_5, CUST_6, CUST_7, CUST_8, CUST_9, OTHER
     };
 
     featureType mapFeature(const std::string &);
@@ -33,7 +34,7 @@ class uTagsExperiment;
 
     static const std::map<std::string,featureType> featureMap{ {"EXON",featureType::EXON},{"INTRON",featureType::INTRON},{"CODING",featureType::CODING},{"NCODING",featureType::NCODING  },
     {"LOOP",featureType::LOOP}, {"ENHANCER",featureType::ENHANCER},
-    {"UTR3",featureType::UTR3},{"UTR5",featureType::UTR5}};
+    {"UTR3",featureType::UTR3},{"UTR5",featureType::UTR5},{"MRNA",featureType::MRNA},{"OPERON",featureType::OPERON},{"TRNA",featureType::TRNA} };
 
 class uGene : public uGenericNGS<uGene>
 {
@@ -50,7 +51,6 @@ public:
 
 
     ~uGene(){};
-
 private:
 
 
@@ -82,9 +82,6 @@ private:
             std::string getID()const{return m_ID;}; /**< Return ID of the feature */
             std::string getClass()const{return m_class;}; /**< Return ID of the feature */
 
-
-
-
             void setStrand(StrandDir );
             void setType(featureType pType){m_type=pType;}; /**< Set Type of the feature */
             void setID(std::string pID){m_ID = pID;}; /**< Set string ID of the feature */
@@ -98,7 +95,11 @@ private:
         };
         std::vector<uFeature> m_featureVector;  /**< List of features associated with our gene. Kept as sorted */
 
+
+
 public :
+
+    uToken createToken()const;
 
 
     std::string getTranscript()const{return m_transcript;}; /**< Return Transcript ID of the gene */
@@ -112,13 +113,14 @@ public :
 
 
 
+
+
     bool isOverlappingFeature(long long, long long);
     bool isOverlappingFeature(long long, long long, featureType pType);
-
     bool isEqual(const uGene & pCompared)const;
     uGene getCopy()const;
 
-    void addFeature(long long, long long, featureType,std::string="", std::string="", short int=0);
+    void addFeature(long long, long long,StrandDir pStrand, featureType,std::string="", std::string="", short int=0);
 
     void removeFeature(std::vector<uFeature>::const_iterator);
     void removeFeature(std::vector<uFeature>::const_iterator,std::vector<uFeature>::const_iterator);
@@ -128,6 +130,11 @@ public :
 
     typename std::vector<uFeature>::const_iterator featureBegin()const;
     typename std::vector<uFeature>::const_iterator featureEnd()const;
+
+
+private :
+
+    void inferBoundary();
 
 };
 

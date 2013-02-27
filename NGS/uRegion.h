@@ -120,7 +120,6 @@ class uRegionExperiment: public uGenericNGSExperiment<uRegionExperiment,uRegionC
 {
 public:
 
-
     uRegionExperiment& operator=(const uRegionExperiment& copFrom)=default;
     uRegionExperiment(const uRegionExperiment&) = default;
     uRegionExperiment()=default;
@@ -139,7 +138,7 @@ public:
 //    void writeAll(std::ostream& out);
     void writeSignal(std::ostream& out);
 
-    void loadFromWig(std::ifstream & inputStream);
+  //  void loadFromWig(std::ifstream & inputStream);
 };
 } // End of namespace NGS
 #endif

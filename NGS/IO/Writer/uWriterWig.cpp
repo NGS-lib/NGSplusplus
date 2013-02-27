@@ -52,10 +52,10 @@ void uWriterWig::setValueType(const token_param type){
 
             if (writeHeader)
             {
-                *m_pOstream <<step<<m_chr<<"\t" <<span<<m_span<<endl;
+                *m_pOstream <<step<<m_chr<<"\t" <<span<<m_span<<'\n';
             }
 
-                 *m_pOstream << ourstart << "\t" <<density << endl;
+                 *m_pOstream << ourstart << "\t" <<density << '\n';
            }
         else
             throw uWriter_missing_mandatory_param() << string_error("Token lacking mandatory param to write to Wig format. \n");

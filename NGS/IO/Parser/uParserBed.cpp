@@ -49,7 +49,7 @@ uToken uParserBed::getNextEntry()
 
     if (m_pIostream->getline(line, 4096))
     {
-            m_rawString=line;
+        m_rawString=line;
         /**< We start by fetching the infos from the line */
         std::stringstream token_infos;
         _convertLineToTokenInfosBed(line, token_infos);

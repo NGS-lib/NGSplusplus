@@ -17,12 +17,12 @@ using namespace NGS;
  *		InvalidFileName
  *		IncorrectlyFormatedHeader //TODO
  */
-TEST(uParserConstructorFilename, ValidFileName) {
+TEST(uParserBedConstructorFilename, ValidFileName) {
 
 	ASSERT_NO_THROW(uParser Parser("../data/BED/test.bed", "BED"));
 }
 
-TEST(uParserGetNextEntry, ExtraENDL) {
+TEST(uParserBedGetNextEntry, ExtraENDL) {
 
     uParser Parser("../data/BED/extrEndl.bed", "BED");
 	uToken Token = Parser.getNextEntry();
@@ -31,11 +31,11 @@ TEST(uParserGetNextEntry, ExtraENDL) {
                  );
 }
 
-TEST(uParserConstructorFilename, CorrectlyFormatedHeaderBed) {
+TEST(uParserBedConstructorFilename, CorrectlyFormatedHeaderBed) {
 	ASSERT_NO_THROW(uParser Parser("../data/BED/header.bed", "BED", true));
 }
 
-TEST(uParserConstructorFilename, InvalidFileName) {
+TEST(uParserBedConstructorFilename, InvalidFileName) {
 	ASSERT_THROW(uParser Parser("../data/BED/test2.bed", "BED"), std::runtime_error);
 	try {
 		uParser Parser("../data/BED/test2.bed", "BED");
@@ -57,14 +57,14 @@ TEST(uParserConstructorFilename, InvalidFileName) {
  *		IncorrectlyFormatedHeader //TODO
  */
 
-TEST(uParserConstructorStream, ValidStream) {
+TEST(uParserBedConstructorStream, ValidStream) {
 	stringstream ss;
 	ss << "chr1\t21\t31\ttest001\t.\t+\n";
 	ss << "chr2\t1221\t1231\ttest002\t.\t+\n";
 	ASSERT_NO_THROW(uParser Parser(&ss, "BED"));
 }
 
-TEST(uParserConstructorStream, CorrectlyFormatedHeader) {
+TEST(uParserBedConstructorStream, CorrectlyFormatedHeader) {
 	stringstream ss;
 	ss << "browser position chr7:127471196-127495720\n";
 	ss << "chr1\t21\t31\ttest001\t.\t+\n";
@@ -72,7 +72,7 @@ TEST(uParserConstructorStream, CorrectlyFormatedHeader) {
 	ASSERT_NO_THROW(uParser Parser(&ss, "BED", true));
 }
 
-TEST(uParserConstructorStream, EmptyStream) {
+TEST(uParserBedConstructorStream, EmptyStream) {
 	stringstream ss;
 	ASSERT_NO_THROW(uParser Parser(&ss, "BED"));
 }
@@ -92,7 +92,7 @@ TEST(uParserConstructorStream, EmptyStream) {
  *		ReachedEOF
  */
 // TODO: Check score also!
-TEST(uParserGetNextEntry, CorrectlyFormatedBED6) {
+TEST(uParserBedGetNextEntry, CorrectlyFormatedBED6) {
 	uParser Parser("../data/BED/test.bed", "BED");
 	uToken Token = Parser.getNextEntry();
 	ASSERT_EQ(Token.getParam(token_param::CHR), "chr1");
@@ -109,7 +109,7 @@ TEST(uParserGetNextEntry, CorrectlyFormatedBED6) {
 	ASSERT_EQ(Token.getParam(token_param::STRAND), "+");
 }
 
-TEST(uParserGetNextEntry, CorrectlyFormatedBED4) {
+TEST(uParserBedGetNextEntry, CorrectlyFormatedBED4) {
 	uParser Parser("../data/BED/test.bed", "BED");
 	uToken Token = Parser.getNextEntry();
 	ASSERT_EQ(Token.getParam(token_param::CHR), "chr1");
@@ -124,7 +124,7 @@ TEST(uParserGetNextEntry, CorrectlyFormatedBED4) {
 	ASSERT_EQ(Token.getParam(token_param::SEQ_NAME), "test002");
 }
 
-TEST(uParserGetNextEntry, CorrectlyFormatedHeaderBED) {
+TEST(uParserBedGetNextEntry, CorrectlyFormatedHeaderBED) {
 	uParser Parser("../data/BED/header.bed", "BED", true);
 	uToken Token = Parser.getNextEntry();
 	ASSERT_EQ(Token.getParam(token_param::CHR), "chr1");
@@ -139,7 +139,7 @@ TEST(uParserGetNextEntry, CorrectlyFormatedHeaderBED) {
 	ASSERT_EQ(Token.getParam(token_param::SEQ_NAME), "test002");
 }
 
-TEST(uParserGetNextEntry, IncorrectlyFormatedBED) {
+TEST(uParserBedGetNextEntry, IncorrectlyFormatedBED) {
 	uParser Parser("../data/BED/incorrect.bed", "BED", false);
 	ASSERT_THROW(Parser.getNextEntry(), invalid_value_throw);
 
@@ -151,7 +151,7 @@ TEST(uParserGetNextEntry, IncorrectlyFormatedBED) {
 	ASSERT_EQ(Token.getParam(token_param::STRAND), "+");
 }
 // TODO: Check if next entry is ok
-TEST(uParserGetNextEntry, IncorrectlyFormatedHeaderBED) {
+TEST(uParserBedGetNextEntry, IncorrectlyFormatedHeaderBED) {
 	uParser Parser("../data/BED/incorrect_header.bed", "BED", true);
 	uToken Token = Parser.getNextEntry();
 	ASSERT_EQ(Token.getParam(token_param::CHR), "chr1");
@@ -161,7 +161,7 @@ TEST(uParserGetNextEntry, IncorrectlyFormatedHeaderBED) {
 	ASSERT_THROW(Parser.getNextEntry(), invalid_value_throw);
 }
 
-TEST(uParserGetNextEntry, CorrectlyFormatedHeaderButNotSpecifiedBED) {
+TEST(uParserBedGetNextEntry, CorrectlyFormatedHeaderButNotSpecifiedBED) {
 	uParser Parser("../data/BED/header.bed", "BED");
 	ASSERT_THROW(Parser.getNextEntry(), ugene_exception_base);
 	ASSERT_THROW(Parser.getNextEntry(), ugene_exception_base);
@@ -174,7 +174,7 @@ TEST(uParserGetNextEntry, CorrectlyFormatedHeaderButNotSpecifiedBED) {
 	ASSERT_EQ(Token.getParam(token_param::STRAND), "+");
 }
 
-TEST(uParserGetNextEntry, ReachedEOF) {
+TEST(uParserBedGetNextEntry, ReachedEOF) {
 	uParser Parser("../data/BED/test.bed", "BED");
 	uToken Token = Parser.getNextEntry();
 	Token = Parser.getNextEntry();

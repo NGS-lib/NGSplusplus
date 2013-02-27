@@ -186,7 +186,7 @@ uGenericNGS<_SELF_>::uGenericNGS(std::string pChr, int pStart, int pEnd, StrandD
     {
 #ifdef DEBUG
         std::cerr << "Error in uGenericNGS(std::string pChr, int pStart, int pEnd). data is"<< pChr<< " "
-                  << pEnd<<" "<< pStart << " "<<std::endl;
+                  << pEnd<<" "<< pStart << " "<<'\n';
 #endif
         throw e;
     }

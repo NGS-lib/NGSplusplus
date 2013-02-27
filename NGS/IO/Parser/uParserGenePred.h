@@ -1,9 +1,6 @@
 #ifndef _H_INCLUDED
 #define _H_INCLUDED
-#include "../../uGeneException.h"
-#include "../uHeader.h"
-#include <iostream>
-//#include "../../boost-include/boost/xpressive/xpressive.hpp"
+
 #include "uParserBase.h"
 namespace NGS
 {
