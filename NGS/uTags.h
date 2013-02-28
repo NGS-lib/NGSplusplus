@@ -79,7 +79,6 @@ public:
     void setPhred(std::string Phred);
     std::string getPhred() const;
 
-
     void setName(std::string pName);
 
     std::string getName() const;

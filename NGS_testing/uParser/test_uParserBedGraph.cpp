@@ -59,5 +59,4 @@ TEST(uParserBedGraph_getNextEntry, MAKEBASIC) {
         ASSERT_EQ(tenBasic.at(0).getScore(),scoreVec.at(0));
     }
 
-
 }

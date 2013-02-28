@@ -17,6 +17,8 @@ uTags::uTags():uGenericNGS()
 uTags::uTags(uToken pToken)try:
     uGenericNGS(pToken)
 {
+    if (pToken.isParamSet(token_param::SEQ_NAME))
+        setName(pToken.getParam(token_param::SEQ_NAME));
     if (pToken.isParamSet(token_param::SEQUENCE))
         setSequence(pToken.getParam(token_param::SEQUENCE));
     if (pToken.isParamSet(token_param::CIGAR))
@@ -27,6 +29,9 @@ uTags::uTags(uToken pToken)try:
         setPhred(pToken.getParam(token_param::PHRED_SCORE));
     if (pToken.isParamSet(token_param::FLAGS))
         setFlag(utility::stoi(pToken.getParam(token_param::FLAGS)));
+      if (pToken.isParamSet(token_param::TEMPLATE_LENGHT))
+        setPELenght(utility::stoi(pToken.getParam(token_param::TEMPLATE_LENGHT)));
+
 }
 catch(ugene_exception_base &e)
 {

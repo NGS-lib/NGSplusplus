@@ -64,6 +64,80 @@ TEST(parserHeaderSamTests, getEntryUnitary)
     EXPECT_EQ(START,std::stoi(Token.getParam(token_param::START_POS)));
     EXPECT_EQ(END,std::stoi(Token.getParam(token_param::END_POS)));
 
+}
+//HWI-ST333_0095_FC:5:1102:6572:40808#GTACGT	16	chr10	56262	23	40M	*	0	0	CAAGGACCGGACGGATTCACAGCAGAATTCTACCAGACAT	BBBBBBBBBBB^UYUcc`^`bb_b\[RUXPccaccccccc
+//HWI-ST333_0095_FC:3:1207:10472:200099#GGTACC	16	chr10	61780	23	40M	*	0	0	TTCTTTTTAAACCAGCCGGCTGTGGCGGCATATGCCTGTA	gdgeddddffcggefggfegggdgggggggggggg^ffff
+//HWI-ST333_0095_FC:3:1208:11369:155611#GGTACC	0	chr10	64367	23	40M	*	0	0	AGCAGTCCCTGATCCTGTTTCTCCTGACTGGACAAGACCT	gggggggggggggggggggggggggggggggggggggggg
+//HWI-ST333_0095_FC:5:2104:14545:176320#GTACGT	0	chr10	67342	23	40M	*	0	0	AGTCTCAGATCTTTGGGAGGCAAAGGTGGGCAGATCACCT	gggggggggdggggggggggfggggd\eecb`cbbgdfgg
+//HWI-ST333_0095_FC:5:1107:10883:5991#GTACGT	16	chr10	71763	23	40M	*	0	0	TCGTACGCCCATGGAGTCTCGCTGATTGCTAGCACAACCG	ggggeggggegggedgggegdggggfgggggggggfefef
+//HWI-ST333_0095_FC:3:1103:18911:137521#GGTACC	0	chr10	71788	17	40M	*	0	0	TTGCTAGCACAACCGTCTGAGATCAAACTGCAAGGCGGCA	gggggggggggggggggggggeggggggggggegggggge
+//HWI-ST333_0095_FC:5:1106:9536:83045#GTACGT	16	chr10	71788	17	40M	*	0	0	TTGCTAGCACAACCGTCTGAGATCAAACTGCAAGGCGGCA	eggggegfdggdgggggggggggggggggggggggggggg
+//HWI-ST333_0095_FC:5:1207:3471:37381#GTACGT	0	chr10	71789	17	40M	*	0	0	TGCTAGCACAACCGTCTGAGATCAAACTGCAAGGCGGCAG	ggggggggggggfggggggggefgfggggggggggggege
+//HWI-ST333_0095_FC:3:2205:17931:44824#GGTACC	16	chr10	71792	15	40M	*	0	0	TAGCACAACCGTCTGAGATCAAACTGCAAGGCGGCAGCGA	egggeggegggegggggggggggggggggggggggggggg
+//HWI-ST333_0095_FC:5:1104:1435:126724#GTACGT	0	chr10	72128	20	40M	*	0	0	TGGGAGGCACCCCCCAGCAGGGCACACTGACACCTCACAT	gggggggfggggggggggggggggfggeggggggggggge
+
+TEST(uParserSam_getNextEntry, MAKEBASICTEN) {
+    uParser ourParser(BIG_FILE, "SAM");
+    int countTok=0;
+
+    vector<long long> startVec={56262,61780,64367,67342,71763,71788,71788,71789,71792,72128};
+    vector<long long> endVec={56262+39,61780+39,64367+39,67342+39,71763+39,71788+39,71788+39,71789+39,71792+39,72128+39};
+    vector<string> seqVec={
+    "CAAGGACCGGACGGATTCACAGCAGAATTCTACCAGACAT",
+    "TTCTTTTTAAACCAGCCGGCTGTGGCGGCATATGCCTGTA",
+    "AGCAGTCCCTGATCCTGTTTCTCCTGACTGGACAAGACCT",
+    "AGTCTCAGATCTTTGGGAGGCAAAGGTGGGCAGATCACCT",
+    "TCGTACGCCCATGGAGTCTCGCTGATTGCTAGCACAACCG",
+    "TTGCTAGCACAACCGTCTGAGATCAAACTGCAAGGCGGCA",
+    "TTGCTAGCACAACCGTCTGAGATCAAACTGCAAGGCGGCA",
+    "TGCTAGCACAACCGTCTGAGATCAAACTGCAAGGCGGCAG",
+    "TAGCACAACCGTCTGAGATCAAACTGCAAGGCGGCAGCGA",
+    "TGGGAGGCACCCCCCAGCAGGGCACACTGACACCTCACAT",
+    "ACCCCCCAGCAGGGCACACTGACACCTCACATGGCAGGGT"};
+
+    vector<string> seqNameVec={
+    "HWI-ST333_0095_FC:5:1102:6572:40808#GTACGT",
+    "HWI-ST333_0095_FC:3:1207:10472:200099#GGTACC",
+    "HWI-ST333_0095_FC:3:1208:11369:155611#GGTACC",
+    "HWI-ST333_0095_FC:5:2104:14545:176320#GTACGT",
+    "HWI-ST333_0095_FC:5:1107:10883:5991#GTACGT",
+    "HWI-ST333_0095_FC:3:1103:18911:137521#GGTACC",
+    "HWI-ST333_0095_FC:5:1106:9536:83045#GTACGT",
+    "HWI-ST333_0095_FC:5:1207:3471:37381#GTACGT",
+    "HWI-ST333_0095_FC:3:2205:17931:44824#GGTACC",
+    "HWI-ST333_0095_FC:5:1104:1435:126724#GTACGT"};
+
+    vector<string> phred={
+    "BBBBBBBBBBB^UYUcc`^`bb_b\\[RUXPccaccccccc",
+    "gdgeddddffcggefggfegggdgggggggggggg^ffff",
+    "gggggggggggggggggggggggggggggggggggggggg",
+    "gggggggggdggggggggggfggggd\\eecb`cbbgdfgg",
+    "ggggeggggegggedgggegdggggfgggggggggfefef",
+    "gggggggggggggggggggggeggggggggggegggggge",
+    "eggggegfdggdgggggggggggggggggggggggggggg",
+    "ggggggggggggfggggggggefgfggggggggggggege",
+    "egggeggegggegggggggggggggggggggggggggggg",
+    "gggggggfggggggggggggggggfggeggggggggggge"
+    };
+
+    /**< Check first ten */
+    vector<uTags> tenTags;
+    while (ourParser.eof()==false){
+        tenTags.push_back(uTags(ourParser.getNextEntry()));
+        countTok ++;
+        if (countTok==10)
+            break;
+    }
+
+    for(int i=0;i<10;i++)
+    {
+        ASSERT_EQ(startVec.at(i),tenTags.at(i).getStart());
+        ASSERT_EQ(endVec.at(i),tenTags.at(i).getEnd());
+        ASSERT_EQ(seqVec.at(i),tenTags.at(i).getSequence());
+        ASSERT_EQ(seqNameVec.at(i),tenTags.at(i).getName());
+        ASSERT_EQ(phred.at(i),tenTags.at(i).getPhred());
+
+    }
 
 }
 
@@ -75,9 +149,7 @@ TEST(parserSamTests, BIGFILE)
     while (ourParser.eof()==false)
         {uToken tempToken=ourParser.getNextEntry(); }
     );
-
 }
-
 
 TEST(parserHeaderSamTests, 5ITEMCOUNT)
 {
