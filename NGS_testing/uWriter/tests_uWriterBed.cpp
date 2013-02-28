@@ -50,7 +50,10 @@ TEST_F(TestsBedWriter, WriteToken_NoScoreStrandValuesBed6) {
 
 TEST(TestsBedWriter_WriteToken,TAG) {
 
-	uTags("chr1", 100, 200);
+	uTags testTag("chr1", 100, 200);
+	uWriter tagWriter(&cout,"BED");
+  //  tagWriter.writeToken()
+
 	ASSERT_FALSE(true);
 }
 
