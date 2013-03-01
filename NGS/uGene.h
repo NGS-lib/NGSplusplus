@@ -26,7 +26,7 @@ class uTagsExperiment;
     enum class featureType: uint_least16_t
     {
         EXON,INTRON, CODING, NCODING, LOOP, PROMOTER, ENHANCER,UTR3,UTR5, MRNA,OPERON,TRNA,
-        CUST_1, CUST_2, CUST_3, CUST_4, CUST_5, CUST_6, CUST_7, CUST_8, CUST_9, OTHER
+        CUST_1, CUST_2, CUST_3, CUST_4, CUST_5, CUST_6, CUST_7, CUST_8, CUST_9, OTHER, NULLFEATURE
     };
 
     featureType mapFeature(const std::string &);
@@ -34,7 +34,7 @@ class uTagsExperiment;
 
     static const std::map<std::string,featureType> featureMap{ {"EXON",featureType::EXON},{"INTRON",featureType::INTRON},{"CODING",featureType::CODING},{"NCODING",featureType::NCODING  },
     {"LOOP",featureType::LOOP}, {"ENHANCER",featureType::ENHANCER},
-    {"UTR3",featureType::UTR3},{"UTR5",featureType::UTR5},{"MRNA",featureType::MRNA},{"OPERON",featureType::OPERON},{"TRNA",featureType::TRNA} };
+    {"UTR3",featureType::UTR3},{"UTR5",featureType::UTR5},{"MRNA",featureType::MRNA},{"OPERON",featureType::OPERON},{"TRNA",featureType::TRNA},{"PROMOTER",featureType::PROMOTER} };
 
 class uGene : public uGenericNGS<uGene>
 {
@@ -71,18 +71,15 @@ private:
             StrandDir m_strand= StrandDir::FORWARD;
         public:
 
-            uFeature(long long pStart, long long pEnd, featureType pType,std::string pID ,std::string pClass, short int pOffset );
+            uFeature(long long pStart, long long pEnd,StrandDir, featureType pType,std::string pID ,std::string pClass, short int pOffset );
             long long getStart()const{return m_start;};  /**< Return Start of the feature */
             long long getEnd()const{return m_end;};/**< Return End of the feature */
-
-
-
 
             featureType getType()const{return m_type;};  /**< Return the type of the feature */
             std::string getID()const{return m_ID;}; /**< Return ID of the feature */
             std::string getClass()const{return m_class;}; /**< Return ID of the feature */
 
-            void setStrand(StrandDir );
+            void setStrand(StrandDir pStrandir){m_strand=pStrandir;};
             void setType(featureType pType){m_type=pType;}; /**< Set Type of the feature */
             void setID(std::string pID){m_ID = pID;}; /**< Set string ID of the feature */
             void setClass(std::string pClass){m_class = pClass;}; /**< Set Class ID */
@@ -126,7 +123,7 @@ public :
     void removeFeature(std::vector<uFeature>::const_iterator,std::vector<uFeature>::const_iterator);
     bool hasFeatureType(featureType) const ;
 
-    unsigned int featureCount()const{return m_featureVector.size();};
+    unsigned long long featureCount(const featureType & pFeature=featureType::NULLFEATURE)const;
 
     typename std::vector<uFeature>::const_iterator featureBegin()const;
     typename std::vector<uFeature>::const_iterator featureEnd()const;
@@ -161,6 +158,8 @@ public:
 
     uGeneChrom getCopy()const;
 
+    unsigned long long featureCount(const featureType &pFeature=featureType::NULLFEATURE)const;
+
     typename std::vector<uGene>::const_iterator findNextWithFeature(long long pPosition, featureType pType)const;
     typename std::vector<uGene>::const_iterator findPrecedingWithFeature(long long pPosition, featureType pType)const;
 
@@ -189,6 +188,7 @@ public:
     uGeneExperiment()=default;
     uGeneExperiment getCopy() const;
 
+    unsigned long long featureCount(const featureType &pFeature=featureType::NULLFEATURE)const;
 
     typename std::vector<uGene>::const_iterator findNextGeneWithFeature(std::string pChr, long long pPosition, featureType pType)const;
     typename std::vector<uGene>::const_iterator findPrecedingGeneWithFeature(std::string pChr,long long pPosition, featureType pType)const;

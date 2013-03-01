@@ -14,11 +14,12 @@ namespace NGS
  * \param pID std::string
  *
  */
-uGene::uFeature::uFeature(long long pStart, long long pEnd, featureType pType,std::string pID, std::string pClass, short int pOffset ): m_start(pStart), m_end(pEnd), m_type(pType)
+uGene::uFeature::uFeature(long long pStart, long long pEnd,StrandDir pDir, featureType pType,std::string pID, std::string pClass, short int pOffset ): m_start(pStart), m_end(pEnd), m_type(pType)
     ,m_ID(pID),m_class(pClass),m_offset(pOffset)
 {
     if ( pStart < 0 || pStart > pEnd )
         throw ugene_exception_base();
+    setStrand(pDir);
 }
 
 //TODO code this
@@ -156,8 +157,7 @@ uGene uGene::getCopy()const
  */
 void uGene::addFeature(long long pFeatureStart, long long pFeatureEnd,StrandDir pStrand, featureType pType,std::string pID, std::string pClass , short int pOffset)
 {
-    uFeature test(pFeatureStart,pFeatureEnd,pType, pID, pClass, pOffset);
-    m_featureVector.push_back(test);
+    m_featureVector.push_back(uFeature(pFeatureStart,pFeatureEnd,pStrand,pType, pID, pClass, pOffset));
     /**< Resort features */
     stable_sort(m_featureVector.begin(),m_featureVector.end(),[](const uFeature & item1, const uFeature & item2)
     {
@@ -319,12 +319,40 @@ std::string featureStr(const featureType& pType)
     {
         if (curPar.second==pType)
             return curPar.first;
-
     }
     return "";
 }
 
+unsigned long long uGene::featureCount(const featureType & pFeature)const
+{
+    if (pFeature==featureType::NULLFEATURE){
+        return m_featureVector.size();
+    }
+    else
+    {
+        return count_if(m_featureVector.begin(),m_featureVector.end(),[&](const uFeature & curfeature){return (curfeature.getType()==pFeature);} );
+    }
+}
+
 /**< uGeneChrom */
+
+/** \brief Total number of features, without counting genes
+ *
+ * \return unsigned long long
+ *
+ */
+unsigned long long uGeneChrom::featureCount(const featureType & pFeature)const{
+
+    return accumulateSitesInfo([&](unsigned long long partialSum, const uGene & item) -> unsigned long long
+    {
+        return partialSum + item.featureCount(pFeature);
+    }, 0ULL);
+}
+
+
+
+
+
 
 /** \brief Special function to add Data to a chrom.
  *
@@ -719,6 +747,20 @@ void uGeneExperiment::addData(const uGeneChrom& pChrom)
     }
 }
 
+ /** \brief Return number of feature in the exp, ignoring the main feature. Optionally, only count certain type of features
+  *
+  * \param pFeature=featureType::NULLFEATURE const featureType&
+  * \return unsigned int
+  *
+  */
+unsigned long long uGeneExperiment::featureCount(const featureType &pFeature)const
+{
+    return accumulateChromsInfo([&](unsigned long long partialSum, const uGeneChrom & item) -> unsigned long long
+    {
+        return partialSum + item.featureCount(pFeature);
+    }, 0ULL);
+}
+
 /** \brief Wrapper around the chrom level function, adding a Token to uGene is mildly more complicated.
  *
  * \param pToken uToken& uToken to parse and add
@@ -745,6 +787,5 @@ void uGeneExperiment::addData(uToken & pToken)
     }
 
 }
-
 
 }
