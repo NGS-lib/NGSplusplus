@@ -30,7 +30,7 @@ public:
     uRegion(uToken);
 
 
-    virtual ~uRegion();
+    ~uRegion();
 
     std::string getIdent() const
     {
@@ -99,7 +99,7 @@ public:
 
     uRegionChrom(uBasicNGSChrom);
     uRegionChrom(uTagsChrom);
-
+    ~uRegionChrom(){};
     uRegionChrom getCopy()const;
 
     void measureDensityOverlap(const  uTagsChrom& chromtoComp, const OverlapType=OverlapType::OVERLAP_PARTIAL);
@@ -125,6 +125,7 @@ public:
     uRegionExperiment()=default;
 
     uRegionExperiment getCopy() const;
+    ~uRegionExperiment(){};
 
     void measureDensityOverlap(const uTagsExperiment& expToComp, const OverlapType poverlap=OverlapType::OVERLAP_PARTIAL);
     void measureDensityOverlap(const uRegionExperiment& expToComp, const OverlapType poverlap=OverlapType::OVERLAP_PARTIAL);

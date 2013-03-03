@@ -10,6 +10,7 @@
 #include "uParserBedGraph.h"
 #include "uParserCustom.h"
 #include "uParserGenePred.h"
+#include "uParserBAM.h"
 namespace NGS{
 
 template<typename T> uParserBase * createT() { return new T; }
@@ -57,6 +58,7 @@ struct uParserBaseFactory {
         Register("BEDGRAPH", &uParserBedGraph::Create);
         Register("CUSTOM", &uParserCustom::Create);
         Register("GENEPRED", &uParserGenePred::Create);
+        Register("BAM", &uParserBAM::Create);
 
     }
 protected:

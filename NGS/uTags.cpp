@@ -4,6 +4,8 @@
 #include "uTags.h"
 #include "uBasicNGS.h"
 #include "uRegion.h"
+#include "third-party/api/BamReader.h"
+#include "third-party/api/BamWriter.h"
 namespace NGS
 {
 
@@ -29,7 +31,7 @@ uTags::uTags(uToken pToken)try:
         setPhred(pToken.getParam(token_param::PHRED_SCORE));
     if (pToken.isParamSet(token_param::FLAGS))
         setFlag(utility::stoi(pToken.getParam(token_param::FLAGS)));
-      if (pToken.isParamSet(token_param::TEMPLATE_LENGHT))
+    if (pToken.isParamSet(token_param::TEMPLATE_LENGHT))
         setPELenght(utility::stoi(pToken.getParam(token_param::TEMPLATE_LENGHT)));
 
 }
@@ -807,8 +809,7 @@ std::vector<float> uTagsChrom::getRegionSignal(int start, int end, bool overlap)
 }
 
 template <class _OTHER_>
-uTags uTagsChrom::generateRandomSite
-(const int size_,std::mt19937& engine,const _OTHER_ &exclList, const int sigma, const std::string ID) const
+uTags uTagsChrom::generateRandomSite(const int size_,std::mt19937& engine,const _OTHER_ &exclList, const int sigma, const std::string ID) const
 {
     //TODO Sanity check here to make sure it is possible to generate the asked for tag.
     uTags returnTag;
@@ -875,6 +876,11 @@ std::vector<float> uTagsExperiment::getRegionSignal(std::string chrom, int start
 }
 
 
+/** \brief Return a copy of the experiment
+ *
+ * \return uTagsExperiment
+ *
+ */
 uTagsExperiment uTagsExperiment::getCopy() const
 {
     uTagsExperiment copyObj=*this;
@@ -882,7 +888,114 @@ uTagsExperiment uTagsExperiment::getCopy() const
 }
 
 
+
+/** \brief Load the next blockSize number of entries from the given Bamreader. if not more data available, stop reader
+ *
+ * \param pReader BamReader& BamReader to use
+ * \param blockSize=1; int : Number of entries to read
+ * \param pLoadCore bool : If true, skips certain string data ( sequence, phred scores, Name )
+ * \return uTagsExperiment
+ *
+ */
+void uTagsExperiment::loadWithBamTools(BamTools::BamReader& pReader, int pBlockSize, bool pLoadCore )
+{
+    try {
+        if (pLoadCore)
+            loadWithBamTools_Core(pReader, pBlockSize);
+        else
+            loadWithBamTools_All(pReader, pBlockSize);
+    }catch(...){
+    throw;}
+
+}
+
+void uTagsExperiment::loadWithBamTools_Core(BamTools::BamReader& pReader, int pBlockSize)
+{
+ try {
+   int countLoaded=0;
+    BamTools::BamAlignment m_BufferAlignement;
+    /**< if no buffer, load data */
+    while(countLoaded<pBlockSize)
+    {
+        if (pReader.GetNextAlignmentCore(m_BufferAlignement))
+        {
+            uTags tagToAdd(pReader.GetReferenceData().at(m_BufferAlignement.RefID).RefName,(m_BufferAlignement.Position+1),m_BufferAlignement.GetEndPosition());
+
+            if (m_BufferAlignement.IsReverseStrand())
+                tagToAdd.setStrand(NGS::StrandDir::REVERSE);
+
+            tagToAdd.setFlag(m_BufferAlignement.AlignmentFlag);
+            tagToAdd.setMapQual(m_BufferAlignement.MapQuality);
+            tagToAdd.setPELenght(m_BufferAlignement.InsertSize);
+
+            std::string cigar;
+            for(BamTools::CigarOp & cigarItem: m_BufferAlignement.CigarData)
+            {
+                cigar+= ( std::to_string(cigarItem.Type)+std::to_string(cigarItem.Length));
+            }
+            tagToAdd.setCigar(cigar);
+            this->addData(tagToAdd);
+            countLoaded++;
+        }
+        else
+            break;
+    }
+}
+catch(...){
+
+throw;
+}
+}
+void uTagsExperiment::loadWithBamTools_All(BamTools::BamReader& pReader, int pBlockSize)
+{
+    try {
+  int countLoaded=0;
+    BamTools::BamAlignment m_BufferAlignement;
+    /**< if no buffer, load data */
+    while(countLoaded<pBlockSize)
+    {
+        if (pReader.GetNextAlignment(m_BufferAlignement))
+        {
+            /**< Bam is 0 based, SAM 1 based. To map between them, +1 to Bam start positions. */
+            uTags tagToAdd(pReader.GetReferenceData().at(m_BufferAlignement.RefID).RefName,(m_BufferAlignement.Position+1),(m_BufferAlignement.GetEndPosition()));
+
+            if (m_BufferAlignement.IsReverseStrand())
+                tagToAdd.setStrand(NGS::StrandDir::REVERSE);
+
+            tagToAdd.setSequence(m_BufferAlignement.QueryBases);
+            tagToAdd.setFlag(m_BufferAlignement.AlignmentFlag);
+            tagToAdd.setMapQual(m_BufferAlignement.MapQuality);
+            tagToAdd.setPELenght(m_BufferAlignement.InsertSize);
+            tagToAdd.setPhred(m_BufferAlignement.Qualities);
+            tagToAdd.setName(m_BufferAlignement.Name);
+
+            std::string cigar;
+            for(BamTools::CigarOp & cigarItem: m_BufferAlignement.CigarData)
+            {
+                cigar+= ( std::to_string(cigarItem.Type)+std::to_string(cigarItem.Length));
+            }
+            tagToAdd.setCigar(cigar);
+            this->addData(tagToAdd);
+            countLoaded++;
+        }
+        else{
+            break;
+        }
+    }
+
+}
+catch(...)
+{
+    throw;
+}
+
+}
 } // End of namespace NGS
+
+
+
+
+
 
 
 // TODO: Move to parser?

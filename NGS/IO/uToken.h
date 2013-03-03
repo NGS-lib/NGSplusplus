@@ -43,7 +43,7 @@ public:
     std::string getParam(token_param name,unsigned int paramPos=0) const;
     std::string getParam(const std::string& name,unsigned int paramPos=0) const;
 
-
+    void print(std::ostream &pOut)const;
     bool isParamSet(const token_param& name, int pos=0) const;
     int  paramCount(const token_param& name) const;
     bool isParamSet(const std::string& name, int pos=0) const;
@@ -140,6 +140,7 @@ private:
 	friend class uParserGTF;
 	friend class uParserGFF2;
 	friend class uParserGenePred;
+	friend class uParserBAM;
 }; // End of class Token
 
 /**< Overloading of stream operator for token_param */

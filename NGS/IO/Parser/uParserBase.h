@@ -60,7 +60,7 @@ class uParserBase
     uParserBase(const uParserBase&) = delete;
     /** \brief Check if input data is at end of file.
       */
-    bool eof();
+    virtual bool eof();
     virtual uToken getNextEntry()=0;
     std::string getPreviousRaw(){return m_rawString;};
     /** \brief Get an unformated version of header (i.e.: a single string containing the whole header)

@@ -448,6 +448,26 @@ void uToken::_validateSequenceCigar() const
     }
 }
 
+
+/** \brief Print a human readable version, in no particular format, of the token.
+ *
+ * \param pOut std::ostream& stream to write to
+ * \return void
+ *
+ */
+void uToken::print(std::ostream &pOut)const
+{
+    for (auto curItem= std::begin(m_params); curItem!=std::end(m_params); curItem++ ){
+          pOut<<curItem->first;
+          for (auto &vecItem:curItem->second)
+            pOut<<" : "<<vecItem;
+          pOut<<"\n";
+    }
+
+
+}
+
+
 void uToken::_validateSequencePhred() const
 {
     if (isParamSet(token_param::SEQUENCE))

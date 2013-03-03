@@ -114,7 +114,7 @@ public:
     void removeSite(std::string chr,VecGenConstIter position);
     void removeSite(std::string chr,VecGenConstIter start,VecGenConstIter end);
 
-    virtual void loadFromTabFile(std::ifstream& stream);
+//    virtual void loadFromTabFile(std::ifstream& stream);
    // virtual void loadWithParser(uParser&, std::string);
     virtual void loadWithParser(std::ifstream&, std::string);
     virtual void loadWithParser(std::string, std::string);
@@ -332,21 +332,21 @@ void uGenericNGSExperiment<_SELF_,_CHROM_, _BASE_>::inferChrSize()
 }
 
 // TODO: Remove deprecated function
-/** \brief load basic data from a tab delimited file, throw away the rest.
- *          DEPRECATED
- * \param stream std::ifstream& file to load from
- * \return void
- *
- */
-template<class _SELF_, typename _CHROM_, typename _BASE_>
-void uGenericNGSExperiment<_SELF_,_CHROM_, _BASE_>::loadFromTabFile(std::ifstream& stream)
-{
-    std::string tempString;
-    while(!std::getline(stream, tempString).eof())
-    {
-        addData( factory::makeNGSfromTabString<_BASE_>(tempString));
-    }
-}
+///** \brief load basic data from a tab delimited file, throw away the rest.
+// *          DEPRECATED
+// * \param stream std::ifstream& file to load from
+// * \return void
+// *
+// */
+//template<class _SELF_, typename _CHROM_, typename _BASE_>
+//void uGenericNGSExperiment<_SELF_,_CHROM_, _BASE_>::loadFromTabFile(std::ifstream& stream)
+//{
+//    std::string tempString;
+//    while(!std::getline(stream, tempString).eof())
+//    {
+//        addData( factory::makeNGSfromTabString<_BASE_>(tempString));
+//    }
+//}
 
 /** \brief load basic data from a Parser and load necessary data by passing to object constructor
  *
