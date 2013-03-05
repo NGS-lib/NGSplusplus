@@ -114,12 +114,12 @@ public:
     void removeSite(std::string chr,VecGenConstIter position);
     void removeSite(std::string chr,VecGenConstIter start,VecGenConstIter end);
 
-//    virtual void loadFromTabFile(std::ifstream& stream);
-   // virtual void loadWithParser(uParser&, std::string);
     virtual void loadWithParser(std::ifstream&, std::string);
     virtual void loadWithParser(std::string, std::string);
     virtual void loadWithParser(uParser&, long long =0);
 
+    template<class UnaryPredicate>
+    void loadWithParser_if(uParser& pParser,UnaryPredicate predicate, long long pBlockCount=0);
 
     template<class UnaryFunction>
     void loadWithParserAndRun(std::ifstream& pStream, std::string pType, UnaryFunction funct , int pBlockSize=1);
@@ -331,22 +331,6 @@ void uGenericNGSExperiment<_SELF_,_CHROM_, _BASE_>::inferChrSize()
     //applyOnAllChroms(std::bind(static_cast<void (_CHROM_::*)()>(&_CHROM_::inferChrSize)));
 }
 
-// TODO: Remove deprecated function
-///** \brief load basic data from a tab delimited file, throw away the rest.
-// *          DEPRECATED
-// * \param stream std::ifstream& file to load from
-// * \return void
-// *
-// */
-//template<class _SELF_, typename _CHROM_, typename _BASE_>
-//void uGenericNGSExperiment<_SELF_,_CHROM_, _BASE_>::loadFromTabFile(std::ifstream& stream)
-//{
-//    std::string tempString;
-//    while(!std::getline(stream, tempString).eof())
-//    {
-//        addData( factory::makeNGSfromTabString<_BASE_>(tempString));
-//    }
-//}
 
 /** \brief load basic data from a Parser and load necessary data by passing to object constructor
  *
@@ -362,10 +346,6 @@ void uGenericNGSExperiment<_SELF_,_CHROM_, _BASE_>::loadWithParser(std::ifstream
         std::istream& refStream = pStream;
         uParser Curparser(&refStream, pType);
         loadWithParser(Curparser);
-    //    while(!Curparser.eof())
-     //   {
-    //        addData(Curparser.getNextEntry());
-     //   }
     }
     catch (uParser_exception_base& e) // TODO: check if there is something else that can be thrown
     {
@@ -404,7 +384,7 @@ void uGenericNGSExperiment<_SELF_,_CHROM_, _BASE_>::loadWithParser(uParser& pPar
     {
         if (pBlockCount){
             int counter=0;
-            while ((pParser.eof()==false)||(counter!=pBlockCount))
+            while ((pParser.eof()==false)&&(counter!=pBlockCount))
             {
                 this->addData(pParser.getNextEntry());
                 counter++;
@@ -424,7 +404,40 @@ void uGenericNGSExperiment<_SELF_,_CHROM_, _BASE_>::loadWithParser(uParser& pPar
     inferChrSize();
 }
 
-
+/** \brief Load up to pBlockCount data (0 = load entire file), keeping only data that fits condition
+ * \param std::string filepath: the path to the file to load
+ * \param std::string pType: the file type (i.e.: BED, SAM, BEDGRAPH, WIG, etc...)
+ */
+template<class _SELF_, typename _CHROM_, typename _BASE_>
+template<class UnaryPredicate>
+void uGenericNGSExperiment<_SELF_,_CHROM_, _BASE_>::loadWithParser_if(uParser& pParser,UnaryPredicate predicate, long long pBlockCount)
+{
+    try
+    {
+        if (pBlockCount){
+            int counter=0;
+            while ((pParser.eof()==false)&&(counter!=pBlockCount))
+            {
+                uToken loadedToken=pParser.getNextEntry();
+                if (predicate(_BASE_(loadedToken))){
+                    this->addData(loadedToken);
+                    counter++;
+                }
+            }
+        }
+        else{
+            {
+            while (pParser.eof()==false)
+                this->addData((pParser.getNextEntry()));
+            }
+        }
+    }
+    catch (...)
+    {
+        throw;
+    }
+    inferChrSize();
+}
 
 
 //** \brief Write our data as a legal bed file, filling only the first three columns
@@ -797,9 +810,21 @@ void uGenericNGSExperiment<_SELF_,_CHROM_, _BASE_>::addData(const _CHROM_ & inpu
     {
         ExpMap.insert(std::pair<std::string,_CHROM_>(inputChrom.getChr(),inputChrom));
     }
-    //TODO remove const ref to allow move semantics?
 }
 
+/** \brief Receive a given chrom and add it to the Experiment. Replaces previous chr if any.
+ *
+ * \param inputChrom const _CHROM_& Chrom to add
+ * \return void
+ *
+ */
+template<class _SELF_, typename _CHROM_, typename _BASE_>
+void uGenericNGSExperiment<_SELF_,_CHROM_, _BASE_>::replaceChr(const _CHROM_ & inputChrom)
+{
+    /**< Deep copy, create or replace as needed */
+    ExpMap[inputChrom.getChr()]=inputChrom;
+
+}
 
 /** \brief Return every element of THIS overlapping with parameter.
  *
@@ -1151,28 +1176,10 @@ void uGenericNGSExperiment<_SELF_,_CHROM_,_BASE_>::loadWithParserAndRun(std::ifs
 {
     try
     {
-        std::istream& refStream = pStream;
-        uParser Curparser(&refStream, pType);
-        std::vector<uToken> loadedTokens;
-        loadedTokens.resize(pBlockSize);
-        while(!Curparser.eof())
-        {
-            int curLoaded=0;
-            /**< Load a block of data */
-            while ((curLoaded<pBlockSize)&&(!Curparser.eof()))
-            {
-                loadedTokens.at(curLoaded)=Curparser.getNextEntry();
-
-                curLoaded++;
-            }
-            /**< Operate */
-            for(const uToken & curToken:loadedTokens)
-            {
-                funct( (_BASE_)(curToken) );
-            }
-        }
+        uParser Curparser(&pStream, pType);
+        loadWithParserAndRun(Curparser,funct,pBlockSize);
     }
-    catch (uParser_exception_base& e) // TODO: check if there is something else that can be thrown
+    catch (uParser_exception_base& e)
     {
         throw e;
     }
@@ -1223,23 +1230,7 @@ void uGenericNGSExperiment<_SELF_,_CHROM_,_BASE_>::loadWithParserAndRun(std::str
     try
     {
         uParser Curparser(filepath, pType);
-        std::vector<uToken> loadedTokens;
-        loadedTokens.resize(pBlockSize);
-        while(!Curparser.eof())
-        {
-            int curLoaded=0;
-            /**< Load a block of data */
-            while ((curLoaded<pBlockSize)&&(!Curparser.eof()))
-            {
-                loadedTokens.at(curLoaded)=(Curparser.getNextEntry());
-                curLoaded++;
-            }
-            /**< Operate */
-            for(const uToken & curToken:loadedTokens)
-            {
-                f( (_BASE_)(curToken) );
-            }
-        }
+        loadWithParserAndRun(Curparser,f,pBlockSize);
     }
     catch (uParser_exception_base& e) // TODO: check if there is something else that can be thrown
     {

@@ -167,7 +167,7 @@ public:
     typename std::vector<uGene>::const_iterator finPrecedingFeature(long long pPosition, featureType pType)const;
 
     long long getIDCount(const std::string & pId, const std::string & pTranscript);
-    void addData(uToken);
+    void addData(const uToken&);
     void addData(const uGene&);
 
 private:
@@ -181,7 +181,7 @@ class uGeneExperiment: public uGenericNGSExperiment<uGeneExperiment,uGeneChrom, 
 {
 public:
 
-    void addData(uToken &);
+    void addData(const uToken&);
     void addData(const uGeneChrom&);
     uGeneExperiment& operator=(const uGeneExperiment& copFrom)=default;
     uGeneExperiment(const uGeneExperiment&) = default;

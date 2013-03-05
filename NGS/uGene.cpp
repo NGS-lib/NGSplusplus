@@ -389,7 +389,7 @@ catch(ugene_exception_base & e)
  * \return void
  *
  */
-void uGeneChrom::addData(const uToken pToken)
+void uGeneChrom::addData(const uToken & pToken)
 {
     /**< We first validate if there is a ID and potentially a Transcript associated. If not, treat it as normal */
     if (pToken.getParam(token_param::CHR)!=this->getChr())
@@ -767,7 +767,7 @@ unsigned long long uGeneExperiment::featureCount(const featureType &pFeature)con
  * \return void
  *
  */
-void uGeneExperiment::addData(uToken & pToken)
+void uGeneExperiment::addData(const uToken & pToken)
 {
 
     try
