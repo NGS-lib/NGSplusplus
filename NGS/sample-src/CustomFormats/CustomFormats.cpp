@@ -32,6 +32,11 @@ int main(int argc, char **argv)
     vector<string> loadedOrder;
     char strSep = (argv[2][0]);
 
+    if (strSep=='t')
+        strSep='\t';
+    if (strSep=='s')
+        strSep=' ';
+
     for (int i=3; i<argc;i++)
     {
         std::string curValue(argv[i]);

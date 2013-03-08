@@ -71,7 +71,7 @@ private:
 protected:
 
     /**< Are we loading gradually? */
-    ReadMode op_mode;
+//    ReadMode op_mode;
 //    uParser m_parser;
 
     std::map<std::string,_CHROM_>  ExpMap={};
@@ -81,7 +81,7 @@ protected:
     std::function<bool(const _BASE_ &item1, const _BASE_ &item2)> m_comptFunc=compareStart;
 
     //TODO Make this function
-    void removeChr(const std::string &);
+
     void inferChrSize();
 
 
@@ -98,8 +98,9 @@ public:
      virtual void addData(const _CHROM_ &);
      void addData(const _SELF_ &);
      virtual void addData(const uToken &);
-    //TODO Code this
+    //TODO Test this
     void replaceChr(const _CHROM_ &);
+    void removeChr(const std::string &);
 
     long long count() const;
     void sortSites();
@@ -130,9 +131,6 @@ public:
 
 
     void writeWithWriter(uWriter& pWriter) const;
-
-
-//    void writeAsBedFile(std::ostream& out)const;
 
     auto begin()->decltype(ExpMap.begin())
     {
@@ -166,10 +164,18 @@ public:
     _SELF_ getOverlapping(_CHROM_ &compareChrom, OverlapType type=OverlapType::OVERLAP_PARTIAL);
     _SELF_ getOverlapping(std::string chr, int start, int end, OverlapType type=OverlapType::OVERLAP_PARTIAL);
 
-     _CHROM_ getSubset(std::string pChr, float pStart, float pEnd, OverlapType options=OverlapType::OVERLAP_PARTIAL);
-     _SELF_ getDistinct( std::string pChr, float pStart, float pEnd, OverlapType type=OverlapType::OVERLAP_PARTIAL);
+     _CHROM_ getSubset(std::string pChr, double pStart, double pEnd, OverlapType options=OverlapType::OVERLAP_PARTIAL);
+    //TODO TEST this
+     _CHROM_ removeSubset(std::string pChr,double pStart, double pEnd, OverlapType overlap=OverlapType::OVERLAP_PARTIAL);
 
-    //TODO MAKE REMOVE SUBSET AND REMOVE DISTINCT
+
+
+     _SELF_ getDistinct(std::string pChr, double pStart, double pEnd, OverlapType type=OverlapType::OVERLAP_PARTIAL);
+   //TODO Test this
+     _SELF_ removeDistinct(std::string pChr,double p_start, double p_end, OverlapType options=OverlapType::OVERLAP_PARTIAL);
+
+
+
     int getSubsetCount(const std::string & chr, const float start, const float end, const OverlapType overlap=OverlapType::OVERLAP_PARTIAL);
     int getSubsetCount(const _BASE_ & subsetReg, const OverlapType overlap=OverlapType::OVERLAP_PARTIAL);
 
@@ -239,7 +245,7 @@ public:
 //    template<class _SELF_, typename _CHROM_, typename _BASE_>
    /**< End STL wrappers */
 
-    uGenericNGSExperiment():op_mode(ReadMode::DEFAULT) {};
+    uGenericNGSExperiment(){};
 
 };
 
@@ -743,15 +749,15 @@ _BASE_ uGenericNGSExperiment<_SELF_,_CHROM_, _BASE_>::getSite(typename std::vect
 
 /** \brief Return a Chrom containing only the sites that overlap the given chr
  *
- * \param chr std::string
- * \param start int
- * \param end int
- * \param options OverlapType
- * \return _CHROM_
+ * \param chr std::string : Name of scaffold to subset on
+ * \param start int : Start position
+ * \param end int : End position
+ * \param options OverlapType : OverlapType if needed
+ * \return _CHROM_ : Chrom containing the overlapping elements
  *
  */
 template<class _SELF_, typename _CHROM_, typename _BASE_>
-_CHROM_ uGenericNGSExperiment<_SELF_,_CHROM_, _BASE_>::getSubset(std::string pChr, float pStart, float pEnd, OverlapType options)
+_CHROM_ uGenericNGSExperiment<_SELF_,_CHROM_, _BASE_>::getSubset(std::string pChr, double pStart, double pEnd, OverlapType options)
 {
     if (ExpMap.count(pChr)==0)
         return _CHROM_();
@@ -759,18 +765,37 @@ _CHROM_ uGenericNGSExperiment<_SELF_,_CHROM_, _BASE_>::getSubset(std::string pCh
     return (_CHROM_)ExpMap[pChr].getSubset(pStart,pEnd,options);
 }
 
+/** \brief Return a Chrom containing only the sites that overlap the given chr. Remove those elements from (this)
+ *
+* \param chr std::string : Name of scaffold to subset on
+ * \param start int : Start position
+ * \param end int : End position
+ * \param options OverlapType : OverlapType if needed
+ * \return _CHROM_ : Chrom containing the overlapping elements
+ *
+ */
+ template<class _SELF_, typename _CHROM_, typename _BASE_>
+_CHROM_ uGenericNGSExperiment<_SELF_,_CHROM_, _BASE_>::removeSubset(std::string pChr,double pStart, double pEnd, OverlapType overlap){
+
+if (ExpMap.count(pChr)==0)
+        return _CHROM_();
+
+    return (_CHROM_)ExpMap[pChr].removeSubset(pStart,pEnd,overlap);
+
+}
+
 
 /** \brief Return an EXP containing only the unarity sites that do not overlap does of the input structure
  *
  *
- * \param compareExp uGenericNGSExperiment& Input, copies exist as mentionned prio
+ * \param compareExp uGenericNGSExperiment& Input,
  * \param options OverlapType How we determine if overlapping or not
  * \return uGenericNGSExperiment<_CHROM_,_BASE_> Experiment containing the sites in there appropriate Chroms
  *
  */
 
 template<class _SELF_, typename _CHROM_, typename _BASE_>
-_SELF_ uGenericNGSExperiment<_SELF_,_CHROM_, _BASE_>::getDistinct(std::string pChr, float pStart, float pEnd,  OverlapType options)
+_SELF_ uGenericNGSExperiment<_SELF_,_CHROM_, _BASE_>::getDistinct(std::string pChr, double pStart, double pEnd,  OverlapType options)
 {
     typename NGSExpMap::iterator iterMap;
     _SELF_ returnExp;
@@ -783,6 +808,38 @@ _SELF_ uGenericNGSExperiment<_SELF_,_CHROM_, _BASE_>::getDistinct(std::string pC
         returnExp.addData(iterMap->second);}
     }
     return returnExp;
+}
+
+/** \brief Return an EXP containing only the unarity sites that do not overlap does of the input structure. Remove the corresponding site form the Exp
+ *
+ *
+ * \param compareExp uGenericNGSExperiment& Input,
+ * \param options OverlapType How we determine if overlapping or not
+ * \return uGenericNGSExperiment<_CHROM_,_BASE_> Experiment containing the sites in there appropriate Chroms
+ *
+ */
+ template<class _SELF_, typename _CHROM_, typename _BASE_>
+_SELF_ uGenericNGSExperiment<_SELF_,_CHROM_, _BASE_>::removeDistinct(std::string pChr, double pStart, double pEnd, OverlapType options)
+{
+     typename NGSExpMap::iterator iterMap;
+    _SELF_ returnExp;
+    _CHROM_ onlyChrom;
+    for (iterMap = ExpMap.begin(); iterMap != ExpMap.end(); iterMap++)
+    {
+        if (iterMap->first==pChr){
+            auto pChrom = this->getpChrom(iterMap->first);
+            returnExp.addData(pChrom->removeDistinct(pStart, pEnd));
+            onlyChrom=*pChrom;
+        }
+        else {
+            returnExp.addData(iterMap->second);
+        }
+    }
+    ExpMap.clear();
+    if (onlyChrom.count())
+        this->addData(onlyChrom);
+    return returnExp;
+
 }
 
 
@@ -826,6 +883,19 @@ void uGenericNGSExperiment<_SELF_,_CHROM_, _BASE_>::replaceChr(const _CHROM_ & i
 
 }
 
+/** \brief Erase the structure associated with key, if the structure exists.
+ *
+ * \param pChrName const std::string& : Key of the scaffold to erase
+ * \return void
+ *
+ */
+ template<class _SELF_, typename _CHROM_, typename _BASE_>
+void removeChr(const std::string & pChrName){
+
+    uGenericNGSExperiment<_SELF_,_CHROM_, _BASE_>::ExpMape.erase(pChrName);
+}
+
+
 /** \brief Return every element of THIS overlapping with parameter.
  *
  * \param uGenericNGSExperiment compareExp : Experiment to check for overlaps
@@ -841,7 +911,6 @@ _SELF_ uGenericNGSExperiment<_SELF_,_CHROM_,_BASE_>::getOverlapping(_SELF_ &comp
     _SELF_ returnExp;
     for (iterMap = ExpMap.begin(); iterMap != ExpMap.end(); iterMap++)
     {
-
         if (compareExp.isChrom(iterMap->first)){
             pChrom = compareExp.getpChrom(iterMap->first); // TODO: check if chrom exists before getting ptr to avoid throw
             returnExp.addData(iterMap->second.getOverlapping(*pChrom));
@@ -1149,6 +1218,7 @@ UnaryFunction uGenericNGSExperiment<_SELF_,_CHROM_,_BASE_>::applyOnSites(UnaryFu
     });
     return f;
 }
+
 /**< Const version of its equivalent */
 template<class _SELF_, typename _CHROM_, typename _BASE_>
 template<class UnaryFunction>
@@ -1187,10 +1257,19 @@ void uGenericNGSExperiment<_SELF_,_CHROM_,_BASE_>::loadWithParserAndRun(std::ifs
 
 template<class _SELF_, typename _CHROM_, typename _BASE_>
 template<class UnaryFunction>
+/** \brief
+ *
+ * \param pParser uParser& Parser we should load from
+ * \param funct UnaryFunction Function to run on each element
+ * \param pBlockSize int Number of items to load at a time
+ * \return void
+ *
+ */
 void uGenericNGSExperiment<_SELF_,_CHROM_,_BASE_>::loadWithParserAndRun(uParser& pParser, UnaryFunction funct , int pBlockSize)
 {
     try
     {
+
         std::vector<uToken> loadedTokens;
         loadedTokens.resize(pBlockSize);
         while(!pParser.eof())

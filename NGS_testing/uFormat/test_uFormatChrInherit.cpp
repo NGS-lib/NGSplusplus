@@ -687,30 +687,31 @@ TEST(uBasicNGSCHR_setChromSize, INVALID_UNDER0)
 }
 
 /**< getSite */
-TEST(uBasicNGSCHR_getSite, VALIDREQUEST)
-{
-     StandardChroms ourChroms;
-     uBasicNGS oneItem;
-     EXPECT_NO_THROW(oneItem=ourChroms.manyChr.getSite(2));
-     EXPECT_TRUE(oneItem.isEqual(uBasicNGS("chr1",120,250)));
-
-}
-TEST(uBasicNGSCHR_getSite, INVALID)
-{
-     StandardChroms ourChroms;
-     uBasicNGS oneItem;
-     EXPECT_THROW(oneItem=ourChroms.manyChr.getSite(20),param_throw);
-}
+//TEST(uBasicNGSCHR_getSite, VALIDREQUEST)
+//{
+//     StandardChroms ourChroms;
+//     uBasicNGS oneItem;
+//     EXPECT_NO_THROW(oneItem=ourChroms.manyChr.getSite(2));
+//     EXPECT_TRUE(oneItem.isEqual(uBasicNGS("chr1",120,250)));
+//
+//}
+//TEST(uBasicNGSCHR_getSite, INVALID)
+//{
+//     StandardChroms ourChroms;
+//     uBasicNGS oneItem;
+//     EXPECT_THROW(oneItem=ourChroms.manyChr.getSite(20),param_throw);
+//}
 
 /**< SortSites */
 TEST(uBasicNGSCHR_sortSites, DEFAULT)
 {
       StandardChroms ourChroms;
       ourChroms.manyChr.sortSites();
+      auto itr= ourChroms.manyChr.begin();
       //Check manually the order
-      EXPECT_TRUE(ourChroms.manyChr.getSite(0).isEqual(uBasicNGS("chr1",100,200)));
-      EXPECT_TRUE(ourChroms.manyChr.getSite(1).isEqual(uBasicNGS("chr1",120,250)));
-      EXPECT_TRUE(ourChroms.manyChr.getSite(2).isEqual(uBasicNGS("chr1",230,300)));
+      EXPECT_TRUE((itr)->isEqual(uBasicNGS("chr1",100,200)));
+      EXPECT_TRUE((itr+1)->isEqual(uBasicNGS("chr1",120,250)));
+      EXPECT_TRUE((itr+2)->isEqual(uBasicNGS("chr1",230,300)));
 }
 
 TEST(uBasicNGSCHR_sortSites, CUSTOM)
@@ -718,9 +719,11 @@ TEST(uBasicNGSCHR_sortSites, CUSTOM)
       StandardChroms ourChroms;
       ourChroms.manyChr.sortSites(ourChroms.manyChr.compareLenght,&uBasicNGS::getLenght);
       //Check manually the order
-      EXPECT_TRUE(ourChroms.manyChr.getSite(1).isEqual(uBasicNGS("chr1",100,200)));
-      EXPECT_TRUE(ourChroms.manyChr.getSite(2).isEqual(uBasicNGS("chr1",120,250)));
-      EXPECT_TRUE(ourChroms.manyChr.getSite(0).isEqual(uBasicNGS("chr1",230,300)));
+      auto itr= ourChroms.manyChr.begin();
+
+      EXPECT_TRUE((itr)->isEqual(uBasicNGS("chr1",100,200)));
+      EXPECT_TRUE((itr+1)->isEqual(uBasicNGS("chr1",120,250)));
+      EXPECT_TRUE((itr+2)->isEqual(uBasicNGS("chr1",230,300)));
 }
 
 
