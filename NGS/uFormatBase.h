@@ -14,7 +14,7 @@ namespace NGS
 /**< Our basic Site for NGS format */
 /**< Very weak class as there are many differences in the functionality of derived classes. */
 
-enum class StrandDir /*!< Possible strand directions */
+enum class StrandDir: bool /*!< Possible strand directions */
 {
     FORWARD,REVERSE
 };
@@ -40,9 +40,9 @@ protected:
 
 public:
 
-    uGenericNGS(std::string pChr, int pStart, int pEnd, StrandDir pStrand=StrandDir::FORWARD );
-    uGenericNGS(std::string pChr, int pStart, int pEnd, StrandDir pStrand, float pScore );
-    uGenericNGS(std::string pChr, int pStart, int pEnd,float pScore );
+    uGenericNGS(std::string pChr, long int pStart, long int pEnd, StrandDir pStrand=StrandDir::FORWARD );
+    uGenericNGS(std::string pChr, long int pStart, long int pEnd, StrandDir pStrand, float pScore );
+    uGenericNGS(std::string pChr, long int pStart, long int pEnd,float pScore );
     uGenericNGS() {};
     uGenericNGS(const uToken & pToken);
 
@@ -61,30 +61,30 @@ public:
 
     StrandDir getStrand() const;
     void setStrand(char pStrand);
-
     void setStrand(StrandDir pStrand);
+
     bool isReverse() const;
 
-    void setStart(int ourStart);
-    void setEnd(int ourEnd);
+    void setStart(long int ourStart);
+    void setEnd(long int ourEnd);
     void setStartEnd(long int ourStart, long int ourEnd);
 
     long int getStart() const;
     long int getEnd() const;
+
+
     long int getLenght() const;
 
     //  virtual bool isEqual(const  _SELF_ & pCompared)const =0;
-
     /**<  Divide our region into a certain number of subregions */
-
     std::vector<_SELF_> divideIntoBinofSize(const int N, const SplitType type=SplitType::STRICT);
     std::vector<_SELF_> divideIntoNBin(const int N, const SplitType ptype=SplitType::STRICT);
 
     //If we want to Change the dimensions of our site
-    void extendSite(int extend);
-    void extendSite(int extendLeft, int extendRight);
-    void trimSite(int trim);
-    void trimSite(int trimLeft,int trimRight);
+    void extendSite(long int extend);
+    void extendSite(long int extendLeft, long int extendRight);
+    void trimSite(long int trim);
+    void trimSite(long int trimLeft,long int trimRight);
 
     /**< Should this be there? */
     bool doesOverlap(_SELF_ other,OverlapType type=OverlapType::OVERLAP_PARTIAL) const;
@@ -113,17 +113,17 @@ public:
         m_score=std::move(p_Score);
     };
 
-//TODO code tests for these two Then move them
     _SELF_ returnOverlapping(const _SELF_ &)const;
     _SELF_ returnMerge(const _SELF_ &)const;
 
 };
 
 
-/** \brief If overlapping, return the parts overlapping, if not raise exception
+/** \brief If overlapping, return the parts overlapping, if not raise exception. Suggested to always test overlap before calling
  *
- * \param _SELF_
- * \return _SELF_
+ * \param _SELF_ element to compare overlap with
+ * \exception param_throw() : Throw if the param element does not overlap.
+ * \return _SELF_ The element returned
  *
  */
 template <class _SELF_>
@@ -147,8 +147,14 @@ _SELF_ uGenericNGS<_SELF_>::returnOverlapping(const _SELF_ & otherItem)const
         throw param_throw();
 }
 
-/**< if overlap, combine the regions, if not, raise exception */
-template <class _SELF_>
+/** \brief Return an element with the boundaries merged between this and comparison.
+ *
+ * \param otherItem const _SELF_& : Element to merge with.
+ * \exception param_throw : When element do not overlap.
+ * \return _SELF_ new element with boundaries merge.
+ *
+ */
+ template <class _SELF_>
 _SELF_ uGenericNGS<_SELF_>::returnMerge(const _SELF_ & otherItem)const
 {
     if (utility::isOverlap(this->getStart(),this->getEnd(), otherItem.getStart(), otherItem.getEnd()))
@@ -175,7 +181,7 @@ _SELF_ uGenericNGS<_SELF_>::returnMerge(const _SELF_ & otherItem)const
 * \exception ugene_exception_base: When the starting position and ending position are incorrect.
 */
 template <class _SELF_>
-uGenericNGS<_SELF_>::uGenericNGS(std::string pChr, int pStart, int pEnd, StrandDir pStrand):m_chr(pChr),m_strand(pStrand)
+uGenericNGS<_SELF_>::uGenericNGS(std::string pChr, long int pStart, long  int pEnd, StrandDir pStrand):m_chr(pChr),m_strand(pStrand)
 {
     try
     {
@@ -201,7 +207,7 @@ uGenericNGS<_SELF_>::uGenericNGS(std::string pChr, int pStart, int pEnd, StrandD
 * \exception ugene_exception_base: When the starting position and ending position are incorrect.
 */
 template <class _SELF_>
-uGenericNGS<_SELF_>::uGenericNGS(std::string pChr, int pStart, int pEnd, StrandDir pStrand, float pScore ):m_chr(pChr),m_strand(pStrand)
+uGenericNGS<_SELF_>::uGenericNGS(std::string pChr, long  int pStart, long  int pEnd, StrandDir pStrand, float pScore ):m_chr(pChr),m_strand(pStrand)
 {
     try
     {
@@ -227,7 +233,7 @@ uGenericNGS<_SELF_>::uGenericNGS(std::string pChr, int pStart, int pEnd, StrandD
 * \exception ugene_exception_base: When the starting position and ending position are incorrect.
 */
 template <class _SELF_>
-uGenericNGS<_SELF_>::uGenericNGS(std::string pChr, int pStart, int pEnd,float pScore ):m_chr(pChr),m_strand(StrandDir::FORWARD)
+uGenericNGS<_SELF_>::uGenericNGS(std::string pChr, long  int pStart, long  int pEnd,float pScore ):m_chr(pChr),m_strand(StrandDir::FORWARD)
 {
     try
     {
@@ -368,7 +374,7 @@ bool uGenericNGS<_SELF_>::isReverse() const
   * \return void
   */
 template <class _SELF_>
-void uGenericNGS<_SELF_>::setStart(int ourStart)
+void uGenericNGS<_SELF_>::setStart(long int ourStart)
 {
     try
     {
@@ -394,7 +400,7 @@ void uGenericNGS<_SELF_>::setStart(int ourStart)
  * \return void
  */
 template <class _SELF_>
-void uGenericNGS<_SELF_>::setEnd(int ourEnd)
+void uGenericNGS<_SELF_>::setEnd(long int ourEnd)
 {
     try
     {
@@ -446,9 +452,6 @@ void uGenericNGS<_SELF_>::setStartEnd(long int ourStart, long int ourEnd)
 }
 
 
-
-
-
 /** \brief Get the start position of the current entry.
  * \return long int: the start position of the current entry. Default value is 0.
  */
@@ -477,15 +480,17 @@ long int uGenericNGS<_SELF_>::getLenght() const
     return (m_endPos-m_startPos+1);
 }
 
-/** \brief Increase size of the element. Coordinates can go no lower then 0,
+/** \brief Increase size of the element. Coordinates can go no lower then 0, but wiill not throw
  *
  * \param extendLeft int : Left shift size, must be +
  * \param extendRight int : Right shift size, must be +
+ * \sa extendSite
+ * \sa trimSite
  * \return void
  *
  */
 template <class _SELF_>
-void uGenericNGS<_SELF_>::extendSite(int extendLeft, int extendRight)
+void uGenericNGS<_SELF_>::extendSite(long int extendLeft, long int extendRight)
 {
     try
     {
@@ -529,7 +534,7 @@ void uGenericNGS<_SELF_>::extendSite(int extendLeft, int extendRight)
  *
  */
 template <class _SELF_>
-void uGenericNGS<_SELF_>::extendSite(int extend)
+void uGenericNGS<_SELF_>::extendSite(long int extend)
 {
     try
     {
@@ -551,7 +556,7 @@ void uGenericNGS<_SELF_>::extendSite(int extend)
  *
  */
 template <class _SELF_>
-void uGenericNGS<_SELF_>::trimSite(int trimLeft, int trimRight)
+void uGenericNGS<_SELF_>::trimSite(long int trimLeft, long int trimRight)
 {
     /**< Validate input */
     try
@@ -576,11 +581,12 @@ void uGenericNGS<_SELF_>::trimSite(int trimLeft, int trimRight)
 /** \brief Diminish our element by an equal amount from both ends
  *
  * \param trim int : Size to trim from each side
+ * \sa extendSite extendSite
  * \return void
  *
  */
 template <class _SELF_>
-void uGenericNGS<_SELF_>::trimSite(int trim)
+void uGenericNGS<_SELF_>::trimSite(long int trim)
 {
     try
     {

@@ -54,7 +54,6 @@ inline static typename Container::iterator to_mutable_iterator(Container& c, typ
 
 
 
-
 namespace SAM
 {
     /** \brief Check and return if a specified sam flag is set from a received sam flag (int)

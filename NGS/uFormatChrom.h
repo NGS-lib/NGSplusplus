@@ -9,6 +9,7 @@
 #include <parallel/numeric>
 #include <functional>
 #include <assert.h>
+#include "uFormatBase.h"
 
 /**********************************
       * The function pointer can either be a)
@@ -112,9 +113,7 @@ public:
     uGenericNGSChrom& operator=(const uGenericNGSChrom& copFrom);
     uGenericNGSChrom(const uGenericNGSChrom&);
     virtual ~uGenericNGSChrom<_SELF_,_BASE_> ()
-    {
-        ;
-    }
+    { ;  }
 
     /**< Utility wrappers to query collection */
     unsigned long long avgSiteSize() const;
@@ -553,8 +552,7 @@ _BASE_ uGenericNGSChrom<_SELF_,_BASE_>::generateRandomSite
                     temptag.setEnd(center+shift-1);
                     temptag.setStart(center-shift);
                     temptag.setChr(this->getChr());
-                    //TODO Either we move name to the base elemtn or we move
-                    //temptag.setName(ID);
+
 
                     if ((exclList.getSubset(temptag.getStart(),temptag.getEnd())).count()==0)
                     {

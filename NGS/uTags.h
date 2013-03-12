@@ -1,7 +1,8 @@
 #ifndef UTAGS_H_INCLUDED
 #define UTAGS_H_INCLUDED
 
-#include "uFormats.h"
+//#include "uFormats.h"
+#include "uFormatExperiment.h"
 #include <memory>
 #include "utility/utility.h"
 
@@ -122,7 +123,6 @@ public:
     uTagsChrom(const uBasicNGSChrom &);
     uTagsChrom(const std::vector<uTags> & copyVec):uGenericNGSChrom(copyVec){};
 
-   // template<class _OTHER_>
     std::vector<float> getRegionSignal(int start, int end, bool overlap);
 
     template <class _OTHER_>

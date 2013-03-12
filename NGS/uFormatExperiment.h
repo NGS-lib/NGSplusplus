@@ -3,6 +3,8 @@
 #include <fstream>
 #include "IO/Parser/uParser.h"
 #include <functional>
+#include "uFormatChrom.h"
+
 namespace NGS
 {
 
@@ -22,8 +24,8 @@ for each data type.
 Potentially, we could derive a parent class where we place the version that do not require _SELF_
 
 However, while this would reduce code size, it would complexify an already somewhat complex hiearchy.
-
 _BASE_ is our Tags, _CHROM_ our Chrom structure.
+
  */
 template<class _SELF_, typename _CHROM_, typename _BASE_>
 class uGenericNGSExperiment
@@ -70,10 +72,6 @@ private:
 
 protected:
 
-    /**< Are we loading gradually? */
-//    ReadMode op_mode;
-//    uParser m_parser;
-
     std::map<std::string,_CHROM_>  ExpMap={};
 
     std::function<float(const _BASE_*)> sortGetStart=nullptr;
@@ -93,10 +91,10 @@ public:
     uGenericNGSExperiment(const uGenericNGSExperiment&)=default;
 
     //TODO code these overloads
-     void addData(const _BASE_ &);
+     virtual void addData(const _BASE_ &);
     // TODO: if chr do not exist, we keep sorted status. Otherwise sorted status should be false and size should be set to highest value between both chr.
      virtual void addData(const _CHROM_ &);
-     void addData(const _SELF_ &);
+     virtual void addData(const _SELF_ &);
      virtual void addData(const uToken &);
     //TODO Test this
     void replaceChr(const _CHROM_ &);
@@ -165,13 +163,11 @@ public:
     _SELF_ getOverlapping(std::string chr, int start, int end, OverlapType type=OverlapType::OVERLAP_PARTIAL);
 
      _CHROM_ getSubset(std::string pChr, double pStart, double pEnd, OverlapType options=OverlapType::OVERLAP_PARTIAL);
-    //TODO TEST this
      _CHROM_ removeSubset(std::string pChr,double pStart, double pEnd, OverlapType overlap=OverlapType::OVERLAP_PARTIAL);
 
 
 
      _SELF_ getDistinct(std::string pChr, double pStart, double pEnd, OverlapType type=OverlapType::OVERLAP_PARTIAL);
-   //TODO Test this
      _SELF_ removeDistinct(std::string pChr,double p_start, double p_end, OverlapType options=OverlapType::OVERLAP_PARTIAL);
 
 
