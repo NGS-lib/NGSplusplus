@@ -72,8 +72,10 @@ protected:
     void removeSite(int position);
     void removeSite(int start,int end);
 
+
 public:
 
+    _BASE_ getSite(long long pPos) const;
     virtual _SELF_ getCopy()const
     {
         assert (false);
@@ -123,15 +125,13 @@ public:
 
     void inferChrSize();
 
-
-
     /**< In place, creates items */
     void divideItemsIntoNBins(int N, SplitType type=SplitType::STRICT);
     void divideItemsIntoBinofSize(int N, SplitType type=SplitType::STRICT);
 
     /**< Find according to sort value */
-    VecGenConstIter findPrecedingSite(const float position) const;
-    VecGenConstIter findNextSite(const float position) const;
+    VecGenConstIter findPrecedingSite(const float pPosition) const;
+    VecGenConstIter findNextSite(const float pPosition) const;
     /**< removeSites overloads */
     void removeSite(VecGenConstIter pItrPos);
     void removeSite(VecGenConstIter pStartItr,VecGenConstIter pEndItr);
@@ -164,6 +164,22 @@ public:
     long int getDistinctCount(double p_start, double p_end, OverlapType overlap=OverlapType::OVERLAP_PARTIAL)const;
 
 
+    std::function<float(const _BASE_*)> getStartFunct() const;
+    std::function<float(const _BASE_*)> getEndFunct() const;
+    std::function<bool(const _BASE_ &item1, const _BASE_ &item2)> getCompFunct() const;
+
+    bool getSortedStatus() const;
+    int count() const;
+
+    long long int getChromSize() const;
+    void setChromSize(long long int chromS);
+
+    std::string getChr() const;
+    void setChr(std::string pChr);
+
+    std::vector<_BASE_> returnVecData() const;
+
+
     //TODO Vector overloads,
     // SELF_ getSubset(std::vector<std::pair<double,double>>, OverlapType overlap=OverlapType::OVERLAP_PARTIAL) const;
     // _SELF_ removeSubset(std::vector<std::pair<double,double>>, OverlapType overlap=OverlapType::OVERLAP_PARTIAL);
@@ -175,6 +191,8 @@ public:
 
     /**< Function to add a unitary element */
     virtual void addData(const _BASE_ & newSite);
+    virtual void addData(const uToken &);
+
 
     template<class UnaryOperation>
     std::vector<_BASE_> applyAndGetVecData(UnaryOperation unary_op);
@@ -265,144 +283,8 @@ public:
         return VecSites.end();
     };
 
-    /** \brief Return a copy of the functor  used to access to current Start value
-      *
-      *  This will return a copy of the assigned functor to access the start value. Will equal nullptr if not set
-      *
-      *
-      * \return std::function<float(const _BASE_*)> const Copy of the fucntor to access start.
-      */
-    std::function<float(const _BASE_*)> getStartFunct() const
-    {
-        return sortGetStart;
-    }
-    /** \brief Return a copy of the functor  used to access to current end value
-    *
-    *  This will return a copy of the assigned functor to access the end value. Will equal nullptr if not set
-    *
-    * \return std::function<float(const _BASE_*)> const Copy of the fucntor to access end.
-    */
-    std::function<float(const _BASE_*)> getEndFunct() const
-    {
-        return sortGetEnd;
-    }
-
-    /** \brief Return a copy of the comparison functor currently used
-     *
-     *  Will return a copy of the comparisong functor used for sorting. The comparison functor takes
-     *  two _BASE_ elements and returns true or false comparison. Set to nullptr by default
-     *
-     *
-     * \return std::function<bool(const _BASE_ &item1, const _BASE_ &item2)> Comparison functor
-     *
-     */
-    std::function<bool(const _BASE_ &item1, const _BASE_ &item2)> getCompFunct() const
-    {
-        return m_comptFunc;
-    }
-
-    /** \brief Return sorted status of the elements
-     *
-     * \return bool. True if sorted.
-     *
-     */
-    bool getSortedStatus() const
-    {
-        return m_isSorted;
-    }
-
-    /** \brief  Return number of elements
-     *
-     * \return int. Number of elements contained
-     *
-     */
-    int count() const
-    {
-        return VecSites.size();
-    };
-
-    /** \brief Return size of scaffold/chrom. 0 if not set
-     *
-     * \return long long int. Size of the scaffold/chrom.
-     *
-     */
-    long long int getChromSize() const
-    {
-        return chromSize;
-    };
-
-    /** \brief Set scaffold/chrom size
-     *
-     *  Set the scaffold/chrom size. Must be above 0
-     * \param chromS long int. Size to set the scaffold/chrom size to
-     * \exception param_throw. Parameter chromS is < then 0.
-     * \return void
-     *
-     */
-    void setChromSize(long long int chromS)
-    {
-        if (chromS<0)
-            throw param_throw()<<string_error("failling in setChromSize, value "+utility::to_string(chromS)+" is below 0\n");
-        chromSize= chromS;
-    };
-
-    /** \brief return name of the scaffold/chrom
-     *
-     *  Returns a std::string containing the name of the scaffold.
-     *  An empty string ("") is a valid name.
-     *
-     * \return std::string. Name of the scaffold/chrom
-     *
-     */
-    std::string getChr() const
-    {
-        return chr;
-    };
-
-    /** \brief Set the name of the scaffold/chr.
-     *
-     *   Set the name of the scaffold/chr. This function is included for
-     *   working directly with a chrom structure. If working through a Exp structure, this should be set
-     *   via a call to the corresponding Exp function, otherwise mapping may be throw off.
-     *
-     *  \param pChr std::string. Scaffold name to set to.
-     *  \return void
-     *
-     */
-    void setChr(std::string pChr)
-    {
-        chr = move(pChr);
-    };
 
 
-    /** \brief  Return copy of the element at .begin()+position count from iterator
-     *
-     * \param position int. Position of the _BASE_ in Vecsites to returné (Unrelated to the start and end position of the element)
-     * \exception param_throw. Throw if the requested element is an invalid position.
-     * \return _BASE_ Copy of the element at the asked for position.
-     *
-     */
-    _BASE_ getSite(long long pPos) const
-    {
-        try
-        {
-            return VecSites.at(pPos);
-        }
-        catch (std::exception &e)
-        {
-            throw param_throw()<<string_error("Failling in getSite(), out_of_range error");
-        }
-    };
-
-    /** \brief  Return a vector containing all elements of chrom structure.
-     *
-     * \return std::vector<_BASE_> std::vector containing all _BASE_ elements in chrom structure
-     *
-     */
-    std::vector<_BASE_> returnVecData() const
-    {
-        return VecSites;
-    };
 };
 
 /**< End inline functions */
@@ -460,6 +342,21 @@ void uGenericNGSChrom<_SELF_,_BASE_>::addData(const _BASE_& newSite)
             throw ugene_exception_base()<<string_error("adding base to Chrom with non-matching scaffold/chr name");
         m_isSorted=false;
         VecSites.push_back(newSite);
+    }
+    catch(ugene_exception_base & e)
+    {
+        throw e;
+    }
+}
+template <class _SELF_,class _BASE_>
+void uGenericNGSChrom<_SELF_,_BASE_>::addData(const uToken & pToken)
+{
+    try
+    {
+        if (pToken.getParam(token_param::CHR)!=this->getChr())
+            throw ugene_exception_base()<<string_error("adding base to Chrom with non-matching scaffold/chr name");
+        m_isSorted=false;
+        VecSites.push_back(_BASE_(pToken));
     }
     catch(ugene_exception_base & e)
     {
@@ -876,7 +773,7 @@ void uGenericNGSChrom<_SELF_,_BASE_>::printStats(std::ostream& out) const
  *
  */
 template <class _SELF_,class _BASE_>
-typename std::vector<_BASE_>::const_iterator uGenericNGSChrom<_SELF_,_BASE_>::findPrecedingSite(const float position) const
+typename std::vector<_BASE_>::const_iterator uGenericNGSChrom<_SELF_,_BASE_>::findPrecedingSite(const float pPosition) const
 {
     try
     {
@@ -894,13 +791,13 @@ typename std::vector<_BASE_>::const_iterator uGenericNGSChrom<_SELF_,_BASE_>::fi
         };
 
         /**< Compare, sort Value */
-        auto lower = std::lower_bound(VecSites.begin(), VecSites.end(), position, comp);
+        auto lower = std::lower_bound(VecSites.begin(), VecSites.end(), pPosition, comp);
 
         /**< If result is our first item, then no item precedes it */
         if ((lower==VecSites.begin()))
             return VecSites.end();
         /**< If result is end, every idem precedes the value */
-        /**<Return item precedes and as such is LESS then position. if no item was found, last item is closest to value  */
+        /**<Return item precedes and as such is LESS then pPosition. if no item was found, last item is closest to value  */
         lower--;
         return (lower);
     }
@@ -934,7 +831,7 @@ typename std::vector<_BASE_>::const_iterator uGenericNGSChrom<_SELF_,_BASE_>::fi
  *
  */
 template <class _SELF_,class _BASE_>
-typename std::vector<_BASE_>::const_iterator uGenericNGSChrom<_SELF_,_BASE_>::findNextSite(const float position) const
+typename std::vector<_BASE_>::const_iterator uGenericNGSChrom<_SELF_,_BASE_>::findNextSite(const float pPosition) const
 {
     try
     {
@@ -955,7 +852,7 @@ typename std::vector<_BASE_>::const_iterator uGenericNGSChrom<_SELF_,_BASE_>::fi
         };
 
         /**< Compare, sort Value */
-        auto upper = std::upper_bound(VecSites.begin(), VecSites.end(), position, comp);
+        auto upper = std::upper_bound(VecSites.begin(), VecSites.end(), pPosition, comp);
 
         /**< If no result*/
         if (upper==VecSites.end())
@@ -979,7 +876,6 @@ typename std::vector<_BASE_>::const_iterator uGenericNGSChrom<_SELF_,_BASE_>::fi
         throw e;
     }
 }
-
 
 /** \brief Return the count of a data subset, based on the current sort type.
  *
@@ -1899,6 +1795,163 @@ std::pair<typename std::vector<_BASE_>::const_iterator, typename std::vector<_BA
     }
 
 }
+
+
+
+
+
+
+
+    /** \brief Return a copy of the functor  used to access to current Start value
+      *
+      *  This will return a copy of the assigned functor to access the start value. Will equal nullptr if not set
+      *
+      *
+      * \return std::function<float(const _BASE_*)> const Copy of the fucntor to access start.
+      */
+    template <class _SELF_,class _BASE_>
+    std::function<float(const _BASE_*)> uGenericNGSChrom<_SELF_,_BASE_>::getStartFunct() const
+    {
+        return sortGetStart;
+    }
+    /** \brief Return a copy of the functor  used to access to current end value
+    *
+    *  This will return a copy of the assigned functor to access the end value. Will equal nullptr if not set
+    *
+    * \return std::function<float(const _BASE_*)> const Copy of the fucntor to access end.
+    */
+    template <class _SELF_,class _BASE_>
+    std::function<float(const _BASE_*)> uGenericNGSChrom<_SELF_,_BASE_>::getEndFunct() const
+    {
+        return sortGetEnd;
+    }
+
+    /** \brief Return a copy of the comparison functor currently used
+     *
+     *  Will return a copy of the comparisong functor used for sorting. The comparison functor takes
+     *  two _BASE_ elements and returns true or false comparison. Set to nullptr by default
+     *
+     *
+     * \return std::function<bool(const _BASE_ &item1, const _BASE_ &item2)> Comparison functor
+     *
+     */
+    template <class _SELF_,class _BASE_>
+    std::function<bool(const _BASE_ &item1, const _BASE_ &item2)> uGenericNGSChrom<_SELF_,_BASE_>::getCompFunct() const
+    {
+        return m_comptFunc;
+    }
+
+    /** \brief Return sorted status of the elements
+     *
+     * \return bool. True if sorted.
+     *
+     */
+    template <class _SELF_,class _BASE_>
+    bool uGenericNGSChrom<_SELF_,_BASE_>::getSortedStatus() const
+    {
+        return m_isSorted;
+    }
+
+    /** \brief  Return number of elements
+     *
+     * \return int. Number of elements contained
+     *
+     */
+    template <class _SELF_,class _BASE_>
+    int uGenericNGSChrom<_SELF_,_BASE_>::count() const
+    {
+        return VecSites.size();
+    }
+
+    /** \brief Return size of scaffold/chrom. 0 if not set
+     *
+     * \return long long int. Size of the scaffold/chrom.
+     *
+     */
+    template <class _SELF_,class _BASE_>
+    long long int uGenericNGSChrom<_SELF_,_BASE_>::getChromSize() const
+    {
+        return chromSize;
+    }
+
+    /** \brief Set scaffold/chrom size
+     *
+     *  Set the scaffold/chrom size. Must be above 0
+     * \param chromS long int. Size to set the scaffold/chrom size to
+     * \exception param_throw. Parameter chromS is < then 0.
+     * \return void
+     *
+     */
+    template <class _SELF_,class _BASE_>
+    void uGenericNGSChrom<_SELF_,_BASE_>::setChromSize(long long int chromS)
+    {
+        if (chromS<0)
+            throw param_throw()<<string_error("failling in setChromSize, value "+utility::to_string(chromS)+" is below 0\n");
+        chromSize= chromS;
+    }
+
+    /** \brief return name of the scaffold/chrom
+     *
+     *  Returns a std::string containing the name of the scaffold.
+     *  An empty string ("") is a valid name.
+     *
+     * \return std::string. Name of the scaffold/chrom
+     *
+     */
+    template <class _SELF_,class _BASE_>
+    std::string uGenericNGSChrom<_SELF_,_BASE_>::getChr() const
+    {
+        return chr;
+    }
+
+    /** \brief Set the name of the scaffold/chr.
+     *
+     *   Set the name of the scaffold/chr. This function is included for
+     *   working directly with a chrom structure. If working through a Exp structure, this should be set
+     *   via a call to the corresponding Exp function, otherwise mapping may be throw off.
+     *
+     *  \param pChr std::string. Scaffold name to set to.
+     *  \return void
+     *
+     */
+    template <class _SELF_,class _BASE_>
+    void uGenericNGSChrom<_SELF_,_BASE_>::setChr(std::string pChr)
+    {
+        chr = move(pChr);
+    }
+
+
+    /** \brief  Return copy of the element at .begin()+position count from iterator
+     *
+     * \param position int. Position of the _BASE_ in Vecsites to returné (Unrelated to the start and end position of the element)
+     * \exception param_throw. Throw if the requested element is an invalid position.
+     * \return _BASE_ Copy of the element at the asked for position.
+     *
+     */
+    template <class _SELF_,class _BASE_>
+    _BASE_ uGenericNGSChrom<_SELF_,_BASE_>::getSite(long long pPos) const
+    {
+        try
+        {
+            return VecSites.at(pPos);
+        }
+        catch (std::exception &e)
+        {
+            throw param_throw()<<string_error("Failling in getSite(), out_of_range error");
+        }
+    }
+
+    /** \brief  Return a vector containing all elements of chrom structure.
+     *
+     * \return std::vector<_BASE_> std::vector containing all _BASE_ elements in chrom structure
+     *
+     */
+    template <class _SELF_,class _BASE_>
+    std::vector<_BASE_> uGenericNGSChrom<_SELF_,_BASE_>::returnVecData() const
+    {
+        return VecSites;
+    }
+
 
 } // End of namespace NGS
 #endif // UFORMATCHROM_H_INCLUDED

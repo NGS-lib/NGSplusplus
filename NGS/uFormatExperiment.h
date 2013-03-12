@@ -71,7 +71,7 @@ private:
 protected:
 
     /**< Are we loading gradually? */
-    ReadMode op_mode;
+//    ReadMode op_mode;
 //    uParser m_parser;
 
     std::map<std::string,_CHROM_>  ExpMap={};
@@ -81,7 +81,7 @@ protected:
     std::function<bool(const _BASE_ &item1, const _BASE_ &item2)> m_comptFunc=compareStart;
 
     //TODO Make this function
-    void removeChr(const std::string &);
+
     void inferChrSize();
 
 
@@ -93,12 +93,14 @@ public:
     uGenericNGSExperiment(const uGenericNGSExperiment&)=default;
 
     //TODO code these overloads
-    void addData(const _BASE_ &);
+     void addData(const _BASE_ &);
     // TODO: if chr do not exist, we keep sorted status. Otherwise sorted status should be false and size should be set to highest value between both chr.
-    void addData(const _CHROM_ &);
-    void addData(const _SELF_ &);
-    //TODO Code this
+     virtual void addData(const _CHROM_ &);
+     void addData(const _SELF_ &);
+     virtual void addData(const uToken &);
+    //TODO Test this
     void replaceChr(const _CHROM_ &);
+    void removeChr(const std::string &);
 
     long long count() const;
     void sortSites();
@@ -113,12 +115,12 @@ public:
     void removeSite(std::string chr,VecGenConstIter position);
     void removeSite(std::string chr,VecGenConstIter start,VecGenConstIter end);
 
-    virtual void loadFromTabFile(std::ifstream& stream);
-   // virtual void loadWithParser(uParser&, std::string);
     virtual void loadWithParser(std::ifstream&, std::string);
     virtual void loadWithParser(std::string, std::string);
     virtual void loadWithParser(uParser&, long long =0);
 
+    template<class UnaryPredicate>
+    void loadWithParser_if(uParser& pParser,UnaryPredicate predicate, long long pBlockCount=0);
 
     template<class UnaryFunction>
     void loadWithParserAndRun(std::ifstream& pStream, std::string pType, UnaryFunction funct , int pBlockSize=1);
@@ -129,9 +131,6 @@ public:
 
 
     void writeWithWriter(uWriter& pWriter) const;
-
-
-//    void writeAsBedFile(std::ostream& out)const;
 
     auto begin()->decltype(ExpMap.begin())
     {
@@ -165,10 +164,18 @@ public:
     _SELF_ getOverlapping(_CHROM_ &compareChrom, OverlapType type=OverlapType::OVERLAP_PARTIAL);
     _SELF_ getOverlapping(std::string chr, int start, int end, OverlapType type=OverlapType::OVERLAP_PARTIAL);
 
-     _CHROM_ getSubset(std::string pChr, float pStart, float pEnd, OverlapType options=OverlapType::OVERLAP_PARTIAL);
-     _SELF_ getDistinct( std::string pChr, float pStart, float pEnd, OverlapType type=OverlapType::OVERLAP_PARTIAL);
+     _CHROM_ getSubset(std::string pChr, double pStart, double pEnd, OverlapType options=OverlapType::OVERLAP_PARTIAL);
+    //TODO TEST this
+     _CHROM_ removeSubset(std::string pChr,double pStart, double pEnd, OverlapType overlap=OverlapType::OVERLAP_PARTIAL);
 
-    //TODO MAKE REMOVE SUBSET AND REMOVE DISTINCT
+
+
+     _SELF_ getDistinct(std::string pChr, double pStart, double pEnd, OverlapType type=OverlapType::OVERLAP_PARTIAL);
+   //TODO Test this
+     _SELF_ removeDistinct(std::string pChr,double p_start, double p_end, OverlapType options=OverlapType::OVERLAP_PARTIAL);
+
+
+
     int getSubsetCount(const std::string & chr, const float start, const float end, const OverlapType overlap=OverlapType::OVERLAP_PARTIAL);
     int getSubsetCount(const _BASE_ & subsetReg, const OverlapType overlap=OverlapType::OVERLAP_PARTIAL);
 
@@ -237,7 +244,7 @@ public:
 //    template<class _SELF_, typename _CHROM_, typename _BASE_>
    /**< End STL wrappers */
 
-    uGenericNGSExperiment():op_mode(ReadMode::DEFAULT) {};
+    uGenericNGSExperiment(){};
 
 };
 
@@ -266,6 +273,29 @@ void uGenericNGSExperiment<_SELF_,_CHROM_, _BASE_>::addData(const _BASE_ & newSi
         throw e;
     }
 }
+template<class _SELF_, typename _CHROM_, typename _BASE_>
+void uGenericNGSExperiment<_SELF_,_CHROM_, _BASE_>::addData(const uToken & pToken){
+    try
+    {
+        std::string chr = pToken.getParam(token_param::CHR);
+        _CHROM_* ptempChrom;
+        ptempChrom=&(ExpMap[chr]);
+        ptempChrom->setChr(chr);
+        ptempChrom->addData(pToken);
+    }
+    catch(std::exception & e)
+    {
+#ifdef DEBUG
+        std::cerr << "Catching and re-throwing in uFormatExp::addData()" <<std::endl;
+#endif
+        throw e;
+    }
+
+
+}
+
+
+
 
 // TODO: keep only removeSite and getSite with iterator public, others should be private
 /** \brief Remove a specific number from the specific subtype. //TODO Should this be public?
@@ -306,22 +336,6 @@ void uGenericNGSExperiment<_SELF_,_CHROM_, _BASE_>::inferChrSize()
     //applyOnAllChroms(std::bind(static_cast<void (_CHROM_::*)()>(&_CHROM_::inferChrSize)));
 }
 
-// TODO: Remove deprecated function
-/** \brief load basic data from a tab delimited file, throw away the rest.
- *          DEPRECATED
- * \param stream std::ifstream& file to load from
- * \return void
- *
- */
-template<class _SELF_, typename _CHROM_, typename _BASE_>
-void uGenericNGSExperiment<_SELF_,_CHROM_, _BASE_>::loadFromTabFile(std::ifstream& stream)
-{
-    std::string tempString;
-    while(!std::getline(stream, tempString).eof())
-    {
-        addData( factory::makeNGSfromTabString<_BASE_>(tempString));
-    }
-}
 
 /** \brief load basic data from a Parser and load necessary data by passing to object constructor
  *
@@ -337,10 +351,6 @@ void uGenericNGSExperiment<_SELF_,_CHROM_, _BASE_>::loadWithParser(std::ifstream
         std::istream& refStream = pStream;
         uParser Curparser(&refStream, pType);
         loadWithParser(Curparser);
-    //    while(!Curparser.eof())
-     //   {
-    //        addData(Curparser.getNextEntry());
-     //   }
     }
     catch (uParser_exception_base& e) // TODO: check if there is something else that can be thrown
     {
@@ -379,9 +389,9 @@ void uGenericNGSExperiment<_SELF_,_CHROM_, _BASE_>::loadWithParser(uParser& pPar
     {
         if (pBlockCount){
             int counter=0;
-            while ((pParser.eof()==false)||(counter!=pBlockCount))
+            while ((pParser.eof()==false)&&(counter!=pBlockCount))
             {
-                this->addData((pParser.getNextEntry()));
+                this->addData(pParser.getNextEntry());
                 counter++;
             }
         }
@@ -399,7 +409,40 @@ void uGenericNGSExperiment<_SELF_,_CHROM_, _BASE_>::loadWithParser(uParser& pPar
     inferChrSize();
 }
 
-
+/** \brief Load up to pBlockCount data (0 = load entire file), keeping only data that fits condition
+ * \param std::string filepath: the path to the file to load
+ * \param std::string pType: the file type (i.e.: BED, SAM, BEDGRAPH, WIG, etc...)
+ */
+template<class _SELF_, typename _CHROM_, typename _BASE_>
+template<class UnaryPredicate>
+void uGenericNGSExperiment<_SELF_,_CHROM_, _BASE_>::loadWithParser_if(uParser& pParser,UnaryPredicate predicate, long long pBlockCount)
+{
+    try
+    {
+        if (pBlockCount){
+            int counter=0;
+            while ((pParser.eof()==false)&&(counter!=pBlockCount))
+            {
+                uToken loadedToken=pParser.getNextEntry();
+                if (predicate(_BASE_(loadedToken))){
+                    this->addData(loadedToken);
+                    counter++;
+                }
+            }
+        }
+        else{
+            {
+            while (pParser.eof()==false)
+                this->addData((pParser.getNextEntry()));
+            }
+        }
+    }
+    catch (...)
+    {
+        throw;
+    }
+    inferChrSize();
+}
 
 
 //** \brief Write our data as a legal bed file, filling only the first three columns
@@ -663,12 +706,16 @@ typename std::vector<_BASE_>::const_iterator uGenericNGSExperiment<_SELF_,_CHROM
 template<class _SELF_, typename _CHROM_, typename _BASE_>
 typename std::vector<_BASE_>::const_iterator uGenericNGSExperiment<_SELF_,_CHROM_, _BASE_>::findNextSite(std::string chr, int position)const
 {
+    try {
     if (!ExpMap.count(chr))
     {
         throw param_throw()<<string_error("Failling in uGenericNGSExperiment::findNextSite, value "+chr+" does not exist.\n");
     }
     auto tempChrom = getpChrom(chr);
     return tempChrom->findNextSite(position); // TODO: try catch for exception in findNextSite?
+    }
+    catch(...)
+    {    throw;  }
 }
 
 /** \brief Get a specific site from a specific chrom. Overloaded to work with position, typically got from findPrecedingor findNext
@@ -701,15 +748,15 @@ _BASE_ uGenericNGSExperiment<_SELF_,_CHROM_, _BASE_>::getSite(typename std::vect
 
 /** \brief Return a Chrom containing only the sites that overlap the given chr
  *
- * \param chr std::string
- * \param start int
- * \param end int
- * \param options OverlapType
- * \return _CHROM_
+ * \param chr std::string : Name of scaffold to subset on
+ * \param start int : Start position
+ * \param end int : End position
+ * \param options OverlapType : OverlapType if needed
+ * \return _CHROM_ : Chrom containing the overlapping elements
  *
  */
 template<class _SELF_, typename _CHROM_, typename _BASE_>
-_CHROM_ uGenericNGSExperiment<_SELF_,_CHROM_, _BASE_>::getSubset(std::string pChr, float pStart, float pEnd, OverlapType options)
+_CHROM_ uGenericNGSExperiment<_SELF_,_CHROM_, _BASE_>::getSubset(std::string pChr, double pStart, double pEnd, OverlapType options)
 {
     if (ExpMap.count(pChr)==0)
         return _CHROM_();
@@ -717,18 +764,37 @@ _CHROM_ uGenericNGSExperiment<_SELF_,_CHROM_, _BASE_>::getSubset(std::string pCh
     return (_CHROM_)ExpMap[pChr].getSubset(pStart,pEnd,options);
 }
 
+/** \brief Return a Chrom containing only the sites that overlap the given chr. Remove those elements from (this)
+ *
+* \param chr std::string : Name of scaffold to subset on
+ * \param start int : Start position
+ * \param end int : End position
+ * \param options OverlapType : OverlapType if needed
+ * \return _CHROM_ : Chrom containing the overlapping elements
+ *
+ */
+ template<class _SELF_, typename _CHROM_, typename _BASE_>
+_CHROM_ uGenericNGSExperiment<_SELF_,_CHROM_, _BASE_>::removeSubset(std::string pChr,double pStart, double pEnd, OverlapType overlap){
+
+if (ExpMap.count(pChr)==0)
+        return _CHROM_();
+
+    return (_CHROM_)ExpMap[pChr].removeSubset(pStart,pEnd,overlap);
+
+}
+
 
 /** \brief Return an EXP containing only the unarity sites that do not overlap does of the input structure
  *
  *
- * \param compareExp uGenericNGSExperiment& Input, copies exist as mentionned prio
+ * \param compareExp uGenericNGSExperiment& Input,
  * \param options OverlapType How we determine if overlapping or not
  * \return uGenericNGSExperiment<_CHROM_,_BASE_> Experiment containing the sites in there appropriate Chroms
  *
  */
 
 template<class _SELF_, typename _CHROM_, typename _BASE_>
-_SELF_ uGenericNGSExperiment<_SELF_,_CHROM_, _BASE_>::getDistinct(std::string pChr, float pStart, float pEnd,  OverlapType options)
+_SELF_ uGenericNGSExperiment<_SELF_,_CHROM_, _BASE_>::getDistinct(std::string pChr, double pStart, double pEnd,  OverlapType options)
 {
     typename NGSExpMap::iterator iterMap;
     _SELF_ returnExp;
@@ -741,6 +807,38 @@ _SELF_ uGenericNGSExperiment<_SELF_,_CHROM_, _BASE_>::getDistinct(std::string pC
         returnExp.addData(iterMap->second);}
     }
     return returnExp;
+}
+
+/** \brief Return an EXP containing only the unarity sites that do not overlap does of the input structure. Remove the corresponding site form the Exp
+ *
+ *
+ * \param compareExp uGenericNGSExperiment& Input,
+ * \param options OverlapType How we determine if overlapping or not
+ * \return uGenericNGSExperiment<_CHROM_,_BASE_> Experiment containing the sites in there appropriate Chroms
+ *
+ */
+ template<class _SELF_, typename _CHROM_, typename _BASE_>
+_SELF_ uGenericNGSExperiment<_SELF_,_CHROM_, _BASE_>::removeDistinct(std::string pChr, double pStart, double pEnd, OverlapType options)
+{
+     typename NGSExpMap::iterator iterMap;
+    _SELF_ returnExp;
+    _CHROM_ onlyChrom;
+    for (iterMap = ExpMap.begin(); iterMap != ExpMap.end(); iterMap++)
+    {
+        if (iterMap->first==pChr){
+            auto pChrom = this->getpChrom(iterMap->first);
+            returnExp.addData(pChrom->removeDistinct(pStart, pEnd));
+            onlyChrom=*pChrom;
+        }
+        else {
+            returnExp.addData(iterMap->second);
+        }
+    }
+    ExpMap.clear();
+    if (onlyChrom.count())
+        this->addData(onlyChrom);
+    return returnExp;
+
 }
 
 
@@ -768,7 +866,32 @@ void uGenericNGSExperiment<_SELF_,_CHROM_, _BASE_>::addData(const _CHROM_ & inpu
     {
         ExpMap.insert(std::pair<std::string,_CHROM_>(inputChrom.getChr(),inputChrom));
     }
-    //TODO remove const ref to allow move semantics?
+}
+
+/** \brief Receive a given chrom and add it to the Experiment. Replaces previous chr if any.
+ *
+ * \param inputChrom const _CHROM_& Chrom to add
+ * \return void
+ *
+ */
+template<class _SELF_, typename _CHROM_, typename _BASE_>
+void uGenericNGSExperiment<_SELF_,_CHROM_, _BASE_>::replaceChr(const _CHROM_ & inputChrom)
+{
+    /**< Deep copy, create or replace as needed */
+    ExpMap[inputChrom.getChr()]=inputChrom;
+
+}
+
+/** \brief Erase the structure associated with key, if the structure exists.
+ *
+ * \param pChrName const std::string& : Key of the scaffold to erase
+ * \return void
+ *
+ */
+ template<class _SELF_, typename _CHROM_, typename _BASE_>
+void removeChr(const std::string & pChrName){
+
+    uGenericNGSExperiment<_SELF_,_CHROM_, _BASE_>::ExpMape.erase(pChrName);
 }
 
 
@@ -787,7 +910,6 @@ _SELF_ uGenericNGSExperiment<_SELF_,_CHROM_,_BASE_>::getOverlapping(_SELF_ &comp
     _SELF_ returnExp;
     for (iterMap = ExpMap.begin(); iterMap != ExpMap.end(); iterMap++)
     {
-
         if (compareExp.isChrom(iterMap->first)){
             pChrom = compareExp.getpChrom(iterMap->first); // TODO: check if chrom exists before getting ptr to avoid throw
             returnExp.addData(iterMap->second.getOverlapping(*pChrom));
@@ -1099,6 +1221,7 @@ UnaryFunction uGenericNGSExperiment<_SELF_,_CHROM_,_BASE_>::applyOnSites(UnaryFu
     });
     return f;
 }
+
 /**< Const version of its equivalent */
 template<class _SELF_, typename _CHROM_, typename _BASE_>
 template<class UnaryFunction>
@@ -1126,28 +1249,10 @@ void uGenericNGSExperiment<_SELF_,_CHROM_,_BASE_>::loadWithParserAndRun(std::ifs
 {
     try
     {
-        std::istream& refStream = pStream;
-        uParser Curparser(&refStream, pType);
-        std::vector<uToken> loadedTokens;
-        loadedTokens.resize(pBlockSize);
-        while(!Curparser.eof())
-        {
-            int curLoaded=0;
-            /**< Load a block of data */
-            while ((curLoaded<pBlockSize)&&(!Curparser.eof()))
-            {
-                loadedTokens.at(curLoaded)=Curparser.getNextEntry();
-
-                curLoaded++;
-            }
-            /**< Operate */
-            for(const uToken & curToken:loadedTokens)
-            {
-                funct( (_BASE_)(curToken) );
-            }
-        }
+        uParser Curparser(&pStream, pType);
+        loadWithParserAndRun(Curparser,funct,pBlockSize);
     }
-    catch (uParser_exception_base& e) // TODO: check if there is something else that can be thrown
+    catch (uParser_exception_base& e)
     {
         throw e;
     }
@@ -1155,10 +1260,19 @@ void uGenericNGSExperiment<_SELF_,_CHROM_,_BASE_>::loadWithParserAndRun(std::ifs
 
 template<class _SELF_, typename _CHROM_, typename _BASE_>
 template<class UnaryFunction>
+/** \brief
+ *
+ * \param pParser uParser& Parser we should load from
+ * \param funct UnaryFunction Function to run on each element
+ * \param pBlockSize int Number of items to load at a time
+ * \return void
+ *
+ */
 void uGenericNGSExperiment<_SELF_,_CHROM_,_BASE_>::loadWithParserAndRun(uParser& pParser, UnaryFunction funct , int pBlockSize)
 {
     try
     {
+
         std::vector<uToken> loadedTokens;
         loadedTokens.resize(pBlockSize);
         while(!pParser.eof())
@@ -1198,23 +1312,7 @@ void uGenericNGSExperiment<_SELF_,_CHROM_,_BASE_>::loadWithParserAndRun(std::str
     try
     {
         uParser Curparser(filepath, pType);
-        std::vector<uToken> loadedTokens;
-        loadedTokens.resize(pBlockSize);
-        while(!Curparser.eof())
-        {
-            int curLoaded=0;
-            /**< Load a block of data */
-            while ((curLoaded<pBlockSize)&&(!Curparser.eof()))
-            {
-                loadedTokens.at(curLoaded)=(Curparser.getNextEntry());
-                curLoaded++;
-            }
-            /**< Operate */
-            for(const uToken & curToken:loadedTokens)
-            {
-                f( (_BASE_)(curToken) );
-            }
-        }
+        loadWithParserAndRun(Curparser,f,pBlockSize);
     }
     catch (uParser_exception_base& e) // TODO: check if there is something else that can be thrown
     {

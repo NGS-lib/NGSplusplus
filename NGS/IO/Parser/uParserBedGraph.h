@@ -25,7 +25,6 @@ private:
     bool _parseHeader();
 //    static DerivedParserRegister<uParserBedGraph> reg;
     bool m_headerFound=false;
-	std::stringstream m_hBuffer;
 	const std::string s_bedGraphHeader="track type=bedGraph";
     std::vector<std::string> m_tokens;
 };

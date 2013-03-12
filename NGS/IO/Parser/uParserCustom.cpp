@@ -125,8 +125,9 @@ void uParserCustom::_convertLineToTokenInfosCustom(char* line, std::stringstream
     {
         if (m_customFieldNames[i]!="JUNK"){
             token_infos << m_customFieldNames[i] << "\t" << current << "\n";
-            current = strtok(NULL, &m_delimiter);
         }
+            current = strtok(NULL, &m_delimiter);
+
     }
 }
 

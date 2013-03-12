@@ -29,7 +29,6 @@ private:
     void _convertLineToTokenInfosCustom(char* line, std::stringstream& token_infos);
     bool _paramExists(const std::string& name, const std::vector<std::string>& list) const;
 
- //   static DerivedParserRegister<uParserCustom> reg;
 };
 
 } // End of namespace NGS

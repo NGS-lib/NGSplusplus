@@ -4,6 +4,8 @@
 #include "uTags.h"
 #include "uBasicNGS.h"
 #include "uRegion.h"
+#include "third-party/api/BamReader.h"
+#include "third-party/api/BamWriter.h"
 namespace NGS
 {
 
@@ -17,6 +19,8 @@ uTags::uTags():uGenericNGS()
 uTags::uTags(uToken pToken)try:
     uGenericNGS(pToken)
 {
+    if (pToken.isParamSet(token_param::SEQ_NAME))
+        setName(pToken.getParam(token_param::SEQ_NAME));
     if (pToken.isParamSet(token_param::SEQUENCE))
         setSequence(pToken.getParam(token_param::SEQUENCE));
     if (pToken.isParamSet(token_param::CIGAR))
@@ -27,6 +31,9 @@ uTags::uTags(uToken pToken)try:
         setPhred(pToken.getParam(token_param::PHRED_SCORE));
     if (pToken.isParamSet(token_param::FLAGS))
         setFlag(utility::stoi(pToken.getParam(token_param::FLAGS)));
+    if (pToken.isParamSet(token_param::TEMPLATE_LENGHT))
+        setPELenght(utility::stoi(pToken.getParam(token_param::TEMPLATE_LENGHT)));
+
 }
 catch(ugene_exception_base &e)
 {
@@ -536,6 +543,11 @@ short int uTags::getMapQual() const
     return mapScore;
 }
 
+/** \brief Returns an element that represents the "completed" tag of a paired end item.
+ *
+ * \return uTags The completed tag. If no PE data, returns *this
+ *
+ */
 uTags uTags::getCompletedCopy()const
 {
     try
@@ -558,107 +570,8 @@ uTags uTags::getCompletedCopy()const
         e <<tag_error(*this);
         throw e;
     }
-
 }
 
-// TODO: Should this be in parser code?
-/** \brief Load a tag from a string formated in Sam format and enter in member data
- *
- * \param samString: String to load from
- * \param minimal : if true, do not load certain information for space contraints
- *
- */
-//void uTags::loadfromSamString(std::string samString, bool minimal=false)
-//{
-//    *this=factory::makeTagfromSamString(samString,minimal);
-//}
-
-// TODO: Move this to output class
-///** \brief Write our tag in bed format, using our Tag Name/ID as the misc 4th column
-// *
-// * \param out : Output stream to use.
-// *
-// */
-//void uTags::writeBedToOuput(std::ostream &out) const
-//{
-//
-//    uGenericNGS::writeBedToOuput(out, false);
-//    if (getName().size()!=0)
-//        out << "\t" << getName();
-//    else
-//        out << "\t" << "unknown";
-//
-//    out << "\t" << -1;
-//
-//    /**< Strand is implicit, always write it */
-//    //if ((getStrand()=='+')||(getStrand()=='-'))
-//    char strand='+';
-//    if (isReverse())
-//        strand='-';
-//    out << "\t" << strand;
-//
-//    out <<"\n";
-//}
-
-
-// TODO: Move this to output class
-/** \brief Write our tag in bed format, but only writing the + side of a paired end tag. Ignore others
- *
- * \param out : Output stream to use.
- *
- */
-//void uTags::writetoBedCompletePE( std::ostream &out)
-//{
-//
-//    if ((this->isPE())&&(this->getStrand()==StrandDir::FORWARD))
-//    {
-//        out << getChr() << "\t" << this->getStart() << "\t" << ( this->getStart()+this->getPeLenght()) <<endl;;
-//    }
-//
-//}
-
-// TODO: Move this to output class
-/** \brief Write our data in Sam format, with some minor details missing
- *
- * \param out : Output stream to use.
- *
- */
-//void uTags::writeSamToOutput(std::ostream &out) const
-//{
-//
-//    int peLenght;
-//    string cigar, sequence, phred;
-//
-//    cigar = this->getCigar();
-//    if (cigar.size()==0)
-//        cigar=utility::concatStringInt("M", getLenght(), false);
-//    sequence = this->getSequence();
-//    phred= getPhred();
-//    if (phred.size()==0)
-//        phred="*";
-//    /**< Since Picard tools poorly validates a sequence lenght, we must pad with = if we did not store sequences */
-//    if (sequence.size()==0)
-//    {
-//        for (int i=0; i<getLenght(); i++ )
-//            sequence.push_back('=');
-//    }
-//
-//    if (isPE())
-//    {
-//        peLenght= getPeLenght();
-//        /**< We store lenght as positive, but in Sam format it can be negative */
-//        if (flag&0x10)
-//            peLenght = (-peLenght);
-//    }
-//    else
-//        peLenght=0;
-//
-//    out <<  getName() << "\t" << getFlag() << "\t" << getChr() << "\t" << getStart() << "\t" <<getMapQual()
-//        << "\t" <<cigar << "\t" << '*' << "\t" << 0 << "\t" << peLenght << "\t" ;
-//
-//    out << sequence  << "\t"<< phred;
-//    out <<endl;
-//}
 /** \brief Prints a human readable version of the element in no particular format.
  *
  * \param pOut std::ostream& Output to write to.
@@ -748,98 +661,12 @@ uToken uTags::createToken() const
     }
     catch(uToken_exception_base &e)
     {
-        addStringError(e, "Failed while creating token in uGenericNGS::getToken()");
+        addStringError(e, "Failed while creating token in uGenericNGS::createToken()");
         throw e;
     }
 
 }
 
-
-// TODO: Move this to output class
-/** \brief Write our PE tags as a sam tag that is the lenght of the fragment associated with our PE
- *   Does nothing if the tag is not PE
- *
- * \param out : Output stream to use.
- *
- */
-//void uTags::writeCompletedPESamToOutput(std::ostream &out)
-//{
-//    /**< Write function, do not trust for diverse use. */
-//    try
-//    {
-//        int peLenght;
-//        peLenght= getPeLenght();
-//
-//        if (flag&0x10)
-//            peLenght = (-peLenght);
-//
-//        //TODO, introducting try catch
-//        if ((flag&0x10)||(peLenght<0))
-//        {
-//#ifdef DEBUG
-//            cerr << " negative Strand??"<<endl;
-//#endif
-//         //   print();
-//            //  utility::pause_input();
-//        }
-//        else /**< Do not write cigar for now */
-//            if (peLenght!=0)
-//            {
-//                out <<  getName() << "\t" << 0 << "\t" << getChr() << "\t" << getStart() << "\t" <<getMapQual()
-//                    << "\t" << peLenght<<'M' << "\t" << '*' << "\t" << 0 << "\t" << 0 << "\t" ;
-//                for (int i=0; i<peLenght; i++ )
-//                    out << '=' ;
-//                out  << "\t"<< '*';
-//
-//                out <<endl;
-//            }
-//    }
-//    catch(std::exception & e )
-//    {
-//#ifdef DEBUG
-//        cerr << " Catching in writeCompletedPESamToOutput"<<endl;
-//#endif
-//        throw e;
-//    }
-//
-//}
-
-// TODO: Move this to output class
-/** \brief Write a tag in Sam specification, but trimming a certain size both left and right of it.
- *
- * \param out : Our output stream
- * \param left: Number of bp to trim from left ( 3' direction ) of tag
- * \param right : Number of bp to trim from right ( 5' direction ) of tag.
- *
- */
-//bool uTags::writeTrimmedSamToOutput(std::ostream &out, int left, int right)
-//{
-//
-//    // int ourflag;
-//    if ((left + right)>=this->getLenght())
-//    {
-//        return false;
-//    }
-//    // ourflag=ourflag&
-//    if (getStrand()==StrandDir::REVERSE)
-//    {
-//        trimSite(right, left);
-//    }
-//    else
-//    {
-//        trimSite(left,right);
-//    }    /**< Do not write cigar for now */
-//    out <<  getName() << "\t" << 0 << "\t" << getChr() << "\t" << getStart() << "\t" << getMapQual()
-//        << "\t" <<   getLenght()<<'M' << "\t" << '*' << "\t" << 0 << "\t" << 0;// << "\t" << '*' << "\t" << '*';
-//    out  << "\t";
-//    for (int i=0; i<getLenght(); i++ )
-//        out << '=' ;
-//    out  << "\t"<< '*';
-//
-//
-//    out <<endl;
-//    return true;
-//}
 
 /** \brief Copy constructor
  *
@@ -906,111 +733,6 @@ uTagsChrom::uTagsChrom(const uBasicNGSChrom & pCopyChrom)
     for (auto itr= pCopyChrom.begin(); itr!=pCopyChrom.end(); itr++  )
         addData(uTags(*itr));
 }
-
-/** \brief Output the chrom to bed format
- *
- * \param out std::ostream&  : Outputstream, needs to be opened and validated
- * \return void
- *
- */
-//void uTagsChrom::outputBedFormat(std::ostream& out) const
-//{
-//    // std::vector<uTags>::iterator iterVec;
-//    for (auto iterVec = VecSites.begin(); iterVec != VecSites.end(); ++iterVec)
-//    {
-//        //iterVec->writeBedToOuput(out);
-//    }
-//}
-
-/** \brief Write all PE tags are complete bed regions
- *
- * \param out : Our output stream
- *
- */
-//void uTagsChrom::writetoBedCompletePE(std::ostream& out)
-//{
-//    std::vector<uTags>::iterator iterVec;
-//
-//    for (iterVec = VecSites.begin(); iterVec != VecSites.end(); ++iterVec)
-//    {
-//        iterVec->writetoBedCompletePE(out);
-//    }
-//}
-
-/** \brief Write every tag in Sam format, trimming the size of every tag
- *
- * \param out : Our output stream
- * \param left: Number of bp to trim from left ( 3' direction ) of tag
- * \param right : Number of bp to trim from right ( 5' direction ) of tag.
- *
- */
-//void uTagsChrom::writeTrimmedSamToOutput(std::ostream &out, int left, int right)
-//{
-//    int errorcount=0;
-//    std::vector<uTags>::iterator iterVec;
-//    // if (VecSites.size())
-//    //     out << "@SQ	SN:" << getChr() << "\t"<<"LN:"<<getChromSize() <<endl;
-//    for (iterVec = VecSites.begin(); iterVec != VecSites.end(); ++iterVec)
-//    {
-//        if (iterVec->writeTrimmedSamToOutput(out, left, right)==false)
-//            errorcount++;
-//    }
-//#ifdef DEBUG
-//    if (errorcount)
-//        cerr << "Skipped " << errorcount << " tags as trim would reduce them to 0. On Chrom " << this->getChr();
-//#endif
-//
-//}
-
-/** \brief Write our PE tags as a sam file and complete
- *   Does nothing if the tag is not PE
- *
- *  \param out : Output stream to use.
- *
- */
-//void uTagsChrom::writeCompletedPESamToOutput(std::ostream &out)
-//{
-//
-//    std::vector<uTags>::iterator iterVec;
-//
-//    /**< Do not output unmapped tags */
-//
-//    for (iterVec = VecSites.begin(); iterVec != VecSites.end(); ++iterVec)
-//    {
-//        if ((iterVec->isPE())&&(iterVec->getStrand()==StrandDir::FORWARD)&&(iterVec->isMapped()))
-//            iterVec->writeCompletedPESamToOutput(out);
-//    }
-//
-//}
-
-/** \brief Write the @SQ line for the chromosome
- *
- * \param out std::ostream& Output stream to use
- * \return void
- *
- */
-//void uTagsChrom::writeSamHeaderLine(std::ostream &out) const
-//{
-//    if (VecSites.size())
-//        out << "@SQ	SN:" << getChr() << "\t"<<"LN:"<<getChromSize() <<endl;
-//}
-
-//void writeSamToOutput(std::ostream &out);
-
-/** \brief Output our data into Sam formati with legal headers
- *
- *  \param out : OfStream
- *
- */
-//void uTagsChrom::writeSamToOutput(std::ostream &out) const
-//{
-//
-//    for (auto iterVec = VecSites.begin(); iterVec != VecSites.end(); ++iterVec)
-//    {
-//        iterVec->writeSamToOutput(out);
-//    }
-//
-//}
 
 //TODO Re-write this
 /** \brief For a given start and end on this Chromosome, return the it's continuous density signal
@@ -1087,8 +809,7 @@ std::vector<float> uTagsChrom::getRegionSignal(int start, int end, bool overlap)
 }
 
 template <class _OTHER_>
-uTags uTagsChrom::generateRandomSite
-(const int size_,std::mt19937& engine,const _OTHER_ &exclList, const int sigma, const std::string ID) const
+uTags uTagsChrom::generateRandomSite(const int size_,std::mt19937& engine,const _OTHER_ &exclList, const int sigma, const std::string ID) const
 {
     //TODO Sanity check here to make sure it is possible to generate the asked for tag.
     uTags returnTag;
@@ -1129,306 +850,8 @@ uTags uTagsChrom::generateRandomSite
 
     return returnTag;
 }
-//
-//
-//void uTagsExperiment::loadFromSamWithParser(std::string filepath)
-//{
-//    op_mode= ReadMode::DEFAULT;
-//    uParser ourParser(filepath, "SAM");
-//    auto chrList=ourParser.getHeaderParamVector(header_param::CHR);
-//    auto chrSizes=ourParser.getHeaderParamVector(header_param::CHR_SIZE);
-//    try
-//    {
-////        std::cerr << "name and size are :" <<chrList.at(i) <<" "<<chrSizes.at(i)<<std::endl;
-//        for (int i=0; i<(int)chrList.size(); i++)
-//        {
-//            this->setChromSize(chrList.at(i), utility::stoi(chrSizes.at(i)));
-//        }
-//
-//        while (ourParser.eof()==false)
-//        {
-//            auto Token =ourParser.getNextEntry();
-//            this->addData(uTags(Token));
-//        }
-//    }
-//    catch(...)
-//    {
-//        throw;
-//    }
-//}
 
-
-/** \brief Loads an entire Sam file, SE or PE
- *
- * \param curStream : our input stream that should already be opened and validated
- * \param minimal : If true, do not load every data
- *
- */
-//void uTagsExperiment::loadFromSam(std::ifstream& curStream, bool minimal)
-//{
-//    string lineString;
-//    int count=0;
-//    ourStream = &curStream;
-//    op_mode= ReadMode::DEFAULT;
-///**< Parse Header if header there is */
-//    parseSamHeader();
-//    try
-//    {
-//        while(!ourStream->eof())
-//        {
-//            getline(*ourStream, lineString);
-//            /**< Make sure this is not a header */
-//            if (ourStream->eof())
-//            {
-//                cerr<< "Finished loading" << count << " tags" <<endl;
-//                break;
-//            }
-//            {
-//
-//                if (lineString.size()>5)
-//                    addData(move(factory::makeTagfromSamString(lineString,minimal) ));
-//                else{
-//                #ifdef DEBUG
-//                    cerr <<"Skipping the following line as it does not satisfy minimal sam string size" <<endl;
-//                    cerr << lineString <<endl;
-//                #endif
-//
-//
-//                }
-//                count++;
-//            }
-//        }
-//    }
-//    catch(elem_throw & e)
-//     {
-//            #ifdef DEBUG
-//            cerr << "caught an exception in loadfromSam"<<endl;
-//                #endif
-//         string trace;
-//
-//        if (std::string const * ste =boost::get_error_info<string_error>(e) )
-//                trace=*ste;
-//
-//        e <<string_error(trace+"\n"+"falling from loadFromSam(stream, bool) while loading tag number"+utility::to_string(count) );
-//            #ifdef DEBUG
-//                    cerr << "Throwing elem_throw" <<endl;
-//                #endif
-//
-//        throw e;
-//     }
-//    catch(std::exception our_exception)
-//    {
-//          #ifdef DEBUG
-//                   cerr << "caught an exception in loadfromSam"<<endl;
-//                #endif
-//        throw;
-//    }
-//}
-
-/** \brief Parses the header of a Sam file. Used for progressive loading
- *
- * \param curStream : Our input stream, should be opened and validated
- *
- */
-//void uTagsExperiment::loadSamHeader(std::ifstream& curStream)
-//{
-//    setFileStream(curStream);
-//    /**< Parse Header if header there is */
-//    parseSamHeader();
-//}
-
-//TODO use parser
-///** \brief Returns the tag parsed from the next line of our sam file. Abort if not in progressive mode
-// *
-// * \param minimal : If yes, we will not load everything from the line
-// *
-// */
-//uTags uTagsExperiment::nextSamLine(bool minimal)
-//{
-//    string lineString;
-//    uTags tempTag;
-//
-//    if (op_mode==ReadMode::DEFAULT)
-//    {
-//
-//        #ifdef DEBUG
-//            cerr << "Stream not in progressive mode" <<endl;
-//        #endif
-//
-//
-//        abort();
-//    }
-//    if (ourStream==NULL)
-//    {
-//         #ifdef DEBUG
-//             cerr << "Error, trying to load tag from empty stream"<<endl;
-//        #endif
-//        abort();
-//    }
-//    if (ourStream->peek()=='@')
-//    {
-//        #ifdef DEBUG
-//              cerr << "Error, header line found. Did you parse the headers?"<<endl;
-//        #endif
-//        abort();
-//    }
-//    getline(*ourStream, lineString);
-//    if (ourStream->eof()==false)
-//        tempTag.loadfromSamString(lineString,minimal);
-//
-//    return tempTag;
-//}
-
-
-///**< To be used when we want to read in gradual mode. Will read every header line and created the appropriate chromosome size */
-///**< Objects */
-///** \brief Parse the Sam header. Use for progressive loading, once our input stream is set.
-// *
-// */
-//void uTagsExperiment::parseSamHeader()
-//{
-//    string lineString;
-//
-//    /*   if (op_mode==DEFAULT)
-//       {
-//           cerr << "Stream not in progressive mode, aborting from parseSamHeader()" <<endl;
-//           abort();
-//       }
-//    */
-//    if (ourStream==NULL)
-//    {
-//
-//        #ifdef DEBUG
-//              cerr << "Error, trying to load tag from empty stream, aborting from parseSamHeader()"<<endl;
-//        #endif
-//
-//
-//        abort();
-//    }
-//
-//    /**< If header */
-//    while (ourStream->peek()=='@')
-//    {
-//        getline(*ourStream, lineString);
-//
-//        /**< Parse the line */
-//        stringstream Infostream;
-//        string temp,chrom, size;
-//        int chromsize;
-//        Infostream.str(lineString);
-//        /**< validate @SQ */
-//        Infostream >>temp;
-//        /**< Chrom size line? */
-//
-//        if (temp.find("@SQ")!=string::npos)
-//        {
-//            string data;
-//            string chrom;
-//            while (!(Infostream.eof())){
-//                Infostream >> data;
-//                if (data.find("SN:")!=string::npos){
-//                    data.erase(0,3);
-//                    chrom=data;
-//                }
-//                if (data.find("AS:")!=string::npos){
-//                    /**< Skip */
-//                }
-//                if (data.find("LN:")!=string::npos){
-//                    data.erase(0,3);
-//                    chromsize=utility::stoi(data);
-//
-//                }
-//
-//            }
-//             this->setChromSize(chrom, chromsize);
-//             //this->setChr
-//        }
-//    }
-//}
-
-/** \brief Write our data in bed format
- *
- * \param out : Our output stream
- *
- */
-//void uTagsExperiment::writeToBed(ostream& out) const
-//{
-//
-//    for (auto iterMap = ExpMap.begin(); iterMap != ExpMap.end(); ++iterMap)
-//    {
-//        iterMap->second.outputBedFormat(out);
-//    }
-//}
-
-/** \brief Write our data in bed format, completing our PE tags and ignore lone mates
- *
- * \param out : Our output stream
- *
- */
-//void uTagsExperiment::writetoBedCompletePE(std::ostream& out)
-//{
-//    std::map<std::string,uTagsChrom>::iterator iterMap;
-//
-//    for (iterMap = ExpMap.begin(); iterMap != ExpMap.end(); ++iterMap)
-//    {
-//        iterMap->second.writetoBedCompletePE(out);
-//    }
-//}
-
-/** \brief Write the entire dataset in completed PE Sam format
- *
- * \param out : Our output stream
- *
- */
-//void uTagsExperiment::writeCompletedPESamToOutput(std::ostream &out)
-//{
-//    for (auto iterMap = ExpMap.begin(); iterMap != ExpMap.end(); ++iterMap)
-//    {
-//        iterMap->second.writeSamHeaderLine(out);
-//    }
-//    //ChipPeakVectorMap::iterator iterMap;
-//    for (auto iterMap = ExpMap.begin(); iterMap != ExpMap.end(); ++iterMap)
-//    {
-//        iterMap->second.writeCompletedPESamToOutput(out);
-//    }
-//}
-
-/** \brief Write our entire experiment in Sam format
- *
- * \param out std::ostream& : our Output stream
- * \return void
- */
-//void  uTagsExperiment::writeSamToOutput(std::ostream &out) const
-//{
-//    // std::map<std::string,uTagsChrom>::iterator iterMap;
-//    //ChipPeakVectorMap::iterator iterMap;
-//
-//    for (auto iterMap = ExpMap.begin(); iterMap != ExpMap.end(); ++iterMap)
-//    {
-//        iterMap->second.writeSamHeaderLine(out);
-//    }
-//
-//    for (auto iterMap = ExpMap.begin(); iterMap != ExpMap.end(); ++iterMap)
-//    {
-//        iterMap->second.writeSamToOutput(out);
-//    }
-//}
-
-/** \brief Set the lenght limit of a chromosome
- *
- * \param chrom string : The unique ID of our chrom
- * \param size int : Max limit to set
- * \return void
- *
- */
-//void uTagsExperiment::setChromSize(string chrom, int size)
-//{
-//    uTagsChrom* ptempChrom;
-//    ptempChrom=&(ExpMap[chrom]);
-//    ptempChrom->setChr(chrom);
-//    ptempChrom->setChromSize(size);
-//}
-//TODO set where this should go?
+//TODO Functional for now, but should this be a free function
 /** \brief Generate our density signal for a given region and chrom
  *
  * \param chrom std::string : The specified chrom
@@ -1453,32 +876,11 @@ std::vector<float> uTagsExperiment::getRegionSignal(std::string chrom, int start
 }
 
 
-
-
-
-/** \brief Write our exp to sam output, trimming both sides.
+/** \brief Return a copy of the experiment
  *
- * \param out std::ostream& : Our output stream
- * \param left int : Left trim
- * \param right int : Right trim
- * \return void
+ * \return uTagsExperiment
  *
  */
-//void uTagsExperiment::writeTrimmedSamToOutput(std::ostream &out, int left, int right)
-//{
-//    std::map<std::string,uTagsChrom>::iterator iterMap;
-//
-//    for (iterMap = ExpMap.begin(); iterMap != ExpMap.end(); ++iterMap)
-//    {
-//        iterMap->second.writeSamHeaderLine(out);
-//    }
-//    //ChipPeakVectorMap::iterator iterMap;
-//    for (iterMap = ExpMap.begin(); iterMap != ExpMap.end(); ++iterMap)
-//    {
-//        iterMap->second.writeTrimmedSamToOutput(out, left, right);
-//    }
-//}
-
 uTagsExperiment uTagsExperiment::getCopy() const
 {
     uTagsExperiment copyObj=*this;
@@ -1486,7 +888,114 @@ uTagsExperiment uTagsExperiment::getCopy() const
 }
 
 
+
+/** \brief Load the next blockSize number of entries from the given Bamreader. if not more data available, stop reader
+ *
+ * \param pReader BamReader& BamReader to use
+ * \param blockSize=1; int : Number of entries to read
+ * \param pLoadCore bool : If true, skips certain string data ( sequence, phred scores, Name )
+ * \return uTagsExperiment
+ *
+ */
+void uTagsExperiment::loadWithBamTools(BamTools::BamReader& pReader, int pBlockSize, bool pLoadCore )
+{
+    try {
+        if (pLoadCore)
+            loadWithBamTools_Core(pReader, pBlockSize);
+        else
+            loadWithBamTools_All(pReader, pBlockSize);
+    }catch(...){
+    throw;}
+
+}
+
+void uTagsExperiment::loadWithBamTools_Core(BamTools::BamReader& pReader, int pBlockSize)
+{
+ try {
+   int countLoaded=0;
+    BamTools::BamAlignment m_BufferAlignement;
+    /**< if no buffer, load data */
+    while(countLoaded<pBlockSize)
+    {
+        if (pReader.GetNextAlignmentCore(m_BufferAlignement))
+        {
+            uTags tagToAdd(pReader.GetReferenceData().at(m_BufferAlignement.RefID).RefName,(m_BufferAlignement.Position+1),m_BufferAlignement.GetEndPosition());
+
+            if (m_BufferAlignement.IsReverseStrand())
+                tagToAdd.setStrand(NGS::StrandDir::REVERSE);
+
+            tagToAdd.setFlag(m_BufferAlignement.AlignmentFlag);
+            tagToAdd.setMapQual(m_BufferAlignement.MapQuality);
+            tagToAdd.setPELenght(m_BufferAlignement.InsertSize);
+
+            std::string cigar;
+            for(BamTools::CigarOp & cigarItem: m_BufferAlignement.CigarData)
+            {
+                cigar+= ( std::to_string(cigarItem.Type)+std::to_string(cigarItem.Length));
+            }
+            tagToAdd.setCigar(cigar);
+            this->addData(tagToAdd);
+            countLoaded++;
+        }
+        else
+            break;
+    }
+}
+catch(...){
+
+throw;
+}
+}
+void uTagsExperiment::loadWithBamTools_All(BamTools::BamReader& pReader, int pBlockSize)
+{
+    try {
+  int countLoaded=0;
+    BamTools::BamAlignment m_BufferAlignement;
+    /**< if no buffer, load data */
+    while(countLoaded<pBlockSize)
+    {
+        if (pReader.GetNextAlignment(m_BufferAlignement))
+        {
+            /**< Bam is 0 based, SAM 1 based. To map between them, +1 to Bam start positions. */
+            uTags tagToAdd(pReader.GetReferenceData().at(m_BufferAlignement.RefID).RefName,(m_BufferAlignement.Position+1),(m_BufferAlignement.GetEndPosition()));
+
+            if (m_BufferAlignement.IsReverseStrand())
+                tagToAdd.setStrand(NGS::StrandDir::REVERSE);
+
+            tagToAdd.setSequence(m_BufferAlignement.QueryBases);
+            tagToAdd.setFlag(m_BufferAlignement.AlignmentFlag);
+            tagToAdd.setMapQual(m_BufferAlignement.MapQuality);
+            tagToAdd.setPELenght(m_BufferAlignement.InsertSize);
+            tagToAdd.setPhred(m_BufferAlignement.Qualities);
+            tagToAdd.setName(m_BufferAlignement.Name);
+
+            std::string cigar;
+            for(BamTools::CigarOp & cigarItem: m_BufferAlignement.CigarData)
+            {
+                cigar+= ( std::to_string(cigarItem.Type)+std::to_string(cigarItem.Length));
+            }
+            tagToAdd.setCigar(cigar);
+            this->addData(tagToAdd);
+            countLoaded++;
+        }
+        else{
+            break;
+        }
+    }
+
+}
+catch(...)
+{
+    throw;
+}
+
+}
 } // End of namespace NGS
+
+
+
+
+
 
 
 // TODO: Move to parser?

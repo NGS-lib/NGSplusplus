@@ -7,6 +7,10 @@
 using namespace std;
 using namespace NGS;
 
+const string TESTCUSTOM="../data/CUSTOM/test.custom";
+const string CUSTOMCVS="../data/CVS/test.csv";
+const string INCORRECT="../data/CUSTOM/incorrect.custom";
+const string HEADER="../data/CUSTOM/header.custom";
 /*
  * Custom Constructor tests, filename:
  *		uParser(std::string filename, file_type type = BED);
@@ -21,11 +25,11 @@ using namespace NGS;
  */
 
 TEST_F(CustomConstructorTests_ValidList, Filename_ValidFilename) {
-	ASSERT_NO_THROW(uParser Parser("../data/CUSTOM/test.custom", m_fieldsList));
+	ASSERT_NO_THROW(uParser Parser(TESTCUSTOM, m_fieldsList));
 }
 
 TEST_F(CustomConstructorTests_ValidList, Filename_AlternateDelimiter) {
-	ASSERT_NO_THROW(uParser Parser("../data/CVS/test.csv", m_fieldsList, ','));
+	ASSERT_NO_THROW(uParser Parser(CUSTOMCVS, m_fieldsList, ','));
 }
 
 TEST_F(CustomConstructorTests_ValidList, Filename_InvalidFilename) {
@@ -33,19 +37,19 @@ TEST_F(CustomConstructorTests_ValidList, Filename_InvalidFilename) {
 }
 
 TEST_F(CustomConstructorTests_EmptyList, ValidFilename) {
-	ASSERT_THROW(uParser Parser("../data/CUSTOM/test.custom", m_fieldsList), customParser_missing_mandatory_values);
+	ASSERT_THROW(uParser Parser(TESTCUSTOM, m_fieldsList), customParser_missing_mandatory_values);
 }
 
 TEST_F(CustomConstructorTests_InvalidListMandatoryCHR, ValidFilename) {
-	ASSERT_THROW(uParser Parser("../data/CUSTOM/test.custom", m_fieldsList), customParser_missing_mandatory_values);
+	ASSERT_THROW(uParser Parser(TESTCUSTOM, m_fieldsList), customParser_missing_mandatory_values);
 }
 
 TEST_F(CustomConstructorTests_InvalidListMandatorySTART_POS, ValidFilename) {
-	ASSERT_THROW(uParser Parser("../data/CUSTOM/test.custom", m_fieldsList), customParser_missing_mandatory_values);
+	ASSERT_THROW(uParser Parser(TESTCUSTOM, m_fieldsList), customParser_missing_mandatory_values);
 }
 
 TEST_F(CustomConstructorTests_InvalidListEND_POS, ValidFilename) {
-	ASSERT_THROW(uParser Parser("../data/CUSTOM/test.custom", m_fieldsList), customParser_missing_mandatory_values);
+	ASSERT_THROW(uParser Parser(TESTCUSTOM, m_fieldsList), customParser_missing_mandatory_values);
 }
 
 /*
@@ -113,7 +117,7 @@ TEST_F(CustomConstructorTests_InvalidListEND_POS, ValidStream) {
  */
 
 TEST_F(CustomConstructorTests_ValidList, getNextEntry_CorrectlyFormatedCustom) {
-	uParser Parser("../data/CUSTOM/test.custom", m_fieldsList);
+	uParser Parser(TESTCUSTOM, m_fieldsList);
 	uToken Token = Parser.getNextEntry();
 	ASSERT_EQ(Token.getParam(token_param::CHR), "chr1");
 	ASSERT_EQ(Token.getParam(token_param::START_POS), "21");
@@ -128,7 +132,7 @@ TEST_F(CustomConstructorTests_ValidList, getNextEntry_CorrectlyFormatedCustom) {
 }
 
 TEST_F(CustomConstructorTests_ValidList, getNextEntry_CorrectlyFormatedCustomAlternateDelimiter) {
-	uParser Parser("../data/CVS/test.csv", m_fieldsList, ',');
+	uParser Parser(CUSTOMCVS, m_fieldsList, ',');
 	uToken Token = Parser.getNextEntry();
 	ASSERT_EQ(Token.getParam(token_param::CHR), "chr1");
 	ASSERT_EQ(Token.getParam(token_param::START_POS), "21");
@@ -143,7 +147,7 @@ TEST_F(CustomConstructorTests_ValidList, getNextEntry_CorrectlyFormatedCustomAlt
 }
 
 TEST_F(CustomConstructorTests_ValidList, getNextEntry_IncorrectlyFormatedCustom) {
-	uParser Parser("../data/CUSTOM/incorrect.custom", m_fieldsList);
+	uParser Parser(INCORRECT, m_fieldsList);
 	ASSERT_THROW(Parser.getNextEntry(), invalid_value_throw);
 	ASSERT_THROW(Parser.getNextEntry(), invalid_uToken_throw);
 	uToken Token = Parser.getNextEntry();
@@ -154,7 +158,7 @@ TEST_F(CustomConstructorTests_ValidList, getNextEntry_IncorrectlyFormatedCustom)
 }
 
 TEST_F(CustomConstructorTests_ValidList, getNextEntry_HeaderCUSTOM) {
-	uParser Parser("../data/CUSTOM/header.custom", m_fieldsList);
+	uParser Parser(HEADER, m_fieldsList);
 	ASSERT_THROW(Parser.getNextEntry(), ugene_exception_base);
 	ASSERT_THROW(Parser.getNextEntry(), ugene_exception_base);
 	ASSERT_THROW(Parser.getNextEntry(), ugene_exception_base);

@@ -14,6 +14,7 @@ void uGeneToCout(const uGene & item){
 
 int main(int argc, char **argv)
 {
+    cerr <<"hihi";
     /**< Simple parameter validation. We heavily recommand you use a library to manage your command line parameters */
     if (argc!=4)
     {
@@ -46,7 +47,31 @@ int main(int argc, char **argv)
      /**< Load every item from our UCSC ref. This will automatically parse in the EXONS and coding region
      This will throw if the data is poorly formated
      */
+     cerr <<"before UCSC\n";
     UCSCRefData.loadWithParser(secondStream,"GENEPRED");
+       cerr <<"after UCSC\n";
+      auto chr21= UCSCRefData.getpChrom("chr21");
+    cerr << chr21->count()<<"\n";
+    cerr << chr21->featureCount()<<"\n";
+    /**< add 1Kb  Promoter to all sites*/
+    UCSCRefData.applyOnSites([](uGene & item){
+            try {
+                                if (item.getStrand()==StrandDir::FORWARD)
+                                  {
+                                      if (item.getStart()>1001)
+                                         item.addFeature( (item.getStart()-1000),(item.getStart()-1),StrandDir::FORWARD,featureType::PROMOTER);
+                                  }else
+                                  {
+                                         item.addFeature( (item.getEnd()+1),(item.getEnd()+1000),StrandDir::REVERSE,featureType::PROMOTER);
+                                  }
+                                  }
+                                  catch(...){
+                                  throw; }
+
+                                  }  );
+
+    cerr <<"before sort\n";
+    cerr << chr21->featureCount()<<"\n";
     UCSCRefData.sortSites();
     string thirdPath=argv[3];
     uWriter bedWriter(thirdPath, "BED6");
@@ -57,7 +82,6 @@ int main(int argc, char **argv)
         /**< Validate the item we are comparing is from a scaffold present in our previously loaded EXP */
         if (UCSCRefData.isChrom(item.getChr()))
         {
-
             /**< Get the pointer to the Chrom scaffold from our loaded EXP */
             auto pChrom= UCSCRefData.getpChrom(item.getChr());
             /**< If our item overlaps at least one item from our EXP, we write it to output. */
@@ -71,24 +95,20 @@ int main(int argc, char **argv)
                 for (auto itr=overlappingItems.begin();itr!=overlappingItems.end();itr++)
                 {
                     uGeneToCout(*itr);
-                   // std::cout <<"Feature count is "<<itr->featureCount()<<std::endl;
                     for (auto featureItr= itr->featureBegin(); featureItr!=itr->featureEnd();featureItr++)
                     {
                         if (utility::isOverlap(featureItr->getStart(),featureItr->getEnd(),item.getStart(),item.getEnd()))
-                            std::cout << item.getChr() <<"\t"<< featureItr->getStart() <<"\t"<< featureItr->getEnd()<<"\t"<<featureStr(featureItr->getType())<<"\t"<<std::endl;
-                       // else
-                       //     std::cout<< "Not overlapping"<<item.getChr() <<"\t"<< featureItr->getStart() <<"\t"<< featureItr->getEnd()<<"\t"<<featureStr(featureItr->getType())<<"\t"<<std::endl;
+                            std::cout << item.getChr() <<"\t"<< featureItr->getStart() <<"\t"<< featureItr->getEnd()<<"\t"<<featureStr(featureItr->getType())<<"\t"<<"\n";
                     }
                 }
-                cout <<std::endl;
+                cout <"\n";
                 /**< For each gene body overlapped, write */
-
-
                  item.writeToOutput(bedWriter);
             }
-
         }
     };
+     cerr <<  chr21->featureCount()<<"\n";
+     cerr << "After functor"<<endl;
     /**< We passe our previously define lambda to this function
         It will loaded the data from our second BED file and item by item
         will run the passed lambda function. Note this means our second BED file is never
@@ -97,7 +117,9 @@ int main(int argc, char **argv)
         uBasicNGSExperiment interExp;
         vector<std::string> format{"CHR","START_POS","END_POS","JUNK","SCORE"};
         uParser customeParse(&firstStream,format);
+         cerr << "Before load"<<endl;
         interExp.loadWithParser(customeParse);
+        cerr << "Before apply"<<endl;
         interExp.applyOnSites(functOverlap);
     }
     /**< Global exception handling. Practicalloy, this should probably be split so as to
@@ -105,6 +127,7 @@ int main(int argc, char **argv)
      */
     catch(ugene_exception_base & e)
     {
+        cout << "Crashing"<<endl;
         cout << fetchStringError(e)<<endl;
     }
 

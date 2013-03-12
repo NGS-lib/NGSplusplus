@@ -715,3 +715,31 @@ TEST(uBasicNGSGENEXP_removeSpecificSites, EMPTY) {
 	myExperiments.getExperiment("Empty_Exp")->removeSpecificSites(functOp);
 	EXPECT_EQ(myExperiments.getExperiment("Empty_Exp")->count(), 0);
 }
+
+TEST(uBasicNGSGENEXP_replaceChr, VALID) {
+
+	ASSERT_TRUE(false);
+}
+
+TEST(uBasicNGSGENEXP_removeChr, VALID) {
+
+	ASSERT_TRUE(false);
+}
+
+
+TEST(uBasicNGSGENEXP_removeSubset, VALID) {
+
+    uBasicNGSExperiment myExperiments;
+    myExperiments.removeSubset("chr1", 10, 200);
+
+	ASSERT_TRUE(false);
+}
+
+TEST(uBasicNGSGENEXP_removeDistinct, VALID) {
+
+    uBasicNGSExperiment myExperiments;
+    myExperiments.removeDistinct("chr1", 10, 200);
+	ASSERT_TRUE(false);
+}
+
+

@@ -72,7 +72,7 @@ uToken uParserGenePred::getNextEntry()
 {
     std::string strLine;
 
-    if (std::getline(*m_pIostream, strLine))
+    if  ( std::getline(*m_pIostream, strLine) && ( strLine.size() || m_pIostream->eof()==false) )
     {
         m_rawString=strLine;
         return _getTokenFromGenePredString(strLine);
@@ -135,8 +135,8 @@ uToken uParserGenePred::_getTokenFromGenePredString(const std::string & line)
             ourToken._setParam(token_param::FEATURE_TYPE, "CODING");
             for (int i=0; i<exonCount; i++)
             {
-                ourToken._setParam(token_param::START_POS, what[i+8]);
-                ourToken._setParam(token_param::END_POS, what[i+8+exonCount]);
+                ourToken._setParam(token_param::START_POS, what[i+9]);
+                ourToken._setParam(token_param::END_POS, what[i+9+exonCount]);
                 ourToken._setParam(token_param::FEATURE_TYPE, "EXON");
             }
             return ourToken;

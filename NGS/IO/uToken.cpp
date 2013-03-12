@@ -106,7 +106,7 @@ uToken& uToken::operator=(uToken const& assign_from)
  */
 std::string uToken::getParam(token_param name,unsigned int paramPos) const
 {
-    if(isParamSet(name) && paramPos<paramCount(name))
+    if(isParamSet(name) && (int)paramPos<paramCount(name))
     {
         return (m_params.find(name)->second.at(paramPos));
     }
@@ -223,7 +223,7 @@ void uToken::_setParamCustom(const std::string& name, const std::string& value)
 bool uToken::isParamSet(const token_param& name, int pos) const
 {
     if (m_params.count(name))
-        return (pos<m_params.at(name).size());
+        return (pos<(int)m_params.at(name).size());
     else
         return false;
 }
@@ -379,7 +379,7 @@ void uToken::_validateStartEnd() const
     auto startVector = getParamVector(token_param::START_POS);
     auto endVector = getParamVector(token_param::END_POS);
     /**< Previously validation insured same size vectors */
-    for (int i=0;i<startVector.size();i++)
+    for (int i=0;i<(int)startVector.size();i++)
     {
         if(std::stoi(startVector.at(0))>std::stoi(endVector.at(0)))
            {
@@ -447,6 +447,26 @@ void uToken::_validateSequenceCigar() const
         }
     }
 }
+
+
+/** \brief Print a human readable version, in no particular format, of the token.
+ *
+ * \param pOut std::ostream& stream to write to
+ * \return void
+ *
+ */
+void uToken::print(std::ostream &pOut)const
+{
+    for (auto curItem= std::begin(m_params); curItem!=std::end(m_params); curItem++ ){
+          pOut<<curItem->first;
+          for (auto &vecItem:curItem->second)
+            pOut<<" : "<<vecItem;
+          pOut<<"\n";
+    }
+
+
+}
+
 
 void uToken::_validateSequencePhred() const
 {
@@ -649,9 +669,10 @@ bool uToken::_scoreIsValid(const std::string& value) const
     }
     catch(...)
     {
+        return false;
     }
 
-    return true;
+    return false;
 }
 
 

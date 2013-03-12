@@ -52,13 +52,14 @@ public:
     uBasicNGSChrom(const std::vector<uBasicNGS> & copyVec):uGenericNGSChrom(copyVec){};
 
     uBasicNGSChrom getCopy()const;
-
+    ~uBasicNGSChrom(){};
 
 };
 
 class uBasicNGSExperiment : public uGenericNGSExperiment<uBasicNGSExperiment,uBasicNGSChrom,uBasicNGS>
 {
-
+    public:
+    ~uBasicNGSExperiment(){};
     uBasicNGSExperiment& getCopy();
 };
 

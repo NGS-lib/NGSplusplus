@@ -1,6 +1,8 @@
 #include "uParserGTF.h"
-
-namespace NGS {
+#include "../../uGeneException.h"
+#include "../uHeader.h"
+namespace NGS
+{
 
 
 using namespace boost::xpressive;
@@ -24,9 +26,9 @@ uParserGTF::~uParserGTF()
 void uParserGTF::init(const std::string& filename, bool header)
 {
     uParserBase::init(filename, header);
-
+    _parseHeader();
     /**< GTF regex */
-     sregex GTFRegex = sregex::compile(GTFregString) ;
+    GTFRegex = sregex::compile(GTFregString) ;
 }
 
 /** \brief Initialize the uParserGTF object (set stream and parse header).
@@ -36,8 +38,9 @@ void uParserGTF::init(const std::string& filename, bool header)
 void uParserGTF::init(std::istream* stream, bool header)
 {
     uParserBase::init(stream, header);
+    _parseHeader();
     /**< GTF regex */
-     sregex GTFRegex = sregex::compile(GTFregString) ;
+    GTFRegex = sregex::compile(GTFregString) ;
 }
 
 /** \brief Produce a token with next entry in the file/stream.
@@ -45,19 +48,20 @@ void uParserGTF::init(std::istream* stream, bool header)
  */
 uToken uParserGTF::getNextEntry()
 {
-  std::string strLine;
-   // char line[4096];
-    //if (m_pIostream->getline(strLine))
-    if (std::getline(*m_pIostream, strLine))
+    std::string strLine;
+    if (m_hBuffer.eof()==false)
+        std::getline(m_hBuffer, strLine);
+
+    if  (strLine.size() || std::getline(*m_pIostream, strLine) )
     {
-         m_rawString=strLine;
+        m_rawString=strLine;
         return _getTokenInfoFromGTFString(strLine);
     }
     else
     {
-        #ifdef DEBUG
+#ifdef DEBUG
         std::cerr << "Reached end of file." << std::endl;
-        #endif
+#endif
         end_of_file_throw e;
         e << string_error("Reached end of file.");
         throw e;
@@ -68,44 +72,59 @@ uToken uParserGTF::getNextEntry()
 
 uToken uParserGTF::_getTokenInfoFromGTFString(const std::string& line)
 {
-
-   smatch what;
+    smatch what;
     if( regex_match( line, what, GTFRegex ) )
     {
         /**< Preset according to GTF format */
         uToken ourToken;
         if ( what[1]!=".")
-        ourToken._setParamNoValidate(token_param::CHR, what[1]);
-       // token_infos << "SEQ_NAME\t" << what[1] << "\n";
+            ourToken._setParamNoValidate(token_param::CHR, what[1]);
+
         if ( what[2]!=".")
-        ourToken._setParamNoValidate(token_param::SOURCE, what[2]);
-      //  token_infos << "SOURCE\t" << what[2] << "\n";
-       if ( what[3]!=".")
-        ourToken._setParamNoValidate(token_param::FEATURE_TYPE, what[3]);
-       // token_infos << "FEATURE_TYPE\t" << what[3] << "\n";
+            ourToken._setParamNoValidate(token_param::SOURCE, what[2]);
+
+        if ( what[3]!=".")
+            ourToken._setParamNoValidate(token_param::FEATURE_TYPE, what[3]);
+
         ourToken._setParamNoValidate(token_param::START_POS, what[4]);
-       // token_infos << "START_POS\t" << what[4] << "\n";
-       ourToken._setParamNoValidate(token_param::END_POS, what[5]);
-       // token_infos << "END_POS\t" <<  what[5] << "\n";
+
+        ourToken._setParamNoValidate(token_param::END_POS, what[5]);
+
         if ( what[6]!=".")
-             ourToken._setParamNoValidate(token_param::SCORE, what[6]);
-            //token_infos << "SCORE\t" << what[6] << "\n";
+            ourToken._setParamNoValidate(token_param::SCORE, what[6]);
+
         /**< GFF considered a '.' to mean no info or not relevant. We simply do not stock it */
         if ( what[7]!=".")
             ourToken._setParamNoValidate(token_param::STRAND, what[7]);
-           // token_infos << "STRAND\t" << what[7] << "\n";
-             ourToken._setParamNoValidate(token_param::PHASE, what[8]);
-        //token_infos << "PHASE\t" << what[8] << "\n";
+
+        ourToken._setParamNoValidate(token_param::PHASE, what[8]);
+
         if (what[9].matched)
-             ourToken._setParamNoValidate(token_param::EXTRA, what[9]);
-            //token_infos << "EXTRA\t" << what[9] << "\n";
+            ourToken._setParamNoValidate(token_param::EXTRA, what[9]);
+
         return ourToken;
     }
-    else{
+    else
+    {
         throw uParser_invalid_GFF_line()<<string_error("GFF line, failling validation. Line is:\n"+line);
     }
 
 }
 
-//DerivedParserRegister<uParserGTF> uParserGTF::reg("GTF");
+void uParserGTF::_parseHeader()
+{
+   /**< While not specific to the GTF format, we will skip header lines that are UCSC browser tags */
+    std::string strLine;
+    while(std::getline(*m_pIostream, strLine))
+    {
+        /**< Skip comment and browser lines, if not check if track line */
+        if (PDEF::isUCSCIgnore(strLine)==false)
+        {
+            /**< No longer a commentary, store in buffer */
+            m_hBuffer << strLine;
+            break;
+        }
+    }
+}
+
 } // End of namespace NGS

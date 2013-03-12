@@ -33,32 +33,42 @@ void uParserBedGraph::init(std::istream* stream, bool header)
     _parseHeader();
 
 }
-
 /** \brief Produce a token with next entry in the file/stream.
  * \return uToken containing the infos of the next entry.
  */
 uToken uParserBedGraph::getNextEntry()
 {
-    std::string strLine;
     /**< Do we need to parse our buffer */
-    if (m_hBuffer.eof()==false)
-        std::getline(m_hBuffer, strLine);
-        m_rawString=strLine;
-        /**< If we stored something, otherwise, getline, otherwise fail */
-        if ( (strLine.size()) || ( std::getline(*m_pIostream, strLine)) )
+   // m_rawString=strLine;
+    /**< If we stored something, otherwise, getline, otherwise fail */
+    /**< If we stored en empty line, check if it was the final line or not. */
+ while(true)
+ {
+        std::string strLine="";
+        if (m_hBuffer.eof()==false)
+           std::getline(m_hBuffer, strLine);
+//&& ( strLine.size() || m_pIostream->eof()==false)
+        if ( (strLine.size()) || ( std::getline(*m_pIostream, strLine)  ) )
         {
             /**< We start by fetching the infos from the line */
-            return _getTokenFromBedGraphString(strLine);
+            /**< If not commentary, parser. If commentary, skype */
+            if (strLine[0]!=PDEF::UCSCCOMMENT)
+            {
+                m_rawString=strLine;
+                return _getTokenFromBedGraphString(strLine);
+            }
         }
         else
         {
-#ifdef DEBUG
+    #ifdef DEBUG
             std::cerr << "Reached end of file." << std::endl;
-#endif
+    #endif
             end_of_file_throw e;
             e << string_error("Reached end of file. BedGraph header object");
             throw e;
         }
+
+ }
     std::cerr <<"Fatal error in getNextEntry() from BedGraph parser, should not reach here." <<std::endl;
     abort();
 }
@@ -79,10 +89,10 @@ uToken uParserBedGraph::_getTokenFromBedGraphString(const std::string & line)
         ourToken._setParamNoValidate(token_param::END_POS,m_tokens.at(2));
         ourToken._setParamNoValidate(token_param::SCORE,m_tokens.at(3));
         return ourToken;
-      //  token_infos << "CHR\t" << ss << "\n";
-      //  token_infos << "START_POS\t" << ss << "\n";
-      //  token_infos << "END_POS\t" << ss << "\n";
-     //   token_infos << "SCORE\t" << ss << "\n";
+        //  token_infos << "CHR\t" << ss << "\n";
+        //  token_infos << "START_POS\t" << ss << "\n";
+        //  token_infos << "END_POS\t" << ss << "\n";
+        //   token_infos << "SCORE\t" << ss << "\n";
     }
     catch(...)
     {
@@ -96,7 +106,7 @@ uToken uParserBedGraph::_getTokenFromBedGraphString(const std::string & line)
 
 }
 
-/** \brief Parse the (theoretically) mandatory bedgraph header, report if you found it and skip line
+/** \brief Parse the (theoretically) mandatory bedgraph header and browser line and comments, report if you found it and skip line
  * \return void
  */
 bool uParserBedGraph::_parseHeader()
@@ -105,24 +115,29 @@ bool uParserBedGraph::_parseHeader()
     /**< So we load the line and if it is not a header, store it in our buffer object for parsing */
     /**< BedGraph header information is very specified to UCSC, so we do not store it. */
     std::string strLine;
-    if (std::getline(*m_pIostream, strLine))
+    while(std::getline(*m_pIostream, strLine))
     {
-        /**< If we could not find track type=bedGraph, store, otherwise discard */
-        if (strLine.find(s_bedGraphHeader)==std::string::npos){
-            m_hBuffer << strLine;
-            return false;
+
+        /**< Skip comment and browser lines, if not check if track line */
+        if (PDEF::isUCSCIgnore(strLine)==false)
+        {
+            /**< If we could not find track type=bedGraph, store, otherwise discard */
+            if (strLine.find(s_bedGraphHeader)==std::string::npos)
+            {
+                m_hBuffer << strLine;
+                return false;
+            }
+            else
+            {
+
+
+                return true;
+            }
         }
-        return true;
     }
-    else
-    {
-#ifdef DEBUG
-        std::cerr << "Reached end of file." << std::endl;
-#endif
-        end_of_file_throw e;
-        e << string_error("Reached end of file when parsing bedGraph header.");
-        throw e;
-    }
+    /**< File contains only comments */
+    return false;
+
 }
 
 //DerivedParserRegister<uParserBedGraph> uParserBedGraph::reg("BEDGRAPH");

@@ -137,7 +137,7 @@ uToken uParserSam::getNextEntry()
     {
         std::string strLine;
         std::getline(*m_pIostream, strLine);
-         m_rawString=strLine;
+        m_rawString=strLine;
 		//std::stringstream token_infos;
 		/**< For readibility sake, macro or split this up. */
 		uToken ourToken;

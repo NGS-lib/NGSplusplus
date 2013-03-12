@@ -30,7 +30,7 @@ public:
     uRegion(uToken);
 
 
-    virtual ~uRegion();
+    ~uRegion();
 
     std::string getIdent() const
     {
@@ -99,7 +99,7 @@ public:
 
     uRegionChrom(uBasicNGSChrom);
     uRegionChrom(uTagsChrom);
-
+    ~uRegionChrom(){};
     uRegionChrom getCopy()const;
 
     void measureDensityOverlap(const  uTagsChrom& chromtoComp, const OverlapType=OverlapType::OVERLAP_PARTIAL);
@@ -120,12 +120,12 @@ class uRegionExperiment: public uGenericNGSExperiment<uRegionExperiment,uRegionC
 {
 public:
 
-
     uRegionExperiment& operator=(const uRegionExperiment& copFrom)=default;
     uRegionExperiment(const uRegionExperiment&) = default;
     uRegionExperiment()=default;
 
     uRegionExperiment getCopy() const;
+    ~uRegionExperiment(){};
 
     void measureDensityOverlap(const uTagsExperiment& expToComp, const OverlapType poverlap=OverlapType::OVERLAP_PARTIAL);
     void measureDensityOverlap(const uRegionExperiment& expToComp, const OverlapType poverlap=OverlapType::OVERLAP_PARTIAL);
@@ -139,7 +139,7 @@ public:
 //    void writeAll(std::ostream& out);
     void writeSignal(std::ostream& out);
 
-    void loadFromWig(std::ifstream & inputStream);
+  //  void loadFromWig(std::ifstream & inputStream);
 };
 } // End of namespace NGS
 #endif

@@ -4,10 +4,17 @@
 #include "uFormats.h"
 #include <memory>
 #include "utility/utility.h"
+
+
+namespace BamTools{
+    class BamReader;
+}
 namespace NGS {
 //Our Tag format
 //We used this to store mapped tags from NGS experiments
 //This is used for single End tags
+
+
 class uTags: public uGenericNGS<uTags>
 {
 
@@ -79,7 +86,6 @@ public:
     void setPhred(std::string Phred);
     std::string getPhred() const;
 
-
     void setName(std::string pName);
 
     std::string getName() const;
@@ -106,7 +112,7 @@ public:
     uTagsChrom():uGenericNGSChrom(){};
     uTagsChrom(const std::string & ourChr):uGenericNGSChrom(ourChr)
     { }
-
+     ~uTagsChrom() {};
     uTagsChrom getCopy() const;
 
     uTagsChrom(const uGenericNGSChrom<uTagsChrom,uTags>&);
@@ -114,50 +120,30 @@ public:
     uTagsChrom(const uTagsChrom&);
     uTagsChrom(const uRegionChrom &);
     uTagsChrom(const uBasicNGSChrom &);
-
-
     uTagsChrom(const std::vector<uTags> & copyVec):uGenericNGSChrom(copyVec){};
-   // uTags getTag(int i)
-  //  {
-  //      return VecSites.at(i);
-  //  };
-    template<class _OTHER_>
-    uTags generateRandomSite(const int size_,std::mt19937& engine,const _OTHER_ &exclList, const int sigma, const std::string ID) const;
- //   void writeTrimmedSamToOutput(std::ostream &out, int left, int right);
- //   void writetoBedCompletePE(std::ostream& out);
- //   void writeCompletedPESamToOutput(std::ostream &out);
- //   void writeSamToOutput(std::ostream &out) const;
- //   void writeSamHeaderLine(std::ostream &out) const;
- //   void outputBedFormat(std::ostream& out) const;
 
+   // template<class _OTHER_>
     std::vector<float> getRegionSignal(int start, int end, bool overlap);
+
+    template <class _OTHER_>
+    uTags generateRandomSite(const int size_,std::mt19937& engine,const _OTHER_ &exclList, const int sigma, const std::string ID) const;
 
 };
 
-// TODO: Lot's of code that should move to parser?
 /**< Our complete tag experiment */
 class uTagsExperiment: public uGenericNGSExperiment<uTagsExperiment,uTagsChrom, uTags>
 {
 
 private:
-    //std::ifstream& samStream;
+    void loadWithBamTools_Core(BamTools::BamReader& pReader, int pBlockSize=1);
+    void loadWithBamTools_All(BamTools::BamReader& pReader, int pBlockSize=1);
 
-    // void loadSamStream(std::ifstream& ourStream){samStream =ourStream;};
-  //  void parseSamHeader();
 public:
-   // void loadFromSam(std::ifstream& ourStream, bool minimal= false);
- //   void loadFromSamWithParser(std::string);
- //   void loadSamHeader(std::ifstream& ourStream);
- //   void writeToBed(std::ostream& out) const;
- //   void setChromSize(std::string chrom, int size);
- //   void writetoBedCompletePE(std::ostream& out);
- //   void writeSamToOutput(std::ostream &out) const ;
- //   void writeCompletedPESamToOutput(std::ostream &out);
- //   void writeTrimmedSamToOutput(std::ostream &out, int left, int right);
- //   uTags nextSamLine(bool minimal=false);
+     ~uTagsExperiment() {};
     std::vector<float> getRegionSignal(std::string chrom, int start, int end, bool overlap);
-
     uTagsExperiment getCopy() const;
+
+    void loadWithBamTools(BamTools::BamReader& pReader, int blockSize=1, bool pLoadCore=false);
 
 };
 } // End of namespace NGS

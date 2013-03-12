@@ -53,6 +53,8 @@ template <class Container>
 inline static typename Container::iterator to_mutable_iterator(Container& c, typename Container::const_iterator it);
 
 
+
+
 namespace SAM
 {
     /** \brief Check and return if a specified sam flag is set from a received sam flag (int)
@@ -62,8 +64,6 @@ namespace SAM
      * \return bool True if flag is set
      *
      */
-
-
     static inline bool querySamFlag(const int flag, const SamQuery toQuery)
     {
         bool query_result;
@@ -106,12 +106,25 @@ namespace SAM
         return query_result;
     }
 }
+
+
+namespace STRING{
+
+        inline static std::string concatStringListWithSpaces(){return "";}
+        /**< Scheme programming in C++. Who woulda thought. */
+        template <typename ...Tail>
+        static std::string concatStringListWithSpaces(const std::string& curTrack, Tail&&... tail){
+        return (curTrack+" "+concatStringListWithSpaces(std::forward<Tail>(tail)...));
+    }
+
+
+}
+
   template <class Container>
   inline static typename Container::iterator to_mutable_iterator(Container& c, typename Container::const_iterator it)
    {
         return c.begin() + (it - c.begin());
    }
-
 
 /** \brief Simple tokenizer class that can sometimes be handy to use
  */

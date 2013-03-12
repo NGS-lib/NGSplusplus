@@ -9,3 +9,5 @@
 #include "NGS/uTags.h"
 #include "NGS/uBasicNGS.h"
 #include "NGS/uGene.h"
+#include "NGS/third-party/api/BamReader.h"
+#include "NGS/third-party/api/BamWriter.h"

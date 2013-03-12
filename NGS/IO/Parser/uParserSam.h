@@ -2,10 +2,8 @@
 #define UPARSERSAM_H_INCLUDED
 
 #include "uParserBase.h"
-//#include "../../utility/utility.h"
 #include <iostream>
-//#include "../../boost-include/boost/xpressive/xpressive.hpp"
-//#include "uParserFactory.h"
+
 namespace NGS
 {
 
@@ -26,7 +24,6 @@ public :
     void init(std::istream* stream, bool header = false);
 
     uToken getNextEntry();
-	uToken getNextEntryWithRegex();
 	static uParserBase * Create() { return new uParserSam(); }
 private:
  //   static DerivedParserRegister<uParserSam> reg;
