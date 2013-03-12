@@ -5,22 +5,17 @@ using namespace NGS;
 
 int main(int argc, char **argv)
 {
-
-        int count;
-        auto functOp = [&](int a)
-        {
-
-                a=a+1;
-                count++;
-        };
-
-
     /**< Simple parameter validation. We heavily recommand you use a library to manage your command line parameters */
-    if (argc!=2)
+    if (argc!=3)
     {
-        cerr << "Please follow exactly the following signature"<<endl<<"CutDuplicates <File to eliminate duplicates>"<<endl;
+        cerr << "Please follow exactly the following signature"<<endl<<"<File to eliminate duplicates> [BED/UCSCGFF/SAM]"<<endl;
         return 0;
+
     }
+    string fileType=argv[2];
+    if (fileType=="GFF")
+        fileType="UCSCGFF";
+
     ifstream firstStream;
     {
         string firstPath=argv[1];
@@ -38,13 +33,12 @@ int main(int argc, char **argv)
     }
     /**< Catch block, for any number of possible errors. This will also catch Parser errors */
   try {
-     uBasicNGSExperiment loadedFile;
+     uTagsExperiment loadedFile;
      /**< Load every item from our first file.
      This will throw if the data is poorly formated
      */
-     vector<string> customColumns={"CHR","START_POS","END_POS"};
-    uParser customParser(&firstStream,customColumns);
-
+   //  vector<string> customColumns={"CHR","START_POS","END_POS"};
+    uParser customParser(&firstStream,fileType);
     loadedFile.loadWithParser(customParser);
 
     /**< Sort every element by region */
@@ -52,13 +46,19 @@ int main(int argc, char **argv)
     /**< Create our writer. Note that this means we are not keeping the original lines.
     We pass cout so that it will write to standard output and can be pipped
     */
-    uWriter bedWriter(&cout,"BED6");
+    if (fileType=="BED")
+        fileType="BED6";
+
+
+    uWriter bedWriter(&cout,fileType);
     /**< We declare a simple lambda function we will be using to check for overlaps
     Note that [&] in the signature means will be be capturing by reference whatever outside
     object we care to use.
     */
+    long long removedCount=0;
+    map<std::string,map<pair<long,long>,std::string>> complexMap;
     set<pair<long long, long long>> countSet;
-    auto functElimDuplicate=[&](uBasicNGSChrom & chrom)
+    auto functElimDuplicate=[&](uTagsChrom & chrom)
     {
     countSet.clear();
      /**< Already sorted */
@@ -68,6 +68,9 @@ int main(int argc, char **argv)
             {
                 countSet.insert(pair<long long,long long>(it->getStart(),it->getEnd()));
                 it->writeToOutput(bedWriter);
+            }
+            else{
+                removedCount++;
             }
         }
     };
@@ -79,7 +82,7 @@ int main(int argc, char **argv)
      */
         loadedFile.applyOnAllChroms(functElimDuplicate);
 
-
+        std::cout <<"Removed "<<removedCount<<std::endl;
     }
     /**< Global exception handling. Practicalloy, this should probably be split so as to
          manage parser errors seperately.
