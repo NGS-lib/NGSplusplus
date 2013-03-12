@@ -173,7 +173,6 @@ TEST(uBasicEXP_STL_accumulateChromInfo, EXCEPTION){
  *		THROW
  */
 
-/**<  computeOnAllSites*/
 TEST(uBasicEXP_STL_computeOnAllChroms, NORMAL){
 	validExperiments myExperiments;
 	auto functOp = [&](uBasicNGSChrom item) -> unsigned long long
@@ -203,6 +202,7 @@ TEST(uBasicEXP_STL_computeOnAllChroms, THROW) {
 	};
 	EXPECT_THROW(myExperiments.getExperiment("MultipleChroms")->computeOnAllChroms(functOp),param_throw);
 }
+
 /* 
  * Tests for the function:
  * 		auto computeOnOneChrom(UnaryOperation unary_op, const std::string & pChr) const -> std::map<std::string, decltype(unary_op(_CHROM_()))>;
@@ -346,24 +346,181 @@ TEST(uBasicEXP_STL_applyOnAllChromsConst, THROW) {
 	const uBasicNGSExperiment myConstExp = *(myExperiments.getExperiment("MultipleChroms"));
 	EXPECT_THROW(myConstExp.applyOnAllChroms(functOp), param_throw);
 }
-/* 
-template<class UnaryFunction>
-UnaryFunction applyOnOneChrom(UnaryFunction f, const std::string & chr); 
-template<class UnaryFunction>
-UnaryFunction applyOnSites(UnaryFunction f);
-template<class UnaryFunction>
-UnaryFunction applyOnSites(const UnaryFunction f)const;
-template<class UnaryFunction>
-void loadWithParserAndRun(std::ifstream& pStream, std::string pType, UnaryFunction funct , int pBlockSize=1);
-template<class UnaryFunction>
-void loadWithParserAndRun(std::string filepath, std::string pType, UnaryFunction f, int pBlockSize=1);
-template <class UnaryPredicate>
-typename std::iterator_traits<NGSExpIter>::difference_type
-countChromsWithProperty(UnaryPredicate pred) const;
-template<class Compare>
-NGSExpConstIter maxChrom(Compare comp) const;
-template<class Compare>
-NGSExpConstIter minChrom(Compare comp) const;
-template<class Compare>
-std::pair<NGSExpConstIter, NGSExpConstIter> minAndMaxChroms(Compare comp) const; 
-*/
+
+/*
+ * Tests for the function:
+ *		template<class UnaryFunction>
+ *		UnaryFunction applyOnOneChrom(UnaryFunction f, const std::string & chr); 
+ *
+ *	Valid Cases:
+ *		NORMAL
+ *		NONAMECHROM
+ * 	Ivalid Cases:
+ *		THROW
+ *		CHROMDONTEXISTS
+ */
+
+TEST(uBasicEXP_STL_applyOnOneChrom, NORMAL) {
+	validExperiments myExperiments;
+	auto functOp = [](uBasicNGSChrom& item)
+	{  
+		return item.divideItemsIntoNBins(2, SplitType::IGNORE);
+	};
+	EXPECT_EQ(myExperiments.getExperiment("MultipleChroms")->count(), 13);
+	myExperiments.getExperiment("MultipleChroms")->applyOnOneChrom(functOp, "chr4");
+	EXPECT_EQ(myExperiments.getExperiment("MultipleChroms")->count(), 14);
+}
+
+TEST(uBasicEXP_STL_applyOnOneChrom, NOCHROM) {
+	validExperiments myExperiments;
+	auto functOp = [](uBasicNGSChrom& item)
+	{  
+		return item.divideItemsIntoNBins(2, SplitType::IGNORE);
+	};
+	EXPECT_THROW(myExperiments.getExperiment("Empty_Exp")->applyOnOneChrom(functOp, "chr4"), param_throw);
+
+}
+
+TEST(uBasicEXP_STL_applyOnOneChrom, THROW) {
+	validExperiments myExperiments;
+	auto functOp = [&](const uBasicNGSChrom& a)
+	{ 
+		throw param_throw();
+	};
+	EXPECT_THROW(myExperiments.getExperiment("MultipleChroms")->applyOnOneChrom(functOp,"chr4"),param_throw);
+}
+
+TEST(uBasicEXP_STL_applyOnOneChrom, CHROMDONTEXISTS) {
+	validExperiments myExperiments;
+	int count = 0;
+	auto functOp = [&](const uBasicNGSChrom& a)
+	{ 
+		count++;
+	};
+	EXPECT_THROW(myExperiments.getExperiment("Empty_Exp")->applyOnOneChrom(functOp,"chr4"),param_throw);
+}
+
+/*
+ * Tests for the function:
+ *		template<class UnaryFunction>
+ *		UnaryFunction applyOnSites(UnaryFunction f);
+ *
+ *	Valid Cases:
+ *		NORMAL
+ *		EMPTY
+ * 	Ivalid Cases:
+ *		THROW
+ */
+
+TEST(uBasicEXP_STL_applyOnSites, NORMAL) {
+	validExperiments myExperiments;
+	auto functOp = [](uBasicNGS & item){ item.extendSite(20); };
+	myExperiments.getExperiment("NoName_1elem")->applyOnSites(functOp);
+	EXPECT_TRUE(myExperiments.getExperiment("NoName_1elem")->getpChrom("")->getSite(0).isEqual(uBasicNGS("",80,220)));
+}
+
+TEST(uBasicEXP_STL_applyOnSites, EMPTY) {
+	validExperiments myExperiments;
+	auto functOp = [](uBasicNGS & item){ item.extendSite(20); };
+	EXPECT_NO_THROW(myExperiments.getExperiment("Empty_Exp")->applyOnSites(functOp));
+}
+
+TEST(uBasicEXP_STL_applyOnSites, THROW) {
+	validExperiments myExperiments;
+	auto functOp = [](uBasicNGS & item) { throw param_throw(); };
+	EXPECT_THROW(myExperiments.getExperiment("NoName_1elem")->applyOnSites(functOp), param_throw);
+}
+
+/*
+ * Tests for the function:
+ *		template<class UnaryFunction>
+ *		UnaryFunction applyOnSites(const UnaryFunction f)const;
+ *
+ *	Valid Cases:
+ *		NORMAL
+ *		EMPTY
+ * 	Ivalid Cases:
+ *		THROW
+ */
+
+TEST(uBasicEXP_STL_applyOnSitesConst, NORMAL) {
+	validExperiments myExperiments;
+	int count = 0;
+	auto functOp = [&](const uBasicNGS& a)
+	{ 
+		count++;
+	};
+	EXPECT_EQ(count, 0);
+//	EXPECT_NO_THROW(myExperiments.getExperiment("MultipleChroms")->applyOnSites(functOp));
+	const uBasicNGSExperiment myConstExp = *(myExperiments.getExperiment("MultipleChroms"));
+//	myConstExp.applyOnSites(functOp); // TODO: Weird warning
+	EXPECT_EQ(count, 13);
+}
+
+/*
+ * Tests for the function:
+ *		template<class UnaryFunction>
+ *		void loadWithParserAndRun(std::string filepath, std::string pType, UnaryFunction f, int pBlockSize=1);
+ *
+ *	Valid Cases:
+ *		VALIDSTREAM
+ *		EMPTYSTREAM
+ *	Invalid Cases:
+ *		NULLSTREAM
+ *		
+ */
+
+TEST(uBasicEXP_STL_loadWithParserAndRunParser, VALIDSTREAM) {
+	uParser aParser("../data/BED/test.bed", "BED");
+	auto functOp = [&](const uToken& t)
+	{ 
+	};
+	uBasicNGSExperiment anExp;
+	anExp.loadWithParserAndRun(aParser, functOp);
+	EXPECT_TRUE(false);
+}
+
+/*
+ * Tests for the function:
+ *		template <class UnaryPredicate>
+ *		typename std::iterator_traits<NGSExpIter>::difference_type
+ *
+ *	Valid Cases:
+ *	Invalid Cases:
+ *		THROW
+ */
+/*
+ * Tests for the function:
+ *		countChromsWithProperty(UnaryPredicate pred) const;
+ *		template<class Compare>
+ *
+ *	Valid Cases:
+ *	Invalid Cases:
+ *		THROW
+ */
+/*
+ * Tests for the function:
+ *		NGSExpConstIter maxChrom(Compare comp) const;
+ *		template<class Compare>
+ *
+ *	Valid Cases:
+ *	Invalid Cases:
+ *		THROW
+ */
+/*
+ * Tests for the function:
+ *		NGSExpConstIter minChrom(Compare comp) const;
+ *		template<class Compare>
+ *
+ *	Valid Cases:
+ *	Invalid Cases:
+ *		THROW
+ */
+/*
+ * Tests for the function:
+ *		std::pair<NGSExpConstIter, NGSExpConstIter> minAndMaxChroms(Compare comp) const; 
+ *
+ *	Valid Cases:
+ *	Invalid Cases:
+ *		THROW
+ */

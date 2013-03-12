@@ -223,8 +223,7 @@ public:
     UnaryFunction applyOnSites(UnaryFunction f);
     template<class UnaryFunction>
     UnaryFunction applyOnSites(const UnaryFunction f)const;
-
-
+    // TODO: applyOnAllSites ??
 
     template <class UnaryPredicate>
     typename std::iterator_traits<NGSExpIter>::difference_type
@@ -1075,6 +1074,10 @@ UnaryFunction uGenericNGSExperiment<_SELF_,_CHROM_,_BASE_>::applyOnOneChrom(Unar
     {
         auto & elem = ExpMap[chr];
         f(elem);
+    }
+    else
+    {
+        throw param_throw()<<string_error("Failling in uGenericNGSExperiment::applyOnOneChrom, value "+chr+" does not exist.\n");
     }
     return f;
 }
