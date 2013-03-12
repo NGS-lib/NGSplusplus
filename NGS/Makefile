@@ -8,6 +8,7 @@ SRC_DIR=.
 BOOST_DIR=./boost-include
 DESTDIR=/usr/lib
 INCLUDE_DIR=/usr/include/NGS
+THIRDPARTY_DIR=./third-party
 SAMPLE_DIR=./sample-src
 OBJ_DIR=./obj
 PROJECT_NAME=libNGS.a
@@ -20,17 +21,17 @@ OBJECTS += $(IO_DIR)/uHeader.o $(IO_DIR)/uToken.o
 OBJECTS += $(WRITER_DIR)/uWriter.o $(WRITER_DIR)/uWriterBase.o $(WRITER_DIR)/uWriterBed.o 
 OBJECTS += $(WRITER_DIR)/uWriterBed4.o $(WRITER_DIR)/uWriterBed6.o $(WRITER_DIR)/uWriterCustom.o
 OBJECTS += $(WRITER_DIR)/uWriterSam.o $(WRITER_DIR)/uWriterWig.o $(WRITER_DIR)/uWriterBedGraph.o
-OBJECTS += $(WRITER_DIR)/uWriterGFF.o
-OBJECTS += $(WRITER_DIR)/uWriterGTF.o
+OBJECTS += $(WRITER_DIR)/uWriterGFF.o $(WRITER_DIR)/uWriterGTF.o
 OBJECTS += $(PARSER_DIR)/uParser.o $(PARSER_DIR)/uParserBase.o $(PARSER_DIR)/uParserWig.o 
 OBJECTS += $(PARSER_DIR)/uParserSam.o $(PARSER_DIR)/uParserBed.o $(PARSER_DIR)/uParserCustom.o
 OBJECTS += $(PARSER_DIR)/uParserBedGraph.o $(PARSER_DIR)/uParserGTF.o $(PARSER_DIR)/uParserGFF.o
+OBJECTS += $(PARSER_DIR)/uParserGenePred.o $(PARSER_DIR)/uParserBAM.o
 OBJECTS += $(SRC_DIR)/uBasicNGS.o $(SRC_DIR)/uRegion.o $(SRC_DIR)/uTags.o
 OBJPROJ = $(addprefix $(OBJ_DIR)/, $(OBJECTS))
 PROJECT = $(PROJECT_DIR)/$(PROJECT_NAME)
 
-CFLAGS  = -O3 -std=c++11 
-INCLUDES = -I$(UTIL_DIR) -I$(BOOST_DIR)
+CFLAGS  = -O3 -std=c++11 -lz
+INCLUDES = -I$(UTIL_DIR) -I$(BOOST_DIR) -I$(THIRDPARTY_DIR)
 
 $(shell mkdir -p $(OBJ_DIR)/$(WRITER_DIR))
 $(shell mkdir -p $(OBJ_DIR)/$(PARSER_DIR))
