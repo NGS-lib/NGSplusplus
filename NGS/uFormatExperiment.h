@@ -221,12 +221,10 @@ public:
     UnaryFunction applyOnAllChroms(const UnaryFunction f)const;
     template<class UnaryFunction>
     UnaryFunction applyOnOneChrom(UnaryFunction f, const std::string & chr);
-    // TODO: No const function for applyOnOneChrom?
     template<class UnaryFunction>
     UnaryFunction applyOnSites(UnaryFunction f);
     template<class UnaryFunction>
     UnaryFunction applyOnSites(const UnaryFunction f)const;
-    // TODO: applyOnAllSites ??
 
     template <class UnaryPredicate>
     typename std::iterator_traits<NGSExpIter>::difference_type
@@ -536,7 +534,12 @@ _CHROM_* uGenericNGSExperiment<_SELF_,_CHROM_, _BASE_>::getpChrom(const std::str
 template<class _SELF_, typename _CHROM_, typename _BASE_>
 void uGenericNGSExperiment<_SELF_,_CHROM_, _BASE_>::setChrSize(std::string chr, int chrSize)
 {
-    getpChrom(chr)->setChromSize(chrSize);
+    try{
+        getpChrom(chr)->setChromSize(chrSize);
+    }
+    catch(...){
+        throw;
+    }
 }
 
 // TODO: We need to check if the chrom exists before getting it's size!!
@@ -547,7 +550,12 @@ void uGenericNGSExperiment<_SELF_,_CHROM_, _BASE_>::setChrSize(std::string chr, 
 template<class _SELF_, typename _CHROM_, typename _BASE_>
 int uGenericNGSExperiment<_SELF_,_CHROM_, _BASE_>::getChrSize(std::string chr)
 {
+    try {
     return getpChrom(chr)->getChromSize();
+    }
+    catch(...)
+    {throw;
+    }
 }
 
 //Return the number of elements in our experiment
