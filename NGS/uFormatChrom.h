@@ -52,8 +52,8 @@ protected:
     std::string chr=""; /*!< Name of the scaffold/chromosome  */
     /**< Pointers to our functions and determines if sorted */
     bool m_isSorted=false; /*!< If we are in a sorted state or not */
-    std::function<float(const _BASE_*)> sortGetStart=&_BASE_::getStart;  /*!<Pointer to the starting sort value */
-    std::function<float(const _BASE_*)> sortGetEnd=&_BASE_::getEnd ;  /*!< Pointer to the end starting sort value. Typically set to equal Start */
+    std::function<double(const _BASE_*)> sortGetStart=&_BASE_::getStart;  /*!<Pointer to the starting sort value */
+    std::function<double(const _BASE_*)> sortGetEnd=&_BASE_::getEnd ;  /*!< Pointer to the end starting sort value. Typically set to equal Start */
     std::function<bool(const _BASE_ &item1, const _BASE_ &item2)> m_comptFunc=compareStart; /*!< Pointer to sorting function */
     long long int chromSize=0; /*!< Size of the scaffold */
 
@@ -129,12 +129,13 @@ public:
     void divideItemsIntoBinofSize(int N, SplitType type=SplitType::STRICT);
 
     /**< Find according to sort value */
-    VecGenConstIter findPrecedingSite(const float pPosition) const;
-    VecGenConstIter findNextSite(const float pPosition) const;
+    VecGenConstIter findPrecedingSite(const double pPosition) const;
+    VecGenConstIter findNextSite(const double pPosition) const;
     /**< removeSites overloads */
     void removeSite(VecGenConstIter pItrPos);
     void removeSite(VecGenConstIter pStartItr,VecGenConstIter pEndItr);
     /**< Functions to create and add items to our chrom */
+    //TODO make a version that does not require an engine.
     template <class _OTHER_>
     _BASE_ generateRandomSite(const int size, std::mt19937& engine, _OTHER_ exclList, const int sigma=0, const std::string ID="") const;
     _BASE_ generateRandomSite(const int size, std::mt19937& engine, const int sigma=0, const std::string ID="") const;
@@ -150,25 +151,24 @@ public:
 
     template <class _OTHER_>
     _SELF_ getNotOverlapping(_OTHER_ &compareChr,OverlapType pOverlap=OverlapType::OVERLAP_PARTIAL) const;
-
+    //TODO getNotOVerlappingCount
 
     /**< Functions to manipulate generically ranges of our elements. Requires the collection to be sorted */
     _SELF_ getSubset(double p_start, double p_end, OverlapType overlap=OverlapType::OVERLAP_PARTIAL) const;
     long int getSubsetCount(double p_start, double p_end, OverlapType overlap=OverlapType::OVERLAP_PARTIAL)const;
+    _SELF_ getDistinct(double p_start, double p_end, OverlapType options=OverlapType::OVERLAP_PARTIAL) const;
+    long int getDistinctCount(double p_start, double p_end, OverlapType overlap=OverlapType::OVERLAP_PARTIAL)const;
 
     _SELF_ removeSubset(double p_start, double p_end, OverlapType overlap=OverlapType::OVERLAP_PARTIAL);
     _SELF_ removeDistinct(double p_start, double p_end, OverlapType options=OverlapType::OVERLAP_PARTIAL);
 
-    _SELF_ getDistinct(double p_start, double p_end, OverlapType options=OverlapType::OVERLAP_PARTIAL) const;
-    long int getDistinctCount(double p_start, double p_end, OverlapType overlap=OverlapType::OVERLAP_PARTIAL)const;
 
-
-    std::function<float(const _BASE_*)> getStartFunct() const;
-    std::function<float(const _BASE_*)> getEndFunct() const;
+    std::function<double(const _BASE_*)> getStartFunct() const;
+    std::function<double(const _BASE_*)> getEndFunct() const;
     std::function<bool(const _BASE_ &item1, const _BASE_ &item2)> getCompFunct() const;
 
     bool getSortedStatus() const;
-    int count() const;
+    long int count() const;
 
     long long int getChromSize() const;
     void setChromSize(long long int chromS);
@@ -220,7 +220,6 @@ public:
 
 
     template<class Compare>
-
     void sortSites(Compare comp,std::function<float(const _BASE_*)> getStart_funct=nullptr,std::function<float(const _BASE_*)> getEnd_funct=nullptr);
     void sortSites();
 
@@ -771,7 +770,7 @@ void uGenericNGSChrom<_SELF_,_BASE_>::printStats(std::ostream& out) const
  *
  */
 template <class _SELF_,class _BASE_>
-typename std::vector<_BASE_>::const_iterator uGenericNGSChrom<_SELF_,_BASE_>::findPrecedingSite(const float pPosition) const
+typename std::vector<_BASE_>::const_iterator uGenericNGSChrom<_SELF_,_BASE_>::findPrecedingSite(const double pPosition) const
 {
     try
     {
@@ -829,7 +828,7 @@ typename std::vector<_BASE_>::const_iterator uGenericNGSChrom<_SELF_,_BASE_>::fi
  *
  */
 template <class _SELF_,class _BASE_>
-typename std::vector<_BASE_>::const_iterator uGenericNGSChrom<_SELF_,_BASE_>::findNextSite(const float pPosition) const
+typename std::vector<_BASE_>::const_iterator uGenericNGSChrom<_SELF_,_BASE_>::findNextSite(const double pPosition) const
 {
     try
     {
@@ -1500,7 +1499,6 @@ std::vector<_BASE_> uGenericNGSChrom<_SELF_,_BASE_>::getSpecificSites(UnaryPredi
     try
     {
         std::vector<_BASE_> copyVec {};
-        // copyVec.reserve(VecSites.size());
         copy_if(std::begin(VecSites), std::end(VecSites), std::back_inserter(copyVec), pred);
         return copyVec;
     }
@@ -1808,7 +1806,7 @@ std::pair<typename std::vector<_BASE_>::const_iterator, typename std::vector<_BA
       * \return std::function<float(const _BASE_*)> const Copy of the fucntor to access start.
       */
     template <class _SELF_,class _BASE_>
-    std::function<float(const _BASE_*)> uGenericNGSChrom<_SELF_,_BASE_>::getStartFunct() const
+    std::function<double(const _BASE_*)> uGenericNGSChrom<_SELF_,_BASE_>::getStartFunct() const
     {
         return sortGetStart;
     }
@@ -1819,7 +1817,7 @@ std::pair<typename std::vector<_BASE_>::const_iterator, typename std::vector<_BA
     * \return std::function<float(const _BASE_*)> const Copy of the fucntor to access end.
     */
     template <class _SELF_,class _BASE_>
-    std::function<float(const _BASE_*)> uGenericNGSChrom<_SELF_,_BASE_>::getEndFunct() const
+    std::function<double(const _BASE_*)> uGenericNGSChrom<_SELF_,_BASE_>::getEndFunct() const
     {
         return sortGetEnd;
     }
@@ -1856,7 +1854,7 @@ std::pair<typename std::vector<_BASE_>::const_iterator, typename std::vector<_BA
      *
      */
     template <class _SELF_,class _BASE_>
-    int uGenericNGSChrom<_SELF_,_BASE_>::count() const
+    long int uGenericNGSChrom<_SELF_,_BASE_>::count() const
     {
         return VecSites.size();
     }
