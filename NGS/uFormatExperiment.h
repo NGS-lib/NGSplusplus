@@ -94,7 +94,7 @@ public:
      virtual void addData(const _BASE_ &);
     // TODO: if chr do not exist, we keep sorted status. Otherwise sorted status should be false and size should be set to highest value between both chr.
      virtual void addData(const _CHROM_ &);
-     virtual void addData(const _SELF_ &);
+//     virtual void addData(const _SELF_ &);
      virtual void addData(const uToken &);
     //TODO Test this
     void replaceChr(const _CHROM_ &);
