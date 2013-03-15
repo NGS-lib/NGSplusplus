@@ -4,8 +4,8 @@
 #include "uTags.h"
 #include "uBasicNGS.h"
 #include "uRegion.h"
-#include "third-party/api/BamReader.h"
-#include "third-party/api/BamWriter.h"
+#include "api/BamReader.h"
+#include "api/BamWriter.h"
 namespace NGS
 {
 

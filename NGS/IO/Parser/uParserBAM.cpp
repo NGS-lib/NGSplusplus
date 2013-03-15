@@ -1,5 +1,5 @@
 #include "uParserBAM.h"
-#include "../utility/utility.h"
+#include "../../utility/utility.h"
 #include <sstream>
 //#include "uParserFactory.h"
 namespace NGS
@@ -30,7 +30,7 @@ void uParserBAM::init(const std::string& filename, bool header )
    // uParserBase::init(filename, header);
     m_BamReader.Open(filename);
       //  throw parser_exception
-    _parseHeader();
+  //  _parseHeader();
 
 //            m_headerData._addToParam(header_param::CHR,chrom);
  //           m_headerData._addToParam(header_param::CHR_SIZE,utility::to_string(refSeqlenght));
@@ -44,6 +44,7 @@ void uParserBAM::init(const std::string& filename, bool header )
  */
 void uParserBAM::init(std::istream* stream, bool header )
 {
+    throw uParser_exception_base()<<string_error("Calling invalid bamParser version");
 
    // uParserBase::init(stream, header);
    // _parseHeader();
@@ -69,9 +70,9 @@ uToken uParserBAM::getNextEntry()
         uToken ourToken;
         /**< Make token from the Bam entry */
         ourToken._setParamNoValidate(token_param::SEQ_NAME, m_BufferAlignement.Name);
+        ourToken._setParamNoValidate(token_param::START_POS, std::to_string(m_BufferAlignement.Position+1));
         ourToken._setParamNoValidate(token_param::FLAGS, std::to_string(m_BufferAlignement.AlignmentFlag) );
         ourToken._setParamNoValidate(token_param::CHR,  m_BamReader.GetReferenceData().at(m_BufferAlignement.RefID).RefName);
-        ourToken._setParamNoValidate(token_param::START_POS, std::to_string(m_BufferAlignement.Position+1));
         ourToken._setParamNoValidate(token_param::MAP_SCORE, std::to_string(m_BufferAlignement.MapQuality));
         ourToken._setParamNoValidate(token_param::TEMPLATE_LENGHT, std::to_string(m_BufferAlignement.InsertSize));
         ourToken._setParamNoValidate(token_param::SEQUENCE,   m_BufferAlignement.QueryBases );
@@ -106,12 +107,13 @@ void uParserBAM::_parseHeader()
 bool uParserBAM::eof(){
 
     if (m_IsBuffer)
-        return true;
+        return false;
 
-    if ( m_BamReader.GetNextAlignment(m_BufferAlignement) )
+    if ( m_BamReader.GetNextAlignment(m_BufferAlignement) ){
         m_IsBuffer=true;
-        return true;
-    return false;
+        return false;
+    }
+    return true;
 }
 
 

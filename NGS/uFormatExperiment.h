@@ -94,9 +94,8 @@ public:
      virtual void addData(const _BASE_ &);
     // TODO: if chr do not exist, we keep sorted status. Otherwise sorted status should be false and size should be set to highest value between both chr.
      virtual void addData(const _CHROM_ &);
-//     virtual void addData(const _SELF_ &);
      virtual void addData(const uToken &);
-    //TODO Test this
+//TODO Test this
     void replaceChr(const _CHROM_ &);
     void removeChr(const std::string &);
 
@@ -115,7 +114,7 @@ public:
 
     virtual void loadWithParser(std::ifstream&, std::string);
     virtual void loadWithParser(std::string, std::string);
-    virtual void loadWithParser(uParser&, long long =0);
+    virtual void loadWithParser(uParser&, long long=0);
 
     template<class UnaryPredicate>
     void loadWithParser_if(uParser& pParser,UnaryPredicate predicate, long long pBlockCount=0);
@@ -242,10 +241,11 @@ public:
 
 };
 
-//Start uGenericNGSExperiment
+
 /** \brief Add a site to the experiment.
  *
  * \param const _BASE_ & newSite: the site to add to the experiment.
+ * \sa addData
  * \return void
  *
  */
@@ -259,15 +259,22 @@ void uGenericNGSExperiment<_SELF_,_CHROM_, _BASE_>::addData(const _BASE_ & newSi
         ptempChrom->setChr(newSite.getChr());
         ptempChrom->addData(newSite);
     }
-    catch(std::exception & e)
+    catch(...)
     {
 #ifdef DEBUG
         std::cerr << "Catching and re-throwing in uFormatExp::addData()" <<std::endl;
 #endif
-        throw e;
+        throw;
     }
 }
 template<class _SELF_, typename _CHROM_, typename _BASE_>
+/** \brief Transform a token and add the necessary information. Typically this creates a single site
+ *
+ * \param pToken const uToken&
+ * \sa addData
+ * \return void uGenericNGSExperiment<_SELF_,_CHROM_,
+ *
+ */
 void uGenericNGSExperiment<_SELF_,_CHROM_, _BASE_>::addData(const uToken & pToken){
     try
     {
@@ -277,12 +284,12 @@ void uGenericNGSExperiment<_SELF_,_CHROM_, _BASE_>::addData(const uToken & pToke
         ptempChrom->setChr(chr);
         ptempChrom->addData(pToken);
     }
-    catch(std::exception & e)
+    catch(...)
     {
 #ifdef DEBUG
         std::cerr << "Catching and re-throwing in uFormatExp::addData()" <<std::endl;
 #endif
-        throw e;
+        throw;
     }
 
 
@@ -381,7 +388,7 @@ void uGenericNGSExperiment<_SELF_,_CHROM_, _BASE_>::loadWithParser(uParser& pPar
 {
     try
     {
-        if (pBlockCount){
+        if (pBlockCount>0){
             int counter=0;
             while ((pParser.eof()==false)&&(counter!=pBlockCount))
             {
