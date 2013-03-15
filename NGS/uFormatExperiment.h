@@ -13,7 +13,7 @@ enum class ReadMode
     DEFAULT, GRADUAL
 };
 
-//TODO, make function that returns all chromosome name
+//NOTE,Discuss use of a function that returns all chrom names.
 /**<
 Explanation on _SELF_
 This is a simple implementation of the curiously recurring template (CRT)
@@ -78,8 +78,6 @@ protected:
     std::function<float(const _BASE_*)> sortGetEnd=nullptr ;
     std::function<bool(const _BASE_ &item1, const _BASE_ &item2)> m_comptFunc=compareStart;
 
-    //TODO Make this function
-
     void inferChrSize();
 
 
@@ -90,12 +88,10 @@ public:
     uGenericNGSExperiment& operator=(const uGenericNGSExperiment& copFrom)=default;
     uGenericNGSExperiment(const uGenericNGSExperiment&)=default;
 
-    //TODO code these overloads
      virtual void addData(const _BASE_ &);
-    // TODO: if chr do not exist, we keep sorted status. Otherwise sorted status should be false and size should be set to highest value between both chr.
      virtual void addData(const _CHROM_ &);
      virtual void addData(const uToken &);
-    //TODO Test this
+
     void replaceChr(const _CHROM_ &);
     void removeChr(const std::string &);
 
@@ -107,13 +103,13 @@ public:
     typename std::vector<_BASE_>::const_iterator findPrecedingSite(std::string chr, int position)const;
     typename std::vector<_BASE_>::const_iterator findNextSite(std::string chr, int position)const;
     //TODO finish these implementations
-    void removeSite(std::string chr,int position);
-    void removeSite(std::string chr,int start,int end);
-    void removeSite(std::string chr,VecGenConstIter position);
-    void removeSite(std::string chr,VecGenConstIter start,VecGenConstIter end);
+    void removeSite(const std::string & pChr,const long int position);
+    void removeSite(const std::string & pChr,const long int pStart,const long int pEnd);
+    void removeSite(const std::string & pChr,VecGenConstIter pItrPos);
+    void removeSite(const std::string & pChr,VecGenConstIter pItrStart,VecGenConstIter pItrEnd);
 
-    virtual void loadWithParser(std::ifstream&, std::string);
-    virtual void loadWithParser(std::string, std::string);
+    virtual void loadWithParser(std::ifstream&, std::string,long long=0);
+    virtual void loadWithParser(std::string, std::string,long long=0);
     virtual void loadWithParser(uParser&, long long=0);
 
     template<class UnaryPredicate>
@@ -154,26 +150,22 @@ public:
     _CHROM_ getChrom(const std::string & chrom) const;
     const _CHROM_* getpChrom(const std::string & chrom) const;
     _CHROM_* getpChrom(const std::string & chrom);
-    _BASE_ getSite(std::string chr, int position)const;
+    _BASE_ getSite(const std::string & pChr, long int pPosition)const;
     _BASE_ getSite(typename std::vector<_BASE_>::const_iterator posItr)const;
 
     _SELF_ getOverlapping(_SELF_ &compareExp, OverlapType type=OverlapType::OVERLAP_PARTIAL);
     _SELF_ getOverlapping(_CHROM_ &compareChrom, OverlapType type=OverlapType::OVERLAP_PARTIAL);
     _SELF_ getOverlapping(std::string chr, int start, int end, OverlapType type=OverlapType::OVERLAP_PARTIAL);
 
-     _CHROM_ getSubset(std::string pChr, double pStart, double pEnd, OverlapType options=OverlapType::OVERLAP_PARTIAL);
-     _CHROM_ removeSubset(std::string pChr,double pStart, double pEnd, OverlapType overlap=OverlapType::OVERLAP_PARTIAL);
+     _CHROM_ getSubset(const std::string & pChr, const double pStart, const double pEnd, OverlapType options=OverlapType::OVERLAP_PARTIAL);
+     _CHROM_ removeSubset(const std::string & pChr,const double pStart, const double pEnd, OverlapType overlap=OverlapType::OVERLAP_PARTIAL);
+
+     _SELF_ getDistinct(const std::string & pChr, const double pStart, const double pEnd, OverlapType type=OverlapType::OVERLAP_PARTIAL);
+     _SELF_ removeDistinct(const std::string & pChr,const double pStart, const double pEnd, OverlapType options=OverlapType::OVERLAP_PARTIAL);
 
 
-
-     _SELF_ getDistinct(std::string pChr, double pStart, double pEnd, OverlapType type=OverlapType::OVERLAP_PARTIAL);
-     _SELF_ removeDistinct(std::string pChr,double p_start, double p_end, OverlapType options=OverlapType::OVERLAP_PARTIAL);
-
-
-
-    int getSubsetCount(const std::string & chr, const float start, const float end, const OverlapType overlap=OverlapType::OVERLAP_PARTIAL);
-    int getSubsetCount(const _BASE_ & subsetReg, const OverlapType overlap=OverlapType::OVERLAP_PARTIAL);
-
+    long int getSubsetCount(const std::string & pChr, const double pStart, const double pEnd, const OverlapType overlap=OverlapType::OVERLAP_PARTIAL);
+    long int getSubsetCount(const _BASE_ & subsetReg, const OverlapType overlap=OverlapType::OVERLAP_PARTIAL);
 
     void setChrSize(std::string chr, int chrSize);
     int getChrSize(std::string chr);
@@ -201,12 +193,10 @@ public:
       * \return A collection containing all the chromosomes for which the predicate is true
       */
 
-    //TODO, make this return an EXPERIMENT
+    //NOTE, should this return an experiment?
      template<class UnaryPredicate>
     auto getSpecificChroms(UnaryPredicate pred) const->decltype(ExpMap)
     {
-    //         auto begin()->decltype(ExpMap.begin()){return ExpMap.begin();};
-        // NGSExpMap copyColl;
         decltype(ExpMap) copyColl;
         copy_if(std::begin(ExpMap), std::end(ExpMap), std::inserter(copyColl, std::begin(copyColl)), [&pred]( const typename decltype(ExpMap)::value_type& element)
         {
@@ -296,10 +286,7 @@ void uGenericNGSExperiment<_SELF_,_CHROM_, _BASE_>::addData(const uToken & pToke
 }
 
 
-
-
-// TODO: keep only removeSite and getSite with iterator public, others should be private
-/** \brief Remove a specific number from the specific subtype. //TODO Should this be public?
+/** \brief Remove a specific number from the specific scaffold. It is recommende to work through the iterator overloads
  *
  * \param chr std::string : Key to map element (chrom)
  * \param position int : position to remove
@@ -307,27 +294,128 @@ void uGenericNGSExperiment<_SELF_,_CHROM_, _BASE_>::addData(const uToken & pToke
  *
  */
 template<class _SELF_, typename _CHROM_, typename _BASE_>
-void uGenericNGSExperiment<_SELF_,_CHROM_, _BASE_>::removeSite(std::string chr, int position)
+void uGenericNGSExperiment<_SELF_,_CHROM_, _BASE_>::removeSite(const std::string & pChr, const long int pPosition)
 {
     _CHROM_* tempChrom;
-    tempChrom=&(ExpMap[chr]);
+    tempChrom=&(ExpMap[pChr]);
     try
     {
-        if (position>=tempChrom->count())
+        if (pPosition>=tempChrom->count())
         {
-            abort();
+           throw param_throw()<<string_error("Crashing in removeSite() in uGenericNGSEXperiment, required index higher then number of sites");
         }
-        tempChrom->removeSite(position);
+        tempChrom->removeSite(pPosition);
 
     }
     catch(...)
     {
-        std::cerr << "Crashing in removeSite() in uGenericNGSEXperiment,";
+        #ifdef DEBUG
+            std::cerr << "Catching and re-throwing in removeSite() in uGenericNGSEXperiment,";
+        #endif
         throw;
     }
 }
 
-/** \brief Infer and set the of every chrom base on their tags at the highest position.
+/** \brief Remove a specific range of elements from the specific scaffold. It is recommende to work through the iterator overloads
+ *
+ * \param chr std::string : Key to map element (chrom)
+ * \param position int : position to remove
+ * \return void uGenericNGSExperiment<_CHROM_,
+ *
+ */
+template<class _SELF_, typename _CHROM_, typename _BASE_>
+void uGenericNGSExperiment<_SELF_,_CHROM_, _BASE_>::removeSite(const std::string &  pChr, const long int pStart, const long int pEnd)
+{
+    try
+    {
+    _CHROM_* tempChrom;
+        if (this->isChrom(pChr)==false)
+             throw param_throw()<<string_error("Throwing in removeSite(long int,long int). Required scaffold that is not set");
+
+        tempChrom=&(ExpMap[pChr]);
+        if ((pStart>pEnd)||(!pStart)||(pEnd))
+             throw param_throw()<<string_error("Throwing in removeSite(long int,long int). Either index under 0, or end position smaller then start");
+
+        if (pEnd>=tempChrom->count())
+        {
+            throw param_throw()<<string_error("Crashing in removeSite() in uGenericNGSEXperiment, required index higher then number of sites");
+        }
+        tempChrom->removeSite(pStart,pEnd);
+
+    }
+    catch(...)
+    {
+        #ifdef DEBUG
+            std::cerr << "Crashing in removeSite() in uGenericNGSEXperiment,";
+        #endif
+        throw;
+    }
+}
+
+
+/** \brief Remove the element pointed at by iterator. This function is a relatively straightforward wrapping of
+ *         std::erase and follows the same rules and canveats
+ * \param chr std::string : Key to map element (chrom)
+ * \param position int : position to remove
+ * \return void uGenericNGSExperiment<_CHROM_,
+ *
+ */
+template<class _SELF_, typename _CHROM_, typename _BASE_>
+void uGenericNGSExperiment<_SELF_,_CHROM_, _BASE_>::removeSite(const std::string & pChr,VecGenConstIter pItrPos)
+{
+    try
+    {
+        _CHROM_* tempChrom;
+        if (this->isChrom(pChr)==false)
+             throw param_throw()<<string_error("Throwing in removeSite(long int,long int). Required scaffold that is not set");
+
+        tempChrom=&(ExpMap[pChr]);
+        tempChrom->removeSite(pItrPos);
+    }
+    catch(...)
+    {
+        #ifdef DEBUG
+            std::cerr << "Crashing in removeSite() in uGenericNGSEXperiment,";
+        #endif
+        throw;
+    }
+}
+
+
+/** \brief Remove the range of elements pointed at by the iterator. This function is a relatively straightforward wrapping of
+ *         std::erase and follows the same rules and canveats. Reminder, std:: erase will not erase the element pointed by the end-of-range iterator.
+ *
+ * \param chr std::string : Key to map element (chrom)
+ * \param start VecGenConstIter : Iterator pointing to the start of the range to erase
+ * \param end VecGenConstIter : Iterator pointing to the end of the range to erase
+ * \sa removeSite
+ * \return void
+ *
+ */
+template<class _SELF_, typename _CHROM_, typename _BASE_>
+void uGenericNGSExperiment<_SELF_,_CHROM_, _BASE_>::removeSite(const std::string & pChr,VecGenConstIter pItrStart,VecGenConstIter pItrEnd)
+{
+    try
+    {
+        _CHROM_* tempChrom;
+        if (this->isChrom(pChr)==false)
+             throw param_throw()<<string_error("Throwing in removeSite(long int,long int). Required scaffold that is not set");
+
+        tempChrom->removeSite(pItrStart,pItrEnd);
+
+    }
+    catch(...)
+    {
+        #ifdef DEBUG
+            std::cerr << "Crashing in removeSite() in uGenericNGSEXperiment,";
+        #endif
+        throw;
+    }
+}
+
+
+
+/** \brief Infer and set the of every chrom base on their region at the highest position.
 * \return void
  */
 template<class _SELF_, typename _CHROM_, typename _BASE_>
@@ -345,19 +433,18 @@ void uGenericNGSExperiment<_SELF_,_CHROM_, _BASE_>::inferChrSize()
  *
  */
 template<class _SELF_, typename _CHROM_, typename _BASE_>
-void uGenericNGSExperiment<_SELF_,_CHROM_, _BASE_>::loadWithParser(std::ifstream& pStream, std::string pType)
+void uGenericNGSExperiment<_SELF_,_CHROM_, _BASE_>::loadWithParser(std::ifstream& pStream, std::string pType, long long pBlockCount)
 {
     try
     {
         std::istream& refStream = pStream;
-        uParser Curparser(&refStream, pType);
+        uParser Curparser(&refStream, pType,pBlockCount);
         loadWithParser(Curparser);
     }
     catch (uParser_exception_base& e) // TODO: check if there is something else that can be thrown
     {
         throw e;
     }
-   // inferChrSize();
 }
 
 /** \brief Load a file
@@ -365,12 +452,12 @@ void uGenericNGSExperiment<_SELF_,_CHROM_, _BASE_>::loadWithParser(std::ifstream
  * \param std::string pType: the file type (i.e.: BED, SAM, BEDGRAPH, WIG, etc...)
  */
 template<class _SELF_, typename _CHROM_, typename _BASE_>
-void uGenericNGSExperiment<_SELF_,_CHROM_, _BASE_>::loadWithParser(std::string filepath, std::string pType)
+void uGenericNGSExperiment<_SELF_,_CHROM_, _BASE_>::loadWithParser(std::string filepath, std::string pType, long long pBlockCount)
 {
 
     try
     {
-      uParser ourParser(filepath, pType);
+      uParser ourParser(filepath, pType,pBlockCount);
       loadWithParser(ourParser);
     }
     catch (...)
@@ -407,7 +494,6 @@ void uGenericNGSExperiment<_SELF_,_CHROM_, _BASE_>::loadWithParser(uParser& pPar
     {
         throw;
     }
-    inferChrSize();
 }
 
 /** \brief Load up to pBlockCount data (0 = load entire file), keeping only data that fits condition
@@ -442,21 +528,8 @@ void uGenericNGSExperiment<_SELF_,_CHROM_, _BASE_>::loadWithParser_if(uParser& p
     {
         throw;
     }
-    inferChrSize();
 }
 
-
-//** \brief Write our data as a legal bed file, filling only the first three columns
-// *          DEPRECATED
-// * \param out std::ofstream& stream to write to
-// * \return void
-// *
-// */
-//template<class _SELF_, typename _CHROM_, typename _BASE_>
-//void uGenericNGSExperiment<_SELF_,_CHROM_, _BASE_>::writeAsBedFile(std::ostream& out) const
-//{
- //   applyOnAllChroms(bind2nd(mem_fun_ref(&_CHROM_::outputBedFormat)   , out));
-//}
 
 /** \brief Write our data using the provided Writer
  *
@@ -591,22 +664,21 @@ long long uGenericNGSExperiment<_SELF_,_CHROM_, _BASE_>::count() const
  *
  */
 template<class _SELF_, typename _CHROM_, typename _BASE_>
-int uGenericNGSExperiment<_SELF_,_CHROM_, _BASE_>::getSubsetCount(const std::string & chr, const float start, const float end, OverlapType overlap)
+long int uGenericNGSExperiment<_SELF_,_CHROM_, _BASE_>::getSubsetCount(const std::string & pChr, const double pStart, const double pEnd, OverlapType overlap)
 {
-    int count = 0;
+    long int count = 0;
     try
     {
-        count = getpChrom(chr)->getSubsetCount(start, end, overlap);
+        count = getpChrom(pChr)->getSubsetCount(pStart, pEnd, overlap);
     }
-    catch (ugene_operation_throw& e)
+    catch (...)
     {
-        throw e;
+        throw;
     }
     return count;
 }
 
-//TODO Deprecate or make general
-/** \brief Return overlap of a specific position for a specific map
+/** \brief Return overlap of a specific position
  *
  * \param const _BASE_ & subsetReg: a tag that represent a subset of an experiment.
  * \param overlap int : Type of overlap
@@ -614,14 +686,17 @@ int uGenericNGSExperiment<_SELF_,_CHROM_, _BASE_>::getSubsetCount(const std::str
  *
  */
 template<class _SELF_, typename _CHROM_, typename _BASE_>
-int uGenericNGSExperiment<_SELF_,_CHROM_, _BASE_>::getSubsetCount(const _BASE_ & subsetReg, const OverlapType overlap)
+long int uGenericNGSExperiment<_SELF_,_CHROM_, _BASE_>::getSubsetCount(const _BASE_ & subsetReg, const OverlapType overlap)
 {
-
-    int count=0;
+    try {
+    long int count=0;
     count = getSubsetCount(subsetReg.getChr(),
                            subsetReg.getStart(),
                            subsetReg.getEnd());
     return count;
+    }catch(...){
+        throw;
+    }
 }
 
 
@@ -697,12 +772,19 @@ bool uGenericNGSExperiment<_SELF_,_CHROM_, _BASE_>::isSorted()const
 template<class _SELF_, typename _CHROM_, typename _BASE_>
 typename std::vector<_BASE_>::const_iterator uGenericNGSExperiment<_SELF_,_CHROM_, _BASE_>::findPrecedingSite(std::string chr, int position)const
 {
+
     if (!ExpMap.count(chr))
     {
         throw param_throw()<<string_error("Failling in uGenericNGSExperiment::findPrecedingSite, value "+chr+" does not exist.\n");
     }
+    try {
+
     auto tempChrom = getpChrom(chr);
-    return tempChrom->findPrecedingSite(position); // TODO: try catch for exception in findNextSite?
+    return tempChrom->findPrecedingSite(position);
+    }catch(...)
+    {
+        throw;
+    }
 }
 
 /** \brief Return an interator pointing to the element of the chr after the specified value
@@ -723,7 +805,7 @@ typename std::vector<_BASE_>::const_iterator uGenericNGSExperiment<_SELF_,_CHROM
         throw param_throw()<<string_error("Failling in uGenericNGSExperiment::findNextSite, value "+chr+" does not exist.\n");
     }
     auto tempChrom = getpChrom(chr);
-    return tempChrom->findNextSite(position); // TODO: try catch for exception in findNextSite?
+    return tempChrom->findNextSite(position);
     }
     catch(...)
     {    throw;  }
@@ -738,10 +820,10 @@ typename std::vector<_BASE_>::const_iterator uGenericNGSExperiment<_SELF_,_CHROM
  */
  //TODO, check this? Should send chr
 template<class _SELF_, typename _CHROM_, typename _BASE_>
-_BASE_ uGenericNGSExperiment<_SELF_,_CHROM_, _BASE_>::getSite(std::string chr, int position) const
+_BASE_ uGenericNGSExperiment<_SELF_,_CHROM_, _BASE_>::getSite(const std::string & pChr, const long int pPosition) const
 {
-    auto tempChrom = getpChrom(chr);
-    return tempChrom->getSite(position);
+    auto tempChrom = getpChrom(pChr);
+    return tempChrom->getSite(pPosition);
 }
 
 /** \brief Get a specific site from a specific chrom. Overloaded to work with an interator, typically got from findPrecedingor findNext
@@ -767,7 +849,7 @@ _BASE_ uGenericNGSExperiment<_SELF_,_CHROM_, _BASE_>::getSite(typename std::vect
  *
  */
 template<class _SELF_, typename _CHROM_, typename _BASE_>
-_CHROM_ uGenericNGSExperiment<_SELF_,_CHROM_, _BASE_>::getSubset(std::string pChr, double pStart, double pEnd, OverlapType options)
+_CHROM_ uGenericNGSExperiment<_SELF_,_CHROM_, _BASE_>::getSubset(const std::string & pChr, const double pStart, const double pEnd, OverlapType options)
 {
     if (ExpMap.count(pChr)==0)
         return _CHROM_();
@@ -785,7 +867,7 @@ _CHROM_ uGenericNGSExperiment<_SELF_,_CHROM_, _BASE_>::getSubset(std::string pCh
  *
  */
  template<class _SELF_, typename _CHROM_, typename _BASE_>
-_CHROM_ uGenericNGSExperiment<_SELF_,_CHROM_, _BASE_>::removeSubset(std::string pChr,double pStart, double pEnd, OverlapType overlap){
+_CHROM_ uGenericNGSExperiment<_SELF_,_CHROM_, _BASE_>::removeSubset(const std::string & pChr,const double pStart, const double pEnd, OverlapType overlap){
 
 if (ExpMap.count(pChr)==0)
         return _CHROM_();
@@ -805,7 +887,7 @@ if (ExpMap.count(pChr)==0)
  */
 
 template<class _SELF_, typename _CHROM_, typename _BASE_>
-_SELF_ uGenericNGSExperiment<_SELF_,_CHROM_, _BASE_>::getDistinct(std::string pChr, double pStart, double pEnd,  OverlapType options)
+_SELF_ uGenericNGSExperiment<_SELF_,_CHROM_, _BASE_>::getDistinct(const std::string & pChr, const double pStart, const double pEnd,  OverlapType options)
 {
     typename NGSExpMap::iterator iterMap;
     _SELF_ returnExp;
@@ -829,7 +911,7 @@ _SELF_ uGenericNGSExperiment<_SELF_,_CHROM_, _BASE_>::getDistinct(std::string pC
  *
  */
  template<class _SELF_, typename _CHROM_, typename _BASE_>
-_SELF_ uGenericNGSExperiment<_SELF_,_CHROM_, _BASE_>::removeDistinct(std::string pChr, double pStart, double pEnd, OverlapType options)
+_SELF_ uGenericNGSExperiment<_SELF_,_CHROM_, _BASE_>::removeDistinct(const std::string & pChr, const double pStart, const double pEnd, OverlapType options)
 {
      typename NGSExpMap::iterator iterMap;
     _SELF_ returnExp;
@@ -1246,8 +1328,6 @@ UnaryFunction uGenericNGSExperiment<_SELF_,_CHROM_,_BASE_>::applyOnSites(const U
     return f;
 }
 
-
-// TODO: there should not be 2 versions, only one that use a parser in paramaters
 /** \brief load data from Parser, convert to unitary and execute the given function. Does -not- necessarily add to EXP
  *
  * \param stream std::ifstream& file to load from
@@ -1263,9 +1343,9 @@ void uGenericNGSExperiment<_SELF_,_CHROM_,_BASE_>::loadWithParserAndRun(std::ifs
         uParser Curparser(&pStream, pType);
         loadWithParserAndRun(Curparser,funct,pBlockSize);
     }
-    catch (uParser_exception_base& e)
+    catch (...)
     {
-        throw e;
+        throw;
     }
 }
 
@@ -1303,9 +1383,9 @@ void uGenericNGSExperiment<_SELF_,_CHROM_,_BASE_>::loadWithParserAndRun(uParser&
             }
         }
     }
-    catch (uParser_exception_base& e) // TODO: check if there is something else that can be thrown
+    catch (...) // TODO: check if there is something else that can be thrown
     {
-        throw e;
+        throw;
     }
 }
 
@@ -1325,9 +1405,9 @@ void uGenericNGSExperiment<_SELF_,_CHROM_,_BASE_>::loadWithParserAndRun(std::str
         uParser Curparser(filepath, pType);
         loadWithParserAndRun(Curparser,f,pBlockSize);
     }
-    catch (uParser_exception_base& e) // TODO: check if there is something else that can be thrown
+    catch (...)
     {
-        throw e;
+        throw;
     }
 }
 

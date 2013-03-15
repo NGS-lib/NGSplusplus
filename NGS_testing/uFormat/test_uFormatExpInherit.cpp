@@ -743,3 +743,18 @@ TEST(uBasicNGSGENEXP_removeDistinct, VALID) {
 }
 
 
+
+TEST(uBasicNGSGENEXP_addData, UNIT) {
+
+	ASSERT_TRUE(false);
+}
+
+TEST(uBasicNGSGENEXP_addData, CHROM) {
+
+	ASSERT_TRUE(false);
+}
+
+TEST(uBasicNGSGENEXP_addData, CHROMDUP) {
+
+	ASSERT_TRUE(false);
+}

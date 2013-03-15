@@ -59,16 +59,7 @@ public:
 
     bool isEqual(const uTags & pCompared)const;
 
-    //TODO
-
     uToken createToken()const;
-
-
- //   void writetoBedCompletePE( std::ostream &out);
- //   void writeCompletedPESamToOutput(std::ostream &out);
- //   bool writeTrimmedSamToOutput(std::ostream &out, int left, int right);
- //   void loadfromSamString(std::string peakInfo, bool minimal);
- //   void writeSamToOutput(std::ostream &out) const;
 
     void print(std::ostream &pOut) const; /**< Prints a human readable version of the data */
 

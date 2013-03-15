@@ -49,6 +49,7 @@ struct uWriterBaseFactory {
 
     uWriterBaseFactory()
     {
+        Register("BED", &uWriterBed4::Create);
         Register("BED4", &uWriterBed4::Create);
         Register("BED6", &uWriterBed6::Create);
         Register("WIG", &uWriterWig::Create);

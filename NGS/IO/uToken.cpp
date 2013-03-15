@@ -260,8 +260,7 @@ bool uToken::isParamSet(const std::string& name, int pos) const
     }
     return false;
 }
-//TODO
-//FINISHHH!
+
 /** \brief Check number of parameters associated
  * \param const token_param& name: the name of the param in token_param format.
  * \return true if the param is set, otherwise return false.
@@ -271,7 +270,7 @@ int uToken::paramCount(const std::string& name) const
     try
     {
         token_param tokenName = _convertStringToTokenParam(name);
-        return isParamSet(tokenName);
+        return paramCount(tokenName);
     }
     catch (invalid_token_param_throw& e)
     {
@@ -320,7 +319,6 @@ bool uToken::_validateParam(const token_param& name, const std::string& value) c
     {
         return false;
     }
-    //TODO numerical checks? Is float and so on
     /**< Then we do basic check for every type of parameters */
     switch(name)
     {
@@ -661,7 +659,6 @@ bool uToken::_cigarIsValid(const std::string& value) const
 
 bool uToken::_scoreIsValid(const std::string& value) const
 {
-//TODO replace, do not use try catch as flow control tool
     try
     {
         utility::stof(value);

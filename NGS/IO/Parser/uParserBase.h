@@ -17,7 +17,7 @@
 #include <boost/xpressive/xpressive.hpp>
 namespace NGS
 {
-//TODO REFACTOR
+
 namespace PDEF{
     const char UCSCCOMMENT='#';
     const std::string UCSCBROWSER="browser";

@@ -127,7 +127,7 @@ uHeader& uHeader::operator=(uHeader const& assign_from)
  */
 void uHeader::_setParam(const header_param& name, const std::string& value)
 {
-    // TODO: Valiation and post-process of param?
+
     if (m_params[name].size()==0)
           m_params[name].resize(1);
     if (_validateParam(name,value)==false)
@@ -147,7 +147,7 @@ void uHeader::_setParam(const header_param& name, const std::string& value)
  */
 void uHeader::_addToParam(const header_param& name, const std::string& value)
 {
-    // TODO: Valiation and post-process of param?
+
     std::string strName; strName << name;
     if (_validateParam(name,value)==false){
         std::string errMsg;

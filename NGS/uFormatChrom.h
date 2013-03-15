@@ -70,8 +70,8 @@ protected:
     void addDataNoCheck( _BASE_ newSite);
     template<class L, typename S, typename R> friend class uGenericNGSExperiment;
     /**< Private site removal */
-    void removeSite(int position);
-    void removeSite(int start,int end);
+    void removeSite(const long int pPosition);
+    void removeSite(const long int pStart,const long int pEnd);
 
 
 public:
@@ -151,7 +151,6 @@ public:
 
     template <class _OTHER_>
     _SELF_ getNotOverlapping(_OTHER_ &compareChr,OverlapType pOverlap=OverlapType::OVERLAP_PARTIAL) const;
-    //TODO getNotOVerlappingCount
 
     /**< Functions to manipulate generically ranges of our elements. Requires the collection to be sorted */
     _SELF_ getSubset(double p_start, double p_end, OverlapType overlap=OverlapType::OVERLAP_PARTIAL) const;
@@ -202,7 +201,7 @@ public:
 
     template<class UnaryOperation>
     auto computeOnAllSites(UnaryOperation unary_op) -> std::vector<decltype(unary_op(_BASE_()))>;
-    //TODO return chrom?,
+    //NOTE Make a version that returns a chrom?
     template<class UnaryPredicate>
     std::vector<_BASE_> getSpecificSites(UnaryPredicate pred) const;
     template<class UnaryPredicate>
@@ -396,11 +395,14 @@ void uGenericNGSChrom<_SELF_,_BASE_>::addDataNoCheck(_BASE_ newSite)
  *
  */
 template <class _SELF_, class _BASE_>
-void uGenericNGSChrom<_SELF_,_BASE_>::removeSite(int position)
+void uGenericNGSChrom<_SELF_,_BASE_>::removeSite(const long int pPosition)
 {
     try
     {
-        VecSites.erase(VecSites.begin()+(position));
+        if (pPosition>=VecSites.size())
+            throw param_throw()<<string_error("Crashing in removeSite(), required index higher then number of sites");
+
+        VecSites.erase(VecSites.begin()+(pPosition));
     }
     catch(...)
     {
@@ -409,12 +411,18 @@ void uGenericNGSChrom<_SELF_,_BASE_>::removeSite(int position)
 
 }
 template <class _SELF_, class _BASE_>
-void uGenericNGSChrom<_SELF_,_BASE_>::removeSite(int start, int end)
+void uGenericNGSChrom<_SELF_,_BASE_>::removeSite(const long int pStart, const long int pEnd)
 {
     try
     {
+        if ((pStart>pEnd)||(!pStart)||(pEnd))
+            throw param_throw()<<string_error("Throwing in removeSite(long int,long int). Either index under 0, or end position smaller then start");
+        if (pEnd>=VecSites.size())
+            throw param_throw()<<string_error("Crashing in removeSite(), required index higher then number of sites");
+
+
         m_isSorted=false;
-        VecSites.erase(VecSites.begin()+(start),VecSites.begin()+(end));
+        VecSites.erase(VecSites.begin()+(pStart),VecSites.begin()+(pEnd));
     }
     catch(...)
     {
@@ -439,7 +447,6 @@ void uGenericNGSChrom<_SELF_,_BASE_>::removeSite(VecGenConstIter pStartItr,VecGe
 {
     try
     {
-        m_isSorted=false;
         /**< According to the C++11 standard, const iterator should be allowed in erase
         However, implementation does not seem to have caught up, hence this patch
          */
@@ -466,7 +473,6 @@ void uGenericNGSChrom<_SELF_,_BASE_>::removeSite(VecGenConstIter pItrPos)
 {
     try
     {
-        m_isSorted=false;
         VecSites.erase(to_mutable_iterator(VecSites,pItrPos));
     }
     catch(...)
@@ -1491,7 +1497,6 @@ auto uGenericNGSChrom<_SELF_,_BASE_>::computeOnAllSites(UnaryOperation unary_op)
   * \param p UnaryPredicate : Unary predicate to evaluate on all sites
   * \return A collection containing all the sites for which the predicate is true
   */
-//TODO return chrom?,
 template <class _SELF_,class _BASE_>
 template<class UnaryPredicate>
 std::vector<_BASE_> uGenericNGSChrom<_SELF_,_BASE_>::getSpecificSites(UnaryPredicate pred) const

@@ -38,8 +38,6 @@ public:
     /** \brief Fetch a param. Throw param_not_found if the param does not exist.
      * \param token_param& name: the name of the param we wish to get.
      */
-    //TODO Does this throw correctly?
-
     std::string getParam(token_param name,unsigned int paramPos=0) const;
     std::string getParam(const std::string& name,unsigned int paramPos=0) const;
 

@@ -621,7 +621,7 @@ void uTags::print(std::ostream &pOut) const
 
 }
 
-/** \brief Create the parser Token associated with Element
+/** \brief Create the parser Token associated with the uTag
  *
  * \return uToken The token returned
  *
@@ -734,7 +734,7 @@ uTagsChrom::uTagsChrom(const uBasicNGSChrom & pCopyChrom)
         addData(uTags(*itr));
 }
 
-//TODO Re-write this
+//TODO Re-write this, same comment as Experiment level function
 /** \brief For a given start and end on this Chromosome, return the it's continuous density signal
  * \doto Use our standard overlap function
  *
@@ -753,17 +753,9 @@ std::vector<float> uTagsChrom::getRegionSignal(int start, int end, bool overlap)
     tempSignal.resize((end-start)+1);
     std::vector<uTags>::iterator iterVec;
 
+
+    /**< Assuming the data is sorted, this could be heavily optimized. */
     int pos=0;
-    /**< Need to mess around with this later, make sure tags at the same position are not being messed with. */
-    /**< We go one Kb earlier in our experiment, make sure we get all overlapping tags. */
-
-    //TODO fix this
-    //  pos = this->findPrecedingSite((start-1000), 0 , this->count()-1);
-
-    /**< If no tag leftwise, we start at beginning */
-    if (pos==-1)
-        pos=0;
-
     iterVec=VecSites.begin();
 
     for (iterVec=(iterVec+pos) ; iterVec != VecSites.end(); ++iterVec)
@@ -851,7 +843,7 @@ uTags uTagsChrom::generateRandomSite(const int size_,std::mt19937& engine,const 
     return returnTag;
 }
 
-//TODO Functional for now, but should this be a free function
+//TODO Re-write this to be a templated free function. While densignal signal makes more sense for Tags, they could be used from any structure
 /** \brief Generate our density signal for a given region and chrom
  *
  * \param chrom std::string : The specified chrom
@@ -994,11 +986,9 @@ catch(...)
 
 
 
-
-
-
-
-// TODO: Move to parser?
+/**< Note, this is deprecated and no longer used anywhere in the library.
+    It is preserved "in-case" as in some very rare situations this could be of use.
+ */
 namespace factory
 {
 NGS::uTags makeTagfromSamString(std::string samString, bool minimal)

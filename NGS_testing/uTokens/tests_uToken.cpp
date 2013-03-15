@@ -361,6 +361,15 @@ TEST(uTokenGetParamString, ArgumentDoesNotExist) {
 	ASSERT_THROW(Token.getParam("FLAGS"), param_not_found);
 }
 
+
+TEST(uToken_paramCount, Several) {
+
+    ASSERT_TRUE(false);
+}
+TEST(uToken_paramCount, None) {
+
+    ASSERT_TRUE(false);
+}
 /*
  * Test for the checking if param is Set:
  *		bool uToken::_isParamSet;
