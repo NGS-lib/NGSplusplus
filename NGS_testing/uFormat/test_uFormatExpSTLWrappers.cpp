@@ -472,23 +472,16 @@ TEST(uBasicEXP_STL_applyOnSitesConst, NORMAL) {
 
 TEST(uBasicEXP_STL_loadWithParserAndRunParser, VALIDSTREAM) {
 	uParser aParser("../data/BED/test.bed", "BED");
-	auto functOp = [&](const uToken& t)
+//	auto functOp = [&](const uToken& t)
+//	auto functOverlap=[&](uBasicNGS  item)
+	auto functOp = [&](uBasicNGS  item)
 	{ 
 	};
 	uBasicNGSExperiment anExp;
 	anExp.loadWithParserAndRun(aParser, functOp);
-	EXPECT_TRUE(false);
+//	EXPECT_TRUE(false);
 }
 
-/*
- * Tests for the function:
- *		template <class UnaryPredicate>
- *		typename std::iterator_traits<NGSExpIter>::difference_type
- *
- *	Valid Cases:
- *	Invalid Cases:
- *		THROW
- */
 /*
  * Tests for the function:
  *		countChromsWithProperty(UnaryPredicate pred) const;

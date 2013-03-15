@@ -18,6 +18,14 @@ using namespace NGS;
 #define STARTCASE1 100
 #define ENDCASE1 200
 
+//TODO: writeToOutput
+TEST(uBasicNGSTestWriteToOutput, CALLFUNCTION) {
+	uWriter aWriter(&cout, "BED4");
+	uBasicNGS uTest("chr1", STARTCASE1, ENDCASE1,StrandDir::REVERSE);
+	EXPECT_NO_THROW(uTest.writeToOutput(aWriter));
+}
+//virtual void writeToOutput(uWriter& pWriter) const;
+
 /*
  * Setters/Getters testing - start/end (positions)
  *	Valid cases:
@@ -131,6 +139,7 @@ TEST(uBasicNGSTestHerit, GETLENGHT)
  * Setters/Getters testing - score
  *	Valid cases:
  *		GETSETSCORE
+ *		GETSETSCORENOPARAM // TODO
  *		GETSETSCOREVECTOR
  *	Invalid case:
  */
@@ -167,6 +176,7 @@ TEST(uBasicNGSTestHerit, GETSETSCOREVECTOR)
  *		EXTENDSIMPLE
  *		EXTENDDOUBLE
  *		EXTENDNOTHING
+ *		EXTENDTOZERO // TODO: If start would be lower than 0, it should be padded to 0
  *	Invalid case:
  *		EXTENDFAIL
  */
@@ -287,6 +297,7 @@ TEST(uBasicNGSTestHerit, OVERLAPNOT){
 
 
 /**< Overlap, merge */
+// TODO: throw tests
 
 TEST(uBasicNGS_returnOverlap, SIMPLE)
 {
@@ -312,6 +323,7 @@ TEST(uBasicNGS_returnMerge, MANY)
  *
  *	Valid cases:
  *		DIVIDEINTOBINADD
+ *		DIVIDEINTOBINSTRICT // TODO
  *		DIVIDEINTOBINEXTEND
  *		DIVIDEINTOBINIGNORE
  *		DIVIDEINTOBINOFSIZESTRICT

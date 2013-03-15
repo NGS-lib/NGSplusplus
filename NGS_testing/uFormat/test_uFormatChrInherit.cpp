@@ -15,6 +15,9 @@
 using namespace std;
 using namespace NGS;
 
+// TODO: printStat (EXPECT_NO_THROW)
+// TODO: getSortedStatus
+// TODO: get/setChr
 
 #define ONELENGHT 101
 class StandardChroms
@@ -158,6 +161,8 @@ TEST(uBasicNGSCHR_countUnique, MANYSITEWITHUNIQUE){
  }
 
 /**< Testing DivideItemsIntoNBin */
+// TODO: strict
+// TODO: throw test
 TEST_F(ChromDivide, DIVIDEINTONBINFAILCHROM){
     EXPECT_ANY_THROW(uChromTestOverlap.divideItemsIntoNBins(7));
     EXPECT_ANY_THROW(uChromTestOverlap.divideItemsIntoNBins(32));
@@ -181,6 +186,9 @@ TEST_F(ChromDivide, DIVIDECHROMINTONBINOFSIZEFAIL){
     EXPECT_ANY_THROW(uChromTestOverlap.divideItemsIntoBinofSize(30));
     EXPECT_ANY_THROW(uChromTestOverlap.divideItemsIntoBinofSize(300));
 }
+
+// TODO: strict
+// TODO: throw test
 TEST_F(ChromDivide, DIVIDECHROMINTONBINOFSIZEIGNORE){
 
     uChromTestOverlap.divideItemsIntoBinofSize(90, SplitType::IGNORE);
@@ -511,10 +519,6 @@ TEST(uBasicNGSCHR_removeDistinct, FAILNOSORT)
      EXPECT_THROW(ourChroms.manyChr.removeDistinct(80, 130),unsorted_throw );
 }
 
-
-
-
-
 /**< Test getSubset, RemoveSubset */
 TEST(uBasicNGSCHR_getSubset, EMPTY)
 {
@@ -614,7 +618,7 @@ TEST(uBasicNGSCHR_getSubsetCount, MANYCUSTOMSORT)
      EXPECT_EQ(2,ourChroms.manyChr.getSubsetCount(40, 120));
 }
 /**< AddData */
-
+// TODO: With token
 TEST(uBasicNGSCHR_addData, VALID)
 {
      StandardChroms ourChroms;
@@ -687,20 +691,20 @@ TEST(uBasicNGSCHR_setChromSize, INVALID_UNDER0)
 }
 
 /**< getSite */
-//TEST(uBasicNGSCHR_getSite, VALIDREQUEST)
-//{
-//     StandardChroms ourChroms;
-//     uBasicNGS oneItem;
-//     EXPECT_NO_THROW(oneItem=ourChroms.manyChr.getSite(2));
-//     EXPECT_TRUE(oneItem.isEqual(uBasicNGS("chr1",120,250)));
-//
-//}
-//TEST(uBasicNGSCHR_getSite, INVALID)
-//{
-//     StandardChroms ourChroms;
-//     uBasicNGS oneItem;
-//     EXPECT_THROW(oneItem=ourChroms.manyChr.getSite(20),param_throw);
-//}
+TEST(uBasicNGSCHR_getSite, VALIDREQUEST)
+{
+     StandardChroms ourChroms;
+     uBasicNGS oneItem;
+     EXPECT_NO_THROW(oneItem=ourChroms.manyChr.getSite(2));
+     EXPECT_TRUE(oneItem.isEqual(uBasicNGS("chr1",120,250)));
+
+}
+TEST(uBasicNGSCHR_getSite, INVALID)
+{
+     StandardChroms ourChroms;
+     uBasicNGS oneItem;
+     EXPECT_THROW(oneItem=ourChroms.manyChr.getSite(20),param_throw);
+}
 
 /**< SortSites */
 TEST(uBasicNGSCHR_sortSites, DEFAULT)
@@ -726,7 +730,8 @@ TEST(uBasicNGSCHR_sortSites, CUSTOM)
       EXPECT_TRUE((itr+2)->isEqual(uBasicNGS("chr1",230,300)));
 }
 
-
+// TODO: Test throw when not sorted
+// TODO: Test after last element or before first element
 TEST(uBasicNGSCHR_findNext, STANDARD)
 {
       StandardChroms ourChroms;
@@ -779,6 +784,7 @@ TEST(uBasicNGSCHR_findPrec, EMPTY)
       EXPECT_EQ(first,ourChroms.emptyChr.end());
 }
 /**< isSorted() */
+// TODO: Check if function that possibly modify sorted status does so correctly
 TEST(uBasicNGSCHR_isSorted, NOT)
 {
      StandardChroms ourChroms;
@@ -838,4 +844,3 @@ TEST(uBasicNGSCHR_writeWithWriter, NORMALBED)
        uWriter bedWriter(&cout,"BED4");
        EXPECT_NO_THROW(ourChroms.manyChr.writeWithWriter(bedWriter));
 }
-
