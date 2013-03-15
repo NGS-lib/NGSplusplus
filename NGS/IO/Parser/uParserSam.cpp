@@ -1,5 +1,5 @@
 #include "uParserSam.h"
-#include "../utility/utility.h"
+#include "../../utility/utility.h"
 #include <sstream>
 //#include "uParserFactory.h"
 namespace NGS

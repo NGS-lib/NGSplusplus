@@ -14,7 +14,7 @@
 #include "../uToken.h"
 #include "../../uGeneException.h"
 #include "../uHeader.h"
-#include "../../boost-include/boost/xpressive/xpressive.hpp"
+#include <boost/xpressive/xpressive.hpp>
 namespace NGS
 {
 //TODO REFACTOR
