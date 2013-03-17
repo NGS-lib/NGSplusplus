@@ -758,3 +758,22 @@ TEST(uBasicNGSGENEXP_addData, CHROMDUP) {
 
 	ASSERT_TRUE(false);
 }
+
+
+TEST(uBasicNGSGENEXP_remove, ONENOITR) {
+
+	ASSERT_TRUE(false);
+}
+
+TEST(uBasicNGSGENEXP_remove, RANGENOITR) {
+
+	ASSERT_TRUE(false);
+}
+TEST(uBasicNGSGENEXP_remove, ONEITR) {
+
+	ASSERT_TRUE(false);
+}
+TEST(uBasicNGSGENEXP_remove, RANGEITR) {
+
+	ASSERT_TRUE(false);
+}

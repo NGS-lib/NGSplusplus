@@ -72,35 +72,39 @@ uToken uParserGTF::getNextEntry()
 
 uToken uParserGTF::_getTokenInfoFromGTFString(const std::string& line)
 {
+
+    //  "^(\\.|[\\w_-]+)\t(\\.|[\\w_-]+)\t(\\.|[\\w_-]+)\t(\\d+)\t(\\d+)\t([-+]?[0-9]*\\.?[0-9]+|.)\t(\\+|\\-|\\.)\t([012\\.])\tgene_id\\s\"([^\"]*)\";\\stranscript_id\\s\"([^\"]*)\";.*";
+
+
     smatch what;
     if( regex_match( line, what, GTFRegex ) )
     {
         /**< Preset according to GTF format */
         uToken ourToken;
-        if ( what[1]!=".")
-            ourToken._setParamNoValidate(token_param::CHR, what[1]);
+
+        ourToken._setParam(token_param::CHR, what[1]);
 
         if ( what[2]!=".")
-            ourToken._setParamNoValidate(token_param::SOURCE, what[2]);
+            ourToken._setParam(token_param::SOURCE, what[2]);
 
         if ( what[3]!=".")
-            ourToken._setParamNoValidate(token_param::FEATURE_TYPE, what[3]);
+            ourToken._setParam(token_param::FEATURE_TYPE, what[3]);
 
-        ourToken._setParamNoValidate(token_param::START_POS, what[4]);
+        ourToken._setParam(token_param::START_POS, what[4]);
 
-        ourToken._setParamNoValidate(token_param::END_POS, what[5]);
+        ourToken._setParam(token_param::END_POS, what[5]);
 
         if ( what[6]!=".")
-            ourToken._setParamNoValidate(token_param::SCORE, what[6]);
+            ourToken._setParam(token_param::SCORE, what[6]);
 
         /**< GFF considered a '.' to mean no info or not relevant. We simply do not stock it */
         if ( what[7]!=".")
-            ourToken._setParamNoValidate(token_param::STRAND, what[7]);
+            ourToken._setParam(token_param::STRAND, what[7]);
 
-        ourToken._setParamNoValidate(token_param::PHASE, what[8]);
+        ourToken._setParam(token_param::PHASE, what[8]);
 
-        if (what[9].matched)
-            ourToken._setParamNoValidate(token_param::EXTRA, what[9]);
+        ourToken._setParam(token_param::GROUP_ID, what[9]);
+        ourToken._setParam(token_param::GROUP_TRANSCRIPT, what[10]);
 
         return ourToken;
     }

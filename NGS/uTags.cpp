@@ -151,8 +151,8 @@ uTags::~uTags()
     }
 }
 
-//TODO TEST THIS
-/** \brief Copy Constructor for UTags, necessary due to our char*
+//NOTE Our copy constructors could use some extra testing
+/** \brief Copy Constructor for uTags,
  * \param UTags& const copy_from: tag to copy
  */
 uTags::uTags(const uTags& copy_from):uGenericNGS(copy_from),name(nullptr),phredScore(nullptr),m_cigar(nullptr)
@@ -803,7 +803,6 @@ std::vector<float> uTagsChrom::getRegionSignal(int start, int end, bool overlap)
 template <class _OTHER_>
 uTags uTagsChrom::generateRandomSite(const int size_,std::mt19937& engine,const _OTHER_ &exclList, const int sigma, const std::string ID) const
 {
-    //TODO Sanity check here to make sure it is possible to generate the asked for tag.
     uTags returnTag;
 
     bool found=false;

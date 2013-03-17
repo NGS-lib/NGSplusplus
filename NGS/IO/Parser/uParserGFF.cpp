@@ -114,12 +114,11 @@ uToken uParserGFF::_getTokenFromGFFString(const std::string & line)
         /**<  http://www.sanger.ac.uk/resources/software/gff/spec.html */
 
         uToken ourToken;
-        /**< According to GFF specification, the first value is "SEQNAME". Howeverm, practical use for most people is using it as chrom.  */
         /**< As such, the assignation of what[1] is subject to change */
 
         /**< GFF considered a '.' to mean no info or not relevant. We simply do not stock it */
         if ( what[1]!=".")
-            ourToken._setParamNoValidate(token_param::SEQ_NAME, what[1]);
+            ourToken._setParamNoValidate(token_param::CHR, what[1]);
 
         if ( what[2]!=".")
             ourToken._setParamNoValidate(token_param::SOURCE, what[2]);

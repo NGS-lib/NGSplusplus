@@ -874,7 +874,6 @@ uToken uGenericNGS<_SELF_>::createToken() const
         addStringError(e, "Failed while creating token in uGenericNGS::getToken()");
         throw e;
     }
-
 }
 
 /**<  */

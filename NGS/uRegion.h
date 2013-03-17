@@ -65,7 +65,6 @@ public:
 
     uRegion getCopy()const;
 
-    //TODO substract regions (with options)
 
 protected:
 private:
@@ -81,7 +80,6 @@ private:
 
 };
 
-// TODO: Move read-write to parser and output class?
 class uRegionExperiment;
 class uRegionChrom :  public uGenericNGSChrom<uRegionChrom,uRegion>
 {

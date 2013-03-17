@@ -128,8 +128,6 @@ uToken uParserGenePred::_getTokenFromGenePredString(const std::string & line)
             ourToken._setParam(token_param::START_POS, what[4]);
             ourToken._setParam(token_param::END_POS, what[5]);
             ourToken._setParam(token_param::FEATURE_TYPE, "GENE");
-
-
             ourToken._setParam(token_param::START_POS, what[6]);
             ourToken._setParam(token_param::END_POS, what[7]);
             ourToken._setParam(token_param::FEATURE_TYPE, "CODING");

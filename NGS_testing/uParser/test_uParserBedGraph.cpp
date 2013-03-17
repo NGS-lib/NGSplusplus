@@ -21,7 +21,7 @@ TEST(uParserBedGraph_getNextEntry, fileCount) {
     int countTok=0;
     while (ourParser.eof()==false){
         ourParser.getNextEntry();
-        countTok ++;
+        countTok++;
     }
     EXPECT_EQ(countTok,numTokens);
 }

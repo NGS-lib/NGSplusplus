@@ -22,8 +22,8 @@ void uWriterWig::setValueType(const token_param type){
  	try {
        if  ((token.isParamSet(token_param::CHR))&&(token.isParamSet(token_param::START_POS))&&(token.isParamSet(token_param::END_POS)) )
            {
-                long long int ourstart= utility::stoll(token.getParam(token_param::START_POS));
-                long long int ourend= utility::stoll(token.getParam(token_param::END_POS));
+                long int ourstart= utility::stoll(token.getParam(token_param::START_POS));
+                long int ourend= utility::stoll(token.getParam(token_param::END_POS));
                 int ourspan = ( ourend-ourstart+1);
                 float density =1;
                 if (token.isParamSet(m_scoreType))
