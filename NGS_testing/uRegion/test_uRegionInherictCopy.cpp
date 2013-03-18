@@ -478,3 +478,15 @@ TEST(uRegionNGSTestHerit, PRINT){
     uRegion uTest("chr1", 100, 119);
    EXPECT_NO_THROW( uTest.print(cout));
 }
+
+TEST(uRegionNGSTestHerit_AssigmentOperator, ASDF){
+	ASSERT_TRUE(false);
+}
+TEST(uRegionNGSTestHerit_MeasureDensityOverlap, ASDF) {
+	ASSERT_TRUE(false);
+}
+TEST(uRegionNGSTestHerit_GenerateAndWriteSignal, ASDF) {
+	ASSERT_TRUE(false);
+}
+
+

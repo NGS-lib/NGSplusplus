@@ -210,3 +210,10 @@ TEST(uGeneTest_createToken, VALID){
     ASSERT_TRUE(false);
 }
 
+TEST(uGeneTest_getFeatureInt, VALID){
+    ASSERT_TRUE(false);
+}
+
+TEST(uGeneTest_Assignment, VALID){
+    ASSERT_TRUE(false);
+}

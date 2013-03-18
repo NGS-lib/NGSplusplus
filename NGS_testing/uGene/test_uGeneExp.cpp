@@ -56,3 +56,15 @@ TEST(uGeneExpTest_addData, VIRTUALTEST)
 
 }
 
+TEST(uGeneTest_Assignment, VALID){
+    ASSERT_TRUE(false);
+}
+
+TEST(uGeneTest_GetCopy, VALID){
+    ASSERT_TRUE(false);
+}
+
+TEST(uGeneTest_FindNextAndPreceedingFeature, VALID){
+    ASSERT_TRUE(false);
+}
+

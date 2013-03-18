@@ -716,52 +716,194 @@ TEST(uBasicNGSGENEXP_removeSpecificSites, EMPTY) {
 	EXPECT_EQ(myExperiments.getExperiment("Empty_Exp")->count(), 0);
 }
 
-TEST(uBasicNGSGENEXP_replaceChr, VALID) {
+/*
+ * Tests for the function:
+ *		void replaceChr(const _CHROM_ &);
+ *
+ * 	Valid cases:
+ *		CHREXISTS
+ *		CHRDOESNTEXISTS
+ *	Invalid cases:
+ */
 
-	ASSERT_TRUE(false);
+TEST(uBasicNGSGENEXP_replaceChr, CHREXISTS) {
+	uBasicNGSChrom aChr;
+	aChr.setChr("");
+	aChr.addData(uBasicNGS("",100,200));
+	validExperiments myExperiments;
+	EXPECT_EQ(myExperiments.getExperiment("MultipleChroms")->getpChrom("")->count(), 3);
+	myExperiments.getExperiment("MultipleChroms")->replaceChr(aChr);
+	EXPECT_EQ(myExperiments.getExperiment("MultipleChroms")->getpChrom("")->count(), 1);
 }
 
-TEST(uBasicNGSGENEXP_removeChr, VALID) {
-
-	ASSERT_TRUE(false);
+TEST(uBasicNGSGENEXP_replaceChr, CHRDOESNTEXISTS) {
+	uBasicNGSChrom aChr;
+	aChr.setChr("chrY");
+	aChr.addData(uBasicNGS("chrY",100,200));
+	validExperiments myExperiments;
+	myExperiments.getExperiment("MultipleChroms")->replaceChr(aChr);
+	EXPECT_EQ(myExperiments.getExperiment("MultipleChroms")->getpChrom("chrY")->count(), 1);
 }
 
+/*
+ * Tests for the function:
+ *		void removeChr(const std::string &);
+ *
+ * 	Valid cases:
+ *		CHREXISTS
+ *		CHRDOESNTEXISTS 
+ *	Invalid cases:
+ */
 
-TEST(uBasicNGSGENEXP_removeSubset, VALID) {
-
-    uBasicNGSExperiment myExperiments;
-    myExperiments.removeSubset("chr1", 10, 200);
-
-	ASSERT_TRUE(false);
+TEST(uBasicNGSGENEXP_removeChr, CHREXISTS) {
+	validExperiments myExperiments;
+	myExperiments.getExperiment("MultipleChroms")->removeChr(""); 
+	EXPECT_FALSE(myExperiments.getExperiment("MultipleChroms")->isChrom(""));
 }
+
+TEST(uBasicNGSGENEXP_removeChr, CHRDOESNTEXISTS) {
+	validExperiments myExperiments;
+	EXPECT_NO_THROW(myExperiments.getExperiment("MultipleChroms")->removeChr("chrY"));
+}
+
+/*
+ * Tests for the function:
+ *		_CHROM_ removeSubset(const std::string & pChr,const double pStart, const double pEnd, OverlapType overlap=OverlapType::OVERLAP_PARTIAL);
+ *
+ * 	Valid cases:
+ *		CHREXISTS
+ *		CHRDOESNTEXISTS
+ *	Invalid cases:
+ *		NOTSORTED
+ */
+
+TEST(uBasicNGSGENEXP_removeSubset, CHREXISTS) {
+	validExperiments myExperiments;
+	myExperiments.getExperiment("MultipleChroms")->sortSites();
+	EXPECT_EQ(myExperiments.getExperiment("MultipleChroms")->getpChrom("chr4")->count(), 1);
+	myExperiments.getExperiment("MultipleChroms")->removeSubset("chr4", 150, 151);
+	EXPECT_EQ(myExperiments.getExperiment("MultipleChroms")->getpChrom("chr4")->count(), 0);
+}
+
+TEST(uBasicNGSGENEXP_removeSubset, CHRDOESNTEXISTS) {
+	validExperiments myExperiments;
+	myExperiments.getExperiment("MultipleChroms")->sortSites();
+	EXPECT_NO_THROW(myExperiments.getExperiment("MultipleChroms")->removeSubset("chrY", 150, 151));
+}
+
+TEST(uBasicNGSGENEXP_removeSubset, NOTSORTED) {
+	validExperiments myExperiments;
+	EXPECT_THROW(myExperiments.getExperiment("MultipleChroms")->removeSubset("chr4", 150, 151), unsorted_throw);
+}
+
+/*
+ * Tests for the function:
+ *		_SELF_ removeDistinct(const std::string & pChr,const double pStart, const double pEnd, OverlapType options=OverlapType::OVERLAP_PARTIAL);
+ *
+ * 	Valid cases:
+ *		CHREXISTS
+ *		CHRDOESNTEXISTS
+ *	Invalid cases:
+ *		NOTSORTED
+ */
 
 TEST(uBasicNGSGENEXP_removeDistinct, VALID) {
+	validExperiments myExperiments;
+	myExperiments.getExperiment("MultipleChroms")->sortSites();
+	EXPECT_EQ(myExperiments.getExperiment("MultipleChroms")->getpChrom("chr4")->count(), 1);
+	try {
+	myExperiments.getExperiment("MultipleChroms")->removeDistinct("chr4", 250, 251);
+	}
+	catch (std::exception& e) {
+		cout << e.what() << endl;
+	}
+//	EXPECT_EQ(myExperiments.getExperiment("MultipleChroms")->getpChrom("chr4")->count(), 0);
+}
 
-    uBasicNGSExperiment myExperiments;
-    myExperiments.removeDistinct("chr1", 10, 200);
+/*
+ * Tests for the function:
+ *		virtual void addData(const _BASE_ &);
+ * 	Valid cases:
+ *		VALID
+ *	Invalid cases:
+ */
+TEST(uBasicNGSGENEXP_addDataBase, VALID) {
 	ASSERT_TRUE(false);
 }
 
-
-
-TEST(uBasicNGSGENEXP_addData, UNIT) {
-
+/*
+ * Tests for the function:
+ *		virtual void addData(const _CHROM_ &);
+ * 	Valid cases:
+ *		CHREXISTS
+ *		CHROMDONTEXISTS
+ *	Invalid cases:
+ */
+TEST(uBasicNGSGENEXP_addDataChrom, CHREXISTS) {
 	ASSERT_TRUE(false);
 }
 
-TEST(uBasicNGSGENEXP_addData, CHROM) {
-
+TEST(uBasicNGSGENEXP_addDataChrom, CHRDOESNTEXISTS) {
 	ASSERT_TRUE(false);
 }
-
+/*
+ * Tests for the function:
+ *		virtual void addData(const uToken &);
+ * 	Valid cases:
+ *		VALID
+ *	Invalid cases:
+ */
 TEST(uBasicNGSGENEXP_addData, CHROMDUP) {
+    uBasicNGS uTest("chr1", 100, 119);
+    uToken ourToken= uTest.createToken();
 
 	ASSERT_TRUE(false);
 }
 
+/*
+ * Tests for the function:
+ *		void removeSite(const std::string & pChr,const long int position);
+ * 	Valid cases:
+ *		VALID
+ *	Invalid cases:
+ */
+ 
+TEST(uBasicNGSGENEXP_removeSitePosition, VALID) {
+	ASSERT_TRUE(false);
+}
 
-TEST(uBasicNGSGENEXP_remove, ONENOITR) {
+/*
+ * Tests for the function:
+ *		void removeSite(const std::string & pChr,const long int pStart,const long int pEnd);
+ * 	Valid cases:
+ *		VALID
+ *	Invalid cases:
+ */
 
+TEST(uBasicNGSGENEXP_removeSiteBeginEnd, VALID) {
+	ASSERT_TRUE(false);
+}
+
+/*
+ * Tests for the function:
+ *		void removeSite(const std::string & pChr,VecGenConstIter pItrPos);
+ * 	Valid cases:
+ *		VALID
+ *	Invalid cases:
+ */
+
+TEST(uBasicNGSGENEXP_removeSiteIter, VALID) {
+	ASSERT_TRUE(false);
+}
+
+/*
+ * Tests for the function:
+ *		void removeSite(const std::string & pChr,VecGenConstIter pItrStart,VecGenConstIter pItrEnd);
+ * 	Valid cases:
+ *		VALID
+ *	Invalid cases:
+ */
+TEST(uBasicNGSGENEXP_removeSiteIterBeginEnd, ONENOITR) {
 	ASSERT_TRUE(false);
 }
 
