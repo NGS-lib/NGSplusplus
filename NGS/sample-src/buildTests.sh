@@ -9,7 +9,7 @@ then
 	echo Done!
 else
 	echo "tasdf"
-	for dir in $(ls | grep -v bin | grep -v README | grep -v buildTests | grep -v Data)
+	for dir in $(ls | grep -v bin | grep -v README | grep -v buildTests | grep -v Data | grep -v Makefile)
 	do
 		cpp_file=$(find $dir/* | grep cpp | head -n1)
 		if [ -e "$cpp_file" ]
