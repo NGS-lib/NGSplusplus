@@ -82,4 +82,6 @@ TEST(uRegionTest_ctr, POLYTAGSs){
    EXPECT_EQ(fromTag.getScoreVector(),tagFrom.getScoreVector());
 }
 
-
+TEST(uRegionTest_copyCtr, NORMAL){
+    ASSERT_TRUE(false);
+}

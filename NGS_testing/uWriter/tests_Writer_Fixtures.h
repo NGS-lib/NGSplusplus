@@ -68,7 +68,7 @@ public:
 		/**< Initialize streams */
         m_pOssGFF = new ostringstream(ostringstream::out);
 		/**< Initialize writers */
-		uWriter writerGFF(m_pOssGFF, "GFF");
+		uWriter writerGFF(m_pOssGFF, "UCSCGFF");
 		/**< Write tokens */
 		validTokens tokens;
 		for (size_t i = 0; i < tokens.m_vTokens.size(); i++) {

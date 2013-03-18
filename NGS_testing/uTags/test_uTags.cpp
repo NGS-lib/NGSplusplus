@@ -14,6 +14,11 @@ using namespace NGS;
 /**< Testing our unitary Tag */
 
 
+TEST(uTagsTest_copyCtr, NORMAL){
+    ASSERT_TRUE(false);
+}
+
+
 TEST(uTagsTest_getCompletedTag, FORWARD){
     uTags  PETag("chr1",100,200);
     PETag.setPELenght(50);

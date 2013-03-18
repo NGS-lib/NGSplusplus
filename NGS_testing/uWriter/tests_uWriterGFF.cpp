@@ -22,7 +22,7 @@ TEST_F(TestGFFWriter, WriteGFFCol3) {
 TEST(TestGFFWriterConvert, FromBedReadGFF) {
    //  auto p_SSGFF = new ostringstream(ostringstream::out);
     uParser Parser("../data/BED/test.bed", "BED");
-    uWriter writer("junktest.txt","GFF");
+    uWriter writer("junktest.txt","UCSCGFF");
 
     // uWriter writer(outputName, outputType);
         while (!Parser.eof())
@@ -50,3 +50,53 @@ TEST(TestGFFWriterConvert, FromBedReadGFF) {
 
 
 }
+
+
+ostringstream* m_pOsGFF = new ostringstream(ostringstream::out);
+std::string gffExpect ="chr1\t.\t.\t100\t200\t.";
+
+TEST(TestsGFFWriter_WriteToken,TAG) {
+
+	uTags testTag("chr1", 100, 200);
+	uWriter gffWriter(m_pOsGFF,"UCSCGFF");
+    testTag.writeToOutput(gffWriter);
+	ASSERT_TRUE(m_pOsGFF->str().find(gffExpect) != string::npos);
+}
+
+TEST(TestsGFFWriter_WriteToken,REGION) {
+
+	uRegion testRegion("chr1", 100, 200);
+	uWriter gffWriter(m_pOsGFF,"UCSCGFF");
+    testRegion.writeToOutput(gffWriter);
+	ASSERT_TRUE(m_pOsGFF->str().find(gffExpect) != string::npos);
+}
+
+TEST(TestsGFFWriter_WriteToken,BASICNGS) {
+
+	uBasicNGS testBasic("chr1", 100, 200);
+	uWriter gffWriter(m_pOsGFF,"UCSCGFF");
+	 testBasic.writeToOutput(gffWriter);
+	ASSERT_TRUE(m_pOsGFF->str().find(gffExpect) != string::npos);
+}
+
+TEST(TestsGFFWriter_WriteToken,GENE) {
+
+	uGene testUgene("chr1", 100, 200);
+	uWriter gffWriter(m_pOsGFF,"UCSCGFF");
+	testUgene.writeToOutput(gffWriter);
+
+	ASSERT_TRUE(m_pOsGFF->str().find(gffExpect) != string::npos);
+}
+
+
+
+
+
+
+
+
+
+
+
+
+

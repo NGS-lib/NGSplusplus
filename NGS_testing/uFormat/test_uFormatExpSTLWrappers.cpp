@@ -134,7 +134,7 @@ TEST(uBasicNGSEXP_STL_accumulateChromInfos, EMPTY){
 	validExperiments myExperiments;
 	int siteCount=0;
 	auto functOp = [&](int siteCounts,const uBasicNGSChrom& item)
-	{ 
+	{
 		return (siteCounts+=item.sumSiteSize());
 	};
 	EXPECT_EQ(myExperiments.getExperiment("Empty_Exp")->accumulateChromsInfo(functOp,siteCount), 0);
@@ -144,7 +144,7 @@ TEST(uBasicEXP_STL_accumulateChromInfo, NORMAL){
 	validExperiments myExperiments;
 	int siteCount=0;
 	auto functOp = [&](int siteCounts,const uBasicNGSChrom& item)
-	{ 
+	{
 		return (siteCounts+=item.sumSiteSize());
 	};
 	EXPECT_EQ(myExperiments.getExperiment("NoName_1elem")->accumulateChromsInfo(functOp,siteCount), 101);
@@ -154,7 +154,7 @@ TEST(uBasicEXP_STL_accumulateChromInfo, NORMAL){
 TEST(uBasicEXP_STL_accumulateChromInfo, EXCEPTION){
 	validExperiments myExperiments;
 	auto functOp = [](int siteCounts,const uBasicNGSChrom & item)
-	{   
+	{
 		throw param_throw();
 		return 0;
 	};
@@ -162,7 +162,7 @@ TEST(uBasicEXP_STL_accumulateChromInfo, EXCEPTION){
 	EXPECT_THROW(myExperiments.getExperiment("MultipleChroms")->accumulateChromsInfo(functOp,siteCount),param_throw);
 }
 
-/* 
+/*
  * Tests for the function:
  *		auto computeOnAllChroms(UnaryOperation unary_op) const -> std::map<std::string, decltype(unary_op(_CHROM_()))>;
  *
@@ -176,7 +176,7 @@ TEST(uBasicEXP_STL_accumulateChromInfo, EXCEPTION){
 TEST(uBasicEXP_STL_computeOnAllChroms, NORMAL){
 	validExperiments myExperiments;
 	auto functOp = [&](uBasicNGSChrom item) -> unsigned long long
-	{  
+	{
 		return item.sumSiteSize();
 	};
 	auto results = myExperiments.getExperiment("MultipleChroms")->computeOnAllChroms(functOp);
@@ -186,7 +186,7 @@ TEST(uBasicEXP_STL_computeOnAllChroms, NORMAL){
 TEST(uBasicEXP_STL_computeOnAllChroms, EMPTY){
 	validExperiments myExperiments;
 	auto functOp = [&](uBasicNGSChrom item) -> unsigned long long
-	{  
+	{
 		return item.sumSiteSize();
 	};
 	auto results = myExperiments.getExperiment("Empty_Exp")->computeOnAllChroms(functOp);
@@ -196,35 +196,11 @@ TEST(uBasicEXP_STL_computeOnAllChroms, EMPTY){
 TEST(uBasicEXP_STL_computeOnAllChroms, THROW) {
 	validExperiments myExperiments;
 	auto functOp = [&](uBasicNGSChrom item) -> unsigned long long
-	{  
+	{
 		throw param_throw();
 		return 0;
 	};
 	EXPECT_THROW(myExperiments.getExperiment("MultipleChroms")->computeOnAllChroms(functOp),param_throw);
-}
-
-/* 
- * Tests for the function:
- * 		auto computeOnOneChrom(UnaryOperation unary_op, const std::string & pChr) const -> std::map<std::string, decltype(unary_op(_CHROM_()))>;
- *
- *	Valid cases:
- *		NORMAL
- *		NONAME
- *		EMPTY
- *	Invalid cases:
- *		CHROMDONTEXISTS
- */
-
-TEST(uBasicEXP_STL_computeOnOneChrom, NORMAL) {
-//	validExperiments myExperiments;
-//	auto functOp = [&](uBasicNGSChrom item) -> unsigned long long
-//	{  
-//		return item.sumSiteSize();
-//	};
-//	auto results = myExperiments.getExperiment("MultipleChroms")->computeOnOneChrom(functOp, "");
-//	std::cout << "Size: " << results.size() << std::endl;
-//	EXPECT_EQ(myExperiments.getExperiment("MultipleChroms")->getpChrom("")->sumSiteSize(), results.at(""));
-	EXPECT_TRUE(false);
 }
 
 /*
@@ -315,7 +291,7 @@ TEST(uBasicEXP_STL_applyOnAllChromsConst, NORMAL) {
 	validExperiments myExperiments;
 	int count = 0;
 	auto functOp = [&](const uBasicNGSChrom& a)
-	{ 
+	{
 		count++;
 	};
 	EXPECT_EQ(count, 0);
@@ -328,7 +304,7 @@ TEST(uBasicEXP_STL_applyOnAllChromsConst, NOCHROM) {
 	validExperiments myExperiments;
 	int count = 0;
 	auto functOp = [&](const uBasicNGSChrom& a)
-	{ 
+	{
 		count++;
 	};
 	EXPECT_EQ(count, 0);
@@ -340,7 +316,7 @@ TEST(uBasicEXP_STL_applyOnAllChromsConst, NOCHROM) {
 TEST(uBasicEXP_STL_applyOnAllChromsConst, THROW) {
 	validExperiments myExperiments;
 	auto functOp = [&](const uBasicNGSChrom& a)
-	{ 
+	{
 		throw param_throw();
 	};
 	const uBasicNGSExperiment myConstExp = *(myExperiments.getExperiment("MultipleChroms"));
@@ -350,7 +326,7 @@ TEST(uBasicEXP_STL_applyOnAllChromsConst, THROW) {
 /*
  * Tests for the function:
  *		template<class UnaryFunction>
- *		UnaryFunction applyOnOneChrom(UnaryFunction f, const std::string & chr); 
+ *		UnaryFunction applyOnOneChrom(UnaryFunction f, const std::string & chr);
  *
  *	Valid Cases:
  *		NORMAL
@@ -359,46 +335,46 @@ TEST(uBasicEXP_STL_applyOnAllChromsConst, THROW) {
  *		THROW
  *		CHROMDONTEXISTS
  */
-
-TEST(uBasicEXP_STL_applyOnOneChrom, NORMAL) {
-	validExperiments myExperiments;
-	auto functOp = [](uBasicNGSChrom& item)
-	{  
-		return item.divideItemsIntoNBins(2, SplitType::IGNORE);
-	};
-	EXPECT_EQ(myExperiments.getExperiment("MultipleChroms")->count(), 13);
-	myExperiments.getExperiment("MultipleChroms")->applyOnOneChrom(functOp, "chr4");
-	EXPECT_EQ(myExperiments.getExperiment("MultipleChroms")->count(), 14);
-}
-
-TEST(uBasicEXP_STL_applyOnOneChrom, NOCHROM) {
-	validExperiments myExperiments;
-	auto functOp = [](uBasicNGSChrom& item)
-	{  
-		return item.divideItemsIntoNBins(2, SplitType::IGNORE);
-	};
-	EXPECT_THROW(myExperiments.getExperiment("Empty_Exp")->applyOnOneChrom(functOp, "chr4"), param_throw);
-
-}
-
-TEST(uBasicEXP_STL_applyOnOneChrom, THROW) {
-	validExperiments myExperiments;
-	auto functOp = [&](const uBasicNGSChrom& a)
-	{ 
-		throw param_throw();
-	};
-	EXPECT_THROW(myExperiments.getExperiment("MultipleChroms")->applyOnOneChrom(functOp,"chr4"),param_throw);
-}
-
-TEST(uBasicEXP_STL_applyOnOneChrom, CHROMDONTEXISTS) {
-	validExperiments myExperiments;
-	int count = 0;
-	auto functOp = [&](const uBasicNGSChrom& a)
-	{ 
-		count++;
-	};
-	EXPECT_THROW(myExperiments.getExperiment("Empty_Exp")->applyOnOneChrom(functOp,"chr4"),param_throw);
-}
+//
+//TEST(uBasicEXP_STL_applyOnOneChrom, NORMAL) {
+//	validExperiments myExperiments;
+//	auto functOp = [](uBasicNGSChrom& item)
+//	{
+//		return item.divideItemsIntoNBins(2, SplitType::IGNORE);
+//	};
+//	EXPECT_EQ(myExperiments.getExperiment("MultipleChroms")->count(), 13);
+//	myExperiments.getExperiment("MultipleChroms")->applyOnOneChrom(functOp, "chr4");
+//	EXPECT_EQ(myExperiments.getExperiment("MultipleChroms")->count(), 14);
+//}
+//
+//TEST(uBasicEXP_STL_applyOnOneChrom, NOCHROM) {
+//	validExperiments myExperiments;
+//	auto functOp = [](uBasicNGSChrom& item)
+//	{
+//		return item.divideItemsIntoNBins(2, SplitType::IGNORE);
+//	};
+//	EXPECT_THROW(myExperiments.getExperiment("Empty_Exp")->applyOnOneChrom(functOp, "chr4"), param_throw);
+//
+//}
+//
+//TEST(uBasicEXP_STL_applyOnOneChrom, THROW) {
+//	validExperiments myExperiments;
+//	auto functOp = [&](const uBasicNGSChrom& a)
+//	{
+//		throw param_throw();
+//	};
+//	EXPECT_THROW(myExperiments.getExperiment("MultipleChroms")->applyOnOneChrom(functOp,"chr4"),param_throw);
+//}
+//
+//TEST(uBasicEXP_STL_applyOnOneChrom, CHROMDONTEXISTS) {
+//	validExperiments myExperiments;
+//	int count = 0;
+//	auto functOp = [&](const uBasicNGSChrom& a)
+//	{
+//		count++;
+//	};
+//	EXPECT_THROW(myExperiments.getExperiment("Empty_Exp")->applyOnOneChrom(functOp,"chr4"),param_throw);
+//}
 
 /*
  * Tests for the function:
@@ -447,7 +423,7 @@ TEST(uBasicEXP_STL_applyOnSitesConst, NORMAL) {
 	validExperiments myExperiments;
 	int count = 0;
 	auto functOp = [&](const uBasicNGS& a)
-	{ 
+	{
 		count++;
 	};
 	EXPECT_EQ(count, 0);
@@ -467,7 +443,7 @@ TEST(uBasicEXP_STL_applyOnSitesConst, NORMAL) {
  *		EMPTYSTREAM
  *	Invalid Cases:
  *		NULLSTREAM
- *		
+ *
  */
 
 TEST(uBasicEXP_STL_loadWithParserAndRunParser, VALIDSTREAM) {
@@ -475,7 +451,7 @@ TEST(uBasicEXP_STL_loadWithParserAndRunParser, VALIDSTREAM) {
 //	auto functOp = [&](const uToken& t)
 //	auto functOverlap=[&](uBasicNGS  item)
 	auto functOp = [&](uBasicNGS  item)
-	{ 
+	{
 	};
 	uBasicNGSExperiment anExp;
 	anExp.loadWithParserAndRun(aParser, functOp);
@@ -511,7 +487,7 @@ TEST(uBasicEXP_STL_loadWithParserAndRunParser, VALIDSTREAM) {
  */
 /*
  * Tests for the function:
- *		std::pair<NGSExpConstIter, NGSExpConstIter> minAndMaxChroms(Compare comp) const; 
+ *		std::pair<NGSExpConstIter, NGSExpConstIter> minAndMaxChroms(Compare comp) const;
  *
  *	Valid Cases:
  *	Invalid Cases:

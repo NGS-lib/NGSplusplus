@@ -86,7 +86,41 @@ TEST(uGeneChromTest_addDataGFF, ParseALL)
     EXPECT_EQ(0,itr->featureCount());
 
 }
-TEST(uGeneChromTest_addData, ParseAndCheck)
+
+
+TEST(uGeneChromTest_addDataGTF, ParseOne)
+{
+     ASSERT_TRUE(false);
+    uGeneChrom newChrom("chr22");
+    uParser Parser(UCSCSAMPLE, "UCSCGFF");
+    while (Parser.eof()==false){
+        EXPECT_NO_THROW(newChrom.addData( Parser.getNextEntry()));
+    }
+
+    std::vector<uGene>::const_iterator itr= newChrom.findGene("touch1");
+    EXPECT_EQ(1,itr->featureCount());
+
+}
+TEST(uGeneChromTest_addDataGTF, ParseALL)
+{
+    ASSERT_TRUE(false);
+    uGeneChrom newChrom("chr22");
+    uParser Parser(UCSCSAMPLE, "UCSCGFF");
+    while (Parser.eof()==false){
+        EXPECT_NO_THROW(newChrom.addData( Parser.getNextEntry()));
+    }
+
+    std::vector<uGene>::const_iterator itr= newChrom.findGene("touch1");
+    EXPECT_EQ(1,itr->featureCount());
+
+    itr= newChrom.findGene("touch2");
+    EXPECT_EQ(0,itr->featureCount());
+
+}
+
+
+
+TEST(uGeneChromTest_addDataGENEPRED, ParseAndCheck)
 {
     uGeneChrom newChrom("chr1");
 
@@ -112,3 +146,10 @@ TEST(uGeneChromTest_addData, ParseAndCheck)
     }
 
 }
+
+
+TEST(uGeneChromTest_copyCtr, NORMAL){
+    ASSERT_TRUE(false);
+}
+
+

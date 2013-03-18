@@ -28,9 +28,9 @@ TEST(TestSamWriter_NoF, WriteValidHeader) {
     writerSAM.addToHeader(header_param::CHR,"chr1");
     writerSAM.addToHeader(header_param::CHR_SIZE,"200513");
 
-    writerSAM.writeHeader();
+    EXPECT_NO_THROW(writerSAM.writeHeader());
 
-    cout <<m_pOssSAM->str();
+   // cout <<m_pOssSAM->str();
 //	ASSERT_TRUE(m_pOssSAM->str().find(expected) != string::npos);
 }
 

@@ -49,7 +49,6 @@ public:
     uGene(uRegion);
     uGene(uToken);
 
-
     ~uGene(){};
 private:
 
@@ -98,16 +97,13 @@ public :
 
     uToken createToken()const;
 
-
     std::string getTranscript()const{return m_transcript;}; /**< Return Transcript ID of the gene */
     std::string getID()const{return m_ID;}; /**< Return ID of the gene */
-  //  std::string getClass()const{return m_class;}; /**< Return class of the gene */
+
     void setID(std::string pID){m_ID = pID;}; /**< Set string ID of the gene */
- //   void setClass(std::string pClass){m_class = pClass;}; /**< Set Class ID */
     void setTranscript(std::string pTranscript){m_transcript=pTranscript;}; /**< Set Transcript ID */
     long int getBoundaryStart()const{return m_BoundaryStart;};  /**< Return Start of the feature */
     long int getBoundaryEnd()const{return m_BoundaryEnd;};/**< Return End of the feature */
-
 
     bool isOverlappingFeature(long int, long int);
     bool isOverlappingFeature(long int, long int, featureType pType);
@@ -147,8 +143,8 @@ public:
     uGeneChrom(const uGenericNGSChrom<uGeneChrom,uGene>&);
     uGeneChrom& operator=(const uGeneChrom& copFrom);
     uGeneChrom(const uGeneChrom&);
-    uGeneChrom(const std::vector<uGene> & copyVec):uGenericNGSChrom(copyVec){};
 
+    uGeneChrom(const std::vector<uGene> & copyVec):uGenericNGSChrom(copyVec){};
     uGeneChrom(uBasicNGSChrom);
     uGeneChrom(uTagsChrom);
     uGeneChrom(uRegionChrom);
@@ -163,10 +159,11 @@ public:
     typename std::vector<uGene>::const_iterator findNextWithFeature(long int pPosition, featureType pType)const;
     typename std::vector<uGene>::const_iterator findPrecedingWithFeature(long int pPosition, featureType pType)const;
 
+    //Return a pair
     typename std::vector<uGene>::const_iterator findNextFeature(long int pPosition, featureType pType)const;
     typename std::vector<uGene>::const_iterator finPrecedingFeature(long int pPosition, featureType pType)const;
 
-    long int getIDCount(const std::string & pId, const std::string & pTranscript)const;
+    long int getIDCount(const std::string & pId, const std::string & pTranscript=="")const;
     void addData(const uToken&);
     void addData(const uGene&);
 

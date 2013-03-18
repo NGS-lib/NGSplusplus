@@ -29,9 +29,9 @@ public:
 
        manyFeaturesGene.setChr("chr1");
        manyFeaturesGene.setStartEnd(400,1000);
-       manyFeaturesGene.addFeature(50, 300,StrandDir::FORWARD,featureType::EXON,"GENES","2");
-       manyFeaturesGene.addFeature(75, 150,StrandDir::FORWARD,featureType::EXON,"WEIRD","2");
-       manyFeaturesGene.addFeature(3000, 4000,StrandDir::FORWARD,featureType::EXON,"COPY","2");
+       manyFeaturesGene.addFeature(50, 300,StrandDir::FORWARD,featureType::EXON,"2");
+       manyFeaturesGene.addFeature(75, 150,StrandDir::FORWARD,featureType::EXON,"2");
+       manyFeaturesGene.addFeature(3000, 4000,StrandDir::FORWARD,featureType::EXON,"2");
 	}
 	uGene manyFeaturesGene;
     uGene simpleGene;
@@ -102,21 +102,21 @@ TEST(uGeneTest_setgetID, VALID){
 
 TEST(uGeneTest_addFeature, SIMPLEFEATURE){
     StandardGenes myGenes;
-   EXPECT_NO_THROW( myGenes.manyFeaturesGene.addFeature(50, 300,StrandDir::FORWARD,featureType::EXON,"",""));
+   EXPECT_NO_THROW( myGenes.manyFeaturesGene.addFeature(50, 300,StrandDir::FORWARD,featureType::EXON,""));
 }
 
 TEST(uGeneTest_addFeature, INVALIDFEATURE){
     StandardGenes myGenes;
-    EXPECT_ANY_THROW(myGenes.manyFeaturesGene.addFeature(-200, 300,StrandDir::FORWARD,featureType::EXON,"",""));
-    EXPECT_ANY_THROW(myGenes.manyFeaturesGene.addFeature(200, 100,StrandDir::FORWARD,featureType::EXON,"",""));
-    EXPECT_ANY_THROW(myGenes.manyFeaturesGene.addFeature(-200, -300,StrandDir::FORWARD,featureType::EXON,"",""));
+    EXPECT_ANY_THROW(myGenes.manyFeaturesGene.addFeature(-200, 300,StrandDir::FORWARD,featureType::EXON,""));
+    EXPECT_ANY_THROW(myGenes.manyFeaturesGene.addFeature(200, 100,StrandDir::FORWARD,featureType::EXON,""));
+    EXPECT_ANY_THROW(myGenes.manyFeaturesGene.addFeature(-200, -300,StrandDir::FORWARD,featureType::EXON,""));
 }
 
 TEST(uGeneTest_addFeature, COMPLETEFEATURES){
    StandardGenes myGenes;
-   EXPECT_NO_THROW( myGenes.manyFeaturesGene.addFeature(50, 300,StrandDir::FORWARD,featureType::EXON,"GENES","243"));
-   EXPECT_NO_THROW( myGenes.manyFeaturesGene.addFeature(50, 300,StrandDir::FORWARD,featureType::EXON,"WEIRD","244"));
-   EXPECT_NO_THROW( myGenes.manyFeaturesGene.addFeature(50, 300,StrandDir::FORWARD,featureType::EXON,"COPY","242"));
+   EXPECT_NO_THROW( myGenes.manyFeaturesGene.addFeature(50, 300,StrandDir::FORWARD,featureType::EXON,"243"));
+   EXPECT_NO_THROW( myGenes.manyFeaturesGene.addFeature(50, 300,StrandDir::FORWARD,featureType::EXON,"244"));
+   EXPECT_NO_THROW( myGenes.manyFeaturesGene.addFeature(50, 300,StrandDir::FORWARD,featureType::EXON,"242"));
 }
 
 
@@ -156,7 +156,7 @@ TEST(uGeneTest_isOverlappingFeature, NOFEATURESSPECIFIC){
 TEST(uGeneTest_isEqual, NOFEATURESSPECIFIC){
    StandardGenes myGenes;
    auto newGene= myGenes.simpleGene;
-   newGene.addFeature(-0, 300,StrandDir::FORWARD,featureType::EXON,"","");
+   newGene.addFeature(-0, 300,StrandDir::FORWARD,featureType::EXON,"");
    EXPECT_FALSE( myGenes.simpleGene.isEqual(newGene));
 }
 TEST(uGeneTest_isEqual, SAMEMANY){
@@ -207,6 +207,11 @@ TEST(uGeneTest_removeFeature, REMOVEALL){
 }
 
 TEST(uGeneTest_createToken, VALID){
+    ASSERT_TRUE(false);
+}
+
+
+TEST(uGeneTest_copyCtr, NORMAL){
     ASSERT_TRUE(false);
 }
 

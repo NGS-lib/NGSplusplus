@@ -131,4 +131,10 @@ TEST(TestExpNOCASE, LOADWIGCOUNT){
 }
 
 
+TEST(uBasicNGSsExpTest_copyCtr, NORMAL){
+    ASSERT_TRUE(false);
+}
+
+
+
 

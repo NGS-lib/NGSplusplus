@@ -215,6 +215,13 @@ uRegion uRegion::getCopy() const{
                 addData(uRegion(*itr));
     }
 
+
+    uRegionChrom::uRegionChrom(uGeneChrom pCopyChrom):uGenericNGSChrom(pCopyChrom.getChr()){
+            chromSize=pCopyChrom.getChromSize();
+            for (auto itr= pCopyChrom.begin(); itr!=pCopyChrom.end(); itr++  )
+                addData(uRegion(*itr));
+    }
+
     uRegionChrom::uRegionChrom(const uGenericNGSChrom<uRegionChrom,uRegion> & copyCop)
     {
         VecSites=copyCop.returnVecData();
@@ -328,6 +335,15 @@ void uRegionChrom::measureDensityOverlap(const uTagsChrom& chromtoComp, const Ov
         it->setCount((chromtoComp.getSubsetCount(it->getStart(), it->getEnd(),pOverlap)));
     }
 }
+
+void uRegionChrom::measureDensityOverlap(const uGeneChrom& chromtoComp, const OverlapType pOverlap)
+{
+    for (auto it =VecSites.begin(); it!=VecSites.end(); it++ )
+    {
+        it->setCount((chromtoComp.getSubsetCount(it->getStart(), it->getEnd(),pOverlap)));
+    }
+}
+
 void uRegionChrom::measureDensityOverlap(const uRegionChrom& chromtoComp, const OverlapType pOverlap)
 {
     for (auto it =VecSites.begin(); it!=VecSites.end(); it++ )

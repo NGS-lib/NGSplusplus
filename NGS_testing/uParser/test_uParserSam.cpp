@@ -132,12 +132,16 @@ TEST(uParserSam_getNextEntry, MAKEBASICTEN) {
 }
 
 
-TEST(parserSamTests, BIGFILE)
+TEST(parserSamTests, BIGPARSE30K)
 {
     EXPECT_NO_THROW(uParser ourParser(BIG_FILE, "SAM");
-
-    while (ourParser.eof()==false)
-        {uToken tempToken=ourParser.getNextEntry(); }
+    int count=30000;
+    int cur=0;
+    while (cur!=count)
+        {
+            uToken tempToken=ourParser.getNextEntry();
+            cur++;
+        }
     );
 }
 

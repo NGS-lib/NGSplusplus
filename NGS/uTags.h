@@ -52,7 +52,6 @@ public:
     uTags(const uBasicNGS & otherItem);
     uTags(const uRegion & otherItem);
     uTags(const uGene & otherItem);
-
     uTags(uToken pToken);
 
 
@@ -66,7 +65,6 @@ public:
 
     uTags getCopy()const;
     uTags getCompletedCopy()const;
-
 
     bool isEqual(const uTags & pCompared)const;
 
@@ -98,13 +96,13 @@ public:
     int getPeLenght() const;
 
     void setMapQual(short int score);
-
     short int getMapQual() const;
 };
 
 
 class uRegionChrom;
 class uBasicNGSChrom;
+class uGeneChrom;
 class uTagsChrom: public uGenericNGSChrom<uTagsChrom,uTags>
 {
 
@@ -123,9 +121,10 @@ public:
     uTagsChrom(const uTagsChrom&);
     uTagsChrom(const uRegionChrom &);
     uTagsChrom(const uBasicNGSChrom &);
+    uTagsChrom(const uGeneChrom &);
     uTagsChrom(const std::vector<uTags> & copyVec):uGenericNGSChrom(copyVec){};
 
-    std::vector<float> getRegionSignal(int start, int end, bool overlap);
+    std::vector<float> getRegionSignal(long int start, long int end, bool overlap);
 
     template <class _OTHER_>
     uTags generateRandomSite(const int size_,std::mt19937& engine,const _OTHER_ &exclList, const int sigma, const std::string ID) const;
@@ -142,7 +141,7 @@ private:
 
 public:
      ~uTagsExperiment() {};
-    std::vector<float> getRegionSignal(std::string chrom, int start, int end, bool overlap);
+    std::vector<float> getRegionSignal(std::string chrom, long int start, long int end, bool overlap);
     uTagsExperiment getCopy() const;
 
     void loadWithBamTools(BamTools::BamReader& pReader, int blockSize=1, bool pLoadCore=false);

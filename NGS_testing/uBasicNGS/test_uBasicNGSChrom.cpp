@@ -77,3 +77,8 @@ TEST_F(ChromDivide, SORT){
     EXPECT_FALSE(uChromTestOverlap.isSorted());
 }
 
+
+TEST(uBasicNGSChrTest_copyCtr, NORMAL){
+    ASSERT_TRUE(false);
+}
+

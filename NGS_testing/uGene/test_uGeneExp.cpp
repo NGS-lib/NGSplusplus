@@ -56,3 +56,7 @@ TEST(uGeneExpTest_addData, VIRTUALTEST)
 
 }
 
+TEST(uGeneExpTest_copyCtr, NORMAL){
+    ASSERT_TRUE(false);
+}
+

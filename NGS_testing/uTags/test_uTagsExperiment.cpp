@@ -17,6 +17,11 @@ using namespace BamTools;
 const string BAMREAL="../data/BAM/H2AZ.bam";
 vector<int> startPosBam2={56262,61780,64367,67342,71763};
 
+TEST(uTagsExpTest_copyCtr, NORMAL){
+    ASSERT_TRUE(false);
+}
+
+
 TEST(uTagsExperiment_loadWithBamReader, COMPAREBAMLOADINGTOPARSER)
 {
     uTagsExperiment bamLoad, parserLoad;

@@ -734,6 +734,15 @@ uTagsChrom::uTagsChrom(const uRegionChrom & pCopyChrom)
 
 }
 
+uTagsChrom::uTagsChrom(const uGeneChrom & pCopyChrom)
+{
+    setChr(pCopyChrom.getChr());
+    chromSize=pCopyChrom.getChromSize();
+    for (auto itr= pCopyChrom.begin(); itr!=pCopyChrom.end(); itr++  )
+        addData(uTags(*itr));
+
+}
+
 uTagsChrom::uTagsChrom(const uBasicNGSChrom & pCopyChrom)
 {
     setChr(pCopyChrom.getChr());
@@ -753,7 +762,7 @@ uTagsChrom::uTagsChrom(const uBasicNGSChrom & pCopyChrom)
  * \return
  *
  */
-std::vector<float> uTagsChrom::getRegionSignal(int start, int end, bool overlap)
+std::vector<float> uTagsChrom::getRegionSignal(long int start, long int end, bool overlap)
 {
     vector<float> tempSignal;
     int signalStart, signalEnd, signalSize;
@@ -860,7 +869,7 @@ uTags uTagsChrom::generateRandomSite(const int size_,std::mt19937& engine,const 
  * \return std::vector<float>
  *
  */
-std::vector<float> uTagsExperiment::getRegionSignal(std::string chrom, int start, int end, bool overlap)
+std::vector<float> uTagsExperiment::getRegionSignal(std::string chrom, long int start, long int end, bool overlap)
 {
     vector<float> returnVec;
 

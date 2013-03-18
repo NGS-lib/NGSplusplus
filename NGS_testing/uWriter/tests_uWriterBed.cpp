@@ -48,23 +48,39 @@ TEST_F(TestsBedWriter, WriteToken_NoScoreStrandValuesBed6) {
 
 
 
+ostringstream* m_pOsBed = new ostringstream(ostringstream::out);
+std::string bedExpect ="chr1\t100\t200\t.\n";
+
 TEST(TestsBedWriter_WriteToken,TAG) {
 
 	uTags testTag("chr1", 100, 200);
-	uWriter tagWriter(&cout,"BED");
-  //  tagWriter.writeToken()
-
-	ASSERT_FALSE(true);
+	uWriter bedWriter(m_pOsBed,"BED");
+    testTag.writeToOutput(bedWriter);
+	ASSERT_TRUE(m_pOsBed->str().find(bedExpect) != string::npos);
 }
 
 TEST(TestsBedWriter_WriteToken,REGION) {
-    ASSERT_FALSE(true);
+
+	uRegion testRegion("chr1", 100, 200);
+	uWriter bedWriter(m_pOsBed,"BED");
+    testRegion.writeToOutput(bedWriter);
+	ASSERT_TRUE(m_pOsBed->str().find(bedExpect) != string::npos);
 }
 
 TEST(TestsBedWriter_WriteToken,BASICNGS) {
-    ASSERT_FALSE(true);
+
+	uBasicNGS testBasic("chr1", 100, 200);
+	uWriter bedWriter(m_pOsBed,"BED");
+	 testBasic.writeToOutput(bedWriter);
+	ASSERT_TRUE(m_pOsBed->str().find(bedExpect) != string::npos);
 }
 
 TEST(TestsBedWriter_WriteToken,GENE) {
-    ASSERT_FALSE(true);
+
+	uGene testUgene("chr1", 100, 200);
+	uWriter bedWriter(m_pOsBed,"BED");
+	testUgene.writeToOutput(bedWriter);
+
+	ASSERT_TRUE(m_pOsBed->str().find(bedExpect) != string::npos);
 }
+

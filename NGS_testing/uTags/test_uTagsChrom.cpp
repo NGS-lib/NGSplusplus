@@ -83,6 +83,11 @@ TEST(uTagsTestChrom_ctr, POLYBASIC){
 
 }
 
+TEST(uTagsChrTest_copyCtr, NORMAL){
+    ASSERT_TRUE(false);
+}
+
+
 /**< Testing DivideItemsIntoNBin */
 TEST(uTagsTestChrom_divideIntoNBin, EMPTY){
     uTagsChrom emptyChrom("chr1");

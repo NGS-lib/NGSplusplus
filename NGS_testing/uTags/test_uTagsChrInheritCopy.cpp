@@ -39,6 +39,31 @@ public:
 };
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 TEST(uTagsGENCHR_applyAndGetChrom, NORMAL){
 
        StandardChromsTags testChroms;

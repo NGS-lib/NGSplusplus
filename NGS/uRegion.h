@@ -56,11 +56,7 @@ public:
     void setSignal(std::vector<float>);
     std::vector<float> getSignal()const;
 
-
     void writeSignal(std::ostream& out) const;
- //  void writeRegion(std::ostream& out) const;
- //   void writeAll(std::ostream& out ) const;
-
     bool isEqual(const uRegion & pCompared)const;
 
     uRegion getCopy()const;
@@ -97,19 +93,23 @@ public:
 
     uRegionChrom(uBasicNGSChrom);
     uRegionChrom(uTagsChrom);
+    uRegionChrom(uGeneChrom);
+
     ~uRegionChrom(){};
     uRegionChrom getCopy()const;
 
     void measureDensityOverlap(const  uTagsChrom& chromtoComp, const OverlapType=OverlapType::OVERLAP_PARTIAL);
     void measureDensityOverlap(const  uRegionChrom& chromtoComp, const OverlapType=OverlapType::OVERLAP_PARTIAL);
     void measureDensityOverlap(const  uBasicNGSChrom& chromtoComp, const OverlapType=OverlapType::OVERLAP_PARTIAL);
+    //TODO
+    void measureDensityOverlap(const  uGeneChrom& chromtoComp, const OverlapType=OverlapType::OVERLAP_PARTIAL);
 
+    //TODO
+    void generateSignal(const uGeneChrom & chromToComp);
     void generateSignal(const uRegionChrom & chromToComp);
     void generateSignal(const uTagsChrom & chromToComp);
     void generateSignal(const uBasicNGSChrom & chromToComp);
 
-//    void writeDensityAsTab(std::ostream& out);
- //   void writeAll(std::ostream& out);
     void writeSignal(std::ostream& out);
 
 };
@@ -133,11 +133,9 @@ public:
     void generateSignal(const uRegionExperiment & expToComp);
     void generateSignal(const uBasicNGSExperiment & expToComp);
 
- //   void writeDensityAsTab(std::ostream& out);
-//    void writeAll(std::ostream& out);
+
     void writeSignal(std::ostream& out);
 
-  //  void loadFromWig(std::ifstream & inputStream);
 };
 } // End of namespace NGS
 #endif

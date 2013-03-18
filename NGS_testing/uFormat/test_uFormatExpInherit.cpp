@@ -276,12 +276,12 @@ TEST(uBasicNGSEXP_getSite, VALIDITERRATOR){
 
 TEST(uBasicNGSEXP_getSite, OUTOFBOUND){
 	validExperiments myExperiments;
-	EXPECT_THROW(myExperiments.getExperiment("MultipleChroms")->getSite("chr4", 1), std::exception);
+	EXPECT_THROW(myExperiments.getExperiment("MultipleChroms")->getSite("chr4", 1), param_throw);
 }
 
 TEST(uBasicNGSEXP_getSite, BELOW0){
 	validExperiments myExperiments;
-	EXPECT_THROW(myExperiments.getExperiment("MultipleChroms")->getSite("chr4", -1), std::exception);
+	EXPECT_THROW(myExperiments.getExperiment("MultipleChroms")->getSite("chr4", -1), param_throw);
 }
 
 
@@ -468,10 +468,10 @@ TEST(uBasicNGSEXP_getSubset, VALIDCHROMNAME) {
 	validExperiments myExperiments;
 	myExperiments.getExperiment("MultipleChroms")->getpChrom("chr4")->sortSites();
 	uBasicNGSChrom aChrom = myExperiments.getExperiment("MultipleChroms")->getSubset("chr4", 100, 200);
-//	auto it = aChrom.findNextSite(0);
-//	EXPECT_EQ(aChrom.getSite(it).getChr(), "chr4"); // TODO: we need to code a getSite with an iterator
-//	EXPECT_EQ(aChrom.getSite(it).getStart(), 100);
-//	EXPECT_EQ(aChrom.getSite(it).getEnd(), 200);
+	auto it = aChrom.findNextSite(0);
+	EXPECT_EQ(it->getChr(), "chr4");
+	EXPECT_EQ(it->getStart(), 100);
+	EXPECT_EQ(it->getEnd(), 200);
 	EXPECT_EQ(aChrom.getSite(0).getChr(), "chr4");
 	EXPECT_EQ(aChrom.getSite(0).getStart(), 100);
 	EXPECT_EQ(aChrom.getSite(0).getEnd(), 200);
@@ -508,6 +508,12 @@ TEST(uBasicNGSEXP_getSubset, CHROMDONTEXISTS) {
 TEST(uBasicNGSEXP_getSubset, NOTSORTED) {
 	validExperiments myExperiments;
 	EXPECT_THROW(myExperiments.getExperiment("MultipleChroms")->getSubset("", 1000, 2000), unsorted_throw);
+}
+
+
+
+TEST(uBasicNGSEXP_getSubset, CUSTOMSORT) {
+	ASSERT_TRUE(false);
 }
 
 /*
@@ -556,6 +562,11 @@ TEST(uBasicNGSEXP_getDistinct, NOTSORTED) {
 	validExperiments myExperiments;
 	EXPECT_THROW(myExperiments.getExperiment("MultipleChroms")->getDistinct("", 1000, 2000), unsorted_throw);
 }
+
+TEST(uBasicNGSEXP_getDistinct, CUSTOMSORT) {
+	ASSERT_TRUE(false);
+}
+
 
 /*
  * Test for the function:
@@ -743,7 +754,6 @@ TEST(uBasicNGSGENEXP_removeDistinct, VALID) {
 }
 
 
-
 TEST(uBasicNGSGENEXP_addData, UNIT) {
 
 	ASSERT_TRUE(false);
@@ -760,20 +770,20 @@ TEST(uBasicNGSGENEXP_addData, CHROMDUP) {
 }
 
 
-TEST(uBasicNGSGENEXP_remove, ONENOITR) {
+
+TEST(uBasicNGSGENEXP_removeSite, ONEITR) {
+
+	ASSERT_TRUE(false);
+}
+TEST(uBasicNGSGENEXP_removeSite, RANGEITR) {
 
 	ASSERT_TRUE(false);
 }
 
-TEST(uBasicNGSGENEXP_remove, RANGENOITR) {
+TEST(uBasicNGSGENEXP_sortSites, VALID) {
 
 	ASSERT_TRUE(false);
 }
-TEST(uBasicNGSGENEXP_remove, ONEITR) {
 
-	ASSERT_TRUE(false);
-}
-TEST(uBasicNGSGENEXP_remove, RANGEITR) {
 
-	ASSERT_TRUE(false);
-}
+

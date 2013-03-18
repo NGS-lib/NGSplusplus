@@ -18,3 +18,42 @@ TEST(TestsBedGraphWriter, ReadWriteLines) {
 
     EXPECT_EQ(m_pOssBedGraph->str(),expectedString);
 }
+
+
+
+ostringstream* m_pOsBedGraph = new ostringstream(ostringstream::out);
+std::string bedGraph ="chr1\t100\t200\t0\n";
+
+TEST(TestsbedGraphWriter_WriteToken,TAG) {
+
+	uTags testTag("chr1", 100, 200);
+	uWriter bedGraphWriter(m_pOsBedGraph,"BEDGRAPH");
+    testTag.writeToOutput(bedGraphWriter);
+	ASSERT_TRUE(m_pOsBedGraph->str().find(bedGraph) != string::npos);
+}
+
+TEST(TestsbedGraphWriter_WriteToken,REGION) {
+
+	uRegion testRegion("chr1", 100, 200);
+	uWriter bedGraphWriter(m_pOsBedGraph,"BED");
+    testRegion.writeToOutput(bedGraphWriter);
+	ASSERT_TRUE(m_pOsBedGraph->str().find(bedGraph) != string::npos);
+}
+
+TEST(TestsbedGraphWriter_WriteToken,BASICNGS) {
+
+	uBasicNGS testBasic("chr1", 100, 200);
+	uWriter bedGraphWriter(m_pOsBedGraph,"BED");
+	 testBasic.writeToOutput(bedGraphWriter);
+	ASSERT_TRUE(m_pOsBedGraph->str().find(bedGraph) != string::npos);
+}
+
+TEST(TestsbedGraphWriter_WriteToken,GENE) {
+
+	uGene testUgene("chr1", 100, 200);
+	uWriter bedGraphWriter(m_pOsBedGraph,"BED");
+	testUgene.writeToOutput(bedGraphWriter);
+
+	ASSERT_TRUE(m_pOsBedGraph->str().find(bedGraph) != string::npos);
+}
+
