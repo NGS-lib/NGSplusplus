@@ -191,7 +191,6 @@ public:
     virtual void addData(const _BASE_ & newSite);
     virtual void addData(const uToken &);
 
-
     template<class UnaryOperation>
     std::vector<_BASE_> applyAndGetVecData(UnaryOperation unary_op);
 
@@ -235,7 +234,6 @@ public:
     VecGenConstIter maxSite(Compare comp) const;
     template<class Compare>
     std::pair<VecGenConstIter, VecGenConstIter> minAndMaxSites(Compare comp) const;
-
 
     template <class UnaryPredicate>
     typename std::iterator_traits<VecGenIter>::difference_type countSitesWithProperty(UnaryPredicate p) const;

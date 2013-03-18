@@ -78,6 +78,9 @@ protected:
     std::function<float(const _BASE_*)> sortGetEnd=nullptr ;
     std::function<bool(const _BASE_ &item1, const _BASE_ &item2)> m_comptFunc=compareStart;
 
+    void removeSite(const std::string & pChr,const long int position);
+    void removeSite(const std::string & pChr,const long int pStart,const long int pEnd);
+
     void inferChrSize();
 
 
@@ -103,8 +106,6 @@ public:
     typename std::vector<_BASE_>::const_iterator findPrecedingSite(std::string chr, int position)const;
     typename std::vector<_BASE_>::const_iterator findNextSite(std::string chr, int position)const;
 
-    void removeSite(const std::string & pChr,const long int position);
-    void removeSite(const std::string & pChr,const long int pStart,const long int pEnd);
     void removeSite(const std::string & pChr,VecGenConstIter pItrPos);
     void removeSite(const std::string & pChr,VecGenConstIter pItrStart,VecGenConstIter pItrEnd);
 
@@ -862,7 +863,7 @@ _BASE_ uGenericNGSExperiment<_SELF_,_CHROM_, _BASE_>::getSite(typename std::vect
     return *posItr;
 }
 
-/** \brief Return a Chrom containing only the sites that overlap the given chr
+/** \brief Return a Chrom containing only the sites that overlap the given chr. REQUIRES COLLECTION TO BE SORTED
  *
  * \param chr std::string : Name of scaffold to subset on
  * \param start int : Start position
@@ -880,7 +881,7 @@ _CHROM_ uGenericNGSExperiment<_SELF_,_CHROM_, _BASE_>::getSubset(const std::stri
     return (_CHROM_)ExpMap[pChr].getSubset(pStart,pEnd,options);
 }
 
-/** \brief Return a Chrom containing only the sites that overlap the given chr. Remove those elements from (this)
+/** \brief Return a Chrom containing only the sites that overlap the given chr. Remove those elements from (this). REQUIRES COLLECTION TO BE SORTED
  *
 * \param chr std::string : Name of scaffold to subset on
  * \param start int : Start position
@@ -901,7 +902,7 @@ _CHROM_ uGenericNGSExperiment<_SELF_,_CHROM_, _BASE_>::removeSubset(const std::s
 }
 
 
-/** \brief Return an EXP containing only the unarity sites that do not overlap does of the input structure
+/** \brief Return an EXP containing only the unarity sites that do not overlap does of the input structure. REQUIRES COLLECTION TO BE SORTED
  *
  *
  * \param compareExp uGenericNGSExperiment& Input,

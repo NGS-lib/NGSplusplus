@@ -14,7 +14,7 @@ namespace NGS
  * \param pID std::string
  *
  */
-uGene::uFeature::uFeature(long int pStart, long int pEnd,StrandDir pDir, featureType pType,std::string pID, std::string pClass, short int pOffset ): m_start(pStart), m_end(pEnd), m_type(pType)
+uGene::uFeature::uFeature(long int pStart, long int pEnd,StrandDir pDir, featureType pType,std::string pID, short int pOffset ): m_start(pStart), m_end(pEnd), m_type(pType)
     ,m_ID(pID),m_offset(pOffset)
 {
     if ( pStart < 0 || pStart > pEnd )
@@ -198,9 +198,9 @@ uGene uGene::getCopy()const
  * \return void
  *
  */
-void uGene::addFeature(long int pFeatureStart, long int pFeatureEnd,StrandDir pStrand, featureType pType,std::string pID, std::string pClass , short int pOffset)
+void uGene::addFeature(long int pFeatureStart, long int pFeatureEnd,StrandDir pStrand, featureType pType,std::string pID , short int pOffset)
 {
-    m_featureVector.push_back(uFeature(pFeatureStart,pFeatureEnd,pStrand,pType, pID, pClass, pOffset));
+    m_featureVector.push_back(uFeature(pFeatureStart,pFeatureEnd,pStrand,pType, pID, pOffset));
     /**< Resort features */
     stable_sort(m_featureVector.begin(),m_featureVector.end(),[](const uFeature & item1, const uFeature & item2)
     {
@@ -350,7 +350,9 @@ bool uGene::isOverlappingFeature(long int pStart, long int pEnd, featureType pTy
  */
 featureType mapFeature(const std::string & pType )
 {
-    if (featureMap.count(pType))
+
+
+    if (featureMap.count(  pType  ))
         return featureMap.find(pType)->second;
     else
         return featureType::OTHER;
@@ -490,14 +492,12 @@ void uGeneChrom::addData(const uToken & pToken)
 
             std::string featureID="", featureClass="", Myoffset;
 
-            if (pToken.isParamSet(token_param::FEATURE_CLASS,i))
-                featureClass=pToken.getParam(token_param::FEATURE_CLASS,i);
             if (pToken.isParamSet(token_param::FEATURE_ID))
                 featureID=pToken.getParam(token_param::FEATURE_ID,i);
             if (pToken.isParamSet(token_param::OFFSET))
                 featureID=pToken.getParam(token_param::FEATURE_ID,i);
 
-            mainItr->addFeature(std::stoll(pToken.getParam(token_param::START_POS,i)),std::stoll(pToken.getParam(token_param::END_POS,i)),dir,mapFeature(pToken.getParam(token_param::FEATURE_TYPE,i)),featureID,featureClass );
+            mainItr->addFeature(std::stoll(pToken.getParam(token_param::START_POS,i)),std::stoll(pToken.getParam(token_param::END_POS,i)),dir,mapFeature(pToken.getParam(token_param::FEATURE_TYPE,i)),featureID);
             if ( pToken.isParamSet(token_param::SCORE))
                 mainItr->setScore(std::stof(pToken.getParam(token_param::SCORE)));
 

@@ -25,7 +25,7 @@ class uTagsExperiment;
 
     enum class featureType: uint_least16_t
     {
-        EXON,INTRON, CODING, NCODING, LOOP, PROMOTER, ENHANCER,UTR3,UTR5, MRNA,OPERON,TRNA,
+        EXON,INTRON, CODING, NCODING, LOOP,LOOP_START,LOOP_END, PROMOTER, ENHANCER,UTR3,UTR5, MRNA,OPERON,TRNA,INTER,INTERCNS,INTRONCNS,
         CUST_1, CUST_2, CUST_3, CUST_4, CUST_5, CUST_6, CUST_7, CUST_8, CUST_9, OTHER, NULLFEATURE
     };
 
@@ -33,7 +33,7 @@ class uTagsExperiment;
     std::string featureString(const featureType&);
 
     static const std::map<std::string,featureType> featureMap{ {"EXON",featureType::EXON},{"INTRON",featureType::INTRON},{"CODING",featureType::CODING},{"NCODING",featureType::NCODING  },
-    {"LOOP",featureType::LOOP}, {"ENHANCER",featureType::ENHANCER},
+    {"LOOP",featureType::LOOP},{"LOOP_START",featureType::LOOP_START},{"LOOP_END",featureType::LOOP_END}, {"ENHANCER",featureType::ENHANCER},{"INTER",featureType::INTER},{"INTERCRNS",featureType::INTERCNS},{"INTRONCNS",featureType::INTRONCNS},
     {"UTR3",featureType::UTR3},{"UTR5",featureType::UTR5},{"MRNA",featureType::MRNA},{"OPERON",featureType::OPERON},{"TRNA",featureType::TRNA},{"PROMOTER",featureType::PROMOTER} };
 
 class uGene : public uGenericNGS<uGene>
@@ -71,7 +71,7 @@ private:
             StrandDir m_strand= StrandDir::FORWARD;
         public:
 
-            uFeature(long int pStart, long int pEnd,StrandDir, featureType pType,std::string pID ,std::string pClass, short int pOffset );
+            uFeature(long int pStart, long int pEnd,StrandDir, featureType pType,std::string pID , short int pOffset );
             long int getStart()const{return m_start;};  /**< Return Start of the feature */
             long int getEnd()const{return m_end;};/**< Return End of the feature */
 
@@ -114,7 +114,7 @@ public :
     bool isEqual(const uGene & pCompared)const;
     uGene getCopy()const;
 
-    void addFeature(long int, long int,StrandDir pStrand, featureType,std::string="", std::string="", short int=0);
+    void addFeature(long int, long int,StrandDir pStrand, featureType, std::string="", short int=0);
 
     void removeFeature(std::vector<uFeature>::const_iterator);
     void removeFeature(std::vector<uFeature>::const_iterator,std::vector<uFeature>::const_iterator);
