@@ -3,6 +3,7 @@
 #include "uTags.h"
 #include "uBasicNGS.h"
 #include "IO/uToken.h"
+#include "uGene.h"
 
 using namespace std;
 namespace NGS {
@@ -19,7 +20,8 @@ uRegion::uRegion()
  *
  */
 uRegion::uRegion(std::string pChr, long long int pStart, long long int pEnd,StrandDir pStrand) try : uGenericNGS(pChr, pStart,pEnd,pStrand)
-{}
+{
+}
 catch(construct_elem_throw &e)
 {
     addStringError(e,"Throwing in uRegion(string,int int)");
@@ -44,7 +46,9 @@ catch(construct_elem_throw &e)
 }
 
 uRegion::uRegion(uTags otherNGS)try :uGenericNGS(otherNGS.getChr(),otherNGS.getStart(),otherNGS.getEnd(), otherNGS.getStrand())
-{}
+{
+ setScoreVector(otherNGS.getScoreVector());
+}
 catch(construct_elem_throw &e)
 {
     addStringError(e,"Throwing in uRegion(uTags)");
@@ -52,10 +56,23 @@ catch(construct_elem_throw &e)
     throw e;
 }
 uRegion::uRegion(uBasicNGS otherNGS)try :uGenericNGS(otherNGS.getChr(),otherNGS.getStart(),otherNGS.getEnd(), otherNGS.getStrand())
-{}
+{
+ setScoreVector(otherNGS.getScoreVector());
+}
 catch(construct_elem_throw &e)
 {
     addStringError(e,"Throwing in uRegion(uBasicNGS)");
+    e << region_error(*this);
+    throw e;
+}
+
+uRegion::uRegion(uGene otherNGS)try :uGenericNGS(otherNGS.getChr(),otherNGS.getStart(),otherNGS.getEnd(), otherNGS.getStrand())
+{
+ setScoreVector(otherNGS.getScoreVector());
+}
+catch(construct_elem_throw &e)
+{
+    addStringError(e,"Throwing in uRegion(uGene)");
     e << region_error(*this);
     throw e;
 }
@@ -161,24 +178,6 @@ std::vector<float> uRegion::getSignal() const
     return signal;
 }
 
-/** \brief Output our signal data
- *
- * \param out std::ostream& : Output stream
- * \return void
- *
- */
- //TODO use parser for all write functions
-//void uRegion::writeAll(std::ostream& out) const
-//{
-//    std::vector<float>::iterator iterVec;
-//
-//    out << getChr()<<"\t" << getStart() << "\t"<< getEnd() << "\t" << getCount();
-//
-//    for (int i=0; i< getScoreCount() ; i++)
-//        out <<  "\t" << getScore(i);
-//
-//    out << std::endl;
-//}
 
 /** \brief Output our signal data with start/end
  *
@@ -196,16 +195,6 @@ void uRegion::writeSignal(std::ostream& out) const
     out << std::endl;
 }
 
-/** \brief Output our region, minus signal
- *
- * \param out std::ostream& : Ofstream
- * \return void
- *
- */
-//void uRegion::writeRegion(std::ostream& out) const
-//{
-//    out << getChr()<<"\t" << getStart() << "\t"<< getEnd() << "\t" << getCount() <<   std::endl;
-//}
 
 uRegion uRegion::getCopy() const{
 
@@ -731,51 +720,6 @@ for(auto& chrom : ExpMap)
             throw e;
         }
  }
-
-
-/** \brief Write all chromosome data to a stream
- * \param std::ostream&: Output stream to use.
- */
-//void uRegionChrom::writeAll(std::ostream& out)
-//{
-//    for(auto& it : VecSites)
-//    {
-//        it.writeAll(out);
-//    }
-//}
-
-/** \brief Write all the experiment to a stream
- * \param std::ostream&: Output stream to use.
- */
-//void uRegionExperiment::writeAll(std::ostream& out)
-//{
-//    for(auto& chrom : ExpMap)
-//    {
-//        chrom.second.writeAll(out);
-//    }
-//}
-
-/** \brief Write the experiment's density data as tab separated values
- * \param std::ostream&: Output stream to use.
- */
-//void uRegionExperiment::writeDensityAsTab(std::ostream& out)
-//{
-//    for(auto& chrom : ExpMap)
-//    {
-//        chrom.second.writeDensityAsTab(out);
-//    }
-//}
-
-/** \brief Write the experiment's density data as tab separated values
- * \param std::ostream&: Output stream to use.
- */
-//void uRegionChrom::writeDensityAsTab(std::ostream& out)
-//{
-//    for(auto& it : VecSites)
-//    {
-//        it.writeRegion(out);
-//    }
-//}
 
 
 uRegionExperiment uRegionExperiment::getCopy() const{

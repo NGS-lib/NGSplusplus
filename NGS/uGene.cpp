@@ -94,7 +94,7 @@ bool uGene::uFeature::operator!=(const uFeature &other) const
 {
     return !(*this == other);
 }
-
+//TODO COMPLETE THIS!
 /**< From uTokens */
 uGene::uGene(uToken pToken)try:
     uGenericNGS(pToken)
@@ -116,20 +116,29 @@ uGene::uGene(std::string pChr, long int pStart, long int pEnd, float pScore ):uG
 
 
 
+/** \brief Constructor taking a uBasicNGS as parameter.
+ * \param uTags p_tags: the tag to add to create the uGene object from.
+ */
+
+uGene::uGene(uBasicNGS pBasic): uGenericNGS(pBasic.getChr(),pBasic.getStart(), pBasic.getEnd(), pBasic.getStrand())
+{
+    setScoreVector(pBasic.getScoreVector());
+}
+
 /** \brief Constructor taking a uTags as parameter.
  * \param uTags p_tags: the tag to add to create the uGene object from.
  */
-uGene::uGene(uTags p_tags): uGenericNGS(p_tags.getChr(),p_tags.getStart(), p_tags.getEnd(), p_tags.getStrand())
+uGene::uGene(uTags pTag): uGenericNGS(pTag.getChr(),pTag.getStart(), pTag.getEnd(), pTag.getStrand())
 {
-    setScoreVector(p_tags.getScoreVector());
+    setScoreVector(pTag.getScoreVector());
 }
 
 /** \brief Constructor taking a uRegion as parameter.
  * \param uRegion p_region: the region to add to create the uGene object from.
  */
-uGene::uGene(uRegion p_region): uGenericNGS(p_region.getChr(),p_region.getStart(), p_region.getEnd(), p_region.getStrand())
+uGene::uGene(uRegion pRegion): uGenericNGS(pRegion.getChr(),pRegion.getStart(), pRegion.getEnd(), pRegion.getStrand())
 {
-    setScoreVector(p_region.getScoreVector());
+    setScoreVector(pRegion.getScoreVector());
 }
 
 //TODO ADD tests for this function

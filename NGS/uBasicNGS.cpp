@@ -1,26 +1,37 @@
 #include "uBasicNGS.h"
 #include "uTags.h"
 #include "uRegion.h"
+#include "uGene.h"
 namespace NGS
 {
 
 /** \brief Constructor taking a uTags as parameter.
  * \param uTags p_tags: the tag to add to create the uBasicNGS object from.
  */
-uBasicNGS::uBasicNGS(uTags p_tags)
-    : uGenericNGS(p_tags.getChr(),p_tags.getStart(), p_tags.getEnd(), p_tags.getStrand())
+uBasicNGS::uBasicNGS(uTags pTags)
+    : uGenericNGS(pTags.getChr(),pTags.getStart(), pTags.getEnd(), pTags.getStrand())
 {
-    setScoreVector(p_tags.getScoreVector());
+    setScoreVector(pTags.getScoreVector());
 }
 
 /** \brief Constructor taking a uRegion as parameter.
  * \param uRegion p_region: the region to add to create the uBasicNGS object from.
  */
-uBasicNGS::uBasicNGS(uRegion p_region)
-    : uGenericNGS(p_region.getChr(),p_region.getStart(), p_region.getEnd(), p_region.getStrand())
+uBasicNGS::uBasicNGS(uRegion pRegion)
+    : uGenericNGS(pRegion.getChr(),pRegion.getStart(), pRegion.getEnd(), pRegion.getStrand())
 {
-    setScoreVector(p_region.getScoreVector());
+    setScoreVector(pRegion.getScoreVector());
 }
+
+/** \brief Constructor taking a uRegion as parameter.
+ * \param uRegion p_region: the region to add to create the uBasicNGS object from.
+ */
+uBasicNGS::uBasicNGS(uGene pGene)
+    : uGenericNGS(pGene.getChr(),pGene.getStart(), pGene.getEnd(), pGene.getStrand())
+{
+    setScoreVector(pGene.getScoreVector());
+}
+
 
 /** \brief Constructor from parser Token
 * \param uToken Valid Token with data. We assumed the token is valid, so skip some checks here to avoid duplication
@@ -98,8 +109,6 @@ uBasicNGS uBasicNGS::getCopy()const
     uBasicNGS returnCopy = *this;
     return returnCopy;
 }
-
-
 
 
 

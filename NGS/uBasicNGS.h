@@ -8,7 +8,7 @@ namespace NGS
 
 class uTags;
 class uRegion;
-
+class uGene;
 class uBasicNGS: public uGenericNGS<uBasicNGS>
 {
 public:
@@ -20,8 +20,9 @@ public:
     uBasicNGS(std::string pChr, long long int pStart, long long int pEnd, float pScore );
 
     uBasicNGS(uToken pToken);
-    uBasicNGS(uTags p_tags);
-    uBasicNGS(uRegion p_region);
+    uBasicNGS(uTags pTags);
+    uBasicNGS(uRegion pRegion);
+    uBasicNGS(uGene pGene);
 
     ~uBasicNGS(){};
 

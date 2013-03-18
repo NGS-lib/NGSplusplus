@@ -1,8 +1,8 @@
 #ifndef UTAGS_H_INCLUDED
 #define UTAGS_H_INCLUDED
 
-//#include "uFormats.h"
-#include "uFormatExperiment.h"
+#include "uFormats.h"
+//#include "uFormatExperiment.h"
 #include <memory>
 #include "utility/utility.h"
 
@@ -14,7 +14,15 @@ namespace NGS {
 //Our Tag format
 //We used this to store mapped tags from NGS experiments
 //This is used for single End tags
-
+class uToken;
+class uParser;
+class uBasicNGS;
+class uBasicNGSChrom;
+class uBasicNGSExperiment;
+class uTags;
+class uTagsChrom;
+class uTagsExperiment;
+class uGene;
 
 class uTags: public uGenericNGS<uTags>
 {
@@ -43,7 +51,10 @@ public:
     uTags();
     uTags(const uBasicNGS & otherItem);
     uTags(const uRegion & otherItem);
+    uTags(const uGene & otherItem);
+
     uTags(uToken pToken);
+
 
     uTags(std::string pChr, long long int pStart, long long int pEnd, float pScore);
     uTags(std::string pChr, long long int pStart, long long int pEnd, StrandDir pStrand=StrandDir::FORWARD);

@@ -16,7 +16,7 @@ class uBasicNGSExperiment;
 class uTags;
 class uTagsChrom;
 class uTagsExperiment;
-
+class uGene;
 class uRegion : public uGenericNGS<uRegion>
 {
 public:
@@ -28,7 +28,7 @@ public:
     uRegion(uTags);
     uRegion(uBasicNGS);
     uRegion(uToken);
-
+    uRegion(uGene);
 
     ~uRegion();
 

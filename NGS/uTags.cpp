@@ -4,6 +4,7 @@
 #include "uTags.h"
 #include "uBasicNGS.h"
 #include "uRegion.h"
+#include "uGene.h"
 #include "api/BamReader.h"
 #include "api/BamWriter.h"
 namespace NGS
@@ -44,7 +45,6 @@ catch(ugene_exception_base &e)
     throw e;
 }
 
-
 /** \brief Copy constructor, with init list
  * \param otherItem: uBasicNGS  object
  */
@@ -57,6 +57,14 @@ uTags::uTags(const uBasicNGS & otherItem):uGenericNGS(otherItem.getChr(),otherIt
  * \param otherItem: uRegion  object
  */
 uTags::uTags(const uRegion & otherItem):uGenericNGS(otherItem.getChr(),otherItem.getStart(),otherItem.getEnd(),otherItem.getStrand()),name(nullptr),phredScore(nullptr),m_cigar(nullptr)
+{
+    this->setScoreVector(otherItem.getScoreVector());
+}
+
+/** \brief Copy constructor, with init list
+ * \param otherItem: uRegion  object
+ */
+uTags::uTags(const uGene & otherItem):uGenericNGS(otherItem.getChr(),otherItem.getStart(),otherItem.getEnd(),otherItem.getStrand()),name(nullptr),phredScore(nullptr),m_cigar(nullptr)
 {
     this->setScoreVector(otherItem.getScoreVector());
 }
