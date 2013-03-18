@@ -8,6 +8,8 @@
 namespace NGS
 {
 
+// TODO: ComputeOnAllSites
+
 enum class ReadMode
 {
     DEFAULT, GRADUAL
@@ -180,9 +182,6 @@ public:
     InitialValue accumulateChromsInfo(BinaryOperation binary_op, InitialValue init) const;
     template<class UnaryOperation>
     auto computeOnAllChroms(UnaryOperation unary_op) const -> std::map<std::string, decltype(unary_op(_CHROM_()))>;
-    template<class UnaryOperation>
-    auto computeOnOneChrom(UnaryOperation unary_op, const std::string & pChr) const -> std::map<std::string, decltype(unary_op(_CHROM_()))>;
-
 
     /** \brief Get the chromosomes for which a certain predicate is true
       *
@@ -209,8 +208,6 @@ public:
     UnaryFunction applyOnAllChroms(UnaryFunction f);
     template<class UnaryFunction>
     UnaryFunction applyOnAllChroms(const UnaryFunction f)const;
-    template<class UnaryFunction>
-    UnaryFunction applyOnOneChrom(UnaryFunction f, const std::string & chr);
     template<class UnaryFunction>
     UnaryFunction applyOnSites(UnaryFunction f);
     template<class UnaryFunction>
@@ -1013,10 +1010,14 @@ void uGenericNGSExperiment<_SELF_,_CHROM_, _BASE_>::replaceChr(const _CHROM_ & i
  *
  */
 template<class _SELF_, typename _CHROM_, typename _BASE_>
-void removeChr(const std::string & pChrName)
+void uGenericNGSExperiment<_SELF_,_CHROM_, _BASE_>::void removeChr(const std::string & pChrName)
 {
-
-    uGenericNGSExperiment<_SELF_,_CHROM_, _BASE_>::ExpMape.erase(pChrName);
+    try {
+	    uGenericNGSExperiment<_SELF_,_CHROM_, _BASE_>::ExpMape.erase(pChrName);
+    }
+    catch (...) {
+        throw;     
+    }
 }
 
 
@@ -1215,31 +1216,6 @@ auto uGenericNGSExperiment<_SELF_,_CHROM_,_BASE_>::computeOnAllChroms(UnaryOpera
     return results;
 }
 
-/** \brief Compute a value for all chromosomes in the experiment and return the resulting collection
-  *
-  * Takes the passed function and uses it to run std::transform on the specified chrom structure. The passed function
-  * must return a non void value.
-  *
-  * \param unary_op UnaryOperation : Unary operation to perform on all the chromosomes of the experiment.
-  * \param pChr std::string : Chrom/Scaffold name to call the transform on.
-  * \exception param_throw : Thrown if the given pChr does not exist.
-  * \return A collection of values computed on each chromosome by unary_op
-  */
-template<class _SELF_, typename _CHROM_, typename _BASE_>
-template<class UnaryOperation>
-auto uGenericNGSExperiment<_SELF_,_CHROM_,_BASE_>::computeOnOneChrom(UnaryOperation unary_op, const std::string & pChr) const -> std::map<std::string, decltype(unary_op(_CHROM_()))>
-{
-    std::map<std::string, decltype(unary_op(_CHROM_()))> results;
-    if (ExpMap.count(pChr))
-    {
-        transform(std::begin(ExpMap), std::end(ExpMap), std::inserter(results, begin(results)), [&unary_op](NGSExpPair element)
-        {
-            return make_pair(element.first, unary_op(element.second));
-        });
-    }
-    return results;
-}
-
 /** \brief Get the chromosomes for which a certain predicate is true
   *
   *  Returns a subset of the chromosome structures that evaluated true to the given predicate.
@@ -1290,7 +1266,6 @@ UnaryFunction uGenericNGSExperiment<_SELF_,_CHROM_,_BASE_>::applyOnAllChroms(Una
   *
   * \param unary_op UnaryOperation : Unary operation to perform on the chromosomes collection
   * \return unary_op, the operation that was performed on all chromosomes
-  * \sa applyOnOneChrom
   * \sa applyOnAllChroms
   */
 template<class _SELF_, typename _CHROM_, typename _BASE_>
@@ -1301,32 +1276,6 @@ UnaryFunction uGenericNGSExperiment<_SELF_,_CHROM_,_BASE_>::applyOnAllChroms(con
     {
         f(element.second);
     });
-    return f;
-}
-
-
-/** \brief Transform the chromosomes collection by applying a certain function to one chromosomes
-  *
-  *  Identical to applyOnAllChroms, but the function is run on the specified chrom structure.
-  *
-  * \param unary_op UnaryOperation : Unary operation to perform on the chromosomes collection
-  * \exception param_throw
-  * \return unary_op, the operation that was performed on all chromosomes
-  * \sa applyOnAllChroms
-  */
-template<class _SELF_, typename _CHROM_, typename _BASE_>
-template<class UnaryFunction>
-UnaryFunction uGenericNGSExperiment<_SELF_,_CHROM_,_BASE_>::applyOnOneChrom(UnaryFunction f, const std::string & chr)
-{
-    if (ExpMap.count(chr))
-    {
-        auto & elem = ExpMap[chr];
-        f(elem);
-    }
-    else
-    {
-        throw param_throw()<<string_error("Failling in uGenericNGSExperiment::applyOnOneChrom, value "+chr+" does not exist.\n");
-    }
     return f;
 }
 
