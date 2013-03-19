@@ -23,7 +23,9 @@ class uTagsExperiment;
 //class uGeneChrom;
 //class uGeneExperiment;
 
-    enum class featureType: uint_least16_t
+
+
+    enum class featureType
     {
         EXON,INTRON, CODING, NCODING, LOOP,LOOP_START,LOOP_END, PROMOTER, ENHANCER,UTR3,UTR5, MRNA,OPERON,TRNA,INTER,INTERCNS,INTRONCNS,
         CUST_1, CUST_2, CUST_3, CUST_4, CUST_5, CUST_6, CUST_7, CUST_8, CUST_9, OTHER, NULLFEATURE
@@ -36,6 +38,43 @@ class uTagsExperiment;
     {"LOOP",featureType::LOOP},{"LOOP_START",featureType::LOOP_START},{"LOOP_END",featureType::LOOP_END}, {"ENHANCER",featureType::ENHANCER},{"INTER",featureType::INTER},{"INTERCRNS",featureType::INTERCNS},{"INTRONCNS",featureType::INTRONCNS},
     {"UTR3",featureType::UTR3},{"UTR5",featureType::UTR5},{"MRNA",featureType::MRNA},{"OPERON",featureType::OPERON},{"TRNA",featureType::TRNA},{"PROMOTER",featureType::PROMOTER} };
 
+
+
+
+    class uFeature{
+        long int m_start; /**< Start position of the feature */
+        long int m_end; /**< End position of the feature */
+        featureType m_type; /**< Feature Type, strict */
+        std::string m_ID=""; /**< ID of the feature */
+      //  std::string m_class="";/**< Class of the feature */
+        short int m_offset=0;
+        StrandDir m_strand= StrandDir::FORWARD;
+    public:
+
+        uFeature(long int pStart, long int pEnd,StrandDir, featureType pType,std::string pID , short int pOffset );
+        long int getStart()const{return m_start;};  /**< Return Start of the feature */
+        long int getEnd()const{return m_end;};/**< Return End of the feature */
+
+        featureType getType()const{return m_type;};  /**< Return the type of the feature */
+        std::string getID()const{return m_ID;}; /**< Return ID of the feature */
+     //   std::string getClass()const{return m_class;}; /**< Return ID of the feature */
+
+        void setStrand(StrandDir pStrandir){m_strand=pStrandir;};
+        void setType(featureType pType){m_type=pType;}; /**< Set Type of the feature */
+        void setID(std::string pID){m_ID = pID;}; /**< Set string ID of the feature */
+     //   void setClass(std::string pClass){m_class = pClass;}; /**< Set Class ID */
+        void setStart(long int pStart){m_start = pStart;}; /**< Set Start of the feature */
+        void setEnd(long int pEnd){m_end = pEnd;};/**< Set End of the feature */
+
+        bool operator==(const uFeature &other) const;
+        bool operator!=(const uFeature &other) const;
+
+    };
+
+
+
+
+
 class uGene : public uGenericNGS<uGene>
 {
 public:
@@ -43,6 +82,9 @@ public:
     uGene(std::string pChr, long int pStart, long int pEnd, StrandDir pStrand=StrandDir::FORWARD);
     uGene(std::string pChr, long int pStart, long int pEnd, StrandDir pstrand, float pScore);
     uGene(std::string pChr, long int pStart, long int pEnd, float pScore );
+    uGene(std::string pChr, long int pStart, long int pEnd, StrandDir pStrand, std::string pID, std::string pTranscript="");
+    uGene(std::string pChr, long int pStart, long int pEnd, StrandDir pStrand, float pScore, std::string pID, std::string pTranscript="");
+    uGene(std::string pChr, long int pStart, long int pEnd, std::string pID, std::string pTranscript="");
 
     uGene(uTags);
     uGene(uBasicNGS);
@@ -59,38 +101,7 @@ private:
     std::string m_transcript=""; /**<  If multipled groups have the same name, transcript ID differentiates them. As such, the ID/Transcript Pair must be unique */
     long  int m_BoundaryStart=0; /**< Earliest position of an associated feature */
     long  int m_BoundaryEnd=0; /**< Latest position of an associated feature */
-
-        class uFeature{
-            long int m_start; /**< Start position of the feature */
-            long int m_end; /**< End position of the feature */
-            featureType m_type; /**< Feature Type, strict */
-            std::string m_ID=""; /**< ID of the feature */
-          //  std::string m_class="";/**< Class of the feature */
-            short int m_offset=0;
-            StrandDir m_strand= StrandDir::FORWARD;
-        public:
-
-            uFeature(long int pStart, long int pEnd,StrandDir, featureType pType,std::string pID , short int pOffset );
-            long int getStart()const{return m_start;};  /**< Return Start of the feature */
-            long int getEnd()const{return m_end;};/**< Return End of the feature */
-
-            featureType getType()const{return m_type;};  /**< Return the type of the feature */
-            std::string getID()const{return m_ID;}; /**< Return ID of the feature */
-         //   std::string getClass()const{return m_class;}; /**< Return ID of the feature */
-
-            void setStrand(StrandDir pStrandir){m_strand=pStrandir;};
-            void setType(featureType pType){m_type=pType;}; /**< Set Type of the feature */
-            void setID(std::string pID){m_ID = pID;}; /**< Set string ID of the feature */
-         //   void setClass(std::string pClass){m_class = pClass;}; /**< Set Class ID */
-            void setStart(long int pStart){m_start = pStart;}; /**< Set Start of the feature */
-            void setEnd(long int pEnd){m_end = pEnd;};/**< Set End of the feature */
-
-            bool operator==(const uFeature &other) const;
-            bool operator!=(const uFeature &other) const;
-
-        };
-        std::vector<uFeature> m_featureVector;  /**< List of features associated with our gene. Kept as sorted */
-
+    std::vector<uFeature> m_featureVector;  /**< List of features associated with our gene. Kept as sorted */
 
 
 public :
@@ -118,8 +129,6 @@ public :
 
     unsigned long int featureCount(const featureType & pFeature=featureType::NULLFEATURE)const;
 
-    uFeature getFeature(int )const;
-
     typename std::vector<uFeature>::const_iterator featureBegin()const;
     typename std::vector<uFeature>::const_iterator featureEnd()const;
 
@@ -144,7 +153,8 @@ public:
     uGeneChrom& operator=(const uGeneChrom& copFrom);
     uGeneChrom(const uGeneChrom&);
 
-    uGeneChrom(const std::vector<uGene> & copyVec):uGenericNGSChrom(copyVec){};
+    uGeneChrom(const std::vector<uGene> & copyVec);
+    uGeneChrom(const std::string &, const std::vector<uGene> & copyVec);
     uGeneChrom(uBasicNGSChrom);
     uGeneChrom(uTagsChrom);
     uGeneChrom(uRegionChrom);
@@ -157,11 +167,12 @@ public:
     unsigned long int featureCount(const featureType &pFeature=featureType::NULLFEATURE)const;
 
     typename std::vector<uGene>::const_iterator findNextWithFeature(long int pPosition, featureType pType)const;
-    typename std::vector<uGene>::const_iterator findPrecedingWithFeature(long int pPosition, featureType pType)const;
+    //TODO Complete
+ //   typename std::vector<uGene>::const_iterator findPrecedingWithFeature(long int pPosition, featureType pType)const;
 
-    //Return a pair
-    typename std::vector<uGene>::const_iterator findNextFeature(long int pPosition, featureType pType)const;
-    typename std::vector<uGene>::const_iterator finPrecedingFeature(long int pPosition, featureType pType)const;
+//TODO complete this
+  //  std::pair<typename std::vector<uGene>::const_iterator,typename std::vector<uFeature>::const_iterator> findNextFeature(long int pPosition, featureType pType)const;
+ //   std::pair<typename std::vector<uGene>::const_iterator,typename std::vector<uFeature>::const_iterator> finPrecedingFeature(long int pPosition, featureType pType)const;
 
     long int getIDCount(const std::string & pId, const std::string & pTranscript="")const;
     void addData(const uToken&);
@@ -186,8 +197,8 @@ public:
 
     unsigned long int featureCount(const featureType &pFeature=featureType::NULLFEATURE)const;
 
-    typename std::vector<uGene>::const_iterator findNextGeneWithFeature(std::string pChr, long int pPosition, featureType pType)const;
-    typename std::vector<uGene>::const_iterator findPrecedingGeneWithFeature(std::string pChr,long int pPosition, featureType pType)const;
+    typename std::vector<uGene>::const_iterator findNextWithFeature(std::string pChr, long int pPosition, featureType pType)const;
+  //  typename std::vector<uGene>::const_iterator findPrecedingGeneWithFeature(std::string pChr,long int pPosition, featureType pType)const;
 
 };
 } // End of namespace NGS

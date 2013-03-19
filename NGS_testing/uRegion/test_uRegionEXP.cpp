@@ -56,15 +56,41 @@ TEST(uRegionExpTest_WriteSignal, VALID){
      ostringstream* osTest = new ostringstream(ostringstream::out);
 	 StandardRegionExp newGroup;
 	 EXPECT_NO_THROW(newGroup.severalItems.writeSignal(cout,'\0'));
+}
+TEST(uRegionExpTest_AssigmentOperator, VALID){
+    StandardRegionExp newGroup;
 
+    uRegionExperiment newExp=newGroup.severalItems;
+    EXPECT_EQ(newExp.count(),newGroup.severalItems.count() );
+    auto chrItrA= newExp.begin();
+    auto chrItrB= newGroup.severalItems.begin();
+    auto newItrB= chrItrB->second.begin();
+    for (auto newItr=chrItrA->second.begin();newItr!=chrItrA->second.end();newItr++)
+        {
+            ASSERT_TRUE(newItr->isEqual(*newItrB));
+            newItrB++;
+        }
+}
+TEST(uRegionExpTest_MeasureDensityOverlap, CALL4) {
 
+	 StandardRegionExp newGroup;
+
+	 StandardRegionExp secondGroup;
+	 uBasicNGSExperiment newBasic;
+	 uTagsExperiment newTag;
+	 uGeneExperiment newGene;
+	 EXPECT_NO_THROW(newGroup.severalItems.measureDensityOverlap(secondGroup.severalItems));
+	 EXPECT_NO_THROW(newGroup.severalItems.measureDensityOverlap(newBasic));
+	 EXPECT_NO_THROW(newGroup.severalItems.measureDensityOverlap(newTag));
+	 EXPECT_NO_THROW(newGroup.severalItems.measureDensityOverlap(newGene));
 }
-TEST(uRegionExpTest_AssigmentOperator, ASDF){
-	ASSERT_TRUE(false);
-}
-TEST(uRegionExpTest_MeasureDensityOverlap, ASDF) {
-	ASSERT_TRUE(false);
-}
-TEST(uRegionExpTest_GenerateSignal, ASDF) {
-	ASSERT_TRUE(false);
+TEST(uRegionExpTest_GenerateSignal, CALL4) {
+	 StandardRegionExp newGroup;
+	 uBasicNGSExperiment newBasic;
+	 uTagsExperiment newTag;
+	 uGeneExperiment newGene;
+	 EXPECT_NO_THROW(newGroup.severalItems.generateSignal(newGroup.severalItems));
+	 EXPECT_NO_THROW(newGroup.severalItems.generateSignal(newBasic));
+	 EXPECT_NO_THROW(newGroup.severalItems.generateSignal(newTag));
+	 EXPECT_NO_THROW(newGroup.severalItems.generateSignal(newGene));
 }

@@ -361,14 +361,38 @@ TEST(uTokenGetParamString, ArgumentDoesNotExist) {
 	ASSERT_THROW(Token.getParam("FLAGS"), param_not_found);
 }
 
+TEST(uToken_paramCount, ONE) {
+
+    stringstream ss;
+	ss << "CHR\tchr1\n" << "START_POS\t1\n" << "END_POS\t21\n";
+	ss << "STRAND\t+\n" << "MAP_SCORE\t255\n" << "PHRED_SCORE\t####################\n";
+	ss << "CIGAR\t2M3I2X1=12X\n" << "SEQUENCE\tACGTN.acgtn.ACGTGTCN\n";
+	ss << "SEQ_NAME\tab00001\n" << "FLAGS\t256\n";
+	uToken Token(ss);
+	EXPECT_EQ(1, Token.paramCount(token_param::START_POS));
+}
 
 TEST(uToken_paramCount, Several) {
 
-    ASSERT_TRUE(false);
+    stringstream ss;
+	ss << "CHR\tchr1\n" << "START_POS\t1\n" << "END_POS\t21\n";
+	ss <<"START_POS\t1\n" << "END_POS\t21\n";
+	ss <<"START_POS\t1\n" << "END_POS\t21\n";
+	ss << "STRAND\t+\n" << "MAP_SCORE\t255\n" << "PHRED_SCORE\t####################\n";
+	ss << "CIGAR\t2M3I2X1=12X\n" << "SEQUENCE\tACGTN.acgtn.ACGTGTCN\n";
+	ss << "SEQ_NAME\tab00001\n" << "FLAGS\t256\n";
+	uToken Token(ss);
+	EXPECT_EQ(3, Token.paramCount(token_param::START_POS));
 }
 TEST(uToken_paramCount, None) {
 
-    ASSERT_TRUE(false);
+    stringstream ss;
+	ss << "CHR\tchr1\n" << "START_POS\t1\n" << "END_POS\t21\n";
+	ss << "STRAND\t+\n" << "MAP_SCORE\t255\n" << "PHRED_SCORE\t####################\n";
+	ss << "CIGAR\t2M3I2X1=12X\n" << "SEQUENCE\tACGTN.acgtn.ACGTGTCN\n";
+	ss << "SEQ_NAME\tab00001\n" << "FLAGS\t256\n";
+	uToken Token(ss);
+	EXPECT_EQ(0, Token.paramCount(token_param::CUST_3));
 }
 /*
  * Test for the checking if param is Set:
