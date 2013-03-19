@@ -83,8 +83,26 @@ TEST(uTagsTestChrom_ctr, POLYBASIC){
 
 }
 
+
 TEST(uTagsChrTest_copyCtr, NORMAL){
     ASSERT_TRUE(false);
+}
+
+
+TEST(uTagsTestChrom_ctr, POLYGENE){
+	EXPECT_TRUE(false);
+}
+
+TEST(uTagsTestChrom_ctr, POLYVECTOR){
+	EXPECT_TRUE(false);
+}
+
+TEST(uTagsGetRegionSignal, ASDF){
+	EXPECT_TRUE(false);
+}
+
+TEST(uTagsGenerateRandomSite, ASDF){
+	EXPECT_TRUE(false);
 }
 
 

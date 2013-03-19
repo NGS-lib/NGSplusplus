@@ -13,7 +13,7 @@
 #include <string.h>
 #include "utility/utility.h"
 #include <time.h>
-#include "gtest.h"
+#include <gtest/gtest.h>
 using namespace NGS;
 /**< Testing our unitary Tag */
 TEST(uTagsTest, DefaultCTR){

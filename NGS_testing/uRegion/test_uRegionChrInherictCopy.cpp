@@ -1071,3 +1071,13 @@ TEST(uRegionCHR_RemoveSite, ITR_RANGE)
         EXPECT_TRUE(newChroms.manyChr.begin()->isEqual(uRegion("chr1",120,250)));
 }
 
+
+TEST(uRegionCHR_AssigmentOperator, ASDF){
+	ASSERT_TRUE(false);
+}
+TEST(uRegionCHR_MeasureDensityOverlap, ASDF) {
+	ASSERT_TRUE(false);
+}
+TEST(uRegionCHR_GenerateAndWriteSignal, ASDF) {
+	ASSERT_TRUE(false);
+}

@@ -13,6 +13,21 @@
 using namespace NGS;
 /**< Testing our unitary Tag */
 
+// TODO:
+TEST(uTagsTest_getCopy, ASDF){
+
+	ASSERT_TRUE(false);
+}
+TEST(uTagsTest_getCompletedCopy, ASFD) {
+	ASSERT_TRUE(false);
+}
+TEST(uTagsTest_isEqual, ASFD) {
+	ASSERT_TRUE(false);
+}
+TEST(uTagsTest_createToken, ASFD) {
+	ASSERT_TRUE(false);
+}
+// END of TODO
 
 TEST(uTagsTest_copyCtr, NORMAL){
     ASSERT_TRUE(false);
@@ -90,7 +105,8 @@ TEST(uTagsTest_ctr, 3OAR){
     EXPECT_EQ(100,Utest.getStart());
     EXPECT_EQ(200,Utest.getEnd());
 }
-TEST(uTagsTest_ctr, COPY){
+// TODO: Copy operator
+TEST(uTagsTest_ctr, ASSIGNMENT){ 
     uTags copyFrom("chr1", 100, 200);
     uTags copyTo;
     uTags copyFilled("chr4", 100000, 2000000);

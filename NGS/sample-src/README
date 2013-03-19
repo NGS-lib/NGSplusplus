@@ -1,13 +1,12 @@
 Before building these code examples, make sur you have built the NGS++ library in its default folders.
 
-Code samples can be build, running 
+Code samples can be build, running:
 
-make
+./buildTests.sh
 
-If you need to specify the compiler, the syntax is 
+To build only a specific test:
 
-make GXX="g++-4.7"
+./buildTests <pathToCppFile>
+./buildTests DTools/DTools.cpp
 
-
-Executables will be in the /bin directory
-
+The compiled tools can be then found in the bin/ folder.

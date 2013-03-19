@@ -60,3 +60,7 @@ TEST(uTagsExperiment_loadWithBamReader, VALIDATESTART)
     }
 
 }
+
+TEST(uTagsExperiment_getRegionSignal, ASF) {
+	ASSERT_TRUE(false);
+}

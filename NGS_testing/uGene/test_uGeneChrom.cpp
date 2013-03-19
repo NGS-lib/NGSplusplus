@@ -39,7 +39,9 @@ using namespace NGS;
 
 //findNextGeneWithFeature
 
-
+TEST(uGeneChromTest_3ctr, VALID) {
+	ASSERT_TRUE(false);
+}
 
 TEST(uGeneChromTest_addData, ParseNormal)
 {
@@ -149,6 +151,30 @@ TEST(uGeneChromTest_addDataGENEPRED, ParseAndCheck)
 
 
 TEST(uGeneChromTest_copyCtr, NORMAL){
+    ASSERT_TRUE(false);
+}
+
+TEST(uGeneTest_Assignment, VALID){
+    ASSERT_TRUE(false);
+}
+
+TEST(uGeneTest_FindGeneTwoString, VALID){
+    ASSERT_TRUE(false);
+}
+
+TEST(uGeneTest_GetCopy, VALID){
+    ASSERT_TRUE(false);
+}
+
+TEST(uGeneTest_FindNextAndPreceeding, VALID){
+    ASSERT_TRUE(false);
+}
+
+TEST(uGeneTest_FindNextAndPreceedingFeature, VALID){
+    ASSERT_TRUE(false);
+}
+
+TEST(uGeneTest_GetIdCountWithOneOrTwoString, VALID){
     ASSERT_TRUE(false);
 }
 

@@ -324,6 +324,7 @@ TEST(uBasicNGSGENCHR_maxSite, CUSTOM)
        EXPECT_EQ(minItr->getStart(), uBasicNGS("chr1",120,250).getStart() );
 }
 /**< MinMaxSites */
+// TODO: more tests
 TEST(uBasicNGSGENCHR_minAndMaxSites, VALIDCOMPILE){
        StandardChroms testChroms;
         testChroms.manyChr.minAndMaxSites(uBasicNGSChrom::compareLenght);
