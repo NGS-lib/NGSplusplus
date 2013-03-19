@@ -83,21 +83,75 @@ TEST(uRegionTest_ctr, POLYTAGSs){
 }
 
 
-TEST(uRegionTest_copyCtr, NORMAL){
-    ASSERT_TRUE(false);
+TEST(uRegionTest_isEQUAL, EQUAL){
 
-TEST(uRegionTest_SetGetSignal, ASDF){
-	ASSERT_TRUE(false);
+	uRegion firsReg("Chr1",100,103);
+	firsReg.setSignal({2,4,2,5});
+	uRegion otherReg("Chr1",100,103);
+	otherReg.setSignal({2,4,2,5});
+
+	EXPECT_TRUE(firsReg.isEqual(otherReg));
 }
-TEST(uRegionTest_WriteSignal, ASDF){
-	ASSERT_TRUE(false);
+
+
+TEST(uRegionTest_isEQUAL, SIGNALDIFF){
+	uRegion firsReg("Chr1",100,103);
+	firsReg.setSignal({2,4,2,5});
+	uRegion otherReg("Chr1",100,103);
+	otherReg.setSignal({2,2,2,5});
+
+	EXPECT_FALSE(firsReg.isEqual(otherReg));
+
 }
-TEST(uRegionTest_AssigmentOperator, ASDF){
-	ASSERT_TRUE(false);
+
+TEST(uRegionTest_isEQUAL, OTHERDIFF){
+
+	uRegion firsReg("Chr1",100,103);
+	firsReg.setSignal({2,4,2,5});
+	uRegion otherReg("Chr1",100,103);
+	otherReg.setSignal({2,4,2,5});
+    otherReg.setDensity(4.2f);
+
+	EXPECT_FALSE(firsReg.isEqual(otherReg));
 }
-TEST(uRegionTest_MeasureDensityOverlap, ASDF) {
-	ASSERT_TRUE(false);
+
+TEST(uRegionTest_copyCtr, NORMAL){
+
+    uRegion basicRegWithSignal("chr1", 100, 103);
+    basicRegWithSignal.setSignal({2,3,6,3});
+    uRegion newReg(basicRegWithSignal);
+
+    EXPECT_EQ(newReg.getSignal(), basicRegWithSignal.getSignal());
+    ASSERT_TRUE(newReg.isEqual(basicRegWithSignal));
+
 }
-TEST(uRegionTest_GenerateAndWriteSignal, ASDF) {
-	ASSERT_TRUE(false);
+
+TEST(uRegionTest_SetGetSignal, INVALID){
+
+	uRegion emptyReg;
+	EXPECT_ANY_THROW(emptyReg.setSignal({2,4,3,5,2}));
+
 }
+TEST(uRegionTest_SetGetSignal, VALID){
+
+	uRegion emptyReg("chr1", 100, 104);
+	emptyReg.setSignal({2,4,3,5,2});
+    EXPECT_EQ(std::vector<float>({2,4,3,5,2}), emptyReg.getSignal());
+}
+
+TEST(uRegionTest_WriteSignal, VALID){
+	uRegion emptyReg("chr1", 100, 103);
+	emptyReg.setSignal({2,4,3,5});
+	EXPECT_NO_THROW(emptyReg.writeSignal(std::cerr,'\0'));
+}
+TEST(uRegionTest_AssigmentOperator, VALID){
+
+    uRegion basicRegWithSignal("chr1", 100, 103);
+    basicRegWithSignal.setSignal({2,3,6,3});
+    uRegion newReg=basicRegWithSignal;
+
+    EXPECT_EQ(newReg.getSignal(), basicRegWithSignal.getSignal());
+    ASSERT_TRUE(newReg.isEqual(basicRegWithSignal));
+
+}
+

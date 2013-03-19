@@ -1072,12 +1072,3 @@ TEST(uRegionCHR_RemoveSite, ITR_RANGE)
 }
 
 
-TEST(uRegionCHR_AssigmentOperator, ASDF){
-	ASSERT_TRUE(false);
-}
-TEST(uRegionCHR_MeasureDensityOverlap, ASDF) {
-	ASSERT_TRUE(false);
-}
-TEST(uRegionCHR_GenerateAndWriteSignal, ASDF) {
-	ASSERT_TRUE(false);
-}

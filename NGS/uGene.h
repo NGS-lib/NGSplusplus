@@ -163,7 +163,7 @@ public:
     typename std::vector<uGene>::const_iterator findNextFeature(long int pPosition, featureType pType)const;
     typename std::vector<uGene>::const_iterator finPrecedingFeature(long int pPosition, featureType pType)const;
 
-    long int getIDCount(const std::string & pId, const std::string & pTranscript=="")const;
+    long int getIDCount(const std::string & pId, const std::string & pTranscript="")const;
     void addData(const uToken&);
     void addData(const uGene&);
 

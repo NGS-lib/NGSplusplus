@@ -90,6 +90,11 @@ public:
     {
         return item1.getStart() < item2.getStart();
     }
+    static bool compareEnd(const _BASE_ &item1, const _BASE_ &item2)
+    {
+        return item1.getEnd() < item2.getEnd();
+    }
+
     static bool compareLenght(const _BASE_ &item1, const _BASE_ &item2)
     {
         return item1.getLenght() < item2.getLenght();
@@ -101,7 +106,6 @@ public:
         else
             return item1.getEnd() < item2.getEnd();
     }
-
 
     /**< Constructors */
     uGenericNGSChrom() {};
@@ -146,8 +150,10 @@ public:
     /**< Function to subset based on genomic positions and other collections */
     template <class _OTHER_>
     _SELF_ getOverlapping(_OTHER_ &pCompareChr,OverlapType pOverlap=OverlapType::OVERLAP_PARTIAL) const;
+    _SELF_ getOverlapping(long int, long int,OverlapType pOverlap=OverlapType::OVERLAP_PARTIAL) const;
     template <class _OTHER_>
     long long int getOverlappingCount(_OTHER_ &pCompareChr,OverlapType pOverlap=OverlapType::OVERLAP_PARTIAL) const;
+    long long int getOverlappingCount(long int, long int,OverlapType pOverlap=OverlapType::OVERLAP_PARTIAL) const;
 
     template <class _OTHER_>
     _SELF_ getNotOverlapping(_OTHER_ &compareChr,OverlapType pOverlap=OverlapType::OVERLAP_PARTIAL) const;
@@ -557,7 +563,7 @@ _BASE_ uGenericNGSChrom<_SELF_,_BASE_>::generateRandomSite
                     temptag.setChr(this->getChr());
 
 
-                    if ((exclList.getSubset(temptag.getStart(),temptag.getEnd())).count()==0)
+                    if (exclList.getOverlappingCount(temptag.getStart(),temptag.getEnd())==0)
                     {
                         found=true;
                         returnTag=temptag;
@@ -791,8 +797,8 @@ typename std::vector<_BASE_>::const_iterator uGenericNGSChrom<_SELF_,_BASE_>::fi
             return sortGetStart(&item1)< item2;
         };
 
-        /**< Compare, sort Value */
         auto lower = std::lower_bound(VecSites.begin(), VecSites.end(), pPosition, comp);
+        /**< Compare, sort Value */
 
         /**< If result is our first item, then no item precedes it */
         if ((lower==VecSites.begin()))
@@ -1133,6 +1139,37 @@ _SELF_ uGenericNGSChrom<_SELF_,_BASE_>::getOverlapping(_OTHER_ &pCompareChr,Over
     return returnChr;
 }
 
+template <class _SELF_,class _BASE_>
+_SELF_ uGenericNGSChrom<_SELF_,_BASE_>::getOverlapping(long int pStart, long int pEnd,OverlapType pOverlap) const
+{
+    _SELF_ returnChr;
+
+    for(auto it= VecSites.begin(); it!=VecSites.end(); it++)
+    {
+
+         if (utility::isOverlap(it->getStart(), it->getEnd(),pStart,pEnd,pOverlap))
+        {
+            returnChr.addDataNoCheck(*it);
+            break;
+        }
+
+    }
+    return returnChr;
+}
+
+template <class _SELF_,class _BASE_>
+    long long int uGenericNGSChrom<_SELF_,_BASE_>::getOverlappingCount(long int pStart, long int pEnd,OverlapType pOverlap) const{
+     long long int overlapCount=0;
+    for(auto it= VecSites.begin(); it!=VecSites.end(); it++)
+    {
+        if (utility::isOverlap(it->getStart(), it->getEnd(),pStart,pEnd,pOverlap))
+        {
+           overlapCount++;
+        }
+
+    }
+    return overlapCount;
+}
 
 /**< Return the number of elements of A that overlap B */
 /** \brief Wrapper function that returns the number of elements of that overlap another chrom structur
@@ -1161,7 +1198,6 @@ long long int uGenericNGSChrom<_SELF_,_BASE_>::getOverlappingCount(_OTHER_ &pCom
             if (utility::isOverlap(it->getStart(), it->getEnd(),compit->getStart(),compit->getEnd(),pOverlap))
             {
                 overlapCount++;
-                break;
             }
         }
     }

@@ -59,15 +59,15 @@ TEST(uGeneExpTest_addData, VIRTUALTEST)
 TEST(uGeneExpTest_copyCtr, NORMAL){
     ASSERT_TRUE(false);
 }
-TEST(uGeneTest_Assignment, VALID){
+TEST(uGeneEXPTest_Assignment, VALID){
     ASSERT_TRUE(false);
 }
 
-TEST(uGeneTest_GetCopy, VALID){
+TEST(uGeneEXPTest_GetCopy, VALID){
     ASSERT_TRUE(false);
 }
 
-TEST(uGeneTest_FindNextAndPreceedingFeature, VALID){
+TEST(uGeneEXPTest_FindNextAndPreceedingFeature, VALID){
     ASSERT_TRUE(false);
 }
 

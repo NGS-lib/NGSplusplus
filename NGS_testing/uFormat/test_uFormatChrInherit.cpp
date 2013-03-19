@@ -604,6 +604,12 @@ TEST(uBasicNGSCHR_getSubsetCount, NORMAL)
      EXPECT_EQ(3,ourChroms.manyChr.getSubsetCount(0, 2000));
 }
 
+TEST(uBasicNGSCHR_getSubsetCount, MIDDLE)
+{
+     StandardChroms ourChroms;
+     ourChroms.manyChr.sortSites();
+     EXPECT_EQ(3,ourChroms.manyChr.getSubsetCount(125, 300));
+}
 
 TEST(uBasicNGSCHR_getSubsetCount, EMPTY)
 {

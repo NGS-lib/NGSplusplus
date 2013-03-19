@@ -125,10 +125,9 @@ public:
     uTagsChrom(const std::vector<uTags> & copyVec):uGenericNGSChrom(copyVec){};
 
     std::vector<float> getRegionSignal(long int start, long int end, bool overlap);
-
-    template <class _OTHER_>
-    uTags generateRandomSite(const int size_,std::mt19937& engine,const _OTHER_ &exclList, const int sigma, const std::string ID) const;
-
+//
+//    template <class _OTHER_>
+//    uTags generateRandomSiteWithID(const int size, std::mt19937& engine, _OTHER_ exclList, const int sigma=0, const std::string ID="") const;
 };
 
 /**< Our complete tag experiment */

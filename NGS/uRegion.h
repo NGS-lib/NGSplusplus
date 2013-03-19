@@ -17,6 +17,9 @@ class uTags;
 class uTagsChrom;
 class uTagsExperiment;
 class uGene;
+class uGeneChrom;
+class uGeneExperiment;
+
 class uRegion : public uGenericNGS<uRegion>
 {
 public:
@@ -56,7 +59,7 @@ public:
     void setSignal(std::vector<float>);
     std::vector<float> getSignal()const;
 
-    void writeSignal(std::ostream& out) const;
+    void writeSignal(std::ostream& out, char pSep='\t')  const;
     bool isEqual(const uRegion & pCompared)const;
 
     uRegion getCopy()const;
@@ -110,7 +113,7 @@ public:
     void generateSignal(const uTagsChrom & chromToComp);
     void generateSignal(const uBasicNGSChrom & chromToComp);
 
-    void writeSignal(std::ostream& out);
+    void writeSignal(std::ostream& out, char pSep='\t');
 
 };
 
@@ -134,7 +137,7 @@ public:
     void generateSignal(const uBasicNGSExperiment & expToComp);
 
 
-    void writeSignal(std::ostream& out);
+    void writeSignal(std::ostream& out, char pSep='\t');
 
 };
 } // End of namespace NGS

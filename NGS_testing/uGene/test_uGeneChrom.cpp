@@ -154,27 +154,27 @@ TEST(uGeneChromTest_copyCtr, NORMAL){
     ASSERT_TRUE(false);
 }
 
-TEST(uGeneTest_Assignment, VALID){
+TEST(uGeneChromTest_Assignment, VALID){
     ASSERT_TRUE(false);
 }
 
-TEST(uGeneTest_FindGeneTwoString, VALID){
+TEST(uGeneChromTes_FindGeneTwoString, VALID){
     ASSERT_TRUE(false);
 }
 
-TEST(uGeneTest_GetCopy, VALID){
+TEST(uGeneChromTes_GetCopy, VALID){
     ASSERT_TRUE(false);
 }
 
-TEST(uGeneTest_FindNextAndPreceeding, VALID){
+TEST(uGeneChromTes_FindNextAndPreceeding, VALID){
     ASSERT_TRUE(false);
 }
 
-TEST(uGeneTest_FindNextAndPreceedingFeature, VALID){
+TEST(uGeneChromTes_FindNextAndPreceedingFeature, VALID){
     ASSERT_TRUE(false);
 }
 
-TEST(uGeneTest_GetIdCountWithOneOrTwoString, VALID){
+TEST(uGeneChromTes_GetIdCountWithOneOrTwoString, VALID){
     ASSERT_TRUE(false);
 }
 

@@ -153,7 +153,7 @@ bool uRegion::isEqual(const uRegion & pCompared)const{
 void uRegion::setSignal(std::vector<float> ourSignal)
 {
     try {
-    if ((int)ourSignal.size()<getLenght())
+    if ((int)ourSignal.size()!=getLenght())
         throw param_throw();
     signal = ourSignal;
     }
@@ -179,20 +179,22 @@ std::vector<float> uRegion::getSignal() const
 }
 
 
-/** \brief Output our signal data with start/end
+/** \brief Output our signal data, with seperator as requied
  *
  * \param out std::ostream& : Output stream
  * \return void
  *
  */
-void uRegion::writeSignal(std::ostream& out) const
+void uRegion::writeSignal(std::ostream& out, char pSep) const
 {
   //  out << getChr() << "\t" << getStart() << "\t" << getEnd() <<  endl;
+  if (signal.size()){
     for (auto iterVec = signal.begin() ; iterVec!= signal.end(); iterVec++)
     {
-        out << *iterVec <<  "\t";
+        out << *iterVec << pSep;
     }
     out << std::endl;
+}
 }
 
 
@@ -263,6 +265,20 @@ uRegion uRegion::getCopy() const{
         return copyElem;
     }
 
+/** \brief Output all signal data of Exp using pSep as seperator
+ * \param out std::ostream& : Output stream
+ * \return void
+ *
+ */
+void uRegionChrom::writeSignal(std::ostream& out, char pSep)
+{
+  //  uRegion hihi;
+    auto applyFunct=(std::bind(&uRegion::writeSignal,std::placeholders::_1,ref(out),pSep) );
+    applyOnAllSites(applyFunct);
+    //applyOnAllSites(bind2nd(mem_fun_ref(&uRegion::writeSignal), out));
+}
+
+
 
 /** \brief Set the density scores for our exp versus another one
     Overlaps exist for uTags, uRegion, uBase
@@ -308,9 +324,11 @@ void uRegionExperiment::measureDensityOverlap(const uBasicNGSExperiment& expToCo
  * \return void
  *
  */
-void uRegionExperiment::writeSignal(std::ostream& out)
+void uRegionExperiment::writeSignal(std::ostream& out, char pSep)
 {
-    applyOnSites(bind2nd(mem_fun_ref(&uRegion::writeSignal), out));
+    auto applyFunct=(std::bind(&uRegion::writeSignal,std::placeholders::_1,ref(out),pSep) );
+    applyOnSites(applyFunct);
+    //applyOnSites(bind2nd(mem_fun_ref(&uRegion::writeSignal), out));
 }
 
 /** \brief  Set the density scores for our chrom versus another one
@@ -325,14 +343,16 @@ void uRegionChrom::measureDensityOverlap( const uBasicNGSChrom& chromtoComp, con
 {
     for (auto it =VecSites.begin(); it!=VecSites.end(); it++ )
     {
-        it->setCount((chromtoComp.getSubsetCount(it->getStart(), it->getEnd(),pOverlap)));
+     //   it->setCount((chromtoComp.getSubsetCount(it->getStart(), it->getEnd(),pOverlap)));
+      it->setCount((chromtoComp.getOverlappingCount(it->getStart(), it->getEnd(),pOverlap)));
     }
 }
 void uRegionChrom::measureDensityOverlap(const uTagsChrom& chromtoComp, const OverlapType pOverlap)
 {
     for (auto it =VecSites.begin(); it!=VecSites.end(); it++ )
     {
-        it->setCount((chromtoComp.getSubsetCount(it->getStart(), it->getEnd(),pOverlap)));
+     //   it->setCount((chromtoComp.getSubsetCount(it->getStart(), it->getEnd(),pOverlap)));
+      it->setCount((chromtoComp.getOverlappingCount(it->getStart(), it->getEnd(),pOverlap)));
     }
 }
 
@@ -340,7 +360,8 @@ void uRegionChrom::measureDensityOverlap(const uGeneChrom& chromtoComp, const Ov
 {
     for (auto it =VecSites.begin(); it!=VecSites.end(); it++ )
     {
-        it->setCount((chromtoComp.getSubsetCount(it->getStart(), it->getEnd(),pOverlap)));
+    //    it->setCount((chromtoComp.getSubsetCount(it->getStart(), it->getEnd(),pOverlap)));
+     it->setCount((chromtoComp.getOverlappingCount(it->getStart(), it->getEnd(),pOverlap)));
     }
 }
 
@@ -348,7 +369,8 @@ void uRegionChrom::measureDensityOverlap(const uRegionChrom& chromtoComp, const 
 {
     for (auto it =VecSites.begin(); it!=VecSites.end(); it++ )
     {
-        it->setCount((chromtoComp.getSubsetCount(it->getStart(), it->getEnd(),pOverlap)));
+       // it->setCount((chromtoComp.getSubsetCount(it->getStart(), it->getEnd(),pOverlap)));
+         it->setCount((chromtoComp.getOverlappingCount(it->getStart(), it->getEnd(),pOverlap)));
     }
 }
 
@@ -408,7 +430,10 @@ try
                 else
                 {
                     failRegionVec.push_back(Elem);
-                    cerr << "Not generating signal for region, as it exceeds reference size of"<< (int)densityValues.size() <<endl;
+                    #ifdef DEBUG
+      cerr << "Not generating signal for region, as it exceeds reference size of"<< (int)densityValues.size() <<endl;
+#endif
+
 
                 }
             }
@@ -496,8 +521,9 @@ try
                 else
                 {
                     failRegionVec.push_back(Elem);
-                    cerr << "Not generating signal for region, as it exceeds reference size of"<< (int)densityValues.size() <<endl;
-
+                    #ifdef DEBUG
+      cerr << "Not generating signal for region, as it exceeds reference size of"<< (int)densityValues.size() <<endl;
+#endif
                 }
             }
             catch(...)

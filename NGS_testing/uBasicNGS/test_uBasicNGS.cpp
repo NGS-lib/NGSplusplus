@@ -122,5 +122,8 @@ TEST(uBasicNGSTest, REGCTR){
 
 
 TEST(uBasicNGSTest_copyCtr, NORMAL){
-    ASSERT_TRUE(false);
+
+    uBasicNGS completeItem("chr20",100,200,StrandDir::FORWARD,0.4f);
+    uBasicNGS newItem(completeItem);
+    ASSERT_TRUE(completeItem.isEqual(newItem));
 }

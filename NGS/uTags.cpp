@@ -817,47 +817,47 @@ std::vector<float> uTagsChrom::getRegionSignal(long int start, long int end, boo
     return tempSignal;
 }
 
-template <class _OTHER_>
-uTags uTagsChrom::generateRandomSite(const int size_,std::mt19937& engine,const _OTHER_ &exclList, const int sigma, const std::string ID) const
-{
-    uTags returnTag;
-
-    bool found=false;
-    int size = size_;
-
-    int max = this->getChromSize();
-
-    while (!found)
-    {
-        {
-            uTags temptag;
-            if (sigma!=0)
-            {
-                std::normal_distribution<float> gaussian(size, sigma);
-                size = (int)gaussian(engine);
-            }
-
-            if (size>=1)
-            {
-                int shift = size/2;
-                //Generating our distribution at each call is probably needlesly heavy.. check to optimize this in time.
-                std::uniform_int_distribution<int> unif((shift+1), (max-shift));
-                int center = unif(engine);
-                temptag.setEnd(center+shift);
-                temptag.setStart(center-shift);
-                if ((exclList.getSubset(temptag.getStart(),temptag.getEnd())).count()==0)
-                {
-                    found=true;
-                    returnTag=temptag;
-                    returnTag.setChr(this->getChr());
-                    returnTag.setName(ID);
-                }
-            }
-        }
-    }
-
-    return returnTag;
-}
+//template <class _OTHER_>
+//uTags uTagsChrom::generateRandomSiteWithID(const int size, std::mt19937& engine, _OTHER_ exclList, const int sigma, const std::string ID) const
+//{
+//    uTags returnTag;
+//
+//    bool found=false;
+//    int cursize = size;
+//
+//    int max = this->getChromSize();
+//
+//    while (!found)
+//    {
+//        {
+//            uTags temptag;
+//            if (sigma!=0)
+//            {
+//                std::normal_distribution<float> gaussian(cursize, sigma);
+//                cursize = (int)gaussian(engine);
+//            }
+//
+//            if (cursize>=1)
+//            {
+//                int shift = cursize/2;
+//                //Generating our distribution at each call is probably needlesly heavy.. check to optimize this in time.
+//                std::uniform_int_distribution<int> unif((shift+1), (max-shift));
+//                int center = unif(engine);
+//                temptag.setEnd(center+shift);
+//                temptag.setStart(center-shift);
+//                if ((exclList.getOverlappingCount(temptag.getStart(),temptag.getEnd())).count()==0)
+//                {
+//                    found=true;
+//                    returnTag=temptag;
+//                    returnTag.setChr(this->getChr());
+//                    returnTag.setName(ID);
+//                }
+//            }
+//        }
+//    }
+//
+//    return returnTag;
+//}
 
 //TODO Re-write this to be a templated free function. While densignal signal makes more sense for Tags, they could be used from any structure
 /** \brief Generate our density signal for a given region and chrom

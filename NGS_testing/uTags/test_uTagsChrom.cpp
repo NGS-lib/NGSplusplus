@@ -101,9 +101,13 @@ TEST(uTagsGetRegionSignal, ASDF){
 	EXPECT_TRUE(false);
 }
 
-TEST(uTagsGenerateRandomSite, ASDF){
-	EXPECT_TRUE(false);
-}
+//TEST(uTagsGenerateRandomSite, ASDF){
+//
+//       StandardMultipleChroms ourChroms;
+//       std::random_device rd;
+//       std::mt19937 gen(rd());
+//       EXPECT_THROW(ourChroms.tagsManyChr.generateRandomSiteWithID(100,gen,ourChroms.tagsEmptyChr,0,"test"),param_throw );
+//}
 
 
 /**< Testing DivideItemsIntoNBin */
