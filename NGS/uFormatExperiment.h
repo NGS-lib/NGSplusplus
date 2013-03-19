@@ -108,8 +108,8 @@ public:
     typename std::vector<_BASE_>::const_iterator findPrecedingSite(std::string chr, int position)const;
     typename std::vector<_BASE_>::const_iterator findNextSite(std::string chr, int position)const;
 
-    void removeSite(const std::string & pChr,VecGenConstIter pItrPos);
-    void removeSite(const std::string & pChr,VecGenConstIter pItrStart,VecGenConstIter pItrEnd);
+    void removeSite(VecGenConstIter pItrPos);
+    void removeSite(VecGenConstIter pItrStart,VecGenConstIter pItrEnd);
 
     virtual void loadWithParser(std::ifstream&, std::string,long long=0);
     virtual void loadWithParser(std::string, std::string,long long=0);
@@ -160,9 +160,12 @@ public:
     _SELF_ getOverlapping(_CHROM_ &compareChrom, OverlapType type=OverlapType::OVERLAP_PARTIAL);
     _SELF_ getOverlapping(std::string chr, int start, int end, OverlapType type=OverlapType::OVERLAP_PARTIAL);
 
+    // TODO: getSubset overload that check every chromosome
     _CHROM_ getSubset(const std::string & pChr, const double pStart, const double pEnd, OverlapType options=OverlapType::OVERLAP_PARTIAL);
     _CHROM_ removeSubset(const std::string & pChr,const double pStart, const double pEnd, OverlapType overlap=OverlapType::OVERLAP_PARTIAL);
 
+    // TODO: getDistinct overload that check every chromosome
+    // TODO: getDistinct overload with range vector
     _SELF_ getDistinct(const std::string & pChr, const double pStart, const double pEnd, OverlapType type=OverlapType::OVERLAP_PARTIAL);
     _SELF_ removeDistinct(const std::string & pChr,const double pStart, const double pEnd, OverlapType options=OverlapType::OVERLAP_PARTIAL);
 
@@ -361,15 +364,15 @@ void uGenericNGSExperiment<_SELF_,_CHROM_, _BASE_>::removeSite(const std::string
  *
  */
 template<class _SELF_, typename _CHROM_, typename _BASE_>
-void uGenericNGSExperiment<_SELF_,_CHROM_, _BASE_>::removeSite(const std::string & pChr,VecGenConstIter pItrPos)
+void uGenericNGSExperiment<_SELF_,_CHROM_, _BASE_>::removeSite(VecGenConstIter pItrPos)
 {
     try
     {
         _CHROM_* tempChrom;
-        if (this->isChrom(pChr)==false)
-            throw param_throw()<<string_error("Throwing in removeSite(long int,long int). Required scaffold that is not set");
+        if (this->isChrom(pItrPos->getChr())==false)
+            throw param_throw()<<string_error("Throwing in removeSite(VecGenConstIter). Required scaffold that is not set");
 
-        tempChrom=&(ExpMap[pChr]);
+        tempChrom=&(ExpMap[pItrPos->getChr()]);
         tempChrom->removeSite(pItrPos);
     }
     catch(...)
@@ -393,16 +396,21 @@ void uGenericNGSExperiment<_SELF_,_CHROM_, _BASE_>::removeSite(const std::string
  *
  */
 template<class _SELF_, typename _CHROM_, typename _BASE_>
-void uGenericNGSExperiment<_SELF_,_CHROM_, _BASE_>::removeSite(const std::string & pChr,VecGenConstIter pItrStart,VecGenConstIter pItrEnd)
+void uGenericNGSExperiment<_SELF_,_CHROM_, _BASE_>::removeSite(VecGenConstIter pItrStart,VecGenConstIter pItrEnd)
 {
     try
     {
+    	if (pItrStart->getChr() != pItrEnd->getChr()) {
+		throw param_throw() << string_error("Throwing in removeSite(VecGenConstIter, VecGenConstIter). Iterators on different chromosomes.");
+	}
+
         _CHROM_* tempChrom;
-        if (this->isChrom(pChr)==false)
-            throw param_throw()<<string_error("Throwing in removeSite(long int,long int). Required scaffold that is not set");
+        if (this->isChrom(pItrStart->getChr())==false) {
+            throw param_throw()<<string_error("Throwing in removeSite(VecGenConstIter, VecGenConstIter). Required scaffold that is not set");
+	}
 
+        tempChrom=&(ExpMap[pItrStart->getChr()]);
         tempChrom->removeSite(pItrStart,pItrEnd);
-
     }
     catch(...)
     {
@@ -890,6 +898,7 @@ _BASE_ uGenericNGSExperiment<_SELF_,_CHROM_, _BASE_>::getSite(typename std::vect
  * \return _CHROM_ : Chrom containing the overlapping elements
  *
  */
+ // TODO: should return a sorted chrom
 template<class _SELF_, typename _CHROM_, typename _BASE_>
 _CHROM_ uGenericNGSExperiment<_SELF_,_CHROM_, _BASE_>::getSubset(const std::string & pChr, const double pStart, const double pEnd, OverlapType options)
 {
@@ -953,7 +962,7 @@ _SELF_ uGenericNGSExperiment<_SELF_,_CHROM_, _BASE_>::getDistinct(const std::str
     }catch(...){throw;}
 }
 
-/** \brief Return an EXP containing only the unarity sites that do not overlap does of the input structure. Remove the corresponding site form the Exp
+/** \brief Return an EXP containing only the unarity sites that do not overlap does of the input structure. This will also remove every chromosome that are not pChr. Remove the corresponding site form the Exp
  *
  *
  * \param compareExp uGenericNGSExperiment& Input,

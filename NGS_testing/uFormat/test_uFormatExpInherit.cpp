@@ -13,6 +13,7 @@
 
 using namespace std;
 using namespace NGS;
+const string HG18UCSC="../data/GENEPRED/hg18GenePred.genePred";
 
 /**< pseudo-FIXTURES: Begin */
 class validChroms
@@ -154,7 +155,7 @@ TEST(uBasicNGSEXP_GetChrom, VALIDCHROM)
 TEST(uBasicNGSEXP_GetChrom, NOCHROMTHROWEXC)
 {
 	uBasicNGSExperiment myExperiments;
-	EXPECT_THROW(myExperiments.getChrom(""), ugene_operation_throw);
+	EXPECT_THROW(myExperiments.getChrom(""), param_throw);
 }
 
 /*
@@ -192,7 +193,7 @@ TEST(uBasicNGSEXP_getpChrom, VALIDCHROM)
 TEST(uBasicNGSEXP_getpChrom, NOCHROMTHROWEXC)
 {
 	uBasicNGSExperiment anExp;
-	EXPECT_THROW(anExp.getpChrom(""), ugene_operation_throw);
+	EXPECT_THROW(anExp.getpChrom(""), param_throw);
 }
 
 /*
@@ -375,11 +376,17 @@ TEST(uBasicNGSEXP_getOverlapping, CHROMDONTEXISTS){
 	EXPECT_EQ(overlapExp.count(), 0);
 }
 
-TEST(uBasicNGSEXP_getOverlapping, POLYMORPHICHROM){ //TODO
-	EXPECT_TRUE(false);
-}
+//TEST(uBasicNGSEXP_getOverlapping, POLYMORPHICEXP){ 
+//	validExperiments myExperiments;
+//	uGeneExperiment anExp;
+//	uParser genePredParser(HG18UCSC,"GENEPRED");
+//	anExp.loadWithParser(genePredParser,1);
+//	uBasicNGSExperiment* anotherExp = myExperiments.getExperiment("NoName_3elems");
+//	uBasicNGSExperiment overlapExp = anExp.getOverlapping(*anotherExp);
+//	EXPECT_EQ(overlapExp.count(), 1);
+//}
 
-TEST(uBasicNGSEXP_getOverlapping, POLYMORPHICEXP){ //TODO
+TEST(uBasicNGSEXP_getOverlapping, POLYMORPHICHROM){
 	EXPECT_TRUE(false);
 }
 
@@ -407,7 +414,7 @@ TEST(uBasicNGSEXP_getChrSize, EMPTYCHROM){
 
 TEST(uBasicNGSEXP_getChrSize, INVALIDCHROM){
 	validExperiments myExperiments;
-	EXPECT_THROW(myExperiments.getExperiment("NoName_Empty")->getChrSize("chr4"), ugene_operation_throw);
+	EXPECT_THROW(myExperiments.getExperiment("NoName_Empty")->getChrSize("chr4"), param_throw);
 }
 
 /*
@@ -448,7 +455,7 @@ TEST(uBasicNGSEXP_setChrSize, INVALIDCHRSIZE){
 
 TEST(uBasicNGSEXP_setChrSize, INVALIDCHRNAME){
 	validExperiments myExperiments;
-	EXPECT_THROW(myExperiments.getExperiment("NoName_Empty")->setChrSize("chr4", 200), ugene_operation_throw);
+	EXPECT_THROW(myExperiments.getExperiment("NoName_Empty")->setChrSize("chr4", 200), param_throw);
 }
 
 /*
@@ -459,6 +466,7 @@ TEST(uBasicNGSEXP_setChrSize, INVALIDCHRNAME){
  *		VALIDCHROMNAME
  *		NONAMECHROM
  *		NOELEMINSUBSET
+ *		CUSTOMSORT
  *	Invalid cases:
  *		CHROMDONTEXISTS
  *		NOTSORTED
@@ -466,8 +474,11 @@ TEST(uBasicNGSEXP_setChrSize, INVALIDCHRNAME){
 
 TEST(uBasicNGSEXP_getSubset, VALIDCHROMNAME) {
 	validExperiments myExperiments;
-	myExperiments.getExperiment("MultipleChroms")->getpChrom("chr4")->sortSites();
+//	myExperiments.getExperiment("MultipleChroms")->getpChrom("chr4")->sortSites();
+	myExperiments.getExperiment("MultipleChroms")->sortSites();
 	uBasicNGSChrom aChrom = myExperiments.getExperiment("MultipleChroms")->getSubset("chr4", 100, 200);
+	EXPECT_EQ(aChrom.count(), 1);
+	aChrom.sortSites();
 	auto it = aChrom.findNextSite(0);
 	EXPECT_EQ(it->getChr(), "chr4");
 	EXPECT_EQ(it->getStart(), 100);
@@ -499,6 +510,15 @@ TEST(uBasicNGSEXP_getSubset, NOELEMINSUBSET) {
 	EXPECT_THROW(aChrom.getSite(0), param_throw);
 }
 
+TEST(uBasicNGSEXP_getSubset, CUSTOMSORT) {
+	validExperiments myExperiments;
+	myExperiments.getExperiment("MultipleChroms")->sortSites(myExperiments.getExperiment("MultipleChroms")->getpChrom("chr6")->compareLenght, &uBasicNGS::getLenght);
+	EXPECT_EQ(myExperiments.getExperiment("MultipleChroms")->getpChrom("chr6")->count(), 3);
+	uBasicNGSChrom aChrom = myExperiments.getExperiment("MultipleChroms")->getSubset("chr6", 120, 170);
+	EXPECT_EQ(aChrom.count(), 1);
+	EXPECT_EQ(myExperiments.getExperiment("MultipleChroms")->getpChrom("chr6")->count(), 3);
+}
+
 TEST(uBasicNGSEXP_getSubset, CHROMDONTEXISTS) {
 	validExperiments myExperiments;
 	uBasicNGSChrom aChrom = myExperiments.getExperiment("NoName_Empty")->getSubset("chr1", 1000, 2000);
@@ -510,12 +530,6 @@ TEST(uBasicNGSEXP_getSubset, NOTSORTED) {
 	EXPECT_THROW(myExperiments.getExperiment("MultipleChroms")->getSubset("", 1000, 2000), unsorted_throw);
 }
 
-
-
-TEST(uBasicNGSEXP_getSubset, CUSTOMSORT) {
-	ASSERT_TRUE(false);
-}
-
 /*
  * Tests for the function:
  *		_SELF_ getDistinct( std::string pChr, float pStart, float pEnd, OverlapType type=OverlapType::OVERLAP_PARTIAL);
@@ -523,6 +537,7 @@ TEST(uBasicNGSEXP_getSubset, CUSTOMSORT) {
  *		VALIDCHROMNAME
  *		NONAMECHROM
  *		NOELEMINSUBSET
+ *		CUSTOMSORT
  *	Invalid Cases:
  *		CHROMDONTEXISTS
  *		NOTSORTED
@@ -545,6 +560,16 @@ TEST(uBasicNGSEXP_getDistinct, NONAMECHROM) {
 	EXPECT_NO_THROW(distinctExp.getpChrom(""));
 }
 
+TEST(uBasicNGSEXP_getDistinct, CUSTOMSORT) {
+	validExperiments myExperiments;
+	myExperiments.getExperiment("MultipleChroms")->sortSites(myExperiments.getExperiment("MultipleChroms")->getpChrom("chr6")->compareLenght, &uBasicNGS::getLenght);
+	EXPECT_EQ(myExperiments.getExperiment("MultipleChroms")->getpChrom("chr6")->count(), 3);
+	uBasicNGSExperiment distinctExp = myExperiments.getExperiment("MultipleChroms")->getDistinct("chr6", 120, 170);
+	EXPECT_EQ(distinctExp.getpChrom("chr6")->count(), 2);
+	EXPECT_EQ(distinctExp.getpChrom("")->count(), 3);
+	EXPECT_EQ(myExperiments.getExperiment("MultipleChroms")->getpChrom("chr6")->count(), 3);
+}
+
 TEST(uBasicNGSEXP_getDistinct, NOELEMINSUBSET) {
 	validExperiments myExperiments;
 	myExperiments.getExperiment("MultipleChroms")->getpChrom("")->sortSites();
@@ -555,18 +580,13 @@ TEST(uBasicNGSEXP_getDistinct, NOELEMINSUBSET) {
 TEST(uBasicNGSEXP_getDistinct, CHROMDONTEXISTS) {
 	validExperiments myExperiments;
 	uBasicNGSExperiment distinctExp = myExperiments.getExperiment("NoName_Empty")->getDistinct("", 1000, 2000);
-	EXPECT_THROW(distinctExp.getpChrom("chr1"), ugene_operation_throw);
+	EXPECT_THROW(distinctExp.getpChrom("chr1"), param_throw);
 }
 
 TEST(uBasicNGSEXP_getDistinct, NOTSORTED) {
 	validExperiments myExperiments;
 	EXPECT_THROW(myExperiments.getExperiment("MultipleChroms")->getDistinct("", 1000, 2000), unsorted_throw);
 }
-
-TEST(uBasicNGSEXP_getDistinct, CUSTOMSORT) {
-	ASSERT_TRUE(false);
-}
-
 
 /*
  * Test for the function:
@@ -604,7 +624,7 @@ TEST(uBasicNGSEXP_getSubsetCount, NONAMECHROM){
 TEST(uBasicNGSEXP_getSubsetCount, CHROMNOEXIST){
 	validExperiments myExperiments;
 	myExperiments.getExperiment("MultipleChroms")->getpChrom("chr4")->sortSites();
-	EXPECT_THROW(myExperiments.getExperiment("NoName_Empty")->getSubsetCount("chr4", 100, 200), ugene_operation_throw);
+	EXPECT_THROW(myExperiments.getExperiment("NoName_Empty")->getSubsetCount("chr4", 100, 200), param_throw);
 }
 
 /*
@@ -634,7 +654,7 @@ TEST(uBasicNGSEXP_setChrSize, CHRSIZEWASSET) {
 
 TEST(uBasicNGSEXP_setChrSize, CHROMDONTEXISTS) {
 	validExperiments myExperiments;
-	EXPECT_THROW(myExperiments.getExperiment("NoName_Empty")->setChrSize("chr1", 2000), ugene_operation_throw);
+	EXPECT_THROW(myExperiments.getExperiment("NoName_Empty")->setChrSize("chr1", 2000), param_throw);
 }
 
 /*
@@ -818,17 +838,30 @@ TEST(uBasicNGSGENEXP_removeSubset, NOTSORTED) {
  *		NOTSORTED
  */
 
-TEST(uBasicNGSGENEXP_removeDistinct, VALID) {
+TEST(uBasicNGSGENEXP_removeDistinct, CHREXISTS) {
 	validExperiments myExperiments;
 	myExperiments.getExperiment("MultipleChroms")->sortSites();
 	EXPECT_EQ(myExperiments.getExperiment("MultipleChroms")->getpChrom("chr4")->count(), 1);
-	try {
-	myExperiments.getExperiment("MultipleChroms")->removeDistinct("chr4", 250, 251);
-	}
-	catch (std::exception& e) {
-		cout << e.what() << endl;
-	}
-//	EXPECT_EQ(myExperiments.getExperiment("MultipleChroms")->getpChrom("chr4")->count(), 0);
+	auto distinctExp = myExperiments.getExperiment("MultipleChroms")->removeDistinct("chr4", 150, 151);
+	EXPECT_EQ(myExperiments.getExperiment("MultipleChroms")->getpChrom("chr4")->count(), 1);
+	EXPECT_EQ(myExperiments.getExperiment("MultipleChroms")->isChrom("chr4"), true);
+	EXPECT_EQ(myExperiments.getExperiment("MultipleChroms")->isChrom(""), false);
+	EXPECT_EQ(distinctExp.isChrom("chr4"), true);
+	EXPECT_EQ(distinctExp.getpChrom("chr4")->count(), 0);
+}
+
+TEST(uBasicNGSGENEXP_removeDistinct, CHROMDONTEXISTS) {
+	validExperiments myExperiments;
+	myExperiments.getExperiment("MultipleChroms")->sortSites();
+	auto distinctExp = myExperiments.getExperiment("MultipleChroms")->removeDistinct("chrY", 150, 151);
+	EXPECT_EQ(myExperiments.getExperiment("MultipleChroms")->isChrom("chr4"), false);
+	EXPECT_EQ(myExperiments.getExperiment("MultipleChroms")->isChrom(""), false);
+	EXPECT_EQ(distinctExp.isChrom("chrY"), false);
+}
+
+TEST(uBasicNGSGENEXP_removeDistinct, NOTSORTED) {
+	validExperiments myExperiments;
+	EXPECT_THROW(myExperiments.getExperiment("MultipleChroms")->removeDistinct("chr4", 150, 151), unsorted_throw);
 }
 
 /*
@@ -839,7 +872,10 @@ TEST(uBasicNGSGENEXP_removeDistinct, VALID) {
  *	Invalid cases:
  */
 TEST(uBasicNGSGENEXP_addDataBase, VALID) {
-	ASSERT_TRUE(false);
+	validExperiments myExperiments;
+	uBasicNGS base("chr1", 100, 200);
+	EXPECT_NO_THROW(myExperiments.getExperiment("Empty_Exp")->addData(base));
+	EXPECT_EQ(myExperiments.getExperiment("Empty_Exp")->getpChrom("chr1")->count(), 1);
 }
 
 /*
@@ -850,18 +886,25 @@ TEST(uBasicNGSGENEXP_addDataBase, VALID) {
  *		CHROMDONTEXISTS
  *	Invalid cases:
  */
+
 TEST(uBasicNGSGENEXP_addDataChrom, CHREXISTS) {
-	ASSERT_TRUE(false);
+	validExperiments myExperiments;
+	uBasicNGSChrom aChr;
+	aChr.setChr("chr3");
+	aChr.addData(uBasicNGS("chr3",100,200));
+	EXPECT_EQ(myExperiments.getExperiment("MultipleChroms")->getpChrom("chr3")->count(), 0);
+	EXPECT_NO_THROW(myExperiments.getExperiment("MultipleChroms")->addData(aChr));
+	EXPECT_EQ(myExperiments.getExperiment("MultipleChroms")->getpChrom("chr3")->count(), 1);
 }
 
-
-TEST(uBasicNGSGENEXP_addData, UNIT) {
-
-	ASSERT_TRUE(false);
-}
 TEST(uBasicNGSGENEXP_addDataChrom, CHRDOESNTEXISTS) {
-
-	ASSERT_TRUE(false);
+	validExperiments myExperiments;
+	uBasicNGSChrom aChr;
+	aChr.setChr("chr1");
+	aChr.addData(uBasicNGS("chr1",100,200));
+	EXPECT_EQ(myExperiments.getExperiment("MultipleChroms")->isChrom("chr1"), false);
+	EXPECT_NO_THROW(myExperiments.getExperiment("MultipleChroms")->addData(aChr));
+	EXPECT_EQ(myExperiments.getExperiment("MultipleChroms")->getpChrom("chr1")->count(), 1);
 }
 /*
  * Tests for the function:
@@ -870,11 +913,14 @@ TEST(uBasicNGSGENEXP_addDataChrom, CHRDOESNTEXISTS) {
  *		VALID
  *	Invalid cases:
  */
-TEST(uBasicNGSGENEXP_addData, CHROMDUP) {
-    uBasicNGS uTest("chr1", 100, 119);
-    uToken ourToken= uTest.createToken();
 
-	ASSERT_TRUE(false);
+TEST(uBasicNGSGENEXP_addDataToken, VALID) {
+	uBasicNGS uTest("chr3", 1000, 1200);
+	uToken ourToken= uTest.createToken();
+	validExperiments myExperiments;
+	EXPECT_EQ(myExperiments.getExperiment("MultipleChroms")->getpChrom("chr3")->count(), 0);
+	EXPECT_NO_THROW(myExperiments.getExperiment("MultipleChroms")->addData(ourToken));
+	EXPECT_EQ(myExperiments.getExperiment("MultipleChroms")->getpChrom("chr3")->count(), 1);
 }
 
 /*
@@ -883,12 +929,29 @@ TEST(uBasicNGSGENEXP_addData, CHROMDUP) {
  * 	Valid cases:
  *		VALID
  *	Invalid cases:
+ *		INDEXTOOHIGH
+ *		EMPTYCHR
  */
- 
+/* // Removed since they are now protected 
 TEST(uBasicNGSGENEXP_removeSitePosition, VALID) {
-	ASSERT_TRUE(false);
+	validExperiments myExperiments;
+	EXPECT_EQ(myExperiments.getExperiment("MultipleChroms")->getpChrom("chr4")->count(), 1);
+	EXPECT_NO_THROW(myExperiments.getExperiment("MultipleChroms")->removeSite("chr4", 0));
+	EXPECT_EQ(myExperiments.getExperiment("MultipleChroms")->getpChrom("chr4")->count(), 0);
 }
 
+TEST(uBasicNGSGENEXP_removeSitePosition, INDEXTOOHIGH) {
+	validExperiments myExperiments;
+	EXPECT_EQ(myExperiments.getExperiment("MultipleChroms")->getpChrom("chr4")->count(), 1);
+	EXPECT_THROW(myExperiments.getExperiment("MultipleChroms")->removeSite("chr4", 1), param_throw);
+}
+
+TEST(uBasicNGSGENEXP_removeSitePosition, INDEXTOOHIGH) {
+	validExperiments myExperiments;
+	EXPECT_EQ(myExperiments.getExperiment("MultipleChroms")->getpChrom("chr3")->count(), 0);
+	EXPECT_THROW(myExperiments.getExperiment("MultipleChroms")->removeSite("chr3", 0), param_throw);
+}
+*/
 /*
  * Tests for the function:
  *		void removeSite(const std::string & pChr,const long int pStart,const long int pEnd);
@@ -897,9 +960,11 @@ TEST(uBasicNGSGENEXP_removeSitePosition, VALID) {
  *	Invalid cases:
  */
 
-TEST(uBasicNGSGENEXP_removeSiteBeginEnd, VALID) {
-	ASSERT_TRUE(false);
-}
+// Protected
+
+//TEST(uBasicNGSGENEXP_removeSiteBeginEnd, VALID) {
+//	ASSERT_TRUE(false);
+//}
 
 /*
  * Tests for the function:
@@ -909,9 +974,14 @@ TEST(uBasicNGSGENEXP_removeSiteBeginEnd, VALID) {
  *	Invalid cases:
  */
 
-
 TEST(uBasicNGSGENEXP_removeSiteIter, VALID) {
-	ASSERT_TRUE(false);
+	validExperiments myExperiments;
+	myExperiments.getExperiment("MultipleChroms")->sortSites();
+	auto itr = myExperiments.getExperiment("MultipleChroms")->findNextSite("", 1);
+	EXPECT_EQ(itr->getChr(), "");
+	EXPECT_EQ(myExperiments.getExperiment("MultipleChroms")->getpChrom("")->count(), 3);
+	EXPECT_NO_THROW(myExperiments.getExperiment("MultipleChroms")->removeSite(itr));
+	EXPECT_EQ(myExperiments.getExperiment("MultipleChroms")->getpChrom("")->count(), 2);
 }
 
 /*
@@ -919,26 +989,53 @@ TEST(uBasicNGSGENEXP_removeSiteIter, VALID) {
  *		void removeSite(const std::string & pChr,VecGenConstIter pItrStart,VecGenConstIter pItrEnd);
  * 	Valid cases:
  *		VALID
+ *		SAMESITE
  *	Invalid cases:
+ *		ITERNOTONSAMECHROM
+ *		NOTSORTED
  */
-TEST(uBasicNGSGENEXP_removeSiteIterBeginEnd, ONENOITR) {
-	ASSERT_TRUE(false);
+
+TEST(ubasicNGSGENEEXP_removeSiteIterBeginEnd, VALID) {
+	validExperiments myExperiments;
+	myExperiments.getExperiment("MultipleChroms")->sortSites();
+	auto itr1 = myExperiments.getExperiment("MultipleChroms")->findNextSite("", 1);
+	auto itr2 = myExperiments.getExperiment("MultipleChroms")->findNextSite("", 150);
+	EXPECT_EQ(itr1->getChr(), "");
+	EXPECT_EQ(itr2->getChr(), "");
+	EXPECT_EQ(myExperiments.getExperiment("MultipleChroms")->getpChrom("")->count(), 3);
+	EXPECT_NO_THROW(myExperiments.getExperiment("MultipleChroms")->removeSite(itr1, itr2));
+	EXPECT_EQ(myExperiments.getExperiment("MultipleChroms")->getpChrom("")->count(), 2);
 }
 
-
-TEST(uBasicNGSGENEXP_removeSite, ONEITR) {
-
-	ASSERT_TRUE(false);
-}
-TEST(uBasicNGSGENEXP_removeSite, RANGEITR) {
-
-	ASSERT_TRUE(false);
-}
-
-TEST(uBasicNGSGENEXP_sortSites, VALID) {
-
-	ASSERT_TRUE(false);
+TEST(ubasicNGSGENEEXP_removeSiteIterBeginEnd, SAMESITE) {
+	validExperiments myExperiments;
+	myExperiments.getExperiment("MultipleChroms")->sortSites();
+	auto itr1 = myExperiments.getExperiment("MultipleChroms")->findNextSite("", 1);
+	auto itr2 = myExperiments.getExperiment("MultipleChroms")->findNextSite("", 1);
+	EXPECT_EQ(itr1->getChr(), "");
+	EXPECT_EQ(itr2->getChr(), "");
+	EXPECT_EQ(myExperiments.getExperiment("MultipleChroms")->getpChrom("")->count(), 3);
+	EXPECT_NO_THROW(myExperiments.getExperiment("MultipleChroms")->removeSite(itr1, itr2));
+	EXPECT_EQ(myExperiments.getExperiment("MultipleChroms")->getpChrom("")->count(), 3);
 }
 
+TEST(uBasicNGSGENEXP_removeSiteIterBeginEnd, ITERNOTONSAMECHROM) {
+	validExperiments myExperiments;
+	myExperiments.getExperiment("MultipleChroms")->sortSites();
+	auto itr1 = myExperiments.getExperiment("MultipleChroms")->findNextSite("", 1);
+	auto itr2 = myExperiments.getExperiment("MultipleChroms")->findNextSite("chr4", 1);
+	EXPECT_THROW(myExperiments.getExperiment("MultipleChroms")->removeSite(itr1, itr2), param_throw);
+}
 
+// NOTE: Cannot test unsorted_throw on removeSite because it throws when I try to get an iterator with findNextSite on unsorted exp.
+//TEST(uBasicNGSGENEXP_removeSiteIterBeginEnd, NOTSORTED) {
+//	validExperiments myExperiments;
+//	auto itr1 = myExperiments.getExperiment("MultipleChroms")->findNextSite("", 1);
+//	auto itr2 = myExperiments.getExperiment("MultipleChroms")->findNextSite("", 1);
+//	EXPECT_THROW(myExperiments.getExperiment("MultipleChroms")->removeSite(itr1, itr2), unsorted_throw);
+//}
 
+// Tested indirectly
+//TEST(uBasicNGSGENEXP_sortSites, VALID) {
+//	ASSERT_TRUE(false);
+//}
