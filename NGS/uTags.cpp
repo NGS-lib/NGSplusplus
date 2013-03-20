@@ -32,8 +32,8 @@ uTags::uTags(uToken pToken)try:
         setPhred(pToken.getParam(token_param::PHRED_SCORE));
     if (pToken.isParamSet(token_param::FLAGS))
         setFlag(utility::stoi(pToken.getParam(token_param::FLAGS)));
-    if (pToken.isParamSet(token_param::TEMPLATE_LENGHT))
-        setPELenght(utility::stoi(pToken.getParam(token_param::TEMPLATE_LENGHT)));
+    if (pToken.isParamSet(token_param::TEMPLATE_LENGTH))
+        setPELenght(utility::stoi(pToken.getParam(token_param::TEMPLATE_LENGTH)));
 
 }
 catch(ugene_exception_base &e)

@@ -16,7 +16,7 @@ namespace NGS
 /**< This list has to be updated for every new param */
 enum class token_param
 {
-    CHR, START_POS, END_POS, STRAND, MAP_SCORE, PHRED_SCORE, CIGAR, SEQUENCE, SEQ_NAME,FLAGS ,SCORE,DENSITY,FEATURE_TYPE,SOURCE,PHASE,EXTRA,TEMPLATE_LENGHT,
+    CHR, START_POS, END_POS, STRAND, MAP_SCORE, PHRED_SCORE, CIGAR, SEQUENCE, SEQ_NAME,FLAGS ,SCORE,DENSITY,FEATURE_TYPE,SOURCE,PHASE,EXTRA,TEMPLATE_LENGTH,
     FEATURE_CLASS, FEATURE_ID,GROUP_TRANSCRIPT,GROUP_ID,OFFSET,
     CUST_1,CUST_2,CUST_3,CUST_4,CUST_5,CUST_6,CUST_7,CUST_8,CUST_9
 };
@@ -32,8 +32,10 @@ enum class validate_type
 class uToken
 {
 public:
-    uToken(std::istream& paramList, bool customValues = false, validate_type validate=validate_type::VALIDATE );
-	uToken();
+//    uToken(std::istream& paramList, bool customValues = false, validate_type validate=validate_type::VALIDATE );
+    uToken(std::istream& paramList, validate_type validate=validate_type::VALIDATE);
+    uToken(std::istream& paramList, bool customValues, validate_type validate=validate_type::VALIDATE);
+    uToken();
 
     /** \brief Fetch a param. Throw param_not_found if the param does not exist.
      * \param token_param& name: the name of the param we wish to get.
@@ -74,19 +76,21 @@ public:
                 || param == "SOURCE"
                 || param == "PHASE"
                 || param == "EXTRA"
-				|| param == "TEMPLATE_LENGHT"
-				|| param == "GROUND_TRANSCRIPT"
-				|| param == "GROUND_ID"
-				|| param == "OFFSET"
+		|| param == "TEMPLATE_LENGTH"
+		|| param == "GROUND_TRANSCRIPT"
+		|| param == "GROUND_ID"
+		|| param == "OFFSET"
                 );
     }
 
 private:
-	void _setParamNoValidate(const token_param& name, const std::string& value);
+    void _setParamNoValidate(const token_param& name, const std::string& value);
     std::map<token_param, std::vector<std::string>> m_params= {};
     bool m_customValues = false;
     std::map<std::string, std::string> m_customParams= {};
 
+
+    void _initialize(std::istream& paramList, bool customValues, validate_type validate);
 
     void _setParam(const token_param& name, const std::string& value);
     void _setParamCustom(const std::string& name, const std::string& value);
@@ -186,8 +190,8 @@ inline std::ostream & operator<<(std::ostream& Str, token_param name)
         return Str <<"SOURCE";
      case token_param::EXTRA:
         return Str <<"EXTRA";
-	case token_param::TEMPLATE_LENGHT:
-        return Str <<"TEMPLATE_LENGHT";
+	case token_param::TEMPLATE_LENGTH:
+        return Str <<"TEMPLATE_LENGTH";
     case token_param::OFFSET:
         return Str <<"OFFSET";
 
@@ -216,7 +220,7 @@ inline std::istream& operator>>(std::istream &is, token_param& name)
     else if (token == "PHASE") name = token_param::PHASE;
     else if (token == "SOURCE") name = token_param::SOURCE;
     else if (token == "EXTRA") name = token_param::EXTRA;
-	else if (token == "TEMPLATE_LENGHT") name = token_param::TEMPLATE_LENGHT;
+    else if (token == "TEMPLATE_LENGTH") name = token_param::TEMPLATE_LENGTH;
     else if (token == "FEATURE_CLASS") name = token_param::FEATURE_CLASS;
     else if (token == "FEATURE_ID") name = token_param::FEATURE_ID;
     else if (token == "GROUP_ID") name = token_param::GROUP_ID;
