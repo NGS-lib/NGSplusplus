@@ -305,16 +305,21 @@ uGenericNGSChrom<_SELF_,_BASE_>::uGenericNGSChrom(const std::string & consString
     {
         setChromSize(size);
     }
-    catch(std::exception & e)
+    catch(...)
     {
-        throw e;
+        throw;
     }
 }
 template <class _SELF_, class _BASE_>
 uGenericNGSChrom<_SELF_,_BASE_>::uGenericNGSChrom(const std::vector<_BASE_> & copyVec)
 {
+try {
+    if (copyVec.size())
+        setChr(copyVec.at(0).getChr());
     for (_BASE_ elem: copyVec)
         addData(elem);
+}
+catch(...){throw;}
 }
 
 template <class _SELF_, class _BASE_>
@@ -323,7 +328,6 @@ uGenericNGSChrom<_SELF_,_BASE_>::uGenericNGSChrom(const std::string & pChrom, co
     for (_BASE_ elem: pCopyVec)
         addData(elem);
 }
-
 
 
 template <class _SELF_,class _BASE_>
@@ -803,7 +807,7 @@ typename std::vector<_BASE_>::const_iterator uGenericNGSChrom<_SELF_,_BASE_>::fi
         /**< If result is our first item, then no item precedes it */
         if ((lower==VecSites.begin()))
             return VecSites.end();
-        /**< If result is end, every idem precedes the value */
+        /**< If result is end, every item precedes the value */
         /**<Return item precedes and as such is LESS then pPosition. if no item was found, last item is closest to value  */
         lower--;
         return (lower);
@@ -1071,9 +1075,7 @@ _SELF_ uGenericNGSChrom<_SELF_,_BASE_>::removeDistinct(double p_start, double p_
             {
                 returnChrom.addDataNoCheck(*posIter);
                 posIter++;
-                std::cout<< "removed border"<<std::endl;
             }
-            std::cout<< "removed before"<<std::endl;
             this->removeSite(this->begin(),posIter);
         }
 
@@ -1157,29 +1159,44 @@ _SELF_ uGenericNGSChrom<_SELF_,_BASE_>::getOverlapping(long int pStart, long int
     return returnChr;
 }
 
-template <class _SELF_,class _BASE_>
+
+    /** \brief Return the number of elements of this overlapping the genomic positions between start and end
+     *
+     * \param pStart long int : Beginning of region
+     * \param pEnd long int : End of region
+     * \param pOverlap OverlapType : Overlap type
+     * \sa getOverlappingCount
+     * \return long long int Number of regions overlapping range.
+     *
+     */
+     template <class _SELF_,class _BASE_>
     long long int uGenericNGSChrom<_SELF_,_BASE_>::getOverlappingCount(long int pStart, long int pEnd,OverlapType pOverlap) const{
      long long int overlapCount=0;
+
+  try {
     for(auto it= VecSites.begin(); it!=VecSites.end(); it++)
     {
         if (utility::isOverlap(it->getStart(), it->getEnd(),pStart,pEnd,pOverlap))
         {
            overlapCount++;
         }
-
     }
     return overlapCount;
+
+    }
+    catch(...)
+    {
+        throw;
+    }
 }
 
 /**< Return the number of elements of A that overlap B */
-/** \brief Wrapper function that returns the number of elements of that overlap another chrom structur
+/** \brief Wrapper function that returns the number of elements of that overlap at least one element of param
  *
- *      This function return a collection. This collection contains every element of THIS that overlaps an element of pCompareChr. This comparison
- *      is always based on genomic positions ( start end )
  *
  * \param _OTHER_ & pCompareChr : A compatible chrom collection
  * \param OverlapType overlap  : type of overlap
- * \return Chrom collection containing all overlapping elements.
+ * \return long long int : Number of regions of this that overlap a region of param. Each region of this counted at most once.
  * \sa getOverlapping
  */
 template <class _SELF_,class _BASE_>
@@ -1198,6 +1215,7 @@ long long int uGenericNGSChrom<_SELF_,_BASE_>::getOverlappingCount(_OTHER_ &pCom
             if (utility::isOverlap(it->getStart(), it->getEnd(),compit->getStart(),compit->getEnd(),pOverlap))
             {
                 overlapCount++;
+                break;
             }
         }
     }

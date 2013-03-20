@@ -207,19 +207,29 @@ TEST(uGeneTest_removeFeature, REMOVEALL){
 }
 
 TEST(uGeneTest_createToken, VALID){
-    ASSERT_TRUE(false);
+     StandardGenes myGenes;
+     uToken token = myGenes.manyFeaturesGene.createToken();
+     vector<std::string> startVal {"400","50","75","3000"};
+      vector<std::string> endVal {"1000","300","150","4000"};
+     EXPECT_EQ(startVal,token.getParamVector(token_param::START_POS));
+     EXPECT_EQ(endVal,token.getParamVector(token_param::END_POS));
+
+     EXPECT_EQ("GENE", token.getParam(token_param::FEATURE_TYPE));
+     EXPECT_EQ("EXON", token.getParam(token_param::FEATURE_TYPE,1));
+     EXPECT_EQ("EXON", token.getParam(token_param::FEATURE_TYPE,2));
+
 }
 
 TEST(uGeneTest_copyCtr, NORMAL){
-    ASSERT_TRUE(false);
+    StandardGenes myGenes;
+    uGene copyGene(myGenes.manyFeaturesGene);
+    EXPECT_TRUE(copyGene.isEqual(myGenes.manyFeaturesGene));
 }
 
-
-TEST(uGeneTest_getFeatureInt, VALID){
-    ASSERT_TRUE(false);
-}
 
 TEST(uGeneTest_Assignment, VALID){
-    ASSERT_TRUE(false);
+    StandardGenes myGenes;
+    uGene copyGene=myGenes.manyFeaturesGene;
+    EXPECT_TRUE(copyGene.isEqual(myGenes.manyFeaturesGene));
 }
 

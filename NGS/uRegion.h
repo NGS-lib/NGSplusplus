@@ -131,10 +131,12 @@ public:
     void measureDensityOverlap(const uTagsExperiment& expToComp, const OverlapType poverlap=OverlapType::OVERLAP_PARTIAL);
     void measureDensityOverlap(const uRegionExperiment& expToComp, const OverlapType poverlap=OverlapType::OVERLAP_PARTIAL);
     void measureDensityOverlap(const uBasicNGSExperiment& expToComp, const OverlapType poverlap=OverlapType::OVERLAP_PARTIAL);
+    void measureDensityOverlap(const uGeneExperiment& expToComp, const OverlapType poverlap=OverlapType::OVERLAP_PARTIAL);
 
     void generateSignal(const uTagsExperiment& expToComp);
     void generateSignal(const uRegionExperiment & expToComp);
     void generateSignal(const uBasicNGSExperiment & expToComp);
+    void generateSignal(const uGeneExperiment & expToComp);
 
 
     void writeSignal(std::ostream& out, char pSep='\t');

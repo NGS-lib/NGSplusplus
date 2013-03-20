@@ -12,6 +12,7 @@ class uRegion;
 class uTags;
 class uToken;
 class uBasicNGS;
+class uGene;
 enum class token_param;
 
 
@@ -20,6 +21,7 @@ typedef boost::error_info<struct region_info,uRegion> region_error;
 typedef boost::error_info<struct basic_info,uBasicNGS> basic_error;
 typedef boost::error_info<struct tag_info,uTags> tag_error;
 typedef boost::error_info<struct skip_tags,std::vector<uTags>> skipped_tags;
+typedef boost::error_info<struct skip_genes,std::vector<uGene>> skipped_genes;
 typedef boost::error_info<struct skip_regions,std::vector<uRegion>> skipped_regions;
 typedef boost::error_info<struct skip_regions,std::vector<uBasicNGS>> skipped_Basic;
 
@@ -35,6 +37,8 @@ struct format_parsing_error : virtual ugene_exception_base{};
 struct ugene_operation_throw : virtual ugene_exception_base{};
 struct uChrom_operation_throw : virtual ugene_operation_throw{};
 struct uExp_operation_throw : virtual uChrom_operation_throw{};
+
+
 
 /**< File IO exceptions */
 

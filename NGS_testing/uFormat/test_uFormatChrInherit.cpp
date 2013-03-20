@@ -374,7 +374,9 @@ TEST(uBasicNGSCHR_addNRandomSite, MAKECORRECTNUMBER){
        uBasicNGSChrom twoItems("chr1");
        twoItems.addData(uBasicNGS("chr1",0,220));
        twoItems.addData(uBasicNGS("chr1",230,420));
-       EXPECT_EQ(ourChroms.manyChr.getOverlappingCount(twoItems),3);
+       EXPECT_EQ(3,ourChroms.manyChr.getOverlappingCount(twoItems));
+
+
  }
  TEST(uBasicNGSCHR_getOverlappingCount, NOOVERLAP){
        StandardChroms ourChroms;
@@ -608,7 +610,7 @@ TEST(uBasicNGSCHR_getSubsetCount, MIDDLE)
 {
      StandardChroms ourChroms;
      ourChroms.manyChr.sortSites();
-     EXPECT_EQ(3,ourChroms.manyChr.getSubsetCount(125, 300));
+     EXPECT_EQ(2,ourChroms.manyChr.getSubsetCount(125, 300));
 }
 
 TEST(uBasicNGSCHR_getSubsetCount, EMPTY)
@@ -731,9 +733,9 @@ TEST(uBasicNGSCHR_sortSites, CUSTOM)
       //Check manually the order
       auto itr= ourChroms.manyChr.begin();
 
-      EXPECT_TRUE((itr)->isEqual(uBasicNGS("chr1",100,200)));
-      EXPECT_TRUE((itr+1)->isEqual(uBasicNGS("chr1",120,250)));
-      EXPECT_TRUE((itr+2)->isEqual(uBasicNGS("chr1",230,300)));
+      EXPECT_TRUE((itr)->isEqual(uBasicNGS("chr1",230,300)));
+      EXPECT_TRUE((itr+1)->isEqual(uBasicNGS("chr1",100,200)));
+      EXPECT_TRUE((itr+2)->isEqual(uBasicNGS("chr1",120,250)));
 }
 
 // TODO: Test throw when not sorted

@@ -96,9 +96,12 @@ TEST(uTagsTestChrom_ctr, POLYGENE){
 TEST(uTagsTestChrom_ctr, POLYVECTOR){
 	EXPECT_TRUE(false);
 }
+//TODO incrase test suite for this
+TEST(uTagsGetRegionSignal, SIMPLE){
 
-TEST(uTagsGetRegionSignal, ASDF){
-	EXPECT_TRUE(false);
+    StandardMultipleChroms tagChrom;
+    auto Fvector =tagChrom.tagsOneChr.getRegionSignal(95,105,true);
+    EXPECT_EQ(vector<float>({0,0,0,0,0,1,1,1,1,1,1}),Fvector);
 }
 
 //TEST(uTagsGenerateRandomSite, ASDF){

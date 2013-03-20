@@ -13,24 +13,62 @@
 using namespace NGS;
 /**< Testing our unitary Tag */
 
-// TODO:
-TEST(uTagsTest_getCopy, ASDF){
+class StandardTags
+{
+public:
+	StandardTags()
+	{
+		/**< m_uBasicNGSChroms[0]: Empty chrom without a name (""). */
+       simpleTag.setChr("chr1");
+       simpleTag.setStartEnd(500,800);
 
-	ASSERT_TRUE(false);
+       PETag.setChr("chr1");
+       PETag.setStartEnd(500,600);
+       PETag.setPELenght(200);
+
+       CompletTag.setChr("chr1");
+       CompletTag.setStartEnd(400,405);
+       CompletTag.setSequence("GAGACG");
+       CompletTag.setCigar("40M");
+	}
+
+    uTags simpleTag;
+    uTags PETag;
+    uTags CompletTag;
+};
+TEST(uTagsTest_getCopy, VALID){
+
+   StandardTags myTags;
+   auto newTags=myTags.CompletTag.getCopy();
+   EXPECT_TRUE( myTags.CompletTag.isEqual(newTags));
 }
-TEST(uTagsTest_getCompletedCopy, ASFD) {
-	ASSERT_TRUE(false);
+TEST(uTagsTest_getCompletedCopy, VALID) {
+
+	StandardTags myTags;
+	auto completedPE= myTags.PETag.getCompletedCopy();
+	EXPECT_EQ( (301),completedPE.getLenght());
+	EXPECT_EQ( (600+200),completedPE.getEnd());
+    EXPECT_EQ(500,completedPE.getStart());
 }
-TEST(uTagsTest_isEqual, ASFD) {
-	ASSERT_TRUE(false);
+TEST(uTagsTest_isEqual, VALIDCOPY) {
+
+    StandardTags myTags;
+	EXPECT_TRUE(myTags.CompletTag.isEqual(myTags.CompletTag));
+
 }
-TEST(uTagsTest_createToken, ASFD) {
-	ASSERT_TRUE(false);
+TEST(uTagsTest_createToken, VALID) {
+    StandardTags myTags;
+	uToken newToken=myTags.CompletTag.createToken();
+
+	uTags fromToken(newToken);
+	EXPECT_TRUE(fromToken.isEqual(myTags.CompletTag));
 }
-// END of TODO
 
 TEST(uTagsTest_copyCtr, NORMAL){
-    ASSERT_TRUE(false);
+
+     StandardTags myTags;
+    uTags newTag(myTags.CompletTag);
+    EXPECT_TRUE(newTag.isEqual(myTags.CompletTag));
 }
 
 
@@ -106,7 +144,7 @@ TEST(uTagsTest_ctr, 3OAR){
     EXPECT_EQ(200,Utest.getEnd());
 }
 // TODO: Copy operator
-TEST(uTagsTest_ctr, ASSIGNMENT){ 
+TEST(uTagsTest_ctr, ASSIGNMENT){
     uTags copyFrom("chr1", 100, 200);
     uTags copyTo;
     uTags copyFilled("chr4", 100000, 2000000);

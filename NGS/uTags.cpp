@@ -663,6 +663,10 @@ uToken uTags::createToken() const
     {
         ss<<"CIGAR\t" <<m_cigar<<"\n";
     }
+        if (isPE())
+    {
+        ss<<"TEMPLATE_LENGHT\t" <<std::to_string(PELenght)<<"\n";
+    }
     try
     {
         return uToken(ss);

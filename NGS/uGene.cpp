@@ -14,7 +14,7 @@ namespace NGS
  * \param pID std::string
  *
  */
-uGene::uFeature::uFeature(long int pStart, long int pEnd,StrandDir pDir, featureType pType,std::string pID, short int pOffset ): m_start(pStart), m_end(pEnd), m_type(pType)
+uFeature::uFeature(long int pStart, long int pEnd,StrandDir pDir, featureType pType,std::string pID, short int pOffset ): m_start(pStart), m_end(pEnd), m_type(pType)
     ,m_ID(pID),m_offset(pOffset)
 {
     if ( pStart < 0 || pStart > pEnd )
@@ -73,7 +73,7 @@ uToken uGene::createToken() const
  * \return bool Comparison result
  *
  */
-bool uGene::uFeature::operator==(const uFeature &other) const
+bool uFeature::operator==(const uFeature &other) const
 {
 
     return ((this->m_start==other.m_start) &&
@@ -90,7 +90,7 @@ bool uGene::uFeature::operator==(const uFeature &other) const
  * \return bool Result of the comparison
  *
  */
-bool uGene::uFeature::operator!=(const uFeature &other) const
+bool uFeature::operator!=(const uFeature &other) const
 {
     return !(*this == other);
 }
@@ -98,7 +98,13 @@ bool uGene::uFeature::operator!=(const uFeature &other) const
 /**< From uTokens */
 uGene::uGene(uToken pToken)try:
     uGenericNGS(pToken)
-{}
+{
+
+
+
+
+
+}
 catch(...)
 {
 #ifdef DEBUG
@@ -113,6 +119,19 @@ uGene::uGene(std::string pChr, long int pStart, long int pEnd, StrandDir pStrand
 
 uGene::uGene(std::string pChr, long int pStart, long int pEnd, StrandDir pstrand, float pScore):uGenericNGS(pChr,pStart,pEnd,pstrand,pScore) {}
 uGene::uGene(std::string pChr, long int pStart, long int pEnd, float pScore ):uGenericNGS(pChr,pStart,pEnd,pScore) {}
+
+uGene::uGene(std::string pChr, long int pStart, long int pEnd, StrandDir pStrand, std::string pID, std::string pTranscript):uGenericNGS(pChr,pStart,pEnd,pStrand),m_ID(pID),m_transcript(pTranscript)
+{}
+
+
+    uGene::uGene(std::string pChr, long int pStart, long int pEnd, StrandDir pStrand, float pScore, std::string pID, std::string pTranscript):uGenericNGS(pChr,pStart,pEnd,pStrand,pScore),m_ID(pID),m_transcript(pTranscript)
+    {
+    }
+
+    uGene::uGene(std::string pChr, long int pStart, long int pEnd, std::string pID, std::string pTranscript):uGenericNGS(pChr,pStart,pEnd),m_ID(pID),m_transcript(pTranscript)
+    {
+    }
+
 
 
 
@@ -141,7 +160,6 @@ uGene::uGene(uRegion pRegion): uGenericNGS(pRegion.getChr(),pRegion.getStart(), 
     setScoreVector(pRegion.getScoreVector());
 }
 
-//TODO ADD tests for this function
 /** \brief Checks if the content of elements are identical
  *
  * \param pCompared const uGene: Item to compare
@@ -277,7 +295,7 @@ void uGene::removeFeature(std::vector<uFeature>::const_iterator pStartItr,std::v
  * \return typename std::vector<uGene::uFeature>::const_iterator
  *
  */
-typename std::vector<uGene::uFeature>::const_iterator uGene::featureBegin()const
+typename std::vector<uFeature>::const_iterator uGene::featureBegin()const
 {
     return m_featureVector.cbegin();
 }
@@ -287,7 +305,7 @@ typename std::vector<uGene::uFeature>::const_iterator uGene::featureBegin()const
  * \return typename std::vector<uGene::uFeature>::const_iterator
  *
  */
-typename std::vector<uGene::uFeature>::const_iterator uGene::featureEnd()const
+typename std::vector<uFeature>::const_iterator uGene::featureEnd()const
 {
     return m_featureVector.cend();
 }
@@ -300,10 +318,15 @@ typename std::vector<uGene::uFeature>::const_iterator uGene::featureEnd()const
  */
 bool uGene::hasFeatureType(featureType pType)const
 {
-    return  ( std::find_if(m_featureVector.begin(), m_featureVector.end(), [&](const uFeature & item)
+
+    auto itemEqual =[&](const uFeature & item)
     {
         return item.getType()==pType;
-    } )!=m_featureVector.end());
+    };
+
+    return  ( std::find_if(m_featureVector.begin(), m_featureVector.end(), itemEqual ) !=m_featureVector.end() );
+
+
 }
 
 /** \brief Verifies if a feature specifically overlaps the given range. Only valide for positions
@@ -392,6 +415,27 @@ unsigned long int uGene::featureCount(const featureType & pFeature)const
 
 /**< uGeneChrom */
 
+/**< Constructors */
+uGeneChrom::uGeneChrom(const std::vector<uGene> & copyVec)
+{
+try {
+    if (copyVec.size())
+        setChr(copyVec.at(0).getChr());
+    for (uGene elem: copyVec)
+        addData(elem);
+}
+catch(...){throw;}
+}
+
+
+uGeneChrom::uGeneChrom(const std::string & pChrom, const std::vector<uGene> & pCopyVec)
+{
+    setChr(pChrom);
+    for (uGene elem: pCopyVec)
+        addData(elem);
+}
+
+
 /** \brief Total number of features, without counting genes
  *
  * \return unsigned long int
@@ -405,9 +449,6 @@ unsigned long int uGeneChrom::featureCount(const featureType & pFeature)const
         return partialSum + item.featureCount(pFeature);
     }, 0ULL);
 }
-
-
-
 
 
 
@@ -429,8 +470,8 @@ try
     if (newSite.getID().size())
     {
         /**< If we are trying to add but the existing ID/Transcript combination is set, fail */
-        if (this->getIDCount(newSite.getID(),newSite.getTranscript()));
-        throw ugene_exception_base()<<string_error("adding base to uGeneChrom with already existing ID/Transcript pair");
+        if (this->getIDCount(newSite.getID(),newSite.getTranscript()))
+            throw ugene_exception_base()<<string_error("adding base to uGeneChrom with already existing ID/Transcript pair");
     }
     m_isSorted=false;
     VecSites.push_back(newSite);
@@ -524,19 +565,26 @@ void uGeneChrom::addData(const uToken & pToken)
  */
 long int uGeneChrom::getIDCount(const std::string & pId, const std::string & pTranscript)const
 {
-    if (pTranscript.size()==0)
-        return  ( std::count_if(std::begin(VecSites), std::end(VecSites), [&](const uGene & item)
-    {
-        return (item.getID()==pId) ;
-    } ));
+
+    if (pTranscript.size()==0){
+            auto IdEqualFunct=[&](const uGene & item)
+            {
+                return (item.getID()==pId) ;
+            };
+            return  ( std::count_if(std::begin(VecSites), std::end(VecSites), IdEqualFunct) );
+        }
     else
-        return  ( std::count_if(std::begin(VecSites), std::begin(VecSites), [&](const uGene & item)
-    {
-        return ( item.getID()==pId && item.getTranscript()==pTranscript) ;
-    } ));
+        {
+        auto bothIdEqualFunct=[&](const uGene & item)
+        {
+           return ( item.getID()==pId && item.getTranscript()==pTranscript) ;
+        };
+
+        return  ( std::count_if(std::begin(VecSites), std::end(VecSites),bothIdEqualFunct ));
+    }
 }
 
-/** \brief Return an iterator to the gene matching the ID/Transcript combination. return end() if none found
+/** \brief Return an iterator to the gene matching the ID/Transcript combination. return end() if none found. If "" passed, will return .end
  *
  * \param pId const std::string&: GeneID to match
  * \param pTranscript const std::string&: TranscriptID to match
@@ -547,6 +595,10 @@ typename std::vector<uGene>::const_iterator uGeneChrom::findGene(const std::stri
 {
     if (pTranscript=="")
     {
+
+        if (pId=="")
+            return std::end(VecSites);
+
         return std::find_if(std::begin(VecSites),std::end(VecSites),[&](const uGene & item)
         {
             return(item.getID()==pId  ) ;
@@ -652,17 +704,16 @@ typename std::vector<uGene>::const_iterator uGeneChrom::findNextWithFeature(long
         /**< Return true comparitor if value smaller then item 2 */
         auto comp = [&] (const float &posGiven, const uGene &item2)
         {
-
             return ( posGiven< sortGetStart(&item2) && item2.hasFeatureType(pType) );
         };
         /**< Compare, sort Value */
         auto upper = std::upper_bound(VecSites.begin(), VecSites.end(), pPosition, comp);
 
         /**< If no result*/
-        if (upper==VecSites.end())
+        if (upper==VecSites.end()){
             return VecSites.end();
+            }
 
-        /**<Found the upper bound, we now start iterating */
         return (upper);
     }
     catch (unsorted_throw & e)
@@ -675,11 +726,17 @@ typename std::vector<uGene>::const_iterator uGeneChrom::findNextWithFeature(long
     catch (ugene_exception_base & e)
     {
 #ifdef DEBUG
-        std::cerr << "Calling findNextGeneWithFeature and you did not provide an aproriate get function" <<std::endl;
+        std::cerr << "Calling findNextGeneWithFeature and you did not provide an appropriate get function" <<std::endl;
 #endif
         throw e;
     }
-
+    catch (...)
+    {
+#ifdef DEBUG
+        std::cerr << "Catch and re-throw from findNextGeneWithFeature" <<std::endl;
+#endif
+        throw ;
+    }
 }
 
 
@@ -690,48 +747,52 @@ typename std::vector<uGene>::const_iterator uGeneChrom::findNextWithFeature(long
  * \return typename std::vector<uGene>::const_iterator Iterator to the item, returns end() if not found.
  *
  */
-typename std::vector<uGene>::const_iterator uGeneChrom::findPrecedingWithFeature(long int pPosition, featureType pType)const
-{
-    try
-    {
-        /**< If unsorted, fail */
-        if (VecSites.size()==0)
-            return VecSites.end();
-        if (m_isSorted==false)
-            throw unsorted_throw() <<string_error("findPrecedingSite called on unsorted vector \n") ;
-        if ((sortGetStart==nullptr)||(sortGetEnd==nullptr))
-            throw ugene_exception_base() <<string_error(" findPrecedingSite called on chrom without appropriate start or end function\n") ;
-        auto comp = [&] (const uGene &item1, const float &pPos)
-        {
-            return ( sortGetStart(&item1)< pPos && item1.hasFeatureType(pType) );
-        };
+//typename std::vector<uGene>::const_iterator uGeneChrom::findPrecedingWithFeature(long int pPosition, featureType pType)const
+//{
+//    try
+//    {
+//        /**< If unsorted, fail */
+//        if (VecSites.size()==0)
+//            return VecSites.end();
+//        if (m_isSorted==false)
+//            throw unsorted_throw() <<string_error("findPrecedingSite called on unsorted vector \n") ;
+//        if ((sortGetStart==nullptr)||(sortGetEnd==nullptr))
+//            throw ugene_exception_base() <<string_error(" findPrecedingSite called on chrom without appropriate start or end function\n") ;
+//        auto comp = [&] (const uGene &item1, const float &pPos)
+//        {
+//            return ( sortGetStart(&item1)< pPos && item1.hasFeatureType(pType) );
+//        };
+//
+//        /**< Compare, sort Value */
+//        auto lower = std::lower_bound(VecSites.begin(), VecSites.end(), pPosition, comp);
+//        /**< If result is our first item, then no item precedes it */
+//        if ((lower==VecSites.begin())){
+//            return VecSites.end();
+//        }
+//        /**< If result is end, every item precedes the value */
+//        /**<Return item precedes and as such is LESS then position. if no item was found, last item is closest to value  */
+//        lower--;
+//        return (lower);
+//    }
+//    catch (unsorted_throw & e)
+//    {
+//#ifdef DEBUG
+//        std::cerr << "FindPrecedingSite called on unsorted vector" <<std::endl;
+//#endif
+//        throw e;
+//    }
+//    catch (ugene_exception_base & e)
+//    {
+//#ifdef DEBUG
+//        std::cerr << "Calling findPrecedingSite and you did not provide an aproriate get function" <<std::endl;
+//#endif
+//        throw e;
+//    }
+//}
 
-        /**< Compare, sort Value */
-        auto lower = std::lower_bound(VecSites.begin(), VecSites.end(), pPosition, comp);
-        /**< If result is our first item, then no item precedes it */
-        if ((lower==VecSites.begin()))
-            return VecSites.end();
-        /**< If result is end, every idem precedes the value */
-        /**<Return item precedes and as such is LESS then position. if no item was found, last item is closest to value  */
-        lower--;
-        return (lower);
-    }
-    catch (unsorted_throw & e)
-    {
-#ifdef DEBUG
-        std::cerr << "FindPrecedingSite called on unsorted vector" <<std::endl;
-#endif
-        throw e;
-    }
-    catch (ugene_exception_base & e)
-    {
-#ifdef DEBUG
-        std::cerr << "Calling findPrecedingSite and you did not provide an aproriate get function" <<std::endl;
-#endif
-        throw e;
-    }
-}
 
+
+//TODO Complete this
 /** \brief Greedy search as our data is not sorted. In fact, we need to pass every element to check if it's boundary overlaps. Will search passed on current sort
  *
  * \param pPosition long int  Position to from
@@ -739,27 +800,29 @@ typename std::vector<uGene>::const_iterator uGeneChrom::findPrecedingWithFeature
  * \return typename std::vector<uGene>::const_iterator Iterator to the item, returns end() if not found.
  *
  */
-typename std::vector<uGene>::const_iterator uGeneChrom::findNextFeature(long int pPosition, featureType pType)const
-{
-    typename std::vector<uGene>::const_iterator curGene=VecSites.end();
-    long int curPos=0;
-    for(auto it= VecSites.begin(); it!=VecSites.end(); it++)
-    {
-        if (it->hasFeatureType(pType) && it->getBoundaryEnd() > pPosition)
-        {
-            for (auto featureItr= it->featureBegin(); featureItr!=it->featureEnd(); featureItr++)
-            {
-                if (featureItr->getType()==pType && featureItr->getStart()>pPosition && featureItr->getStart()>curPos)
-                {
-                    curGene=it;
-                    curPos= featureItr->getStart();
-                }
-
-            }
-        }
-    }
-    return curGene;
-}
+//std::pair<typename std::vector<uGene>::const_iterator,typename std::vector<uFeature>::const_iterator> uGeneChrom::findNextFeature(long int pPosition, featureType pType)const
+//{
+//    typename std::vector<uGene>::const_iterator curGene=VecSites.end();
+//    typename std::vector<uFeature>::const_iterator curFeature;
+//
+//    long int curPos=0;
+//    for(auto it= VecSites.begin(); it!=VecSites.end(); it++)
+//    {
+//        if (it->hasFeatureType(pType) && it->getBoundaryEnd() > pPosition)
+//        {
+//            for (auto featureItr= it->featureBegin(); featureItr!=it->featureEnd(); featureItr++)
+//            {
+//                if (featureItr->getType()==pType && featureItr->getStart()>pPosition && featureItr->getStart()>curPos)
+//                {
+//                    curGene=it;
+//                    curPos= featureItr->getStart();
+//                }
+//
+//            }
+//        }
+//    }
+//    return (std::make_pair(curGene,curFeature));
+//}
 
 
 
@@ -772,7 +835,7 @@ typename std::vector<uGene>::const_iterator uGeneChrom::findNextFeature(long int
  * \return typename std::vector<uGene>::const_iterator Iterator to gene
  * \sa findNextGeneWithFeature
  */
-typename std::vector<uGene>::const_iterator uGeneExperiment::findNextGeneWithFeature(std::string pChr, long int pPosition, featureType pType)const
+typename std::vector<uGene>::const_iterator uGeneExperiment::findNextWithFeature(std::string pChr, long int pPosition, featureType pType)const
 {
     try
     {
@@ -797,22 +860,22 @@ typename std::vector<uGene>::const_iterator uGeneExperiment::findNextGeneWithFea
  * \return typename std::vector<uGene>::const_iterator Iterator to gene
  * \sa findPrecedingGeneWithFeature
  */
-typename std::vector<uGene>::const_iterator uGeneExperiment::findPrecedingGeneWithFeature(std::string pChr,long int pPosition, featureType pType)const
-{
-    try
-    {
-        if (!ExpMap.count(pChr))
-        {
-            throw param_throw()<<string_error("Failling in uGenericNGSExperiment::findNextSite, value "+pChr+" does not exist.\n");
-        }
-        auto tempChrom = getpChrom(pChr);
-        return tempChrom->findPrecedingWithFeature(pPosition,pType);
-    }
-    catch(...)
-    {
-        throw;
-    }
-}
+//typename std::vector<uGene>::const_iterator uGeneExperiment::findPrecedingGeneWithFeature(std::string pChr,long int pPosition, featureType pType)const
+//{
+//    try
+//    {
+//        if (!ExpMap.count(pChr))
+//        {
+//            throw param_throw()<<string_error("Failling in uGenericNGSExperiment::findNextSite, value "+pChr+" does not exist.\n");
+//        }
+//        auto tempChrom = getpChrom(pChr);
+//        return tempChrom->findPrecedingWithFeature(pPosition,pType);
+//    }
+//    catch(...)
+//    {
+//        throw;
+//    }
+//}
 
 //TODO validate this
 void uGeneExperiment::addData(const uGeneChrom& pChrom)
