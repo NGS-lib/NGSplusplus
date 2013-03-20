@@ -1,0 +1,5 @@
+browser position chr22:10000000-10025000
+browser hide all
+chr1	knownGene	exon	11874	12227	.	+	.	gene_id "uc001aaa.3"; transcript_id "uc001aaa.3"; exon_number "1"; exon_id "uc001aaa.3.1";
+chr1	knownGene	exon	12613	12721	.	+	.	gene_id "uc001aaa.3"; transcript_id "uc001aaa.3"; exon_number "2"; exon_id "uc001aaa.3.2";
+chr1	knownGene	exon	13221	14409	.	+	.	gene_id "uc001aaa.3"; transcript_id "uc001aaa.3"; exon_number "3"; exon_id "uc001aaa.3.3";
