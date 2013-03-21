@@ -422,10 +422,10 @@ TEST(uBasicEXP_STL_applyOnSites, THROW) {
 TEST(uBasicEXP_STL_applyOnSitesConst, NORMAL) {
 	validExperiments myExperiments;
 	int count = 0;
-//	auto functOp = [&](const uBasicNGS& a)
-//	{
-//		count++;
-//	};
+	auto functOp = [&](const uBasicNGS& a)
+	{
+		count++;
+	};
 //	auto functOp = [&](uBasicNGS item)->int{  return item.getLenght();};
 	EXPECT_EQ(count, 0);
 //	EXPECT_NO_THROW(myExperiments.getExperiment("MultipleChroms")->applyOnSites(functOp));

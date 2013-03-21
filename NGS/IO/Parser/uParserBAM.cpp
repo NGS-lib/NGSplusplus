@@ -74,7 +74,7 @@ uToken uParserBAM::getNextEntry()
         ourToken._setParamNoValidate(token_param::FLAGS, std::to_string(m_BufferAlignement.AlignmentFlag) );
         ourToken._setParamNoValidate(token_param::CHR,  m_BamReader.GetReferenceData().at(m_BufferAlignement.RefID).RefName);
         ourToken._setParamNoValidate(token_param::MAP_SCORE, std::to_string(m_BufferAlignement.MapQuality));
-        ourToken._setParamNoValidate(token_param::TEMPLATE_LENGHT, std::to_string(m_BufferAlignement.InsertSize));
+        ourToken._setParamNoValidate(token_param::TEMPLATE_LENGTH, std::to_string(m_BufferAlignement.InsertSize));
         ourToken._setParamNoValidate(token_param::SEQUENCE,   m_BufferAlignement.QueryBases );
         ourToken._setParamNoValidate(token_param::PHRED_SCORE, m_BufferAlignement.Qualities);
         std::string cigar;

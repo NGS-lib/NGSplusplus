@@ -149,7 +149,7 @@ uToken uParserSam::getNextEntry()
 			ourToken._setParamNoValidate(token_param::START_POS, what[4]);
 			ourToken._setParamNoValidate(token_param::MAP_SCORE, what[5]);
 			ourToken._setParamNoValidate(token_param::CIGAR, what[6]);
-			ourToken._setParamNoValidate(token_param::TEMPLATE_LENGHT, what[9]);
+			ourToken._setParamNoValidate(token_param::TEMPLATE_LENGTH, what[9]);
 			ourToken._setParamNoValidate(token_param::SEQUENCE, what[10]);
 			ourToken._setParamNoValidate(token_param::PHRED_SCORE, what[11]);
        //     token_infos << "SEQ_NAME\t" << what[1] << "\n";
