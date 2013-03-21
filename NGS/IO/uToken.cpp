@@ -6,90 +6,22 @@ namespace NGS
 uToken::uToken()
 {
 }
+
+uToken::uToken(std::istream& paramList, validate_type validate)
+{
+	_initialize(paramList, false, validate);
+}
+
+uToken::uToken(std::istream& paramList, bool customValues, validate_type validate)
+{
+	_initialize(paramList, true, validate);
+}
+
 /** \brief uToken constructor.
  * \param istream& paramList: a stream containing all the parameters in the format: <token_param>\t<value>\n<token_param>\t<value>\n...
  * \exception invalid_value_throw when using a valid token param, but with an incorrect value (i.e.: a negative value for END_POS)
  * \exception invalid_uToken_throw when the token is in an invalid state, even if all the value are valid by themselves (i.e.: START_POS > END_POS)
  */
-uToken::uToken(std::istream& paramList, bool customValues, validate_type validate)
-{
-    m_customValues = customValues;
-    char line[1024];
-    bool custom = false;
-    while (paramList.getline(line, 1024))
-    {
-        /**< Fetch name */
-        token_param name;
-        std::string value;
-        std::string customName;
-        try
-        {
-            std::stringstream ss;
-            ss << line;
-            ss >> name >> value;
-            custom = false;
-        }
-        catch (invalid_token_param_throw& e)
-        {
-            /**< Only check for custom values is user wants them */
-            if (m_customValues == true)
-            {
-                std::stringstream ss;
-                ss << line;
-                ss >> customName >> value;
-                custom = true;
-            }
-        }
-        /**< Fetch value */
-        if (custom == false)
-        {
-            if (validate==validate_type::NO_VALIDATE)
-                _setParamNoValidate(name,value);
-            else
-            {
-                try
-                {
-                    _setParam(name, value);
-                }
-                catch (invalid_value_throw& e)
-                {
-                    throw e;
-                }
-            }
-        }
-        else
-        {
-        /**< Custom values = true */
-                if (validate==validate_type::NO_VALIDATE)
-                    _setParamNoValidate(name,value);
-                else
-                {
-                    try
-                    {
-                        _setParamCustom(customName, value);
-                    }
-                    catch (invalid_value_throw& e)
-                    {
-                        throw e;
-                    }
-                }
-
-        }
-    }
-
-    /**< Check if uToken is in a valid state  */
-    try
-    {
-        if (validate==validate_type::VALIDATE)
-            _validateToken();
-    }
-    catch (invalid_uToken_throw& e)
-    {
-        addStringError(e,"Throwing in uToken constructor(std::istream paramList)");
-        throw e;
-    }
-}
-
 
 /** \brief Copy assignment operator
  */
@@ -174,6 +106,86 @@ std::string uToken::getParam(const std::string& name, unsigned int paramPos) con
         addStringError(e, error);
         throw e;
     }
+}
+
+void uToken::_initialize(std::istream& paramList, bool customValues, validate_type validate)
+{
+    m_customValues = customValues;
+    char line[1024];
+    bool custom = false;
+    while (paramList.getline(line, 1024))
+    {
+        /**< Fetch name */
+        token_param name;
+        std::string value;
+        std::string customName;
+        try
+        {
+            std::stringstream ss;
+            ss << line;
+            ss >> name >> value;
+            custom = false;
+        }
+        catch (invalid_token_param_throw& e)
+        {
+            /**< Only check for custom values is user wants them */
+            if (m_customValues == true)
+            {
+                std::stringstream ss;
+                ss << line;
+                ss >> customName >> value;
+                custom = true;
+            }
+        }
+        /**< Fetch value */
+        if (custom == false)
+        {
+            if (validate==validate_type::NO_VALIDATE)
+                _setParamNoValidate(name,value);
+            else
+            {
+                try
+                {
+                    _setParam(name, value);
+                }
+                catch (invalid_value_throw& e)
+                {
+                    throw e;
+                }
+            }
+        }
+        else
+        {
+        /**< Custom values = true */
+                if (validate==validate_type::NO_VALIDATE)
+                    _setParamNoValidate(name,value);
+                else
+                {
+                    try
+                    {
+                        _setParamCustom(customName, value);
+                    }
+                    catch (invalid_value_throw& e)
+                    {
+                        throw e;
+                    }
+                }
+
+        }
+    }
+
+    /**< Check if uToken is in a valid state  */
+    try
+    {
+        if (validate==validate_type::VALIDATE)
+            _validateToken();
+    }
+    catch (invalid_uToken_throw& e)
+    {
+        addStringError(e,"Throwing in uToken constructor(std::istream paramList)");
+        throw e;
+    }
+
 }
 
 void uToken::_setParamNoValidate(const token_param& name, const std::string& value)

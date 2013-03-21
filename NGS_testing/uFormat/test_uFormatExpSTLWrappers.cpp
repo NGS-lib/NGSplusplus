@@ -422,10 +422,11 @@ TEST(uBasicEXP_STL_applyOnSites, THROW) {
 TEST(uBasicEXP_STL_applyOnSitesConst, NORMAL) {
 	validExperiments myExperiments;
 	int count = 0;
-	auto functOp = [&](const uBasicNGS& a)
-	{
-		count++;
-	};
+//	auto functOp = [&](const uBasicNGS& a)
+//	{
+//		count++;
+//	};
+//	auto functOp = [&](uBasicNGS item)->int{  return item.getLenght();};
 	EXPECT_EQ(count, 0);
 //	EXPECT_NO_THROW(myExperiments.getExperiment("MultipleChroms")->applyOnSites(functOp));
 	const uBasicNGSExperiment myConstExp = *(myExperiments.getExperiment("MultipleChroms"));
@@ -440,22 +441,17 @@ TEST(uBasicEXP_STL_applyOnSitesConst, NORMAL) {
  *
  *	Valid Cases:
  *		VALIDSTREAM
- *		EMPTYSTREAM
  *	Invalid Cases:
- *		NULLSTREAM
  *
  */
 
 TEST(uBasicEXP_STL_loadWithParserAndRunParser, VALIDSTREAM) {
 	uParser aParser("../data/BED/test.bed", "BED");
-//	auto functOp = [&](const uToken& t)
-//	auto functOverlap=[&](uBasicNGS  item)
 	auto functOp = [&](uBasicNGS  item)
 	{
 	};
 	uBasicNGSExperiment anExp;
 	anExp.loadWithParserAndRun(aParser, functOp);
-//	EXPECT_TRUE(false);
 }
 
 /*
