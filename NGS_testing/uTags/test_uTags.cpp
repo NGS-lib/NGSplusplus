@@ -29,7 +29,7 @@ public:
        CompletTag.setChr("chr1");
        CompletTag.setStartEnd(400,405);
        CompletTag.setSequence("GAGACG");
-       CompletTag.setCigar("40M");
+       CompletTag.setCigar("6M");
 	}
 
     uTags simpleTag;
@@ -58,8 +58,9 @@ TEST(uTagsTest_isEqual, VALIDCOPY) {
 }
 TEST(uTagsTest_createToken, VALID) {
     StandardTags myTags;
-	uToken newToken=myTags.CompletTag.createToken();
-
+	ASSERT_NO_THROW(myTags.CompletTag.createToken());
+    uToken newToken=myTags.CompletTag.createToken();
+	ASSERT_NO_THROW(uTags fromToken(newToken));
 	uTags fromToken(newToken);
 	EXPECT_TRUE(fromToken.isEqual(myTags.CompletTag));
 }

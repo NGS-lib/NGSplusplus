@@ -39,6 +39,12 @@ public:
     {
         return ident;
     };
+
+    void setIdent(std::string pIdent)
+    {
+        ident=pIdent;
+    }
+
     void setDensity(float pDensity)
     {
         density=pDensity ;

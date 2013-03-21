@@ -429,7 +429,7 @@ TEST(uBasicEXP_STL_applyOnSitesConst, NORMAL) {
 	EXPECT_EQ(count, 0);
 //	EXPECT_NO_THROW(myExperiments.getExperiment("MultipleChroms")->applyOnSites(functOp));
 	const uBasicNGSExperiment myConstExp = *(myExperiments.getExperiment("MultipleChroms"));
-//	myConstExp.applyOnSites(functOp); // TODO: Weird warning
+	myConstExp.applyOnSites(functOp); // TODO: Weird warning
 	EXPECT_EQ(count, 13);
 }
 

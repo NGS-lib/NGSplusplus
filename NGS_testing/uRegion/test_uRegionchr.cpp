@@ -80,8 +80,8 @@ TEST(uRegionCHR_GenerateSignal, VALID) {
    fixedChrom.threeItems.sortSites();
    fixedChrom.densitySample.sortSites();
    fixedChrom.threeItems.setChromSize(200000);
-   fixedChrom.threeItems.generateSignal(fixedChrom.densitySample);
-   ASSERT_FALSE(true);
+   EXPECT_NO_THROW(fixedChrom.threeItems.generateSignal(fixedChrom.densitySample));
+
    //fixedChrom.threeItems.writeSignal(std::cout,'\0');
 }
 

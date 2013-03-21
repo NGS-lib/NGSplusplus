@@ -231,7 +231,6 @@ public:
     bool isSorted(Compare comp) const;
     bool isSorted() const;
 
-
     long int countUnique() const;
 
     template<class Compare>
@@ -1815,9 +1814,9 @@ typename std::vector<_BASE_>::const_iterator uGenericNGSChrom<_SELF_,_BASE_>::ma
     {
         return max_element(std::begin(VecSites), std::end(VecSites), comp);
     }
-    catch(std::exception & e)
+    catch(...)
     {
-        throw e;
+        throw;
     }
 }
 

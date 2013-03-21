@@ -86,10 +86,16 @@ TEST(uRegionExpTest_MeasureDensityOverlap, CALL4) {
 }
 TEST(uRegionExpTest_GenerateSignal, CALL4) {
 	 StandardRegionExp newGroup;
+	 StandardRegionExp someGroup;
 	 uBasicNGSExperiment newBasic;
 	 uTagsExperiment newTag;
 	 uGeneExperiment newGene;
-	 EXPECT_NO_THROW(newGroup.severalItems.generateSignal(newGroup.severalItems));
+	 someGroup.severalItems.inferChrSize();
+	 newGroup.severalItems.inferChrSize();
+
+	 EXPECT_THROW(newGroup.severalItems.generateSignal(someGroup.severalItems), skipped_elem_throw);
+
+
 	 EXPECT_NO_THROW(newGroup.severalItems.generateSignal(newBasic));
 	 EXPECT_NO_THROW(newGroup.severalItems.generateSignal(newTag));
 	 EXPECT_NO_THROW(newGroup.severalItems.generateSignal(newGene));

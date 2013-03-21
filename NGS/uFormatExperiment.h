@@ -83,7 +83,7 @@ protected:
     void removeSite(const std::string & pChr,const long int position);
     void removeSite(const std::string & pChr,const long int pStart,const long int pEnd);
 
-    void inferChrSize();
+
 
 
 public:
@@ -125,7 +125,7 @@ public:
     template<class UnaryFunction>
     void loadWithParserAndRun(uParser& pParser, UnaryFunction funct , int pBlockSize=1);
 
-
+    void inferChrSize();
     void writeWithWriter(uWriter& pWriter) const;
 
     auto begin()->decltype(ExpMap.begin())
@@ -1323,7 +1323,7 @@ template<class UnaryFunction>
 UnaryFunction uGenericNGSExperiment<_SELF_,_CHROM_,_BASE_>::applyOnSites(const UnaryFunction f)const
 {
     try{
-    for_each(std::begin(ExpMap), std::end(ExpMap), [&f](NGSExpPair& element)
+    for_each(std::begin(ExpMap), std::end(ExpMap), [&f](const NGSExpPair& element)
     {
         element.second.applyOnAllSites(f);
     });

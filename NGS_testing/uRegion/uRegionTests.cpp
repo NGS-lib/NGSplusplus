@@ -19,6 +19,16 @@ TEST(uRegionTest, DefaultCTR){
     EXPECT_EQ(0,uTest.getEnd());
 }
 
+TEST(uRegionNGSTestHerit_AssigmentOperator, VALID){
+
+	uRegion firsReg("Chr1",100,103);
+	firsReg.setSignal({2,4,2,5});
+	firsReg.setIdent("hihi");
+	uRegion secondReg=firsReg;
+    EXPECT_TRUE(firsReg.isEqual(secondReg));
+}
+
+
 TEST(uRegionTest, UsefulCTR){
     uRegion uTest("chr1",100,200);
     EXPECT_EQ(StrandDir::FORWARD,uTest.getStrand());
@@ -37,7 +47,7 @@ TEST(uRegionExpTest, MEASUREDENSITY){
    uRegionExperiment regExp;
    uTagsExperiment tagExp;
    uBasicNGSExperiment basicEXP;
-   regExp.measureDensityOverlap(tagExp);
+   EXPECT_NO_THROW(regExp.measureDensityOverlap(tagExp));
 }
 
 
@@ -113,6 +123,9 @@ TEST(uRegionTest_isEQUAL, OTHERDIFF){
     otherReg.setDensity(4.2f);
 
 	EXPECT_FALSE(firsReg.isEqual(otherReg));
+	uRegion thirdReg=firsReg;
+	firsReg.setIdent("yor");
+    EXPECT_FALSE(firsReg.isEqual(thirdReg));
 }
 
 TEST(uRegionTest_copyCtr, NORMAL){

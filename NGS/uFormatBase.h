@@ -826,13 +826,13 @@ void uGenericNGS<_SELF_>::setScore(float p_score, int p_Pos)
         }
         m_score.at(p_Pos)=p_score;
     }
-    catch(std::exception &e)
+    catch(...)
     {
-        throw e;
+        throw;
     }
 }
 
-/** \brief Fetch the score at a specific region, return infinity if not set
+/** \brief Fetch the score at a specific region,
  * \param int p_Pos: the position where the score should be fetched
  */
 template <class _SELF_>

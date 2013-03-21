@@ -877,7 +877,7 @@ void uRegionExperiment::generateSignal(const uTagsExperiment& expToComp)
         }
 }
  void uRegionExperiment::generateSignal(const uRegionExperiment & expToComp){
-
+try {
  vector<uRegion> skipRegionVecOne;
  vector<uRegion> skipRegioNvec;
 
@@ -904,19 +904,21 @@ for(auto& chrom : ExpMap)
 /**< Log errors */
  if ( (skipRegionVecOne.size()>0) || (skipRegioNvec.size()>0))
         {
-
             skipped_elem_throw e;
             skipRegionVecOne.insert( skipRegionVecOne.end(), skipRegioNvec.begin(), skipRegioNvec.end() );
-
+            addStringError(e, "Some regions where skipped in uRegionExperiment generateSignal");
             if (skipRegionVecOne.size())
                 e <<skipped_regions(skipRegionVecOne);
+
             throw e;
         }
  }
+catch(...)
+    {
+    throw;
+    }
 
-
-
-
+}
 
  void uRegionExperiment::generateSignal(const uBasicNGSExperiment & expToComp){
  vector<uBasicNGS> skipBasic;

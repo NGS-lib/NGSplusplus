@@ -43,6 +43,11 @@ public:
        regionManyChr.addData(uRegion("chr1",120,250));
 
 
+        geneManyChr.setChr("chr1");;
+       geneManyChr.addData(uGene("chr1",100,200));
+       geneManyChr.addData(uGene("chr1",230,300));
+       geneManyChr.addData(uGene("chr1",120,250,"YOLLO"));
+
        basicEmptyChr.setChr("chr1");
        tagsEmptyChr.setChr("chr1");
        regionEmptyChr.setChr("chr1");
@@ -56,6 +61,7 @@ public:
     uRegionChrom regionOneChr;
     uRegionChrom regionManyChr;
     uRegionChrom regionEmptyChr;
+    uGeneChrom geneManyChr;
 };
 
 /**< Test Constructors */
@@ -85,15 +91,32 @@ TEST(uTagsTestChrom_ctr, POLYBASIC){
 
 
 TEST(uTagsChrTest_copyCtr, NORMAL){
-    ASSERT_TRUE(false);
-}
+    StandardMultipleChroms ourChroms;
+    EXPECT_NO_THROW(uTagsChrom newChrom(ourChroms.tagsManyChr));
+	uTagsChrom newChrom(ourChroms.tagsManyChr);
+    auto curItr= newChrom.begin();
+    auto Standarditr= ourChroms.tagsManyChr.begin();
 
+    for(int i=0; i<newChrom.count(); i++){
+        EXPECT_TRUE(curItr->isEqual(*Standarditr));
+        curItr++;
+        Standarditr++;
+     }
+}
 
 TEST(uTagsTestChrom_ctr, POLYGENE){
-	EXPECT_TRUE(false);
+	   StandardMultipleChroms ourChroms;
+       EXPECT_NO_THROW(uTagsChrom(ourChroms.geneManyChr));
+       auto polyCreated=uTagsChrom(ourChroms.geneManyChr);
+
+//        auto itr = polyCreated.begin();
+       EXPECT_EQ(polyCreated.getSite(0).getStart(),ourChroms.geneManyChr.getSite(0).getStart());
+       EXPECT_EQ(polyCreated.getSite(1).getStart(),ourChroms.geneManyChr.getSite(1).getStart());
+       EXPECT_EQ(polyCreated.getSite(1).getChr(),ourChroms.geneManyChr.getSite(1).getChr());
+       EXPECT_EQ(polyCreated.getSite(2).getEnd(),ourChroms.geneManyChr.getSite(2).getEnd());
 }
 
-TEST(uTagsTestChrom_ctr, POLYVECTOR){
+TEST(uTagsTestChrom_ctr, CTR_VECTOR){
 	EXPECT_TRUE(false);
 }
 //TODO incrase test suite for this

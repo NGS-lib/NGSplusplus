@@ -32,9 +32,8 @@ TEST(utility, QuartTest)
 
 TEST(utility, querySamTest)
 {
-//    const int NONE=0;
+
     const int PAIRED=1;
- //   const int UNMAPPED=4;
     const int MINUS_STRAND=16;
 
    EXPECT_TRUE( utility::SAM::querySamFlag(PAIRED,SamQuery::IS_PAIRED) );

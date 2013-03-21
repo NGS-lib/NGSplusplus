@@ -61,6 +61,8 @@ TEST(uTagsExperiment_loadWithBamReader, VALIDATESTART)
 
 }
 
-TEST(uTagsExperiment_getRegionSignal, ASF) {
-	ASSERT_TRUE(false);
+TEST(uTagsExperiment_getRegionSignal, ONLYBASIC) {
+     uTagsExperiment oneExp;
+     oneExp.addData(uTags("chr1",102,105));
+     EXPECT_EQ(std::vector<float>({0,0,1,1,1,1}), oneExp.getRegionSignal("chr1",100,105,true));
 }

@@ -76,7 +76,7 @@ try{
     /**< We declare the standard unit for SAM type files */
     uTagsExperiment tagExp;
     /**< Load our data from Stream */
-    tagExp.loadFromSam(inputStream);
+    tagExp.loadWithParser(inputStream,"SAM");
     /**< Sort our data per start bp position */
     tagExp.sortSites();
 
@@ -114,7 +114,6 @@ try{
         if( ( errorTagPoint=boost::get_error_info<tag_error>(e) ) )
         {
             cerr <<" We crashed working on this Sam Tag" <<endl;
-            errorTagPoint->debugElem();
         }
 
         if (std::string const * ste =boost::get_error_info<string_error>(e) )
@@ -238,7 +237,6 @@ vector<wigData> vectorToWig(vector<long int> densityVector, string chrom)
         /**< Next position */
         pos++;
     }
-
     if (tempData.span>1)
         returnVec.push_back(tempData);
 

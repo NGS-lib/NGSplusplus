@@ -376,7 +376,7 @@ TEST(uBasicNGSEXP_getOverlapping, CHROMDONTEXISTS){
 	EXPECT_EQ(overlapExp.count(), 0);
 }
 
-//TEST(uBasicNGSEXP_getOverlapping, POLYMORPHICEXP){ 
+//TEST(uBasicNGSEXP_getOverlapping, POLYMORPHICEXP){
 //	validExperiments myExperiments;
 //	uGeneExperiment anExp;
 //	uParser genePredParser(HG18UCSC,"GENEPRED");
@@ -386,9 +386,6 @@ TEST(uBasicNGSEXP_getOverlapping, CHROMDONTEXISTS){
 //	EXPECT_EQ(overlapExp.count(), 1);
 //}
 
-TEST(uBasicNGSEXP_getOverlapping, POLYMORPHICHROM){
-	EXPECT_TRUE(false);
-}
 
 /*
  * Test for the function:
@@ -782,13 +779,13 @@ TEST(uBasicNGSGENEXP_replaceChr, CHRDOESNTEXISTS) {
  *
  * 	Valid cases:
  *		CHREXISTS
- *		CHRDOESNTEXISTS 
+ *		CHRDOESNTEXISTS
  *	Invalid cases:
  */
 
 TEST(uBasicNGSGENEXP_removeChr, CHREXISTS) {
 	validExperiments myExperiments;
-	myExperiments.getExperiment("MultipleChroms")->removeChr(""); 
+	myExperiments.getExperiment("MultipleChroms")->removeChr("");
 	EXPECT_FALSE(myExperiments.getExperiment("MultipleChroms")->isChrom(""));
 }
 
@@ -932,7 +929,7 @@ TEST(uBasicNGSGENEXP_addDataToken, VALID) {
  *		INDEXTOOHIGH
  *		EMPTYCHR
  */
-/* // Removed since they are now protected 
+/* // Removed since they are now protected
 TEST(uBasicNGSGENEXP_removeSitePosition, VALID) {
 	validExperiments myExperiments;
 	EXPECT_EQ(myExperiments.getExperiment("MultipleChroms")->getpChrom("chr4")->count(), 1);

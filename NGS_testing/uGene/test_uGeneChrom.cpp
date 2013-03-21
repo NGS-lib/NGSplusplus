@@ -145,35 +145,37 @@ TEST(uGeneChromTest_addDataGFF, ParseALL)
     EXPECT_EQ(0,itr->featureCount());
 
 }
-
+const string GTFUCSC="../data/GTF/knownGene.gtf";
+const string GTFsmall="../data/GTF/endl.gtf";
 
 TEST(uGeneChromTest_addDataGTF, ParseOne)
 {
-     ASSERT_TRUE(false);
-    uGeneChrom newChrom("chr22");
-    uParser Parser(UCSCSAMPLE, "UCSCGFF");
-    while (Parser.eof()==false){
-        EXPECT_NO_THROW(newChrom.addData( Parser.getNextEntry()));
-    }
+    uGeneChrom newChrom("chr1");
+    uParser Parser(GTFsmall, "GTF");
 
-    std::vector<uGene>::const_iterator itr= newChrom.findGene("touch1");
-    EXPECT_EQ(1,itr->featureCount());
+    ASSERT_NO_THROW(newChrom.addData( Parser.getNextEntry()));
+
+
+    std::vector<uGene>::const_iterator itr= newChrom.findGene("uc001aaa.3");
+    EXPECT_EQ(0,itr->featureCount());
+    EXPECT_EQ(11874,itr->getStart());
 
 }
-TEST(uGeneChromTest_addDataGTF, ParseALL)
+TEST(uGeneChromTest_addDataGTF, PARSE_SEVERAL)
 {
-    ASSERT_TRUE(false);
-    uGeneChrom newChrom("chr22");
-    uParser Parser(UCSCSAMPLE, "UCSCGFF");
-    while (Parser.eof()==false){
-        EXPECT_NO_THROW(newChrom.addData( Parser.getNextEntry()));
+
+    uGeneChrom newChrom("chr1");
+    uParser Parser(GTFUCSC, "GTF");
+    int count=0;
+    while (count!=50){
+        ASSERT_NO_THROW(newChrom.addData( Parser.getNextEntry()));
+        count++;
     }
 
-    std::vector<uGene>::const_iterator itr= newChrom.findGene("touch1");
-    EXPECT_EQ(1,itr->featureCount());
+    std::vector<uGene>::const_iterator itr= newChrom.findGene("uc001aaa.3");
+    EXPECT_EQ(2,itr->featureCount());
+    EXPECT_EQ(11874,itr->getStart());
 
-    itr= newChrom.findGene("touch2");
-    EXPECT_EQ(0,itr->featureCount());
 
 }
 
@@ -282,12 +284,6 @@ TEST(uGeneChromTes_FindNext, VALID){
        EXPECT_EQ(newChrom.end(), newChrom.findNextWithFeature(100,featureType::LOOP_END));
 
       try {
-
-        for (auto tir = newChrom.begin()->featureBegin();tir!=newChrom.begin()->featureEnd(); tir++)
-            {
-            std::cerr<<featureString(tir->getType())<<std::endl;
-
-        }
 
        EXPECT_EQ(400, newChrom.findNextWithFeature(100,featureType::INTRON)->getStart()) ;
        EXPECT_EQ(450, newChrom.findNextWithFeature(410,featureType::EXON)->getStart()) ;
