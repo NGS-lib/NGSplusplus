@@ -2,6 +2,8 @@
 
 filename=$1
 
+mkdir -p bin
+
 if [ -e "$filename" ]
 then
 	echo Building $filename in bin/$(basename ${filename%.*})...
