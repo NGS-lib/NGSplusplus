@@ -75,7 +75,6 @@ uToken uParserGTF::_getTokenInfoFromGTFString(const std::string& line)
 
     //  "^(\\.|[\\w_-]+)\t(\\.|[\\w_-]+)\t(\\.|[\\w_-]+)\t(\\d+)\t(\\d+)\t([-+]?[0-9]*\\.?[0-9]+|.)\t(\\+|\\-|\\.)\t([012\\.])\tgene_id\\s\"([^\"]*)\";\\stranscript_id\\s\"([^\"]*)\";.*";
 
-
     smatch what;
     if( regex_match( line, what, GTFRegex ) )
     {

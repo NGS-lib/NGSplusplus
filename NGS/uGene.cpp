@@ -9,9 +9,10 @@ namespace NGS
  *
  * \param pStart long int
  * \param pEnd long int
+ * \param pEnd long int
  * \param pType featureType
  * \param pOffset short int
- * \param pID std::string
+ * \param pID std::stringF
  *
  */
 uFeature::uFeature(long int pStart, long int pEnd,StrandDir pDir, featureType pType,std::string pID, short int pOffset ): m_start(pStart), m_end(pEnd), m_type(pType)
@@ -36,6 +37,9 @@ uToken uGene::createToken() const
     {
         ss << "SCORE\t"<<this->getScore()<<"\n";
     }
+    /**< Gene does not offset */
+     ss << "PHASE\t"<<"0"<<"\n";
+
     if (featureCount()>0)
     {
         for(auto itr=featureBegin(); itr!=featureEnd(); itr++)
@@ -43,6 +47,7 @@ uToken uGene::createToken() const
             ss << "START_POS\t"<<itr->getStart()<<"\n";
             ss << "END_POS\t"<<itr->getEnd()<<"\n";
             ss << "FEATURE_TYPE\t"<<featureString(itr->getType())<<"\n";
+            ss << "PHASE\t"<<itr->getOffSet()<<"\n";
             if (itr->getID()!="")
             {
                 ss << "FEATURE_ID\t"<<(itr->getID())<<"\n";
@@ -96,13 +101,47 @@ bool uFeature::operator!=(const uFeature &other) const
 }
 //TODO COMPLETE THIS!
 /**< From uTokens */
-uGene::uGene(uToken pToken)try:
-    uGenericNGS(pToken)
+uGene::uGene(uToken pToken)
 {
+try {
+        std::string tokID="",tokTranscript="",myOffset="0";
 
+        /**<Validate if we have an existing region with the ID and Transcript.  */
+        if (pToken.isParamSet(token_param::GROUP_ID))
+            tokID=pToken.getParam(token_param::GROUP_ID);
+        if (pToken.isParamSet(token_param::GROUP_TRANSCRIPT))
+            tokTranscript= pToken.getParam(token_param::GROUP_TRANSCRIPT);
 
+        /**< Case where the ID is not  associated, we add first as main feature */
 
+        StrandDir dir=StrandDir::FORWARD;
+        if ( pToken.isParamSet(token_param::STRAND) && pToken.getParam(token_param::STRAND)=="-")
+            dir=StrandDir::REVERSE;
+        this->setStrand(dir);
+        this->setChr(pToken.getParam(token_param::CHR));
+        this->setStartEnd(std::stoll(pToken.getParam(token_param::START_POS)),std::stoll(pToken.getParam(token_param::END_POS)));
 
+        if ( pToken.isParamSet(token_param::SCORE))
+            this->setScore(std::stof(pToken.getParam(token_param::SCORE)));
+        this->setID(tokID);
+        this->setTranscript(tokTranscript);
+    //    std::vector<std::string> yoyo = pToken.getParamVector(token_param::FEATURE_ID);
+        for (int i=1; i<pToken.paramCount(token_param::START_POS); i++)
+        {
+            std::string featureID;
+            myOffset="0";
+            StrandDir dir=StrandDir::FORWARD;
+            /**< Others as supplementary feature */
+            if ( pToken.isParamSet(token_param::STRAND,i) && pToken.getParam(token_param::STRAND,i)=="-"){
+                dir=StrandDir::REVERSE;}
+            if (pToken.isParamSet(token_param::FEATURE_ID,i)){
+                featureID=pToken.getParam(token_param::FEATURE_ID,i); }
+            if (pToken.isParamSet(token_param::PHASE,i)){
+                myOffset=pToken.getParam(token_param::PHASE,i);}
+           // featureID="bonjour";
+            this->addFeature(std::stoll(pToken.getParam(token_param::START_POS,i)),std::stoll(pToken.getParam(token_param::END_POS,i)),dir,mapFeature(pToken.getParam(token_param::FEATURE_TYPE,i)),featureID,std::stoi(myOffset));
+
+        }
 
 }
 catch(...)
@@ -112,7 +151,7 @@ catch(...)
 #endif
     throw;
 }
-
+}
 
 uGene::uGene(std::string pChr, long int pStart, long int pEnd, StrandDir pStrand):uGenericNGS(pChr,pStart,pEnd,pStrand)
 {}
@@ -528,17 +567,18 @@ void uGeneChrom::addData(const uToken & pToken)
         {
             StrandDir dir=StrandDir::FORWARD;
             /**< Others as supplementary feature */
-            if ( pToken.isParamSet(token_param::STRAND) && pToken.getParam(token_param::STRAND)=="-")
+            if ( pToken.isParamSet(token_param::STRAND,i) && pToken.getParam(token_param::STRAND,i)=="-")
                 dir=StrandDir::REVERSE;
 
-            std::string featureID="", featureClass="", Myoffset;
+            std::string featureID="", featureClass="", myOffset;
 
-            if (pToken.isParamSet(token_param::FEATURE_ID))
-                featureID=pToken.getParam(token_param::FEATURE_ID,i);
-            if (pToken.isParamSet(token_param::OFFSET))
+            if (pToken.isParamSet(token_param::FEATURE_ID,i))
                 featureID=pToken.getParam(token_param::FEATURE_ID,i);
 
-            mainItr->addFeature(std::stoll(pToken.getParam(token_param::START_POS,i)),std::stoll(pToken.getParam(token_param::END_POS,i)),dir,mapFeature(pToken.getParam(token_param::FEATURE_TYPE,i)),featureID);
+            if (pToken.isParamSet(token_param::PHASE,i))
+                myOffset=pToken.getParam(token_param::PHASE,i);
+
+            mainItr->addFeature(std::stoll(pToken.getParam(token_param::START_POS,i)),std::stoll(pToken.getParam(token_param::END_POS,i)),dir,mapFeature(pToken.getParam(token_param::FEATURE_TYPE,i)),featureID,std::stoi(myOffset));
             if ( pToken.isParamSet(token_param::SCORE))
                 mainItr->setScore(std::stof(pToken.getParam(token_param::SCORE)));
 

@@ -30,10 +30,15 @@ uTags::uTags(uToken pToken)try:
         setMapQual(utility::stoi(pToken.getParam(token_param::MAP_SCORE)));
     if (pToken.isParamSet(token_param::PHRED_SCORE))
         setPhred(pToken.getParam(token_param::PHRED_SCORE));
-    if (pToken.isParamSet(token_param::FLAGS))
+    if (pToken.isParamSet(token_param::FLAGS)){
         setFlag(utility::stoi(pToken.getParam(token_param::FLAGS)));
+        if(utility::SAM::querySamFlag(flag,SamQuery::SEQ_REV_STRAND))
+            setStrand('-');
+        else
+            setStrand('+');
+        }
     if (pToken.isParamSet(token_param::TEMPLATE_LENGTH))
-        setPELenght(utility::stoi(pToken.getParam(token_param::TEMPLATE_LENGTH)));
+        setPELenght(std::abs(utility::stoi(pToken.getParam(token_param::TEMPLATE_LENGTH))));
 
 }
 catch(ugene_exception_base &e)
@@ -516,7 +521,7 @@ void uTags::setPELenght(int lenght)
 {
 
     if  (lenght <0)
-        throw param_throw()<<string_error("Throwing in setPELenght. Set an invalid PE lenght<0");
+        throw param_throw()<<string_error("Throwing in setPELenght. Set an invalid PE lenght"+to_string(lenght) );
     PELenght=lenght;
 
 }

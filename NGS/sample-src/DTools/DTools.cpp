@@ -1,4 +1,3 @@
-
 #include <iostream>
 #include <string>
 #include <fstream>
@@ -10,6 +9,15 @@
 using namespace std;
 using namespace NGS;
 
+
+/** \brief This program load a sam file then outputs density information, either in wig format or in "BIN" format.
+           It uses NGS++ mostly as a datastructure to query the data with examples of function binding, using the Parser
+           and the getSubsetCount function.
+
+           Writing could have been done with the Writer function, but is kept manual for now.
+*/
+
+
 struct wigData
 {
     std::string chr;
@@ -17,8 +25,6 @@ struct wigData
     long long int span;
     float value;
 };
-
-/** \brief This program load a sam file then outputs density information, either in wig format or in big format. */
 
 vector<wigData> vectorToWig(vector<long int> densityVector, string chrom);
 void writeWig(const vector<wigData> & ourData, std::ostream& out);
@@ -29,18 +35,14 @@ void writeDensityFromFile(const uTagsChrom& tagChrom, std::ostream& out);
 int main(int argc, char* argv[])
 {
    string firstArg="";
-
     densityFromFile(argc, argv);
-
     return 0;
 }
 
 void densityFromFile(int argc, char* argv[])
 {
-
 try{
     string samPath="";
-    //string pathname="";
     string outputPath="";
     int binSize =0;
 
@@ -60,12 +62,14 @@ try{
             binSize= std::atoi(argv[i + 1]);
         }
     }
+
     /**< If a mandatory parameter is missing, fail */
-    if ((outputPath.size()==0)||(samPath.size()==0))
+    if ((samPath.size()==0))
     {
-        cerr<<"Program signature is  -o <OutputPath> -s <SamPath>  -b [binSize = Optional]";
+        cerr<<"Program signature is  -s <SamPath>  -o [OutputPath] -b [binSize = Optional]";
         return;
     }
+
     /**< If path to file is invalid, fail */
     ifstream inputStream(samPath);
     if( !( inputStream))
@@ -76,12 +80,32 @@ try{
     /**< We declare the standard unit for SAM type files */
     uTagsExperiment tagExp;
     /**< Load our data from Stream */
-    tagExp.loadWithParser(inputStream,"SAM");
+    uParser samParser(samPath,"SAM");
+    tagExp.loadWithParser(samParser);
+    /**< Query header info */
+    try {
+    auto chrVector=samParser.getHeaderParamVector(header_param::CHR);
+    auto chrSizeVector=samParser.getHeaderParamVector(header_param::CHR_SIZE);
+
+    if (chrVector.size()!=tagExp.getChrCount()){
+        cerr <<"Missing scaffold header information, please validate your SAM header is complete ( or present )"<<std::endl;
+        return;
+    }
+
+    for(int i=0; i<chrVector.size();i++)
+    {
+        tagExp.setChrSize(chrVector.at(i),std::stoi(chrSizeVector.at(i)));
+    }
+    }
+    catch(...){
+        cerr <<"Failed while loading header information,please validate your SAM header";
+        return;
+    }
+
     /**< Sort our data per start bp position */
     tagExp.sortSites();
 
     std::ofstream outputOS;
-
     if (outputPath.size()!=0)
     {
         outputOS.open(outputPath);
@@ -103,7 +127,6 @@ try{
            /**< Idem as above, but for wig rather then binned output */
          std::function<void(const uTagsChrom&)> writeDensityWig=std::bind(&writeDensityFromFile,std::placeholders::_1,ref(outFile));
          tagExp.applyOnAllChroms(writeDensityWig);
-
         }
         }
     }
@@ -115,41 +138,42 @@ try{
         {
             cerr <<" We crashed working on this Sam Tag" <<endl;
         }
-
         if (std::string const * ste =boost::get_error_info<string_error>(e) )
             {
             cerr << "Trace of crash" <<endl;
             cerr << *ste;
         }
     }
+    catch(ugene_exception_base &e)
+    {
+        cerr << "Caught exception from Parser object, failling" <<endl;
+        cerr <<fetchStringError(e)<<endl;
+    }
     catch(std::exception &e)
     {
         cerr << "Caught standard exception, failling" <<endl;
         cerr <<e.what()<<endl;
     }
-    catch(...)
-    {
-        cerr << "Caught unknown error, failling" <<endl;
-    }
-
 }
 
-/**< For every bin, get the count of elements overlap this bin and write it out */
+/**< For every bin, get the count of element who's START overlaps this bin and write it out */
 void writeBinDensity( uTagsChrom& tagChrom, std::ostream& out, int binSize)
 {
     vector<long int> densityValues;
     densityValues.resize(tagChrom.getChromSize());
     string chrName= tagChrom.getChr();
+
     for (int j=0; j <((int)densityValues.size()/binSize); j++ )
     {
         int start=j*binSize;
         int end=j*binSize+binSize;
         int tagcount=0;
-        /**< This returns the count of elements betwen start and end bp */
+        /**< This returns the count of elements who's start is between start and end bp */
         /**< See manual for how this could have been used for different type of subsets */
         tagcount= tagChrom.getSubsetCount(start,end);
         /**< Write the bind */
-        out<<chrName << "\t" <<start << "\t" <<end <<"\t" << "a" << "\t" <<tagcount <<endl;
+        if (tagcount)
+            out<<chrName << "\t" <<start << "\t" <<end <<"\t" << "." << "\t" <<tagcount <<endl;
     }
 }
 
@@ -164,12 +188,11 @@ void writeDensityFromFile(const uTagsChrom& tagChrom, std::ostream& out)
         {
             for (int i=Elem.getStart(); i<Elem.getEnd(); i++)
             {
-                // cout << i << endl;
                 if (i<(int)densityValues.size())
                     densityValues.at(i)++;
                 else{
                     cerr << "Skipping the following tags as over chromSize of " <<densityValues.size() <<endl;
-                    Elem.debugElem();
+                    Elem.print(cout);
                 }
             }
         }

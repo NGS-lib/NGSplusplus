@@ -23,8 +23,6 @@ class uTagsExperiment;
 //class uGeneChrom;
 //class uGeneExperiment;
 
-
-
     enum class featureType
     {
         EXON,INTRON, CODING, NCODING, LOOP,LOOP_START,LOOP_END, PROMOTER, ENHANCER,UTR3,UTR5, MRNA,OPERON,TRNA,INTER,INTERCNS,INTRONCNS,
@@ -37,8 +35,6 @@ class uTagsExperiment;
     static const std::map<std::string,featureType> featureMap{ {"EXON",featureType::EXON},{"INTRON",featureType::INTRON},{"CODING",featureType::CODING},{"NCODING",featureType::NCODING  },
     {"LOOP",featureType::LOOP},{"LOOP_START",featureType::LOOP_START},{"LOOP_END",featureType::LOOP_END}, {"ENHANCER",featureType::ENHANCER},{"INTER",featureType::INTER},{"INTERCRNS",featureType::INTERCNS},{"INTRONCNS",featureType::INTRONCNS},
     {"UTR3",featureType::UTR3},{"UTR5",featureType::UTR5},{"MRNA",featureType::MRNA},{"OPERON",featureType::OPERON},{"TRNA",featureType::TRNA},{"PROMOTER",featureType::PROMOTER} };
-
-
 
 
     class uFeature{
@@ -54,11 +50,14 @@ class uTagsExperiment;
         uFeature(long int pStart, long int pEnd,StrandDir, featureType pType,std::string pID , short int pOffset );
         long int getStart()const{return m_start;};  /**< Return Start of the feature */
         long int getEnd()const{return m_end;};/**< Return End of the feature */
+        short int getOffSet()const{return m_offset;}; /**< Return offset of the feature*/
 
         featureType getType()const{return m_type;};  /**< Return the type of the feature */
         std::string getID()const{return m_ID;}; /**< Return ID of the feature */
      //   std::string getClass()const{return m_class;}; /**< Return ID of the feature */
 
+
+        void setOffset(short int pOffset){m_offset= pOffset;};
         void setStrand(StrandDir pStrandir){m_strand=pStrandir;};
         void setType(featureType pType){m_type=pType;}; /**< Set Type of the feature */
         void setID(std::string pID){m_ID = pID;}; /**< Set string ID of the feature */
@@ -70,8 +69,6 @@ class uTagsExperiment;
         bool operator!=(const uFeature &other) const;
 
     };
-
-
 
 
 

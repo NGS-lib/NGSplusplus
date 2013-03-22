@@ -80,6 +80,51 @@ TEST(uGenesTest_ctr, POLYTAGSs){
    EXPECT_EQ(fromTag.getScoreVector(),tagFrom.getScoreVector());
 }
 
+TEST(uGenesTest_ctr, SIMPLETOKEN){
+    stringstream ss;
+    ss << "CHR\tchr1\n" << "START_POS\t10\n" << "END_POS\t21\n";
+    ss << "GROUP_ID\tmyGene\n" << "GROUP_TRANSCRIPT\tMyTranscript\n";
+    uToken newToken(ss);
+    uGene newGene(newToken);
+    EXPECT_EQ("chr1",newGene.getChr());
+    EXPECT_EQ(10,newGene.getStart());
+    EXPECT_EQ(21,newGene.getEnd());
+    EXPECT_EQ("myGene",newGene.getID());
+    EXPECT_EQ("MyTranscript",newGene.getTranscript());
+}
+
+TEST(uGenesTest_ctr, MULTITOKEN){
+    stringstream ss;
+    ss << "CHR\tchr1\n" << "START_POS\t10\n" << "END_POS\t21\n";
+    ss << "GROUP_ID\tmyGene\n" << "GROUP_TRANSCRIPT\tMyTranscript\n";
+    ss << "FEATURE_TYPE\tmyGene\n";
+    ss << "START_POS\t10\n" << "END_POS\t21\n";
+    ss << "FEATURE_TYPE\tEXON\n";
+    uToken newToken(ss);
+    ss.flush();
+    ss.clear();
+    try {
+    uGene newGene(newToken);
+
+    EXPECT_EQ("chr1",newGene.getChr());
+    EXPECT_EQ(10,newGene.getStart());
+    EXPECT_EQ(21,newGene.getEnd());
+    EXPECT_EQ("myGene",newGene.getID());
+    EXPECT_EQ("MyTranscript",newGene.getTranscript());
+
+    EXPECT_EQ(1,newGene.featureCount());
+    auto featureItr= newGene.featureBegin();
+    EXPECT_EQ(10,featureItr->getStart());
+    EXPECT_EQ(21,featureItr->getEnd());
+    EXPECT_EQ(mapFeature("EXON"),featureItr->getType());
+    }
+    catch(ugene_exception_base& e)
+    {
+        std::cerr <<fetchStringError(e)<<std::endl;
+    }
+
+
+}
 
 TEST(uGeneTest_setgetTranscript, VALID){
     StandardGenes myGenes;
@@ -211,6 +256,9 @@ TEST(uGeneTest_createToken, VALID){
      uToken token = myGenes.manyFeaturesGene.createToken();
      vector<std::string> startVal {"400","50","75","3000"};
       vector<std::string> endVal {"1000","300","150","4000"};
+      vector<std::string> myVector = token.getParamVector(token_param::FEATURE_TYPE);
+
+
      EXPECT_EQ(startVal,token.getParamVector(token_param::START_POS));
      EXPECT_EQ(endVal,token.getParamVector(token_param::END_POS));
 

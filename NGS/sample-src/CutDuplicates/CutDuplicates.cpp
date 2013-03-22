@@ -8,9 +8,8 @@ int main(int argc, char **argv)
     /**< Simple parameter validation. We heavily recommand you use a library to manage your command line parameters */
     if (argc!=3)
     {
-        cerr << "Please follow exactly the following signature"<<endl<<"<File to eliminate duplicates> [BED/UCSCGFF/SAM]"<<endl;
+        cerr << "Please follow exactly the following signature"<<endl<<"<File to eliminate duplicates> [BED/GFF/SAM]"<<endl;
         return 0;
-
     }
     string fileType=argv[2];
     if (fileType=="GFF")
@@ -37,59 +36,83 @@ int main(int argc, char **argv)
      /**< Load every item from our first file.
      This will throw if the data is poorly formated
      */
-   //  vector<string> customColumns={"CHR","START_POS","END_POS"};
-    uParser customParser(&firstStream,fileType);
-    loadedFile.loadWithParser(customParser);
+    uParser fileParser(&firstStream,fileType);
 
-    /**< Sort every element by region */
-    loadedFile.sortSites();
     /**< Create our writer. Note that this means we are not keeping the original lines.
     We pass cout so that it will write to standard output and can be pipped
     */
     if (fileType=="BED")
-        fileType="BED6";
+       uWriter bedWriter(&cout,"BED6");
+    else
+         uWriter bedWriter(&cout,fileType);
 
 
-    uWriter bedWriter(&cout,fileType);
-    /**< We declare a simple lambda function we will be using to check for overlaps
-    Note that [&] in the signature means will be be capturing by reference whatever outside
-    object we care to use.
-    */
-    long long removedCount=0;
-    map<std::string,map<pair<long,long>,std::string>> complexMap;
-    set<pair<long long, long long>> countSet;
-    auto functElimDuplicate=[&](uTagsChrom & chrom)
-    {
-    countSet.clear();
-     /**< Already sorted */
-    for (auto it = chrom.begin(); it!=chrom.end(); it++)
+
+
+
+    map<std::string,map<long int, set<long int> >> duplicateMap;
+
+    long int removedCount=0;
+    while(fileParser.eof()==false){
+        uBasicNGS myTags(fileParser.getNextEntry());
+        if (duplicateMap[myTags.getChr()][myTags.getStart()].count(myTags.getEnd())==0)
         {
-            if (!countSet.count(pair<long long,long long>(it->getStart(),it->getEnd())))
-            {
-                countSet.insert(pair<long long,long long>(it->getStart(),it->getEnd()));
-                it->writeToOutput(bedWriter);
-            }
-            else{
-                removedCount++;
-            }
+            duplicateMap[myTags.getChr()][myTags.getStart()].insert(myTags.getEnd());
+            cout <<fileParser.getPreviousRaw()<<"\n";
+        }else
+        {
+            removedCount++;
         }
-    };
+    }
 
-    /**< We passe our previously defined lambda to this function
-        It will loaded the data from our second BED file and item by item
-        will run the passed lambda function. Note this means our second BED file is never
-        loaded into memory.
-     */
-        loadedFile.applyOnAllChroms(functElimDuplicate);
-
-        std::cout <<"Removed "<<removedCount<<std::endl;
+    std::cerr <<"Removed "<<removedCount<<std::endl;
     }
     /**< Global exception handling. Practicalloy, this should probably be split so as to
          manage parser errors seperately.
      */
     catch(ugene_exception_base & e)
     {
-        cout << fetchStringError(e)<<endl;
+        cerr << fetchStringError(e)<<endl;
     }
 
 }
+
+/**<THIS IS ANOTHER WAY OF DOING THE TASk. KEPT FOR PURPOSE OF EXAMPLE  */
+
+
+    /**< We declare a simple lambda function we will be using to check for overlaps
+    Note that [&] in the signature means will be be capturing by reference whatever outside
+    object we care to use.
+    */
+
+//    loadedFile.loadWithParser(fileParser);
+//
+//    /**< Sort every element by region */
+//    loadedFile.sortSites();
+
+//    long long removedCount=0;
+//    map<std::string,map<pair<long,long>,std::string>> complexMap;
+//    set<pair<long long, long long>> countSet;
+//    auto functElimDuplicate=[&](uTagsChrom & chrom)
+//    {
+//    countSet.clear();
+//     /**< Already sorted */
+//    for (auto it = chrom.begin(); it!=chrom.end(); it++)
+//        {
+//            if (!countSet.count(pair<long long,long long>(it->getStart(),it->getEnd())))
+//            {
+//                countSet.insert(pair<long long,long long>(it->getStart(),it->getEnd()));
+//                it->writeToOutput(bedWriter);
+//            }
+//            else{
+//                removedCount++;
+//            }
+//        }
+//    };
+//
+//    /**< We passe our previously defined lambda to this function
+//        It will loaded the data from our second BED file and item by item
+//        will run the passed lambda function. Note this means our second BED file is never
+//        loaded into memory.
+//     */
+//        loadedFile.applyOnAllChroms(functElimDuplicate);

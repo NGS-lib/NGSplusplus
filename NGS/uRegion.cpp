@@ -343,7 +343,7 @@ try
             try
             {
                 /**< Ignore if we map over the reference */
-                if (Elem.getEnd() <(int)densityValues.size())
+                if (Elem.getEnd() <=(int)densityValues.size())
                     for (int i=Elem.getStart(); i<Elem.getEnd(); i++)
                     {
                         densityValues.at(i)+=Elem.getCount();
@@ -368,7 +368,7 @@ try
                 vector<float> signalVector;
                 signalVector.resize(Elem.getLenght());
                 /**< Ignore if over the reference */
-                if (Elem.getEnd() <(int)densityValues.size())
+                if (Elem.getEnd() <=(int)densityValues.size())
                 {
                     for (int i=Elem.getStart(); i<Elem.getEnd(); i++)
                     {
@@ -433,7 +433,7 @@ try
             try
             {
                 /**< Ignore if we map over the reference */
-                if (Elem.getEnd() <(int)densityValues.size())
+                if (Elem.getEnd() <=(int)densityValues.size())
                     for (int i=Elem.getStart(); i<Elem.getEnd(); i++)
                     {
                         densityValues.at(i)+=1;
@@ -459,7 +459,7 @@ try
                 vector<float> signalVector;
                 signalVector.resize(Elem.getLenght());
                 /**< Ignore if over the reference */
-                if (Elem.getEnd() <(int)densityValues.size())
+                if (Elem.getEnd() <=(int)densityValues.size())
                 {
                     for (int i=Elem.getStart(); i<Elem.getEnd(); i++)
                     {
@@ -527,7 +527,7 @@ void uRegionChrom::generateSignal(const uBasicNGSChrom& chrToComp)
             try
             {
                 /**< Ignore if we map over the reference */
-                if (Elem.getEnd() <(int)densityValues.size())
+                if (Elem.getEnd() <=(int)densityValues.size())
                     for (int i=Elem.getStart(); i<Elem.getEnd(); i++)
                     {
                         densityValues.at(i)++;
@@ -553,7 +553,7 @@ void uRegionChrom::generateSignal(const uBasicNGSChrom& chrToComp)
                 vector<float> signalVector;
                 signalVector.resize(Elem.getLenght());
                 /**< Ignore if over the reference */
-                if (Elem.getEnd() <(int)densityValues.size())
+                if (Elem.getEnd() <=(int)densityValues.size())
                 {
                     for (int i=Elem.getStart(); i<Elem.getEnd(); i++)
                     {
@@ -608,7 +608,6 @@ void uRegionChrom::generateSignal(const uGeneChrom& chrToComp)
 //TODO redo error management
     vector<long int> densityValues;
     string trace;
-
     try
     {
         densityValues.resize(chrToComp.getChromSize());
@@ -619,7 +618,7 @@ void uRegionChrom::generateSignal(const uGeneChrom& chrToComp)
             try
             {
                 /**< Ignore if we map over the reference */
-                if (Elem.getEnd() <(int)densityValues.size())
+                if (Elem.getEnd() <=(int)densityValues.size())
                     for (int i=Elem.getStart(); i<Elem.getEnd(); i++)
                     {
                         densityValues.at(i)++;
@@ -645,7 +644,7 @@ void uRegionChrom::generateSignal(const uGeneChrom& chrToComp)
                 vector<float> signalVector;
                 signalVector.resize(Elem.getLenght());
                 /**< Ignore if over the reference */
-                if (Elem.getEnd() <(int)densityValues.size())
+                if (Elem.getEnd() <=(int)densityValues.size())
                 {
                     for (int i=Elem.getStart(); i<Elem.getEnd(); i++)
                     {

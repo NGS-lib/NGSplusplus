@@ -141,7 +141,7 @@ uToken uParserWig::getNextEntry()
                     else
                     {
                         //If not eof
-                        int end_pos;
+                        int end_pos=0;
                         int start_pos =0;
                         float score;
                         int scorePos=0;

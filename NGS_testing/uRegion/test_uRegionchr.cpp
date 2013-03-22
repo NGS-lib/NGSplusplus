@@ -84,7 +84,25 @@ TEST(uRegionCHR_GenerateSignal, VALID) {
 
    //fixedChrom.threeItems.writeSignal(std::cout,'\0');
 }
+TEST(uRegionCHR_GenerateSignal, CALL4) {
+   StandardRegionChr fixedChrom;
+   uRegionChrom regChrom;
+   uTagsChrom tagChrom;
+   uBasicNGSChrom basicNGSChrom;
+   uGeneChrom  geneChrom;
+   fixedChrom.severalItems.sortSites();
+   fixedChrom.severalItems.inferChrSize();
+   basicNGSChrom.setChromSize(fixedChrom.severalItems.getChromSize());
+   tagChrom.setChromSize(fixedChrom.severalItems.getChromSize());
+   geneChrom.setChromSize(fixedChrom.severalItems.getChromSize());
+   regChrom.setChromSize(fixedChrom.severalItems.getChromSize());
+   EXPECT_NO_THROW(fixedChrom.severalItems.generateSignal(geneChrom));
+   EXPECT_NO_THROW(fixedChrom.severalItems.generateSignal(regChrom));
+   EXPECT_NO_THROW(fixedChrom.severalItems.generateSignal(tagChrom));
+   EXPECT_NO_THROW(fixedChrom.severalItems.generateSignal(basicNGSChrom));
 
+   //fixedChrom.threeItems.writeSignal(std::cout,'\0');
+}
 
 TEST(uRegionCHR_WriteSignal, NOCRASH) {
 	 StandardRegionChr fixedChrom;

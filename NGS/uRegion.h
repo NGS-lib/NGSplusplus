@@ -110,10 +110,8 @@ public:
     void measureDensityOverlap(const  uTagsChrom& chromtoComp, const OverlapType=OverlapType::OVERLAP_PARTIAL);
     void measureDensityOverlap(const  uRegionChrom& chromtoComp, const OverlapType=OverlapType::OVERLAP_PARTIAL);
     void measureDensityOverlap(const  uBasicNGSChrom& chromtoComp, const OverlapType=OverlapType::OVERLAP_PARTIAL);
-    //TODO
     void measureDensityOverlap(const  uGeneChrom& chromtoComp, const OverlapType=OverlapType::OVERLAP_PARTIAL);
 
-    //TODO
     void generateSignal(const uGeneChrom & chromToComp);
     void generateSignal(const uRegionChrom & chromToComp);
     void generateSignal(const uTagsChrom & chromToComp);

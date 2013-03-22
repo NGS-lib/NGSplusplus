@@ -173,6 +173,9 @@ public:
     long int getSubsetCount(const std::string & pChr, const double pStart, const double pEnd, const OverlapType overlap=OverlapType::OVERLAP_PARTIAL);
     long int getSubsetCount(const _BASE_ & subsetReg, const OverlapType overlap=OverlapType::OVERLAP_PARTIAL);
 
+
+    int getChrCount(){return ExpMap.size();};
+
     void setChrSize(std::string chr, int chrSize);
     int getChrSize(std::string chr);
     void divideItemsIntoBinofSize(int N, SplitType type=SplitType::STRICT);
