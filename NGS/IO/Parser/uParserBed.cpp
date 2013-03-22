@@ -97,22 +97,23 @@ void uParserBed::_convertLineToTokenInfosBed(char* line, std::stringstream& toke
     std::string chr = _getNextEntry(line_cpy);
     std::string start_pos = _getNextEntry(line_cpy);
     std::string end_pos = _getNextEntry(line_cpy);
-    std::string seq_name = _getNextEntry(line_cpy);
     std::string score;
     std::string strand;
+    /**< BED3 to BED6 are supported */
     token_infos << "CHR\t" << chr << "\n";
     token_infos << "START_POS\t" << start_pos << "\n";
     token_infos << "END_POS\t" << end_pos << "\n";
-    token_infos << "SEQ_NAME\t" << seq_name << "\n";
-    /**< If there is no score info, we have a Bed4. We don't add SCORE and STRAND to uToken. */
-    if (m_numberOfColumn == 6)
-    {
+    if (m_numberOfColumn > 3) {
+        std::string seq_name = _getNextEntry(line_cpy);
+        token_infos << "SEQ_NAME\t" << seq_name << "\n";
+    }
+    if (m_numberOfColumn > 4) {
         score = _getNextEntry(line_cpy);
+        token_infos << "SCORE\t" << score << "\n";
+    }
+    if (m_numberOfColumn > 5)
+    {
         strand = _getNextEntry(line_cpy);
-
-        /**< if ., information not available, we do not stock */
-        if (score!=".")
-            token_infos << "SCORE\t" << score << "\n";
         token_infos << "STRAND\t" << strand << "\n";
     }
 }
@@ -132,7 +133,7 @@ int uParserBed::_countColumns(char* line) const
 
 void uParserBed::_validateColumnNumber(int numberOfColumn) const
 {
-    if (numberOfColumn != 4 && numberOfColumn != 6)
+    if (numberOfColumn < 3 || numberOfColumn > 6)
     {
         uParserBed_invalid_number_of_columns e;
         e << string_error("uParserBed: Invalid number of columns.");

@@ -9,7 +9,7 @@
 #include <random>
 #include <string.h>
 #include <time.h>
-#include "gtest.h"
+#include <gtest/gtest.h>
 using namespace NGS;
 
 

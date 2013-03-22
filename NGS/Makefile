@@ -29,6 +29,8 @@ OBJECTS = $(UTIL_DIR)/utility.o
 OBJECTS += $(IO_DIR)/uHeader.o $(IO_DIR)/uToken.o 
 OBJECTS += $(WRITER_DIR)/uWriter.o $(WRITER_DIR)/uWriterBase.o $(WRITER_DIR)/uWriterBed.o 
 OBJECTS += $(WRITER_DIR)/uWriterBed4.o $(WRITER_DIR)/uWriterBed6.o $(WRITER_DIR)/uWriterCustom.o
+OBJECTS += $(WRITER_DIR)/uWriterBed3.o
+OBJECTS += $(WRITER_DIR)/uWriterBed5.o
 OBJECTS += $(WRITER_DIR)/uWriterSam.o $(WRITER_DIR)/uWriterWig.o $(WRITER_DIR)/uWriterBedGraph.o
 OBJECTS += $(WRITER_DIR)/uWriterGFF.o $(WRITER_DIR)/uWriterGTF.o
 OBJECTS += $(PARSER_DIR)/uParser.o $(PARSER_DIR)/uParserBase.o $(PARSER_DIR)/uParserWig.o 
@@ -36,6 +38,7 @@ OBJECTS += $(PARSER_DIR)/uParserSam.o $(PARSER_DIR)/uParserBed.o $(PARSER_DIR)/u
 OBJECTS += $(PARSER_DIR)/uParserBedGraph.o $(PARSER_DIR)/uParserGTF.o $(PARSER_DIR)/uParserGFF.o
 OBJECTS += $(PARSER_DIR)/uParserGenePred.o $(PARSER_DIR)/uParserBAM.o
 OBJECTS += $(SRC_DIR)/uBasicNGS.o $(SRC_DIR)/uRegion.o $(SRC_DIR)/uTags.o
+OBJECTS += $(SRC_DIR)/uGene.o
 
 # Third-Party
 OBJECTS += $(API_DIR)/BamAlignment.o
@@ -80,7 +83,7 @@ OBJECTS += $(API_DIR)/SamSequenceDictionary.o
 OBJPROJ = $(addprefix $(OBJ_DIR)/, $(OBJECTS))
 PROJECT = $(PROJECT_DIR)/$(PROJECT_NAME)
 
-CFLAGS  = -O3 -std=c++11 -lz
+CFLAGS  = -O2 -std=c++11 -lz
 INCLUDES = -I$(NGS_DIR) 
 
 $(shell mkdir -p $(OBJ_DIR)/$(WRITER_DIR))

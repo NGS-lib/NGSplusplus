@@ -113,27 +113,39 @@ class TestsBedWriter: public ::testing::Test {
 public:
 	TestsBedWriter() {
 		/**< Initialize streams */
+		m_pOssBed3 = new ostringstream(ostringstream::out);
 		m_pOssBed4 = new ostringstream(ostringstream::out);
+		m_pOssBed5 = new ostringstream(ostringstream::out);
 		m_pOssBed6 = new ostringstream(ostringstream::out);
 		/**< Initialize writers */
+		uWriter writerBed3(m_pOssBed3, "BED3");
 		uWriter writerBed4(m_pOssBed4, "BED4");
+		uWriter writerBed5(m_pOssBed5, "BED5");
 		uWriter writerBed6(m_pOssBed6, "BED6");
 		/**< Write tokens */
 		validTokens tokens;
 		for (size_t i = 0; i < tokens.m_vTokens.size(); i++) {
+			writerBed3.writeToken(tokens.m_vTokens[i]);
 			writerBed4.writeToken(tokens.m_vTokens[i]);
+			writerBed5.writeToken(tokens.m_vTokens[i]);
 			writerBed6.writeToken(tokens.m_vTokens[i]);
 		}
 	}
 
 	~TestsBedWriter() {
+		delete m_pOssBed3;
+		m_pOssBed3 = nullptr;
 		delete m_pOssBed4;
 		m_pOssBed4 = nullptr;
+		delete m_pOssBed5;
+		m_pOssBed5 = nullptr;
 		delete m_pOssBed6;
 		m_pOssBed6 = nullptr;
 	}
 
+	ostringstream* m_pOssBed3 = nullptr;
 	ostringstream* m_pOssBed4 = nullptr;
+	ostringstream* m_pOssBed5 = nullptr;
 	ostringstream* m_pOssBed6 = nullptr;
 };
 
