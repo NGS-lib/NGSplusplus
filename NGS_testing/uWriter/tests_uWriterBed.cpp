@@ -10,17 +10,29 @@ using namespace NGS;
  * Tests for the function:
  *		void writeToken(const uToken& token);
  *	Valid case:
+ *		ThreeValidValuesBed3
  *		FourValidValuesBed4
+ *		FiveValidValuesBed5
  *		SixValidValuesBed6
  *		NoScoreValueBed6
  *		NoNameValueBed4
  *		NoNameValueBed6
  *		NoScoreStrandValuesBed6
  */
+TEST_F(TestsBedWriter, WriteToken_ThreeValidValuesBed3) {
+	string expected = "chr1\t1\t21\n";
+	ASSERT_TRUE(m_pOssBed3->str().find(expected) != string::npos);
+}
+
 TEST_F(TestsBedWriter, WriteToken_FourValidValuesBed4) {
 	string expected = "chr1\t1\t21\tab00001\n";
-	//cout << m_pOssBed4->str();
 	ASSERT_TRUE(m_pOssBed4->str().find(expected) != string::npos);
+}
+
+TEST_F(TestsBedWriter, WriteToken_FiveValidValuesBed5) {
+	string expected = "chr1\t1\t21\tab00001\t111\n";
+	std::cout << m_pOssBed5->str();
+	ASSERT_TRUE(m_pOssBed5->str().find(expected) != string::npos);
 }
 
 TEST_F(TestsBedWriter, WriteToken_SixValidValuesBed6) {

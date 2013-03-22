@@ -141,7 +141,9 @@ void uToken::_initialize(std::istream& paramList, bool customValues, validate_ty
         if (custom == false)
         {
             if (validate==validate_type::NO_VALIDATE)
+	    {
                 _setParamNoValidate(name,value);
+	    }
             else
             {
                 try
@@ -178,7 +180,9 @@ void uToken::_initialize(std::istream& paramList, bool customValues, validate_ty
     try
     {
         if (validate==validate_type::VALIDATE)
+        {
             _validateToken();
+        }
     }
     catch (invalid_uToken_throw& e)
     {
@@ -678,9 +682,11 @@ bool uToken::_scoreIsValid(const std::string& value) const
     }
     catch(...)
     {
-        return false;
+        if (value == ".")
+        {
+            return true;
+        }
     }
-
     return false;
 }
 

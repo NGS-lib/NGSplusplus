@@ -3,7 +3,9 @@
 #define UWRITERFACTORY_H_INCLUDED
 
 #include "uWriterBase.h"
+#include "uWriterBed3.h"
 #include "uWriterBed4.h"
+#include "uWriterBed5.h"
 #include "uWriterBed6.h"
 #include "uWriterBedGraph.h"
 #include "uWriterCustom.h"
@@ -50,7 +52,9 @@ struct uWriterBaseFactory {
     uWriterBaseFactory()
     {
         Register("BED", &uWriterBed4::Create);
+        Register("BED3", &uWriterBed3::Create);
         Register("BED4", &uWriterBed4::Create);
+        Register("BED5", &uWriterBed5::Create);
         Register("BED6", &uWriterBed6::Create);
         Register("WIG", &uWriterWig::Create);
         Register("SAM", &uWriterSam::Create);
