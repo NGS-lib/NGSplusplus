@@ -58,6 +58,7 @@ struct uWriterBaseFactory {
         Register("BED6", &uWriterBed6::Create);
         Register("WIG", &uWriterWig::Create);
         Register("SAM", &uWriterSam::Create);
+        Register("GFF", &uWriterGFF::Create);
         Register("UCSCGFF", &uWriterGFF::Create);
         Register("GTF", &uWriterGTF::Create);
         Register("BEDGRAPH", &uWriterBedGraph::Create);

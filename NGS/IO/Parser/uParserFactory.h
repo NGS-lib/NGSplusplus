@@ -53,6 +53,7 @@ struct uParserBaseFactory {
         Register("BED", &uParserBed::Create);
         Register("WIG", &uParserWig::Create);
         Register("SAM", &uParserSam::Create);
+        Register("GFF", &uParserGFF::Create);
         Register("UCSCGFF", &uParserGFF::Create);
         Register("GTF", &uParserGTF::Create);
         Register("BEDGRAPH", &uParserBedGraph::Create);
