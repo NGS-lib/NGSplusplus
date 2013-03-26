@@ -110,7 +110,9 @@ void uParserBed::_convertLineToTokenInfosBed(char* line, std::stringstream& toke
     }
     if (m_numberOfColumn > 4) {
         score = _getNextEntry(line_cpy);
-        token_infos << "SCORE\t" << score << "\n";
+	if (score != ".") {
+		token_infos << "SCORE\t" << score << "\n";
+	}
     }
     if (m_numberOfColumn > 5)
     {
