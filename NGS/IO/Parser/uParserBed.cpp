@@ -99,6 +99,7 @@ void uParserBed::_convertLineToTokenInfosBed(char* line, std::stringstream& toke
     std::string end_pos = _getNextEntry(line_cpy);
     std::string score;
     std::string strand;
+    std::string extra;
     /**< BED3 to BED6 are supported */
     token_infos << "CHR\t" << chr << "\n";
     token_infos << "START_POS\t" << start_pos << "\n";
@@ -109,14 +110,21 @@ void uParserBed::_convertLineToTokenInfosBed(char* line, std::stringstream& toke
     }
     if (m_numberOfColumn > 4) {
         score = _getNextEntry(line_cpy);
-        if (score!=".")
-        token_infos << "SCORE\t" << score << "\n";
+
+        if (score!="."){
+        token_infos << "SCORE\t" << score << "\n"; }
+
+	}
     }
     if (m_numberOfColumn > 5)
     {
         strand = _getNextEntry(line_cpy);
         if (strand!=".")
         token_infos << "STRAND\t" << strand << "\n";
+    }
+    if (m_numberOfColumn > 6) {
+	extra = line_cpy;
+	token_infos << "EXTRA\t" << extra << "\n";
     }
 }
 
