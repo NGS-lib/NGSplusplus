@@ -168,14 +168,13 @@ TEST(uGeneChromTest_addDataGTF, PARSE_SEVERAL)
     uParser Parser(GTFUCSC, "GTF");
     int count=0;
     while (count!=50){
-        ASSERT_NO_THROW(newChrom.addData( Parser.getNextEntry()));
+        ASSERT_NO_THROW(newChrom.addData(Parser.getNextEntry()));
         count++;
     }
 
     std::vector<uGene>::const_iterator itr= newChrom.findGene("uc001aaa.3");
     EXPECT_EQ(2,itr->featureCount());
     EXPECT_EQ(11874,itr->getStart());
-
 
 }
 

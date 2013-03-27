@@ -99,8 +99,13 @@ bool uFeature::operator!=(const uFeature &other) const
 {
     return !(*this == other);
 }
-//TODO COMPLETE THIS!
-/**< From uTokens */
+
+
+/** \brief Constructor taking a uToken. If multiple elements/features are present, the constructor will try to parse and add the additional features
+ *
+ * \param pToken uToken
+ *
+ */
 uGene::uGene(uToken pToken)
 {
 try {
@@ -113,7 +118,6 @@ try {
             tokTranscript= pToken.getParam(token_param::GROUP_TRANSCRIPT);
 
         /**< Case where the ID is not  associated, we add first as main feature */
-
         StrandDir dir=StrandDir::FORWARD;
         if ( pToken.isParamSet(token_param::STRAND) && pToken.getParam(token_param::STRAND)=="-")
             dir=StrandDir::REVERSE;
@@ -125,7 +129,7 @@ try {
             this->setScore(std::stof(pToken.getParam(token_param::SCORE)));
         this->setID(tokID);
         this->setTranscript(tokTranscript);
-    //    std::vector<std::string> yoyo = pToken.getParamVector(token_param::FEATURE_ID);
+
         for (int i=1; i<pToken.paramCount(token_param::START_POS); i++)
         {
             std::string featureID;
@@ -138,8 +142,13 @@ try {
                 featureID=pToken.getParam(token_param::FEATURE_ID,i); }
             if (pToken.isParamSet(token_param::PHASE,i)){
                 myOffset=pToken.getParam(token_param::PHASE,i);}
-           // featureID="bonjour";
-            this->addFeature(std::stoll(pToken.getParam(token_param::START_POS,i)),std::stoll(pToken.getParam(token_param::END_POS,i)),dir,mapFeature(pToken.getParam(token_param::FEATURE_TYPE,i)),featureID,std::stoi(myOffset));
+
+            featureType curType=featureType::OTHER;
+            if (pToken.isParamSet(token_param::FEATURE_TYPE,i)){
+                    curType=mapFeature(pToken.getParam(token_param::FEATURE_TYPE,i));
+                    }
+
+            this->addFeature(std::stoll(pToken.getParam(token_param::START_POS,i)),std::stoll(pToken.getParam(token_param::END_POS,i)),dir,curType,featureID,std::stoi(myOffset));
 
         }
 
@@ -570,7 +579,7 @@ void uGeneChrom::addData(const uToken & pToken)
             if ( pToken.isParamSet(token_param::STRAND,i) && pToken.getParam(token_param::STRAND,i)=="-")
                 dir=StrandDir::REVERSE;
 
-            std::string featureID="", featureClass="", myOffset;
+            std::string featureID="", featureClass="", myOffset="0";
 
             if (pToken.isParamSet(token_param::FEATURE_ID,i))
                 featureID=pToken.getParam(token_param::FEATURE_ID,i);

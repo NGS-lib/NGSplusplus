@@ -13,7 +13,7 @@
 namespace NGS {
 /**< List of param is hard coded as strongly typed enum for extra safety. */
 /**< This list has to be updated for every new param */
-enum class header_param { CHR, CHR_SIZE,STEP_SIZE };
+enum class header_param { CHR, CHR_SIZE,STEP_SIZE, SORT_TYPE};
 
 /**< uHeader class, to keep track of information in header, formated or not */
 /**< This is the class that takes care of data validation */
@@ -55,7 +55,8 @@ public:
 
         return (param == "CHR"
              || param == "CHR_SIZE"
-             || param == "CHR_SIZE"
+             || param == "STEPS_SIZE"
+             || param == "SORT_TYPE"
               );
     }
 
@@ -90,6 +91,7 @@ inline std::ostream & operator<<(std::ostream& Str, header_param name) {
     case header_param::CHR : return Str << "CHR";
     case header_param::CHR_SIZE : return Str << "CHR_SIZE";
     case header_param::STEP_SIZE : return Str << "STEP_SIZE";
+    case header_param::SORT_TYPE : return Str << "SORT_TYPE";
     default: return Str << (int) name;
     }
 }
@@ -100,6 +102,7 @@ inline std::string& operator<<(std::string& Str, header_param name) {
     case header_param::CHR : return Str+="CHR";
     case header_param::STEP_SIZE : return Str+="STEP_SIZE";
     case header_param::CHR_SIZE : return Str+="CHR_SIZE";
+    case header_param::SORT_TYPE : return Str+="SORT_TYPE";
     default: return Str;
     }
 }
@@ -110,6 +113,7 @@ inline std::istream& operator>>(std::istream &is, header_param& name) {
     if (header == "CHR") name = header_param::CHR;
     else if (header == "CHR_SIZE") name = header_param::CHR_SIZE;
     else if (header == "STEP_SIZE") name = header_param::STEP_SIZE;
+    else if (header == "SORT_TYPE") name = header_param::SORT_TYPE;
     else {
         invalid_header_param_throw e;
         e << string_error(header);

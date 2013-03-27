@@ -84,8 +84,6 @@ protected:
     void removeSite(const std::string & pChr,const long int pStart,const long int pEnd);
 
 
-
-
 public:
     /** \brief Empty constructor. Does nothing.
       */
@@ -148,7 +146,7 @@ public:
 
 
 
-    bool isChrom(const std::string & pChrom) const;
+    bool F(const std::string & pChrom) const;
 
     _CHROM_ getChrom(const std::string & chrom) const;
     const _CHROM_* getpChrom(const std::string & chrom) const;

@@ -132,7 +132,6 @@ uToken uParserGFF::_getTokenFromGFFString(const std::string & line)
         if ( what[6]!=".")
             ourToken._setParamNoValidate(token_param::SCORE, what[6]);
 
-
         if ( what[7]!=".")
             ourToken._setParamNoValidate(token_param::STRAND, what[7]);
 

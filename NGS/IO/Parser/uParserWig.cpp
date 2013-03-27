@@ -145,7 +145,6 @@ uToken uParserWig::getNextEntry()
                         int start_pos =0;
                         float score;
                         int scorePos=0;
-                      //  std::cerr << "Getting info " <<std::endl;
                         switch (m_Info.getStepType())
                         {
                         case wigInformation::stepType::NA:
@@ -164,11 +163,10 @@ uToken uParserWig::getNextEntry()
                             break;
                         case   wigInformation::stepType::VARIABLE:
                             start_pos=utility::stoi(m_tokens.at(0));
-                            //ss >> cur_token;
 							scorePos=1;
                             score=utility::stof(m_tokens.at(scorePos));
                             end_pos= start_pos+m_Info.getSpan();
-                            //if (!ss.eof())
+
                             if(m_tokens.size()>2)
                                 throw uParser_invalid_line()<<string_error("Invalid line in file \n");
 

@@ -187,6 +187,8 @@ public:
 
     void addData(const uToken&);
     void addData(const uGeneChrom&);
+    void addData(const uGene& item){uGenericNGSExperiment::addData(item);};
+
     uGeneExperiment& operator=(const uGeneExperiment& copFrom)=default;
     uGeneExperiment(const uGeneExperiment&) = default;
     uGeneExperiment()=default;

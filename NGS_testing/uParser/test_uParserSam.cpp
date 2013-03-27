@@ -131,7 +131,12 @@ TEST(uParserSam_getNextEntry, MAKEBASICTEN) {
 
 }
 
-
+TEST(parserSamTests, SORTTYPE)
+{
+    uParser ourParser(BIG_FILE, "SAM");
+    std::string sortedSatus= ourParser.getHeaderParam(header_param::SORT_TYPE);
+    EXPECT_EQ("coordinate",sortedSatus);
+}
 TEST(parserSamTests, BIGPARSE30K)
 {
     EXPECT_NO_THROW(uParser ourParser(BIG_FILE, "SAM");

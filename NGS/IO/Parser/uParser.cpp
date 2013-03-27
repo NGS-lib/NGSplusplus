@@ -14,19 +14,14 @@ namespace NGS
 uParser::uParser(const std::string& filename, const std::string & type, bool header)
 {
 
-   // uParserBaseFactory myFact;
-  //  DerivedParserRegister<uParserBed> uParserBed::reg("BED");
-
     try
     {
          m_pParserBase=uParserBaseFactory::GetFact()->createInstance(type);
-     //   m_pParserBase=myFact.createInstance(type);
         m_pParserBase->init(filename, header);
     }
     catch(...)
     {
         throw;
-        //  std::cerr <<fetchStringError(e);
     }
 }
 
@@ -38,9 +33,8 @@ uParser::uParser(const std::string& filename, const std::string & type, bool hea
 uParser::uParser(std::istream* stream, const std::string & type, bool header)
 {
 
-  //  uParserBaseFactory myFact;
-  m_pParserBase= uParserBaseFactory::GetFact()->createInstance(type);
-   // m_pParserBase=myFact.createInstance(type);
+
+    m_pParserBase= uParserBaseFactory::GetFact()->createInstance(type);
     m_pParserBase->init(stream, header);
 
 }
@@ -53,9 +47,7 @@ uParser::uParser(std::istream* stream, const std::string & type, bool header)
 uParser::uParser(const std::string& filename, const std::vector<std::string>& fieldsNames, char delimiter)
 {
 
-   // uParserBaseFactory myFact;
     m_pParserBase=uParserBaseFactory::GetFact()->createInstance("CUSTOM");
-  //  m_pParserBase=myFact.createInstance("CUSTOM");
     m_pParserBase->init(filename, fieldsNames, delimiter);
 
 }

@@ -91,20 +91,23 @@ TEST(uParserBedConstructorStream, EmptyStream) {
 
 /**< BlackBox data tests from applications */
 
-
  TEST(uParserBed_GetNextEntry, MACSREAL) {
 	uParser Parser(MACSPATH, "BED");
+    uToken aToken;
     while(Parser.eof()==false)
     {
-        EXPECT_NO_THROW(Parser.getNextEntry());
+        EXPECT_NO_THROW(aToken=Parser.getNextEntry());
+        uBasicNGS(aToken);
     }
 }
 
  TEST(uParserBed_GetNextEntry, BED3) {
 	uParser Parser(BED3, "BED");
+	uToken aToken;
     while(Parser.eof()==false)
     {
-        EXPECT_NO_THROW(Parser.getNextEntry());
+        EXPECT_NO_THROW(aToken=Parser.getNextEntry());
+        uBasicNGS(aToken);
     }
 }
 

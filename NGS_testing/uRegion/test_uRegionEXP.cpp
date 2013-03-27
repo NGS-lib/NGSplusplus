@@ -51,11 +51,12 @@ TEST(uRegionExpTest_copyCtr, NORMAL){
 //    ASSERT_TRUE(false);
 }
 
-TEST(uRegionExpTest_WriteSignal, VALID){
+TEST(uRegionExpTest_WriteSignal, CALLED){
 
-     ostringstream* osTest = new ostringstream(ostringstream::out);
+   //  ostringstream* osTest = new ostringstream(ostringstream::out);
 	 StandardRegionExp newGroup;
 	 EXPECT_NO_THROW(newGroup.severalItems.writeSignal(cout,'\0'));
+
 }
 TEST(uRegionExpTest_AssigmentOperator, VALID){
     StandardRegionExp newGroup;
@@ -93,9 +94,7 @@ TEST(uRegionExpTest_GenerateSignal, CALL4) {
 	 someGroup.severalItems.inferChrSize();
 	 newGroup.severalItems.inferChrSize();
 
-	 EXPECT_THROW(newGroup.severalItems.generateSignal(someGroup.severalItems), skipped_elem_throw);
-
-
+	 EXPECT_NO_THROW(newGroup.severalItems.generateSignal(someGroup.severalItems));
 	 EXPECT_NO_THROW(newGroup.severalItems.generateSignal(newBasic));
 	 EXPECT_NO_THROW(newGroup.severalItems.generateSignal(newTag));
 	 EXPECT_NO_THROW(newGroup.severalItems.generateSignal(newGene));

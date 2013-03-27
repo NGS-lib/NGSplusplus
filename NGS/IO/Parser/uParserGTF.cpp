@@ -100,7 +100,8 @@ uToken uParserGTF::_getTokenInfoFromGTFString(const std::string& line)
         if ( what[7]!=".")
             ourToken._setParam(token_param::STRAND, what[7]);
 
-        ourToken._setParam(token_param::PHASE, what[8]);
+        if ( what[8]!=".")
+            ourToken._setParam(token_param::PHASE, what[8]);
 
         ourToken._setParam(token_param::GROUP_ID, what[9]);
         ourToken._setParam(token_param::GROUP_TRANSCRIPT, what[10]);

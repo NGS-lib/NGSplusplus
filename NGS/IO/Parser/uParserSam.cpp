@@ -209,7 +209,7 @@ void uParserSam::_parseHeader()
         {
 
             std::string data;
-            std::string format,sortType;
+            std::string format;
             bool VN=false, SORT=false;
             while (!Infostream.eof())
             {
@@ -233,7 +233,8 @@ void uParserSam::_parseHeader()
 
                     if ((data!="unsorted")&&(data!="queryname")&&(data!="unknown")&&(data!="coordinate"))
                          throw uParser_invalid_Sam_header()<<string_error("Invalid sorting value in @SO line: \n"+lineString);
-                    sortType=data;
+
+                    m_headerData._addToParam(header_param::SORT_TYPE,data);
                 }
                 else
                     throw uParser_invalid_Sam_header()<<string_error("Invalid sam header line: \n"+lineString);
@@ -317,6 +318,7 @@ void uParserSam::_parseHeader()
             if((!SN)||(!LN))
                 throw uParser_invalid_Sam_header()<<string_error("Missing SN or LN tag in @SQ header, failling: \n"+lineString);
             /**< Load our data */
+
             m_headerData._addToParam(header_param::CHR,chrom);
             m_headerData._addToParam(header_param::CHR_SIZE,utility::to_string(refSeqlenght));
         } /**< Invalid, fail */

@@ -457,7 +457,6 @@ void uGenericNGSChrom<_SELF_,_BASE_>::removeSite(VecGenConstIter pStartItr,VecGe
         /**< According to the C++11 standard, const iterator should be allowed in erase
         However, implementation does not seem to have caught up, hence this patch
          */
-
         VecSites.erase(to_mutable_iterator(VecSites,pStartItr),to_mutable_iterator(VecSites,pEndItr));
     }
     catch(...)

@@ -104,6 +104,11 @@ bool uBasicNGS::isEqual(const uBasicNGS  &  pCompared) const
 }
 
 
+/** \brief Return a copy of the element
+ *
+ * \return uBasicNGS : The copied element
+ *
+ */
 uBasicNGS uBasicNGS::getCopy()const
 {
     uBasicNGS returnCopy = *this;

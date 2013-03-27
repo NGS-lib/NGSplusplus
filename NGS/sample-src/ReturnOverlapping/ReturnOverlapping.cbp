@@ -33,7 +33,8 @@
 				</Compiler>
 				<Linker>
 					<Add option="-s" />
-					<Add library="../../../../../libs/release/libNGS.a" />
+					<Add option="-lz" />
+					<Add library="../../../../libs/release/libNGS.a" />
 				</Linker>
 			</Target>
 		</Build>
@@ -41,7 +42,7 @@
 			<Add option="-Wall" />
 			<Add option="-fexceptions" />
 			<Add directory="../../../../class" />
-			<Add directory="../../boost-include" />
+			<Add directory="../../../NGS" />
 		</Compiler>
 		<Linker>
 			<Add option="-static-libgcc" />

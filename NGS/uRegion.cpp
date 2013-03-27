@@ -287,7 +287,6 @@ void uRegionChrom::writeSignal(std::ostream& out, char pSep)
  * \return void
  *
  */
-
 void uRegionChrom::measureDensityOverlap( const uBasicNGSChrom& chromtoComp, const OverlapType pOverlap)
 {
     for (auto it =VecSites.begin(); it!=VecSites.end(); it++ )
@@ -323,7 +322,7 @@ void uRegionChrom::measureDensityOverlap(const uRegionChrom& chromtoComp, const 
     }
 }
 
- /** \brief Generate Density signal from another region Chrom
+ /** \brief Generate Density signal from another region Chrom. This signal is stored internaly in the signal value of each element.
   *         Overloads exist for uRegion, uTags, uBase
   * \param chromToComp const uRegionChrom&
   * \return void
@@ -513,7 +512,6 @@ try
 void uRegionChrom::generateSignal(const uBasicNGSChrom& chrToComp)
 {
 
-//TODO redo error management
     vector<long int> densityValues;
     string trace;
 
@@ -954,8 +952,6 @@ for(auto& chrom : ExpMap)
             throw e;
         }
  }
-
-
 uRegionExperiment uRegionExperiment::getCopy() const{
 
     uRegionExperiment copyElem =  *this;
