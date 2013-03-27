@@ -1,10 +1,12 @@
 #include <iostream>
 #include "NGS++.h"
+
 using namespace std;
 using namespace NGS;
-
+/**< Load any number of bed3 to bed6 files.  */
+/**< Does the overlap of all of them, returns only the overlapping parts and keep smerging */
 /**< Input is sorted */
-
+/**< Note this will fail in sup-paths. Using Boost::filesytem would be the best way to solve this, but it is not the purview of the exampkle */
 uBasicNGSExperiment returnOverlapParts(const uBasicNGSExperiment& set1, const uBasicNGSExperiment& set2)
 {
     /**< For every chrom */
@@ -37,24 +39,27 @@ uBasicNGSExperiment returnOverlapParts(const uBasicNGSExperiment& set1, const uB
     return returnExp;
 }
 
-void generateAndOutput(const pair<std::string,uBasicNGSExperiment> & createdSet,  vector<pair<std::string,uBasicNGSExperiment>> ::iterator curItr,vector<pair<std::string,uBasicNGSExperiment>> ::iterator endItr  ,uWriter& pWriter)
+
+void generateAndOutput(const pair<std::string,uBasicNGSExperiment> & createdSet,  vector<pair<std::string,uBasicNGSExperiment>> ::iterator curItr,vector<pair<std::string,uBasicNGSExperiment>> ::iterator endItr)
 {
     uBasicNGSExperiment compareResult =returnOverlapParts(createdSet.second, curItr->second);
 /**< If no elements, stop comparing, pointless */
     if(compareResult.count())
     {
           std::string newID= createdSet.first +"_"+curItr->first;
+          std::ofstream* ofs = new std::ofstream(newID.c_str(), std::ofstream::out);
+         // outputStream.open((    (newID+".bed") ));
+          uWriter coutWriter(ofs, "BED4");
           cout << ("Compare "+newID)<<endl;
-          compareResult.writeWithWriter(pWriter);
+          compareResult.writeWithWriter(coutWriter);
        /**< Call all possible combinations */
        curItr++;
        while(curItr!=endItr){
-            generateAndOutput(make_pair(newID,compareResult),curItr,endItr,pWriter);
+            generateAndOutput(make_pair(newID,compareResult),curItr,endItr);
             curItr++;
        }
     }
 }
-
 
 int main(int argc, char **argv)
 {
@@ -73,6 +78,8 @@ int main(int argc, char **argv)
             {
              string path=argv[i];
              ifstream curStream;
+             std::string filename_noext;
+
              utility::loadStream(path,curStream);
              uParser curParser(&curStream,"BED");
              vecBedExp.at(i-1).first=path;
@@ -92,30 +99,16 @@ int main(int argc, char **argv)
   try {
 
     /**< Compare every example with each other. */
-
-        uWriter coutWriter(&cout, "BED4");
+        uWriter coutWriter(&cout, "BED3");
 
         auto secundItr=(vecBedExp.begin()+1);
         auto endItr= (vecBedExp.end());
 
          while(secundItr!=endItr){
-            generateAndOutput(vecBedExp.at(0),secundItr,endItr,coutWriter);
+            generateAndOutput(vecBedExp.at(0),secundItr,endItr);
             secundItr++;
        }
 
-//        for (size_t i=0; i<vecBedExp.size(); i++)
-//        {
-//            for(size_t y=i+1; y<vecBedExp.size(); y++)
-//            {
-//                auto compareResult=returnOverlapParts(vecBedExp.at(i).second,vecBedExp.at(y).second);
-//                if (compareResult.count()){
-//                        std::string newID= vecBedExp.at(i).first +"_"+vecBedExp.at(y).first;
-//                    cout << ("Compare "+newID)<<endl;
-//                    compareResult.writeWithWriter(coutWriter);
-//                    vecBedExp.push_back()
-//                }
-//            }
-//        }
 
      }
     catch(ugene_exception_base & e)

@@ -1,0 +1,5 @@
+This will load the data in the given file and keep only the first item that have the same chr/start/end combination. It will then write it. This is done directly working with Tokens, but please see the code for an alternative using a lambda.
+
+Signature is
+
+CutDuplicates <filePath> <filetype=[BED/GFF/SAM]>
