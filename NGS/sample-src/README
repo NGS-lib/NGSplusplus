@@ -1,4 +1,4 @@
-Before building these code examples, make sur you have built the NGS++ library in its default folders.
+Before building these code examples, make sure you have built the NGS++ library in its default folders.
 
 Code samples can be build, running:
 
@@ -10,3 +10,7 @@ To build only a specific test:
 ./buildTests DTools/DTools.cpp
 
 The compiled tools can be then found in the bin/ folder.
+
+Note, these tools are NOT robust. Specifically it is recommended to use them with data samples in the same directory. 
+
+To make command line programs that are robust to filepaths we recommend using Boost::filesystem and the TCLAP library. However, these functionalities are not included in NGS++ nor are they of the purview of the library.

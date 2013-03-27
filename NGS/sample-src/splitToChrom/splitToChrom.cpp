@@ -5,18 +5,21 @@ using namespace NGS;
 
 int main(int argc, char **argv)
 {
-    cout << UCSCHeader::getUCSCPositionLine("chr1",100,2000);
-    cout << UCSCHeader::getUCSCLine(UCSCHeader::UCSCBrowseTypeMult::HIDE_ALL,"I","WISH","TO","FIND");
-    cout << UCSCHeader::getUCSCLine(UCSCHeader::UCSCBrowseTypeMult::PACK_ALL,"I","WISH","TO","PACK");
-    cout << UCSCHeader::getUCSCLine(UCSCHeader::UCSCBrowseTypeMult::DENSE_ALL,"I","WISH","TO","DENSE");
-    cout << UCSCHeader::getUCSCLine(UCSCHeader::UCSCBrowseTypeMult::FULL_ALL,"I","WISH","TO","FULL","MANY","FULL");
-    cout << UCSCHeader::getUCSCLine(UCSCHeader::UCSCBrowseTypeMult::SQUISH_ALL,"I","WISH","TO","SQUISH","MANY");
 
-    cout << UCSCHeader::getUCSCLine(UCSCHeader::UCSCBrowseType::HIDE);
-    cout << UCSCHeader::getUCSCLine(UCSCHeader::UCSCBrowseType::PACK);
-    cout << UCSCHeader::getUCSCLine(UCSCHeader::UCSCBrowseType::DENSE);
-    cout << UCSCHeader::getUCSCLine(UCSCHeader::UCSCBrowseType::FULL);
-    cout << UCSCHeader::getUCSCLine(UCSCHeader::UCSCBrowseType::SQUISH);
+    /**< Example of using UCSCHeader to help output */
+
+//    cout << UCSCHeader::getUCSCPositionLine("chr1",100,2000);
+//    cout << UCSCHeader::getUCSCLine(UCSCHeader::UCSCBrowseTypeMult::HIDE_ALL,"I","WISH","TO","FIND");
+//    cout << UCSCHeader::getUCSCLine(UCSCHeader::UCSCBrowseTypeMult::PACK_ALL,"I","WISH","TO","PACK");
+//    cout << UCSCHeader::getUCSCLine(UCSCHeader::UCSCBrowseTypeMult::DENSE_ALL,"I","WISH","TO","DENSE");
+//    cout << UCSCHeader::getUCSCLine(UCSCHeader::UCSCBrowseTypeMult::FULL_ALL,"I","WISH","TO","FULL","MANY","FULL");
+//    cout << UCSCHeader::getUCSCLine(UCSCHeader::UCSCBrowseTypeMult::SQUISH_ALL,"I","WISH","TO","SQUISH","MANY");
+//
+//    cout << UCSCHeader::getUCSCLine(UCSCHeader::UCSCBrowseType::HIDE);
+//    cout << UCSCHeader::getUCSCLine(UCSCHeader::UCSCBrowseType::PACK);
+//    cout << UCSCHeader::getUCSCLine(UCSCHeader::UCSCBrowseType::DENSE);
+//    cout << UCSCHeader::getUCSCLine(UCSCHeader::UCSCBrowseType::FULL);
+//    cout << UCSCHeader::getUCSCLine(UCSCHeader::UCSCBrowseType::SQUISH);
 
 
     /**< Simple parameter validation. We heavily recommand you use a library to manage your command line parameters */

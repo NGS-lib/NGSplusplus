@@ -99,7 +99,7 @@ int main(int argc, char **argv)
                             std::cout << item.getChr() <<"\t"<< featureItr->getStart() <<"\t"<< featureItr->getEnd()<<"\t"<<featureString(featureItr->getType())<<"\t"<<"\n";
                     }
                 }
-                cout <"\n";
+                cout <<"\n";
                 /**< For each gene body overlapped, write */
                  item.writeToOutput(bedWriter);
             }
