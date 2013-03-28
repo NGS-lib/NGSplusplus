@@ -16,10 +16,7 @@ If you are running openSUSE 12.2, the following will install make and gcc 4.7
 Note: For older version of openSUSE, the previous commands may install an older version of gcc. In this case, you can install the latest version with this command
     sudo install gcc47-c++
 
-If you are running Windows 7, please follow the instructions in the file windowsTDMInstall.txt, available in the same directory as this README. Not that the library is not guaranteed to run well on Windows. The process is moderately involved and requires installing TDM-GCC.
-
-
-If you are on another system, it is quite likely you can find a repository with the binaries available with a minimal amount of search. Otherwise, instructions on how to build the latest gcc are available on the gcc website ( http://gcc.gnu.org/install/build.html )
+If you are on another linux system, it is quite likely you can find a repository with the binaries available with a minimal amount of search. Otherwise, instructions on how to build the latest gcc are available on the gcc website (http://gcc.gnu.org/install/build.html)
 
 Important changes will be documented in the CHANGELOG file.
 
@@ -40,8 +37,11 @@ make install
 
 To compile sample code:
 cd sample-src 
-make samples
+./buildTests
 
+If your c++11 standard complient compiler is not named g++, you can call the buildTests with another compiler. 
+In the next example, the compiler is name g++-4.7:
+./buildTests g++-4.7
 
 -----------------------
 Uninstall
@@ -60,14 +60,8 @@ Changes in the master branch passed all the unit tests but are still considered 
 https://github.com/NGS-lib/NGSplusplus/tags
 
 -----------------------
-Web pages and Getting started
+Web page
 -----------------------
 
-Introductory guide with linking instructions:
-http://info.usherbrooke.ca/Prospectus/projets/introduction-doc/at_download/file
-
 Main page:
-http://info.usherbrooke.ca/Prospectus/projets/ngs
-
-Wiki:
-https://github.com/NGS-lib/NGSplusplus/wiki
+www.ngsplusplus.ca
