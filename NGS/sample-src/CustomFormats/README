@@ -2,7 +2,7 @@ This sample will load a file containing certain values, with the order and delim
 
 The values can be START_POS END_POS CHR SCORE STRAND SEQ_NAME JUNK
 
-JUNK is ignored when reading the file. All other values must appear once.
+JUNK is ignored when reading the file. All other values must appear at most once.
 
 The signature is
 

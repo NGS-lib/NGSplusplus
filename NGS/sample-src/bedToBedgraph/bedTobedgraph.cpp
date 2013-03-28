@@ -8,7 +8,7 @@ int main(int argc, char **argv)
     /**< Simple parameter validation. We heavily recommand you use a library to manage your command line parameters */
     if (argc!=2)
     {
-        cerr << "Please follow exactly the following signature"<<endl<<"<bedToConvert <track title>"<<endl;
+        cerr << "Please follow exactly the following signature"<<endl<<"<Input bed>"<<endl;
         return 0;
     }
     ifstream firstStream;
