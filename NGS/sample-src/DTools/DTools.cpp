@@ -87,14 +87,15 @@ try{
     auto chrVector=samParser.getHeaderParamVector(header_param::CHR);
     auto chrSizeVector=samParser.getHeaderParamVector(header_param::CHR_SIZE);
 
-    if (chrVector.size()!=tagExp.getChrCount()){
+    if ((int)chrVector.size()==0){
         cerr <<"Missing scaffold header information, please validate your SAM header is complete ( or present )"<<std::endl;
         return;
     }
 
-    for(int i=0; i<chrVector.size();i++)
+    for(size_t i=0; i<chrVector.size();i++)
     {
-        tagExp.setChrSize(chrVector.at(i),std::stoi(chrSizeVector.at(i)));
+        if (tagExp.isChrom(chrVector.at(i)))
+            tagExp.setChrSize(chrVector.at(i),std::stoi(chrSizeVector.at(i)));
     }
     }
     catch(...){
