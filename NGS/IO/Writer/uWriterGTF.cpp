@@ -23,7 +23,7 @@ void uWriterGTF::writeToken(const uToken& token)
 		std::string end;
 		std::string source=".";
 		std::string phase=".";
-		std::string extra;
+		std::string extra, group_ID="", group_transcript="";
 
 		/**< No default values */
 		start=token.getParam(token_param::START_POS);
@@ -50,10 +50,19 @@ void uWriterGTF::writeToken(const uToken& token)
 		if(token.isParamSet(token_param::PHASE))
 			{ phase = token.getParam(token_param::PHASE); }
 
+        if(token.isParamSet(token_param::PHASE))
+			{ phase = token.getParam(token_param::PHASE); }
+
+        if(token.isParamSet(token_param::GROUP_ID))
+			{ group_ID = token.getParam(token_param::GROUP_ID); }
+
+        if(token.isParamSet(token_param::GROUP_TRANSCRIPT))
+			{ group_transcript = token.getParam(token_param::GROUP_TRANSCRIPT); }
+
 		if(token.isParamSet(token_param::EXTRA))
        		 { extra = token.getParam(token_param::EXTRA); }
 
-        *m_pOstream << seqname<<TAB<< source<<TAB << feature<<TAB << start<<TAB<<end <<TAB << score<<TAB<<strand <<TAB<< phase<<"\n";
+        *m_pOstream << seqname<<TAB<< source<<TAB << feature<<TAB << start<<TAB<<end <<TAB << score<<TAB<<strand <<TAB<< phase<<TAB<<"gene_id \""<<group_ID<<"\"; "<<"transcript_id \""<<group_transcript<<"\";\n";
     }
     catch(param_not_found& e)
     {
