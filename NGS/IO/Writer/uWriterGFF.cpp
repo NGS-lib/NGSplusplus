@@ -35,6 +35,7 @@ void uWriterGFF::writeToken(const uToken& token)
 		std::string end;
 		std::string source=".";
 		std::string phase=".";
+		std::string group_id=".";
 		std::string extra;
 
 		/**< No default values */
@@ -44,9 +45,9 @@ void uWriterGFF::writeToken(const uToken& token)
         if (token.isParamSet(token_param::SCORE))
        	 { score = token.getParam(token_param::SCORE); }
        	 /**< Practically speaking, most people seem to use the chr as the seqname of a GFF. So if one is not evailable, we use  chr */
-		if (token.isParamSet(token_param::SEQ_NAME))
-       	 { seqname = token.getParam(token_param::SEQ_NAME); }
-		else
+		//if (token.isParamSet(token_param::SEQ_NAME))
+       	// { seqname = token.getParam(token_param::SEQ_NAME); }
+		//else
 		if(token.isParamSet(token_param::CHR))
        		 { seqname = token.getParam(token_param::CHR); }
 
@@ -62,10 +63,16 @@ void uWriterGFF::writeToken(const uToken& token)
 		if(token.isParamSet(token_param::PHASE))
 			{ phase = token.getParam(token_param::PHASE); }
 
+        if(token.isParamSet(token_param::GROUP_ID)){
+            group_id= token.getParam(token_param::GROUP_ID); }
+
 		if(token.isParamSet(token_param::EXTRA))
        		 { extra = token.getParam(token_param::EXTRA); }
 
-        *m_pOstream << seqname<<TAB<< source<<TAB << feature<<TAB << start<<TAB<<end <<TAB << score<<TAB<<strand <<TAB<< phase<<"\n";
+        *m_pOstream << seqname<<TAB<< source<<TAB << feature<<TAB << start<<TAB<<end <<TAB << score<<TAB<<strand <<TAB<< phase;
+        if (group_id.size()>0)
+            *m_pOstream<<TAB<<group_id;
+        *m_pOstream<<"\n";
     }
     catch(param_not_found& e)
     {
