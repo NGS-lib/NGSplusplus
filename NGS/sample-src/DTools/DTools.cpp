@@ -161,7 +161,8 @@ try{
 void writeBinDensity( uTagsChrom& tagChrom, std::ostream& out, int binSize)
 {
     vector<long int> densityValues;
-    densityValues.resize(tagChrom.getChromSize());
+    densityValues.ls
+    (tagChrom.getChromSize());
     string chrName= tagChrom.getChr();
 
     for (int j=0; j <((int)densityValues.size()/binSize); j++ )

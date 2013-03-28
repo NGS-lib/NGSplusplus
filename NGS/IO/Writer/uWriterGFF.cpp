@@ -1,3 +1,25 @@
+// ***************************************************************************
+// uWriterGFF.cpp (c) 2013
+// Alexei Nordell-Markovits : Sherbrooke University
+// Charles Joly Beauparlant : Laval University
+//
+//       This file is part of the NGS++ library.
+//
+//    The NGS++ library is free software: you can redistribute it and/or modify
+//    it under the terms of the GNU Lesser General Public License as published by
+//    the Free Software Foundation, either version 3 of the License, or
+//    (at your option) any later version.
+//
+//    This program is distributed in the hope that it will be useful,
+//    but WITHOUT ANY WARRANTY; without even the implied warranty of
+//    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+//    GNU Lesser General Public License for more details.
+//
+//    You should have received a copy of the GNU Lesser General Public License
+//    along with this program (lgpl-3.0.txt).  If not, see <http://www.gnu.org/licenses/>.
+// **************************************************************************
+
+
 #include "uWriterGFF.h"
 namespace NGS
 {
@@ -5,22 +27,6 @@ namespace NGS
   * \param const uToken& token: the token to print.
   */
 
-
-/* Note, there are ambiguities in the GFF format. The spec at http://www.sanger.ac.uk/resources/software/gff/spec.html
-describes the first column as
-
-"The name of the sequence. Having an explicit sequence name allows a feature file to be prepared for a data set of multiple sequences.
-Normally the seqname will be the identifier of the sequence in an accompanying fasta format file. An alternative is that <seqname>
-is the identifier for a sequence in a public database, such as an EMBL/Genbank/DDBJ accession number. Which is the case, and which
-file or database to use, should be explained in accompanying information. "
-
-
-However, practically, use tend to set column one as scaffp;d ID ( ex: chromosome ). This same langage is used for GFF3
-
-As such, we write SEQ_NAME in the first column, if available. HOwever, if unavailable, we write CHR in first column.
-
-Note that the GFF3 parsers set CHR as first name always.
- */
 void uWriterGFF::writeToken(const uToken& token)
 {
     try
