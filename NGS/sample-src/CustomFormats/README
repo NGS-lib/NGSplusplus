@@ -8,6 +8,6 @@ The signature is
 
 CustomFormats <single character delimiter. t = tab s = space> <value from the above list, in proper order>
 
-To run the program on the included sample, the line would be
+Supposing you have moved the 'customLoaded.txt' to the same directory as the built sample, to run the program the line would be
 
 CustomFormats customLoaded.txt , START_POS END_POS SCORE CHR
