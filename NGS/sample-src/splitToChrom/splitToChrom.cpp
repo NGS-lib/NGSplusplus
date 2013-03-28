@@ -25,7 +25,7 @@ int main(int argc, char **argv)
     /**< Simple parameter validation. We heavily recommand you use a library to manage your command line parameters */
     if (argc!=4)
     {
-        cerr << "Please follow exactly the following signature"<<endl<<"fileToSplit"<<endl;
+        cerr << "Please follow exactly the following signature"<<endl<<"./splitToChrom fileToSplit fileType outputPrefix"<<endl;
         return 0;
     }
     ifstream firstStream;

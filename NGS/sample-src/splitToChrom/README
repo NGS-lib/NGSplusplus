@@ -1,0 +1,9 @@
+This sample will take a BED, GTF or GFF file and will create a file for each chromosome in the input and will split the elements accordingly.
+
+Note: The sample must be launched in the same directory as the data file.
+
+The sample signature is:
+splitToChrom <fileToSplit> <fileType> <outputPrefix>
+
+Example of usage with the joined sample file:
+./splitToChrom sample.bed BED test.bed
