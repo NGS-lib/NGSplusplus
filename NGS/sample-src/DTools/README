@@ -1,7 +1,7 @@
 This program takes a SamFile and outputs either a wig format or an interval file with the local density of each bin. For binned files, the start position is used to measure density
 
-Signature is
+Signature is:
 DTools -S <sam file> -o [output path= stoud by default] -b [size of bin if we want an interval file]
 
-
-
+To run the program on the included sample, use this command:
+./DTools -s samSample.sam > out.wig
