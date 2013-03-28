@@ -84,12 +84,12 @@ int main(int argc, char **argv)
             /**< Get the pointer to the Chrom scaffold from our loaded EXP */
             auto pChrom= UCSCRefData.getpChrom(item.getChr());
             /**< If our item overlaps at least one item from our EXP, we write it to output. */
-            if (pChrom->getSubsetCount(item.getStart(),item.getEnd())>0)
+            if (pChrom->getOverlappingCount(item.getStart(),item.getEnd())>0)
             {
                 /**< Write the item, since it does overlap */
                 bedWriter.writeToken(item.createToken());
                 uBasicToCout(item);
-                auto overlappingItems= pChrom->getSubset(item.getStart(),item.getEnd());
+                auto overlappingItems= pChrom->getOverlapping(item.getStart(),item.getEnd());
                 cout << "The above called region overlaps the following "+to_string(overlappingItems.count())+" genes and the following features of each gene" <<endl;
                 for (auto itr=overlappingItems.begin();itr!=overlappingItems.end();itr++)
                 {
@@ -101,8 +101,6 @@ int main(int argc, char **argv)
                     }
                 }
                 cout <<"\n";
-                /**< For each gene body overlapped, write */
-                 item.writeToOutput(bedWriter);
             }
         }
     };

@@ -1,7 +1,9 @@
-This sample will read every entry from a GenePred file ( typically obtained from UCSC table browser ), add an extra feature to each entry representing a 1K promoter region ( either before or after the gene depending on Strand ). It will then overlap from a MACS ( or standard BED6 ) peak file, and return
+This sample will read every entry from a GenePred file ( typically obtained from UCSC table browser ), add an extra feature to each entry representing a 1K promoter region ( either before or after the gene depending on Strand ). It will then overlap from a MACS peak file, and return in standard output:
 
-A) The list of peaks overlapping at least one gene or gene feature
-B) Information on every gene/peak and what was overlapped.
+A) The list of peaks overlapping at least one gene ( not feature )
+B) Information on every gene/peak and what was overlapped and what ( if any ) features where overlapped
+
+It will also write a file containing only the peaks that overlapped at least a gene.
 
 Signature is:
 MacsGenePredQuery <MACS bed file> <UCSC genePred reference> <File to Write Overlaps>
