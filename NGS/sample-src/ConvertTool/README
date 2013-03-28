@@ -2,7 +2,7 @@ This sample will convert a file from a format to another format.
 
 Please note that this is a very basic conversion tool created for pedagogical purpose. 
 
-The conversion is not guaranteed to be lossless.
+The conversion is not guaranteed to be lossless (for instance, converting a BED file to BED format can result in a different file since the parser will handle any valid BED file while the writer will output a BED4 when the output type is BED).
 
 Usage:
     ConvertTool <fileName> <inputType> <outputName> <outputType>

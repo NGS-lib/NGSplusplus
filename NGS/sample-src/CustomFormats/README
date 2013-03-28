@@ -1,13 +1,13 @@
-This sample will load a file containing certain values, with the order and delimitor specified in the program call. It will read these values and write them in Bed 6 format.
+This sample will load a file containing certain values, with the order and delimitor specified in the program call. It will read these values and write them in BED6 format.
 
-The values can be START_POS END_POS CHR SCORE STRAND SEQ_NAME JUNK
+The values can be START_POS END_POS CHR SCORE STRAND SEQ_NAME JUNK.
 
 JUNK is ignored when reading the file. All other values must appear at most once.
 
-The signature is
+The signature is:
 
 CustomFormats <single character delimiter. t = tab s = space> <value from the above list, in proper order>
 
-To run the program on the included sample, the line would be
+To run the program on the included sample, use this command:
 
 CustomFormats customLoaded.txt , START_POS END_POS SCORE CHR
