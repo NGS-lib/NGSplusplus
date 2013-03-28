@@ -8,7 +8,7 @@ int main(int argc, char **argv)
     /**< Simple parameter validation. We heavily recommand you use a library to manage your command line parameters */
     if (argc!=3)
     {
-        cerr << "Please follow exactly the following signature"<<endl<<"returnOverlapping <first File> <second File>"<<endl;
+        cerr << "Please follow exactly the following signature"<<endl<<"<first File> <second File>"<<endl;
         return 0;
     }
 
@@ -42,7 +42,7 @@ int main(int argc, char **argv)
     /**< Create our writer. Note that this means we are not keeping the original lines.
     We pass cout so that it will write to standard output and can be pipped
     */
-    uWriter bedWriter(&cout,"BED4");
+    uWriter bedWriter(&cout,"BED6");
     /**< We declare a simple lambda function we will be using to check for overlaps
     Note that [&] in the signature means will be be capturing by reference whatever outside
     object we care to use.
