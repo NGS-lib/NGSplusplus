@@ -1,0 +1,10 @@
+Simple overlap example, this sample returns the element of file 2 that overlap items in file 1. The items are written in BED6 format.
+
+
+Usage:
+    ReturnOverlapping <file1.bed> <filed2.bed> 
+    file1: Bed file that we will be comparing to
+    file2: Bed file who's elements we keep if they overlap bed1
+
+
+
