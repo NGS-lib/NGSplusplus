@@ -45,7 +45,6 @@ int main(int argc, char **argv)
             loadedOrder.push_back(curValue);
     }
 
-
     /**< As we are passing a vector rather then a type, the parser automatically sets itself to "CUSTOM" */
     uParser customParser(&firstStream, loadedOrder,strSep);
 
