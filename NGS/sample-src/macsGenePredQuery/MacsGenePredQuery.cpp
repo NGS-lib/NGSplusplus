@@ -49,15 +49,16 @@ int main(int argc, char **argv)
 
     UCSCRefData.loadWithParser(secondStream,"GENEPRED");
 
-      auto chr21= UCSCRefData.getpChrom("chr21");
+    //  auto chr21= UCSCRefData.getpChrom("chr21");
 
     /**< add 1Kb  Promoter to all sites*/
     UCSCRefData.applyOnSites([](uGene & item){
             try {
                                 if (item.getStrand()==StrandDir::FORWARD)
                                   {
-                                      if (item.getStart()>1001)
+                                      if (item.getStart()>1001){
                                          item.addFeature( (item.getStart()-1000),(item.getStart()-1),StrandDir::FORWARD,featureType::PROMOTER);
+                                        }
                                   }else
                                   {
                                          item.addFeature( (item.getEnd()+1),(item.getEnd()+1000),StrandDir::REVERSE,featureType::PROMOTER);
@@ -68,8 +69,8 @@ int main(int argc, char **argv)
 
                                   }  );
 
-    cerr <<"before sort\n";
-    cerr << chr21->featureCount()<<"\n";
+   // cerr <<"before sort\n";
+   // cerr << chr21->featureCount()<<"\n";
     UCSCRefData.sortSites();
     string thirdPath=argv[3];
     uWriter bedWriter(thirdPath, "BED6");
