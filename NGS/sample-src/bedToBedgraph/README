@@ -1,3 +1,8 @@
 This sample will take a valid BED file and output the equivalent bedgraph file with a valid bedgraph header.
 
 Note that with minimal effort and use of the functions in the UCSCHeader namespace it would be possible to add options to write UCSC specific browser outputs
+
+
+Sample execution
+
+bedToBedgraph macs_sample.bed > resultFile.bedgraph
