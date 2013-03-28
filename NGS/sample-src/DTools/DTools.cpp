@@ -66,7 +66,7 @@ try{
     /**< If a mandatory parameter is missing, fail */
     if ((samPath.size()==0))
     {
-        cerr<<"Program signature is  -s <SamPath>  -o [OutputPath] -b [binSize = Optional]";
+        cerr<<"Program signature is  -s <SamPath>  -o [OutputPath] -b [binSize = Optional]\n";
         return;
     }
 

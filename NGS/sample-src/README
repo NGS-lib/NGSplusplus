@@ -11,6 +11,6 @@ To build only a specific test:
 
 The compiled tools can be then found in the bin/ folder.
 
-Note, these tools are NOT robust. Specifically it is recommended to use them with data samples in the same directory. 
+Note, these tools are NOT robust and are meant for pedagogical purposes. Specifically it is recommended to use them with data samples in the same directory. 
 
 To make command line programs that are robust to filepaths we recommend using Boost::filesystem and the TCLAP library. However, these functionalities are not included in NGS++ nor are they of the purview of the library.
