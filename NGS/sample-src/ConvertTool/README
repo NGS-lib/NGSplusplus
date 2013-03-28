@@ -1,0 +1,12 @@
+This sample will convert a file from a format to another format.
+
+Please note that this is a very basic conversion tool created for pedagogical purpose. 
+
+The conversion is not guaranteed to be lossless.
+
+Usage:
+    ConvertTool <fileName> <inputType> <outputName> <outputType>
+    fileName: The name of the file to convert.
+    inputType: The type of the input file (i.e.: BED, SAM, WIG, etc...).
+    outputName: The name of the output file.
+    outputType: The type of the output file.
