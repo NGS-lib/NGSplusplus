@@ -2,7 +2,7 @@ Before building these code examples, make sure you have built the NGS++ library 
 
 Code samples can be build, running:
 
-./buildTests.sh
+./buildTests
 
 To build only a specific test:
 
