@@ -10,3 +10,6 @@ Usage:
     inputType: The type of the input file (i.e.: BED, SAM, WIG, etc...).
     outputName: The name of the output file.
     outputType: The type of the output file.
+
+Example:
+./ConvertTool sample.bed BED sample.bed5 BED5

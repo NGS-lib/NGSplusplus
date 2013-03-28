@@ -7,4 +7,4 @@ Usage:
     file2: Bed file who's elements we keep if they overlap bed1
 
 To use with joined data sample:
-./ReturnOverlapping sample1.bed sample2.bed
+./returnOverlapping sample1.bed sample2.bed
