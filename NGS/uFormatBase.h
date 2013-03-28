@@ -43,7 +43,7 @@ public:
     uGenericNGS(std::string pChr, long int pStart, long int pEnd, StrandDir pStrand=StrandDir::FORWARD );
     uGenericNGS(std::string pChr, long int pStart, long int pEnd, StrandDir pStrand, float pScore );
     uGenericNGS(std::string pChr, long int pStart, long int pEnd,float pScore );
-    uGenericNGS() {};
+    uGenericNGS(){};
     uGenericNGS(const uToken & pToken);
 
     virtual ~uGenericNGS() {};

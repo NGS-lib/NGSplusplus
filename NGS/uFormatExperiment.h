@@ -98,7 +98,6 @@ public:
     void replaceChr(const _CHROM_ &);
     void removeChr(const std::string &);
     bool isChrom(const std::string &)const;
-;
     long long count() const;
     void sortSites();
     template<typename Compare>

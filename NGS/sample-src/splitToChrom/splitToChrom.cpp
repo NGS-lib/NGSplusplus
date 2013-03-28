@@ -48,7 +48,7 @@ int main(int argc, char **argv)
     std::string strID = argv[3];
     if ((type!="BED")&&(type!="GFF")&&(type!="GTF")){
          /**< If invalid filePath, error message and abort. At this point, we have not validated the file format. */
-            cerr << "Please elect type from BED/GFF/GTF"<<endl;
+            cerr << "Please select type from BED/GFF/GTF"<<endl;
             return 0;
     }
 
