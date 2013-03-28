@@ -1,23 +1,35 @@
 #!/bin/bash
 
-filename=$1
+usage(){
+	echo "Usage to build all the samples:"
+	echo "	./buildTests.sh"
+	echo ""
+	echo "Usage to built a specific sample:"
+	echo "	./buildTests.sh <filename.cpp>"
+	echo ""
+	echo "Note: Must be called from the sample-src directory."
+	echo ""
+}
 
-mkdir -p bin
-
-if [ -e "$filename" ]
+if [ "$#" -gt 1 ]
 then
-	echo Building $filename in bin/$(basename ${filename%.*})...
-	./Scripts/build.sh $filename
-	echo Done!
+	usage
+elif [ "$#" == 1 ]
+then
+	filename=$1
+	if [ -e "$filename" ]
+	then
+		echo Building $filename
+		./Scripts/build.sh $filename
+		echo Done!
+	else
+		echo "Invalid file name: $filename"
+		usage
+	fi
 else
-	for dir in $(ls | grep -v bin | grep -v README | grep -v buildTests | grep -v Data | grep -v Makefile)
+	for file in $(find * | grep '.cpp')
 	do
-		cpp_file=$(find $dir/* | grep cpp | head -n1)
-		if [ -e "$cpp_file" ]
-		then
-			echo Building $cpp_file in bin/$(basename ${cpp_file%.*})...
-			./Scripts/build.sh $cpp_file
-			echo Done!
-		fi
+		echo Building $file
+		./Scripts/build.sh $file
 	done
 fi
