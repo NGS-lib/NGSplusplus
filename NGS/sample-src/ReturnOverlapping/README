@@ -6,5 +6,5 @@ Usage:
     file1: Bed file that we will be comparing to
     file2: Bed file who's elements we keep if they overlap bed1
 
-
-
+To use with joined data sample:
+./ReturnOverlapping sample1.bed sample2.bed
