@@ -1,5 +1,7 @@
-This will load the data in the given file and keep only the first item that have the same chr/start/end combination. It will then write it. This is done directly working with Tokens, but please see the code for an alternative using a lambda.
+This will load the data in the given file and will remove duplicates. The first item for the same chr/start/end combination is the one that will be kept. It will then write it to stdout. This is done directly working with Tokens, but please see the code for an alternative using a lambda function.
 
-Signature is
-
+Signature is:
 CutDuplicates <filePath> <filetype=[BED/GFF/SAM]>
+
+To run the program on the included sample, use this command:
+./CutDuplicates duplicateSample.gff GFF
