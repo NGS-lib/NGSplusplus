@@ -1,4 +1,6 @@
-This sample will load a file containing certain values, with the order and delimitor specified in the program call. It will read these values and write them in BED6 format.
+THIS PROGRAM IS NOT ROBUST and will fail in many different way's if the appropriate syntax is not used.
+
+This sample will load a file containing certain values, with the order and delimitor specified in the program call. It will read these values and write them in BED6 format. 
 
 The values can be START_POS END_POS CHR SCORE STRAND SEQ_NAME JUNK.
 
