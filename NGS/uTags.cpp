@@ -122,7 +122,7 @@ uTags::uTags(std::string pChr, long long int pStart, long long int pEnd, StrandD
         if (std::string const * ste =boost::get_error_info<string_error>(e) )
             trace=*ste;
 
-        e << string_error(trace+"Failling in uTags constructor, parameters are"+pChr+" "+std::to_string(pStart)+" "+std::to_string(pEnd)+"\n");
+        e << string_error(trace+"Failling in uTags constructor, parameters are"+pChr+" "+utility::to_string(pStart)+" "+utility::to_string(pEnd)+"\n");
 
         throw e;
     }
@@ -145,7 +145,7 @@ catch(construct_elem_throw & e)
     cerr << "Throwing in uTags constructor" <<endl;
 #endif
     string trace;
-    addStringError(e,("Failling in uTags constructor, parameters are"+pChr+" "+std::to_string(pStart)+" "+std::to_string(pEnd)+"\n") );
+    addStringError(e,("Failling in uTags constructor, parameters are"+pChr+" "+utility::to_string(pStart)+" "+utility::to_string(pEnd)+"\n") );
     e << tag_error(*this);
     throw e;
 }
@@ -694,7 +694,7 @@ uToken uTags::createToken() const
     }
         if (isPE())
     {
-        ss<<"TEMPLATE_LENGHT\t" <<std::to_string(PELenght)<<"\n";
+        ss<<"TEMPLATE_LENGHT\t" <<utility::to_string(PELenght)<<"\n";
     }
     try
     {
@@ -970,7 +970,7 @@ void uTagsExperiment::loadWithBamTools_Core(BamTools::BamReader& pReader, int pB
             std::string cigar;
             for(BamTools::CigarOp & cigarItem: m_BufferAlignement.CigarData)
             {
-                cigar+= ( std::to_string(cigarItem.Type)+std::to_string(cigarItem.Length));
+                cigar+= ( utility::to_string(cigarItem.Type)+utility::to_string(cigarItem.Length));
             }
             tagToAdd.setCigar(cigar);
             this->addData(tagToAdd);
@@ -1011,7 +1011,7 @@ void uTagsExperiment::loadWithBamTools_All(BamTools::BamReader& pReader, int pBl
             std::string cigar;
             for(BamTools::CigarOp & cigarItem: m_BufferAlignement.CigarData)
             {
-                cigar+= ( std::to_string(cigarItem.Type)+std::to_string(cigarItem.Length));
+                cigar+= ( utility::to_string(cigarItem.Type)+utility::to_string(cigarItem.Length));
             }
             tagToAdd.setCigar(cigar);
             this->addData(tagToAdd);

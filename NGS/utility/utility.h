@@ -619,6 +619,13 @@ static inline std::string to_string(size_t v)
     ss << v;
     return ss.str();
 }
+
+static inline std::string to_string(uint32_t& v)
+{
+    std::stringstream ss;
+    ss << v;
+    return ss.str();
+}
 }
 
 /**< Clustering contains odd and ends, distance measures and such */

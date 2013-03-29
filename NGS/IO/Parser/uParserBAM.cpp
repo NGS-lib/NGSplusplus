@@ -91,17 +91,17 @@ uToken uParserBAM::getNextEntry()
         uToken ourToken;
         /**< Make token from the Bam entry */
         ourToken._setParamNoValidate(token_param::SEQ_NAME, m_BufferAlignement.Name);
-        ourToken._setParamNoValidate(token_param::START_POS, std::to_string(m_BufferAlignement.Position+1));
-        ourToken._setParamNoValidate(token_param::FLAGS, std::to_string(m_BufferAlignement.AlignmentFlag) );
+        ourToken._setParamNoValidate(token_param::START_POS, utility::to_string(m_BufferAlignement.Position+1));
+        ourToken._setParamNoValidate(token_param::FLAGS, utility::to_string(m_BufferAlignement.AlignmentFlag) );
         ourToken._setParamNoValidate(token_param::CHR,  m_BamReader.GetReferenceData().at(m_BufferAlignement.RefID).RefName);
-        ourToken._setParamNoValidate(token_param::MAP_SCORE, std::to_string(m_BufferAlignement.MapQuality));
-        ourToken._setParamNoValidate(token_param::TEMPLATE_LENGTH, std::to_string(m_BufferAlignement.InsertSize));
+        ourToken._setParamNoValidate(token_param::MAP_SCORE, utility::to_string(m_BufferAlignement.MapQuality));
+        ourToken._setParamNoValidate(token_param::TEMPLATE_LENGTH, utility::to_string(m_BufferAlignement.InsertSize));
         ourToken._setParamNoValidate(token_param::SEQUENCE,   m_BufferAlignement.QueryBases );
         ourToken._setParamNoValidate(token_param::PHRED_SCORE, m_BufferAlignement.Qualities);
         std::string cigar;
         for(CigarOp & cigarItem:  m_BufferAlignement.CigarData)
         {
-           cigar+= ( cigarItem.Type+std::to_string(cigarItem.Length));
+           cigar+= ( cigarItem.Type+utility::to_string(cigarItem.Length));
         }
         ourToken._setParamNoValidate(token_param::CIGAR, cigar);
 
