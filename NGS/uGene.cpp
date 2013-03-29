@@ -149,7 +149,7 @@ try {
         this->setStartEnd(utility::stoll(pToken.getParam(token_param::START_POS)),utility::stoll(pToken.getParam(token_param::END_POS)));
 
         if ( pToken.isParamSet(token_param::SCORE))
-            this->setScore(std::stof(pToken.getParam(token_param::SCORE)));
+            this->setScore(utility::stof(pToken.getParam(token_param::SCORE)));
         this->setID(tokID);
         this->setTranscript(tokTranscript);
 
@@ -582,7 +582,7 @@ void uGeneChrom::addData(const uToken & pToken)
 
             uGene newItem(pToken.getParam(token_param::CHR),utility::stoll(pToken.getParam(token_param::START_POS)),utility::stoll(pToken.getParam(token_param::END_POS)),dir);
             if ( pToken.isParamSet(token_param::SCORE))
-                newItem.setScore(std::stof(pToken.getParam(token_param::SCORE)));
+                newItem.setScore(utility::stof(pToken.getParam(token_param::SCORE)));
             newItem.setID(tokID);
             newItem.setTranscript(tokTranscript);
             this->VecSites.push_back(newItem);
@@ -612,7 +612,7 @@ void uGeneChrom::addData(const uToken & pToken)
 
             mainItr->addFeature(utility::stoll(pToken.getParam(token_param::START_POS,i)),utility::stoll(pToken.getParam(token_param::END_POS,i)),dir,mapFeature(pToken.getParam(token_param::FEATURE_TYPE,i)),featureID,utility::stoi(myOffset));
             if ( pToken.isParamSet(token_param::SCORE))
-                mainItr->setScore(std::stof(pToken.getParam(token_param::SCORE)));
+                mainItr->setScore(utility::stof(pToken.getParam(token_param::SCORE)));
 
             mainItr->setID(tokID);
             mainItr->setTranscript(tokTranscript);
