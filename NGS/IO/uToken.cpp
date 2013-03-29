@@ -419,7 +419,7 @@ void uToken::_validateStartEnd() const
     /**< Previously validation insured same size vectors */
     for (int i=0;i<(int)startVector.size();i++)
     {
-        if(std::stoi(startVector.at(0))>std::stoi(endVector.at(0)))
+        if(utility::stoi(startVector.at(0))>utility::stoi(endVector.at(0)))
            {
                 std::string error = "Invalid START_POS/END_POS values. \n";
                 error += "START_POS:" + startVector.at(i) + ". END_POS: " + endVector.at(i) + ".";

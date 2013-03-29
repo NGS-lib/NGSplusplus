@@ -106,7 +106,7 @@ uToken uParserGenePred::_getTokenFromGenePredString(const std::string & line)
         /**< GenePred normal Format*/
 
         /**< Seize number of exons */
-        int exonCount=std::stoi(what[8]);
+        int exonCount=utility::stoi(what[8]);
         std::string completeRegex=GenePredregStringPart1;
         /**< Make complete regex */
         if (exonCount){
