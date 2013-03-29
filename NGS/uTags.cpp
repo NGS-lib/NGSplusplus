@@ -545,7 +545,7 @@ void uTags::setPELenght(int lenght)
 {
 
     if  (lenght <0)
-        throw param_throw()<<string_error("Throwing in setPELenght. Set an invalid PE lenght"+to_string(lenght) );
+        throw param_throw()<<string_error("Throwing in setPELenght. Set an invalid PE lenght"+utility::to_string(lenght) );
     PELenght=lenght;
 
 }
