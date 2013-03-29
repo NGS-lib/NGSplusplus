@@ -146,7 +146,7 @@ try {
             dir=StrandDir::REVERSE;
         this->setStrand(dir);
         this->setChr(pToken.getParam(token_param::CHR));
-        this->setStartEnd(std::stoll(pToken.getParam(token_param::START_POS)),std::stoll(pToken.getParam(token_param::END_POS)));
+        this->setStartEnd(utility::stoll(pToken.getParam(token_param::START_POS)),utility::stoll(pToken.getParam(token_param::END_POS)));
 
         if ( pToken.isParamSet(token_param::SCORE))
             this->setScore(std::stof(pToken.getParam(token_param::SCORE)));
@@ -171,7 +171,7 @@ try {
                     curType=mapFeature(pToken.getParam(token_param::FEATURE_TYPE,i));
                     }
 
-            this->addFeature(std::stoll(pToken.getParam(token_param::START_POS,i)),std::stoll(pToken.getParam(token_param::END_POS,i)),dir,curType,featureID,utility::stoi(myOffset));
+            this->addFeature(utility::stoll(pToken.getParam(token_param::START_POS,i)),utility::stoll(pToken.getParam(token_param::END_POS,i)),dir,curType,featureID,utility::stoi(myOffset));
 
         }
 
@@ -580,7 +580,7 @@ void uGeneChrom::addData(const uToken & pToken)
             if ( pToken.isParamSet(token_param::STRAND) && pToken.getParam(token_param::STRAND)=="-")
                 dir=StrandDir::REVERSE;
 
-            uGene newItem(pToken.getParam(token_param::CHR),std::stoll(pToken.getParam(token_param::START_POS)),std::stoll(pToken.getParam(token_param::END_POS)),dir);
+            uGene newItem(pToken.getParam(token_param::CHR),utility::stoll(pToken.getParam(token_param::START_POS)),utility::stoll(pToken.getParam(token_param::END_POS)),dir);
             if ( pToken.isParamSet(token_param::SCORE))
                 newItem.setScore(std::stof(pToken.getParam(token_param::SCORE)));
             newItem.setID(tokID);
@@ -610,7 +610,7 @@ void uGeneChrom::addData(const uToken & pToken)
             if (pToken.isParamSet(token_param::PHASE,i))
                 myOffset=pToken.getParam(token_param::PHASE,i);
 
-            mainItr->addFeature(std::stoll(pToken.getParam(token_param::START_POS,i)),utility::stoll(pToken.getParam(token_param::END_POS,i)),dir,mapFeature(pToken.getParam(token_param::FEATURE_TYPE,i)),featureID,utility::stoi(myOffset));
+            mainItr->addFeature(utility::stoll(pToken.getParam(token_param::START_POS,i)),utility::stoll(pToken.getParam(token_param::END_POS,i)),dir,mapFeature(pToken.getParam(token_param::FEATURE_TYPE,i)),featureID,utility::stoi(myOffset));
             if ( pToken.isParamSet(token_param::SCORE))
                 mainItr->setScore(std::stof(pToken.getParam(token_param::SCORE)));
 
