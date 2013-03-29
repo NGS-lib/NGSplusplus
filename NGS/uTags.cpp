@@ -803,17 +803,15 @@ std::vector<float> uTagsChrom::getRegionSignal(long int start, long int end, boo
     tempSignal.resize((end-start)+1);
     std::vector<uTags>::iterator iterVec;
 
-
-    /**< Assuming the data is sorted, this could be heavily optimized. */
+    //TODO. If we can guarantee that tags are of equal size, this can be made to run much much faster
     int pos=0;
     iterVec=VecSites.begin();
 
     for (iterVec=(iterVec+pos) ; iterVec != VecSites.end(); ++iterVec)
     {
         /**< If our start is passed our region  we stop. time saver. */
-        if (iterVec->getStart()> end)
-            break;
-
+       // if (iterVec->getStart()> end)
+       //     break;
         if (overlap==false)
         {
             if (utility::isRegionAInsideRegionB(iterVec->getStart(), iterVec->getEnd(), start, end))
