@@ -100,8 +100,8 @@ uToken uParserBAM::getNextEntry()
         ourToken._setParamNoValidate(token_param::PHRED_SCORE, m_BufferAlignement.Qualities);
         std::string cigar;
         for(CigarOp & cigarItem:  m_BufferAlignement.CigarData)
-        {
            cigar+= ( cigarItem.Type+std::to_string(cigarItem.Length));
+        {
         }
         ourToken._setParamNoValidate(token_param::CIGAR, cigar);
 

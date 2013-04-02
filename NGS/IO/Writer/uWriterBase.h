@@ -19,8 +19,6 @@
 //    along with this program (lgpl-3.0.txt).  If not, see <http://www.gnu.org/licenses/>.
 // ***************************************************************************
 
-
-
 #ifndef UWRITERBASE_H_INCLUDED
 #define UWRITERBASE_H_INCLUDED
 #include <iostream>

@@ -14,8 +14,8 @@
 #include "api/internal/io/HostInfo_p.h"
 #include "api/internal/io/TcpSocketEngine_p.h"
 
-using namespace BamTools;
 using namespace BamTools::Internal;
+using namespace BamTools;
 
 TcpSocketEngine::TcpSocketEngine(void)
     : m_socketDescriptor(-1)

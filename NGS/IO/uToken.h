@@ -98,8 +98,8 @@ public:
                 || param == "PHASE"
                 || param == "EXTRA"
 		|| param == "TEMPLATE_LENGTH"
-		|| param == "GROUND_TRANSCRIPT"
-		|| param == "GROUND_ID"
+		|| param == "GROUP_TRANSCRIPT"
+		|| param == "GROUP_ID"
 		|| param == "OFFSET"
                 );
     }

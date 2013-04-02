@@ -102,6 +102,8 @@ public:
     virtual _SELF_ getCopy()const
     {
         assert (false);
+        _SELF_ newObj;
+        return (newObj);
     };
     /**< Comparison functors */
     static bool comparePosStart(const _BASE_ &item, const int & value)
