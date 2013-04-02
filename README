@@ -37,11 +37,11 @@ make install
 
 To compile sample code:
 cd sample-src 
-./buildTests
+make
 
-If your c++11 standard complient compiler is not named g++, you can call the buildTests with another compiler. 
+If your c++11 standard complient compiler is not named g++, you can call the Makefile with another compiler. 
 In the next example, the compiler is name g++-4.7:
-./buildTests g++-4.7
+make GXX="g++-4.7"
 
 -----------------------
 Uninstall

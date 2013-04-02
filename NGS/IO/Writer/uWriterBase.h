@@ -105,7 +105,7 @@ enum class UCSCBrowseTypeMult
 /**< Return line to write to specify "position" tag for UCSC browser */
 inline static std::string getUCSCPositionLine(const std::string & pChr, long long pStart, long long pEnd)
 {
-    return (UCSCBROWSER+" "+UCSCPOS+" "+pChr+":"+std::to_string(pStart)+"-"+std::to_string(pEnd)+"\n");
+    return (UCSCBROWSER+" "+UCSCPOS+" "+pChr+":"+utility::to_string(pStart)+"-"+utility::to_string(pEnd)+"\n");
 }
 
 inline static std::string getUCSCLine(const UCSCBrowseType& pType)

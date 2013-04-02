@@ -90,7 +90,7 @@ int main(int argc, char **argv)
                 bedWriter.writeToken(item.createToken());
                 uBasicToCout(item);
                 auto overlappingItems= pChrom->getOverlapping(item.getStart(),item.getEnd());
-                cout << "The above called region overlaps the following "+to_string(overlappingItems.count())+" genes and the following features of each gene" <<endl;
+                cout << "The above called region overlaps the following "+utility::to_string(overlappingItems.count())+" genes and the following features of each gene" <<endl;
                 for (auto itr=overlappingItems.begin();itr!=overlappingItems.end();itr++)
                 {
                     uGeneToCout(*itr);

@@ -861,7 +861,7 @@ float uGenericNGS<_SELF_>::getScore(int p_Pos) const
 {
     if (p_Pos>=((int)m_score.size()))
     {
-        throw param_throw()<<string_error("Asked for Score position "+std::to_string(p_Pos)+"that is not set");
+        throw param_throw()<<string_error("Asked for Score position "+utility::to_string(p_Pos)+"that is not set");
     }
     return m_score.at(p_Pos);
 }
