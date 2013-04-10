@@ -414,8 +414,8 @@ int uTags::getFlag() const
  */
 void uTags::setSequence(std::string pSeq)
 {
-    if(((int)pSeq.size()!=0)&&((int)pSeq.size()!=getLenght()))
-        throw param_throw()<< string_error("Failling in seqSequence. Sequence size neither null or equal to element size.");
+   // if(((int)pSeq.size()!=0)&&((int)pSeq.size()!=getLenght()))
+  //      throw param_throw()<< string_error("Failling in setSequence. Sequence size is "+utility::to_string(pSeq.size())+" and is neither null or equal to element size of "+utility::to_string(getLenght()));
     sequence=pSeq;
 }
 /** \brief Get the sequence associated with the element.
@@ -954,7 +954,7 @@ void uTagsExperiment::loadWithBamTools_Core(BamTools::BamReader& pReader, int pB
    int countLoaded=0;
     BamTools::BamAlignment m_BufferAlignement;
     /**< if no buffer, load data */
-    while(countLoaded<pBlockSize)
+    while(pBlockSize==0 || countLoaded<pBlockSize )
     {
         if (pReader.GetNextAlignmentCore(m_BufferAlignement))
         {
@@ -976,8 +976,9 @@ void uTagsExperiment::loadWithBamTools_Core(BamTools::BamReader& pReader, int pB
             this->addData(tagToAdd);
             countLoaded++;
         }
-        else
+        else{
             break;
+        }
     }
 }
 catch(...){
@@ -991,13 +992,12 @@ void uTagsExperiment::loadWithBamTools_All(BamTools::BamReader& pReader, int pBl
   int countLoaded=0;
     BamTools::BamAlignment m_BufferAlignement;
     /**< if no buffer, load data */
-    while(countLoaded<pBlockSize)
+    while(pBlockSize==0 || countLoaded<pBlockSize)
     {
         if (pReader.GetNextAlignment(m_BufferAlignement))
         {
             /**< Bam is 0 based, SAM 1 based. To map between them, +1 to Bam start positions. */
             uTags tagToAdd(pReader.GetReferenceData().at(m_BufferAlignement.RefID).RefName,(m_BufferAlignement.Position+1),(m_BufferAlignement.GetEndPosition()));
-
             if (m_BufferAlignement.IsReverseStrand())
                 tagToAdd.setStrand(NGS::StrandDir::REVERSE);
 
@@ -1064,8 +1064,6 @@ NGS::uTags makeTagfromSamString(std::string samString, bool minimal)
         /**< Read flag */
         Infostream>>ourFlag;
         Infostream>>ourChr;
-
-        //returnTag.setChr(ourChr);
 
         Infostream>>ourStart;
 

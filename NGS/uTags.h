@@ -165,7 +165,7 @@ public:
     std::vector<float> getRegionSignal(std::string chrom, long int start, long int end, bool overlap);
     uTagsExperiment getCopy() const;
 
-    void loadWithBamTools(BamTools::BamReader& pReader, int blockSize=1, bool pLoadCore=false);
+    void loadWithBamTools(BamTools::BamReader& pReader, int blockSize=0, bool pLoadCore=false);
 
 };
 } // End of namespace NGS

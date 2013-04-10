@@ -43,7 +43,7 @@ TEST(uTagsExperiment_loadWithBamReader, COMPAREBAMLOADINGTOPARSER)
     }
 
 }
-TEST(uTagsExperiment_loadWithBamReader, VALIDATESTART)
+TEST(uTagsExperiment_loadWithBamReader, VALIDATESTARTLENGHT)
 {
     uTagsExperiment bamLoad, parserLoad;
     BamReader curReader;
@@ -56,6 +56,7 @@ TEST(uTagsExperiment_loadWithBamReader, VALIDATESTART)
     for(size_t i=0;i<startPosBam2.size(); i++)
     {
         EXPECT_EQ(startPosBam2.at(i),itr->getStart());
+        EXPECT_EQ(40,itr->getLenght());
         itr++;
     }
 
