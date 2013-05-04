@@ -94,7 +94,7 @@ public:
     long int getEnd() const;
 
 
-    long int getLenght() const;
+    long int getLength() const;
 
     //  virtual bool isEqual(const  _SELF_ & pCompared)const =0;
     /**<  Divide our region into a certain number of subregions */
@@ -495,7 +495,7 @@ long int uGenericNGS<_SELF_>::getEnd() const
  * \return long int: the difference between the ending position and the starting position.
  */
 template <class _SELF_>
-long int uGenericNGS<_SELF_>::getLenght() const
+long int uGenericNGS<_SELF_>::getLength() const
 {
     /**< 0 based coordinates, so N - N  is a legal fragment covering a single nucleotide at position N */
     return (m_endPos-m_startPos+1);
@@ -582,7 +582,7 @@ void uGenericNGS<_SELF_>::trimSite(long int trimLeft, long int trimRight)
     /**< Validate input */
     try
     {
-        if ((trimLeft<0)||(trimRight<0)||(trimLeft+trimRight>this->getLenght()))
+        if ((trimLeft<0)||(trimRight<0)||(trimLeft+trimRight>this->getLength()))
         {
             throw param_throw()<< string_error("PARAMERROR, throwing from trimSite("
                                                +utility::to_string(trimLeft)+","+utility::to_string(trimRight)+"), param < 0 \n"  );
@@ -666,14 +666,14 @@ template <class _SELF_>
 std::vector<_SELF_> uGenericNGS<_SELF_>::divideIntoNBin(int N,SplitType ptype)
 {
     std::vector<_SELF_> returnVec;
-    int leftover = getLenght()%N;
-    int binSize= getLenght()/N;
+    int leftover = getLength()%N;
+    int binSize= getLength()/N;
     try
     {
         /**< If NB bins is greater then BP */
-        if (this->getLenght()<N)
+        if (this->getLength()<N)
         {
-            throw param_throw() << string_error("Asking for more bins then lenght of Elem /n");
+            throw param_throw() << string_error("Asking for more bins then length of Elem /n");
         }
 
         /**< If Strict and we cannot exactly fit our bins, fail */
@@ -754,12 +754,12 @@ std::vector<_SELF_> uGenericNGS<_SELF_>::divideIntoBinofSize(const int N, const 
     try
     {
         int binSize= N;
-        int nbBin= getLenght()/N;
-        int leftover = getLenght()%binSize;
+        int nbBin= getLength()/N;
+        int leftover = getLength()%binSize;
 
-        if (getLenght()<N)
+        if (getLength()<N)
         {
-            throw param_throw() << string_error("Asking for more bins then lenght of Elem /n");
+            throw param_throw() << string_error("Asking for more bins then length of Elem /n");
         }
 
         /**< If Strict and we cannot exactly fit our bins, fail */
