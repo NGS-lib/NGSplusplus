@@ -83,7 +83,7 @@ OBJECTS += $(API_DIR)/SamSequenceDictionary.o
 OBJPROJ = $(addprefix $(OBJ_DIR)/, $(OBJECTS))
 PROJECT = $(PROJECT_DIR)/$(PROJECT_NAME)
 
-CFLAGS  = -O2 -std=c++11 -lz
+CFLAGS  = -O2 -std=c++11 -lz -fPIC
 INCLUDES = -I$(NGS_DIR) 
 
 $(shell mkdir -p $(OBJ_DIR)/$(WRITER_DIR))
