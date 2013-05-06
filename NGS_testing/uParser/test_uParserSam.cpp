@@ -6,7 +6,7 @@
 
 using namespace std;
 using namespace NGS;
-
+const string GOHEADER="../data/SAM/valid_Header_withGO.sam";
 const string VALIDHEADER="../data/SAM/valid_Header.sam";
 const string INVALIDLN="../data/SAM/invalid_LN.sam";
 const string MISSINGHD="../data/SAM/missing_HD_VN.sam";
@@ -19,6 +19,11 @@ const string FIVE_COUNT="../data/SAM/fiveCountValid.sam";
 TEST(parserHeaderSamTests, ValidHeader)
 {
     EXPECT_NO_THROW(uParser ourParser(VALIDHEADER, "SAM"));
+}
+
+TEST(parserHeaderSamTests, HEADERWITHGO)
+{
+    EXPECT_NO_THROW(uParser ourParser(GOHEADER, "SAM"));
 }
 
 TEST(parserHeaderSamTests, InvalidLN_VALUE)

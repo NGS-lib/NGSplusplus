@@ -258,6 +258,11 @@ void uParserSam::_parseHeader()
 
                     m_headerData._addToParam(header_param::SORT_TYPE,data);
                 }
+                else if (data.find("GO:")!=std::string::npos){
+
+                    //Do nothing, but allow deprecated tag
+
+                }
                 else
                     throw uParser_invalid_Sam_header()<<string_error("Invalid sam header line: \n"+lineString);
             }
