@@ -150,7 +150,7 @@ public:
 template <class _SELF_>
 _SELF_ uGenericNGS<_SELF_>::returnOverlapping(const _SELF_ & otherItem)const
 {
-    if (utility::isOverlap(this->getStart(),this->getEnd(), otherItem.getStart(), otherItem.getEnd()))
+    if (this->getChr() == otherItem.getChr() && utility::isOverlap(this->getStart(),this->getEnd(), otherItem.getStart(), otherItem.getEnd()))
     {
         long long curStart =this->getStart(), curEnd=this->getEnd();
         StrandDir dir=StrandDir::FORWARD;
