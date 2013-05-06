@@ -54,7 +54,7 @@ void uParserBAM::init(const std::string& filename, bool header )
   //  _parseHeader();
 
 //            m_headerData._addToParam(header_param::CHR,chrom);
- //           m_headerData._addToParam(header_param::CHR_SIZE,utility::to_string(refSeqlenght));
+ //           m_headerData._addToParam(header_param::CHR_SIZE,utility::to_string(refSeqlength));
 }
 /** \brief Called when created, reads from stream and parses BAM file header, loading mandatory info
  *

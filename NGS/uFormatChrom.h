@@ -119,9 +119,9 @@ public:
         return item1.getEnd() < item2.getEnd();
     }
 
-    static bool compareLenght(const _BASE_ &item1, const _BASE_ &item2)
+    static bool compareLength(const _BASE_ &item1, const _BASE_ &item2)
     {
-        return item1.getLenght() < item2.getLenght();
+        return item1.getLength() < item2.getLength();
     }
     static bool comparePos(const _BASE_ &item1, const _BASE_ &item2)
     {
@@ -684,16 +684,16 @@ template <class _SELF_, class _BASE_>
 /** \brief return sum of sizes, including overlapping.
  *
  *  Wrapper function that calls accumulateSitesInfo and returns the sum
- *  of all elements lenghts.
+ *  of all elements lengths.
  *
- * \return unsigned long long : Sum of the element lenghts.
+ * \return unsigned long long : Sum of the element lengths.
  *
  */
 unsigned long long uGenericNGSChrom<_SELF_,_BASE_>::sumSiteSize() const
 {
     return accumulateSitesInfo([](unsigned long long partialSum, _BASE_ item) -> unsigned long long
     {
-        return partialSum + item.getLenght();
+        return partialSum + item.getLength();
     }, 0ULL);
 }
 
@@ -710,7 +710,7 @@ unsigned long long uGenericNGSChrom<_SELF_ ,_BASE_>::minSiteSize() const
 {
     if (this->count() == 0)
         return 0;
-    return minSite(compareLenght)->getLenght();
+    return minSite(compareLength)->getLength();
 }
 
 template <class _SELF_, class _BASE_>
@@ -726,7 +726,7 @@ unsigned long long uGenericNGSChrom<_SELF_,_BASE_>::maxSiteSize() const
 {
     if (this->count() == 0)
         return 0;
-    return maxSite(compareLenght)->getLenght();
+    return maxSite(compareLength)->getLength();
 }
 
 
@@ -758,12 +758,12 @@ long int uGenericNGSChrom<_SELF_,_BASE_>::countUnique() const
 template <class _SELF_,class _BASE_>
 /** \brief Returns a vector that contains the size of every element in the collection.
  *
- * \return std::vector<long long>: Vector containing the lenght of every element.
+ * \return std::vector<long long>: Vector containing the length of every element.
  *
  */
 std::vector<long long> uGenericNGSChrom<_SELF_,_BASE_>::returnSiteSizes() const
 {
-    return computeOnAllSites([] (_BASE_ elem) -> long long {return elem.getLenght();});
+    return computeOnAllSites([] (_BASE_ elem) -> long long {return elem.getLength();});
 }
 
 
@@ -777,17 +777,17 @@ template <class _SELF_,class _BASE_>
 void uGenericNGSChrom<_SELF_,_BASE_>::printStats(std::ostream& out) const
 {
     typename std::vector<long long> quarts;
-    /**< Get a vector containing the lenght of every site */
-    quarts = utility::quartilesofVector(computeOnAllSites([] (_BASE_ elem) -> long long {return elem.getLenght();}));
+    /**< Get a vector containing the length of every site */
+    quarts = utility::quartilesofVector(computeOnAllSites([] (_BASE_ elem) -> long long {return elem.getLength();}));
 
     out <<"Number of sites"<< "\t"<< this->count()<<"\n";
     out <<"Average sites size:"<< "\t"<< this->avgSiteSize()<<"\n";
     out <<"Median size: "<< "\t"<< quarts.at(1)<<"\n";
     out <<"q1 :" << "\t"<< quarts.at(0)<<"\n";
     out <<"q3 :" << "\t"<< quarts.at(2)<<"\n";
-    auto minAndMax = minAndMaxSites(compareLenght);
-    out <<"Min sites size:"<< "\t"<< minAndMax.first->getLenght() <<"\n";
-    out <<"Max sites size:"<< "\t"<< minAndMax.second->getLenght() <<"\n";
+    auto minAndMax = minAndMaxSites(compareLength);
+    out <<"Min sites size:"<< "\t"<< minAndMax.first->getLength() <<"\n";
+    out <<"Max sites size:"<< "\t"<< minAndMax.second->getLength() <<"\n";
 
 }
 
@@ -1673,8 +1673,8 @@ UnaryOperation uGenericNGSChrom<_SELF_,_BASE_>::applyOnAllSites(const UnaryOpera
 /** \brief Accumulate information by querying all sites
   *
   *  Runs accumulate() on the elements of the collection with the given functor. This allows the
-  *  querying of every site in a way that returns a single value. ex : adding every elem lenght to
-  *  obtain the total lenght of all contigs in the collection.
+  *  querying of every site in a way that returns a single value. ex : adding every elem length to
+  *  obtain the total length of all contigs in the collection.
   *
   *  The function must return the new value of the accumulator.
   *

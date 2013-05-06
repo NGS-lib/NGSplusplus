@@ -181,7 +181,7 @@ uToken uParserSam::getNextEntry()
 		//	token_infos << "MAP_SCORE\t" << what[5] << "\n";
 		//	token_infos << "CIGAR\t" << what[6] << "\n";
 		//	token_infos << "TEMPLATE_LENGHT\t" << what[9] << "\n";
-			/**< Skip RNEXT and PNEXT and Template Lenght */
+			/**< Skip RNEXT and PNEXT and Template Length */
       //      token_infos << "SEQUENCE\t" << what[10] << "\n";
       //    	token_infos << "PHRED_SCORE\t" << what[11] << "\n";
         }
@@ -280,7 +280,7 @@ void uParserSam::_parseHeader()
             std::string data;
             std::string chrom;
             std::string REF,AssID,MD5,Species,URI;
-            long long int refSeqlenght;
+            long long int refSeqlength;
             bool SN=false, LN=false, AS=false, M5=false, SP=false, UR=false;
             while (!(Infostream.eof()))
             {
@@ -294,14 +294,14 @@ void uParserSam::_parseHeader()
                     data.erase(0,3);
                     chrom=data;
                 }
-                /**< Reference sequence lenght */
+                /**< Reference sequence length */
                 else if (data.find("LN:")!=std::string::npos)
                 {
                     if (LN)
                         throw uParser_invalid_Sam_header()<<string_error("Multiple LN tag in @SQ header, failling: \n"+lineString);
                     LN=true;
                     data.erase(0,3);
-                    refSeqlenght=utility::stoll(data);
+                    refSeqlength=utility::stoll(data);
                 }
                 else if (data.find("AS:")!=std::string::npos)
                 {
@@ -342,7 +342,7 @@ void uParserSam::_parseHeader()
             /**< Load our data */
 
             m_headerData._addToParam(header_param::CHR,chrom);
-            m_headerData._addToParam(header_param::CHR_SIZE,utility::to_string(refSeqlenght));
+            m_headerData._addToParam(header_param::CHR_SIZE,utility::to_string(refSeqlength));
         } /**< Invalid, fail */
         else
         {

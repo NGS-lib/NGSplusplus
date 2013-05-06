@@ -81,9 +81,9 @@ private:
     {
         return item1.getStart() < item2.getStart();
     }
-    static bool compareLenght(const _BASE_ &item1, const _BASE_ &item2)
+    static bool compareLength(const _BASE_ &item1, const _BASE_ &item2)
     {
-        return item1.getLenght() < item2.getLenght();
+        return item1.getLength() < item2.getLength();
     }
     static bool comparePos(const _BASE_ &item1, const _BASE_ &item2)
     {

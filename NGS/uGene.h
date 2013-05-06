@@ -168,7 +168,7 @@ public:
     uGeneChrom():uGenericNGSChrom() {};
     uGeneChrom(std::string ourChr):uGenericNGSChrom(ourChr)
     {}
-    uGeneChrom(std::string ourChr, long int lenght):uGenericNGSChrom(ourChr,lenght)
+    uGeneChrom(std::string ourChr, long int length):uGenericNGSChrom(ourChr,length)
     {}
     uGeneChrom(const uGenericNGSChrom<uGeneChrom,uGene>&);
     uGeneChrom& operator=(const uGeneChrom& copFrom);

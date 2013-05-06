@@ -62,7 +62,7 @@ uTags::uTags(uToken pToken)try:
             setStrand('+');
         }
     if (pToken.isParamSet(token_param::TEMPLATE_LENGTH))
-        setPELenght(std::abs(utility::stoi(pToken.getParam(token_param::TEMPLATE_LENGTH))));
+        setPELength(std::abs(utility::stoi(pToken.getParam(token_param::TEMPLATE_LENGTH))));
 
 }
 catch(ugene_exception_base &e)
@@ -214,7 +214,7 @@ uTags::uTags(const uTags& copy_from):uGenericNGS(copy_from),name(nullptr),phredS
             strcpy(phredScore,copy_from.phredScore);
         }
         m_strand=copy_from.m_strand;
-        PELenght=copy_from.PELenght;
+        PELength=copy_from.PELength;
         sequence=copy_from.sequence;
         mapScore=copy_from.mapScore;
         Unmapped= copy_from.Unmapped;
@@ -283,7 +283,7 @@ uTags& uTags::operator= (uTags const& assign_from)
         strcpy(phredScore,assign_from.phredScore);
     }
     m_strand=assign_from.m_strand;
-    PELenght=assign_from.PELenght;
+    PELength=assign_from.PELength;
     sequence=assign_from.sequence;
     mapScore=assign_from.mapScore;
     Unmapped= assign_from.Unmapped;
@@ -311,7 +311,7 @@ bool uTags::isEqual(const uTags & pCompared) const
             (this->getCigar()==pCompared.getCigar())&&
             (this->isMapped()==pCompared.isMapped())&&
             (this->getFlag()==pCompared.getFlag())&&
-            (this->getPeLenght()==pCompared.getPeLenght()));
+            (this->getPeLength()==pCompared.getPeLength()));
 
 }
 
@@ -355,8 +355,8 @@ void uTags::setCigar(std::string pCigar)
     try
     {
         m_cigar = new char[pCigar.size()+1];
-        int lenght=pCigar.copy(m_cigar,pCigar.size(),0 );
-        m_cigar[lenght]='\0';
+        int length=pCigar.copy(m_cigar,pCigar.size(),0 );
+        m_cigar[length]='\0';
 
     }
     catch(std::exception & e)
@@ -407,15 +407,15 @@ int uTags::getFlag() const
  *
  *  Sets the sequence associated with the element. The sequence needs to be either
  *  null ("") or of size equal to the element.
- * \exception param_throw : Thrown when parameter size neighter null or equal to element getLenght()
+ * \exception param_throw : Thrown when parameter size neighter null or equal to element getLength()
  * \param pSeq std::string : The sequence to set
  * \return void
  *
  */
 void uTags::setSequence(std::string pSeq)
 {
-   // if(((int)pSeq.size()!=0)&&((int)pSeq.size()!=getLenght()))
-  //      throw param_throw()<< string_error("Failling in setSequence. Sequence size is "+utility::to_string(pSeq.size())+" and is neither null or equal to element size of "+utility::to_string(getLenght()));
+   // if(((int)pSeq.size()!=0)&&((int)pSeq.size()!=getLength()))
+  //      throw param_throw()<< string_error("Failling in setSequence. Sequence size is "+utility::to_string(pSeq.size())+" and is neither null or equal to element size of "+utility::to_string(getLength()));
     sequence=pSeq;
 }
 /** \brief Get the sequence associated with the element.
@@ -446,8 +446,8 @@ void uTags::setPhred(std::string Phred)
     try
     {
         phredScore = new char[Phred.size()+1];
-        int lenght=Phred.copy(phredScore,Phred.size(),0 );
-        phredScore[lenght]='\0';
+        int length=Phred.copy(phredScore,Phred.size(),0 );
+        phredScore[length]='\0';
     }
     catch(std::exception & e)
     {
@@ -495,8 +495,8 @@ void uTags::setName(std::string pName)
     try
     {
         name= new char [pName.size()+1];
-        int lenght = pName.copy(name, pName.size(),0);
-        name[lenght]='\0';
+        int length = pName.copy(name, pName.size(),0);
+        name[length]='\0';
     }
     catch(std::exception & e)
     {
@@ -524,39 +524,39 @@ std::string uTags::getName() const
     return returnStr;
 }
 
-/** \brief True if the paired end lenght is above 0
+/** \brief True if the paired end length is above 0
  *
- * \return bool True if PElenght is set
+ * \return bool True if PElength is set
  *
  */
 bool uTags::isPE() const
 {
-    return PELenght;
+    return PELength;
 }
 
 /** \brief
  *
- * \param lenght int : Value to set PELenght to.
+ * \param length int : Value to set PELength to.
  * \exception : param_throw(): Throw if parameter is < 0.
  * \return void
  *
  */
-void uTags::setPELenght(int lenght)
+void uTags::setPELength(int length)
 {
 
-    if  (lenght <0)
-        throw param_throw()<<string_error("Throwing in setPELenght. Set an invalid PE lenght"+utility::to_string(lenght) );
-    PELenght=lenght;
+    if  (length <0)
+        throw param_throw()<<string_error("Throwing in setPELength. Set an invalid PE length"+utility::to_string(length) );
+    PELength=length;
 
 }
-/** \brief Return the PELenght of the element
+/** \brief Return the PELength of the element
  *
  * \return int
  *
  */
-int uTags::getPeLenght() const
+int uTags::getPeLength() const
 {
-    return PELenght;
+    return PELength;
 }
 
 /** \brief Set the mapping quality of the element, max value is 255
@@ -589,15 +589,15 @@ uTags uTags::getCompletedCopy()const
 {
     try
     {
-        if (PELenght==0)
+        if (PELength==0)
             return this->getCopy();
         else
         {
             uTags rtnCopy= this->getCopy();
             if (rtnCopy.getStrand()==StrandDir::FORWARD)
-                rtnCopy.setEnd(rtnCopy.getEnd()+rtnCopy.getPeLenght());
+                rtnCopy.setEnd(rtnCopy.getEnd()+rtnCopy.getPeLength());
             else
-                rtnCopy.setStart(rtnCopy.getStart()-rtnCopy.getPeLenght());
+                rtnCopy.setStart(rtnCopy.getStart()-rtnCopy.getPeLength());
             return rtnCopy;
         }
     }
@@ -646,7 +646,7 @@ void uTags::print(std::ostream &pOut) const
     }
     if (this->isPE())
     {
-        pOut<<"Is paired, PE lenght is " <<utility::to_string(getPeLenght())<<std::endl;
+        pOut<<"Is paired, PE length is " <<utility::to_string(getPeLength())<<std::endl;
     }
     else
     {
@@ -694,7 +694,7 @@ uToken uTags::createToken() const
     }
         if (isPE())
     {
-        ss<<"TEMPLATE_LENGHT\t" <<utility::to_string(PELenght)<<"\n";
+        ss<<"TEMPLATE_LENGHT\t" <<utility::to_string(PELength)<<"\n";
     }
     try
     {
@@ -965,7 +965,7 @@ void uTagsExperiment::loadWithBamTools_Core(BamTools::BamReader& pReader, int pB
 
             tagToAdd.setFlag(m_BufferAlignement.AlignmentFlag);
             tagToAdd.setMapQual(m_BufferAlignement.MapQuality);
-            tagToAdd.setPELenght(m_BufferAlignement.InsertSize);
+            tagToAdd.setPELength(m_BufferAlignement.InsertSize);
 
             std::string cigar;
             for(BamTools::CigarOp & cigarItem: m_BufferAlignement.CigarData)
@@ -1004,7 +1004,7 @@ void uTagsExperiment::loadWithBamTools_All(BamTools::BamReader& pReader, int pBl
             tagToAdd.setSequence(m_BufferAlignement.QueryBases);
             tagToAdd.setFlag(m_BufferAlignement.AlignmentFlag);
             tagToAdd.setMapQual(m_BufferAlignement.MapQuality);
-            tagToAdd.setPELenght(m_BufferAlignement.InsertSize);
+            tagToAdd.setPELength(m_BufferAlignement.InsertSize);
             tagToAdd.setPhred(m_BufferAlignement.Qualities);
             tagToAdd.setName(m_BufferAlignement.Name);
 
@@ -1104,11 +1104,11 @@ NGS::uTags makeTagfromSamString(std::string samString, bool minimal)
         Infostream>>temp;
         /**< Pos of next mate */
         Infostream>>temp;
-        /**< Template lenght for PE readas */
-        int PELenght;
-        Infostream>>PELenght;
-        PELenght= abs(PELenght);
-        // cerr << "PeLenght is" <<
+        /**< Template length for PE readas */
+        int PELength;
+        Infostream>>PELength;
+        PELength= abs(PELength);
+        // cerr << "PeLength is" <<
         /**< Sequence */
         Infostream>>seq;
         /**< Pred score of every position. */
@@ -1128,11 +1128,11 @@ NGS::uTags makeTagfromSamString(std::string samString, bool minimal)
         /**< If PE and mate is aligned */
         if ((ourFlag&0x1)&&(ourFlag&0x2))
         {
-            returnTag.setPELenght(PELenght);
+            returnTag.setPELength(PELength);
         }
         else
         {
-            returnTag.setPELenght(0);
+            returnTag.setPELength(0);
         }
 //    pMate = NULL;
         /**< if we want to keep, we store, otherwise scope will erase our data */

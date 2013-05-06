@@ -136,10 +136,10 @@ void uRegion::setSignal(int i, float value)
 {
  try{
     if (signal.size()==0)
-        signal.resize(this->getLenght());
+        signal.resize(this->getLength());
 
 /**< Sanity check */
-    if (i < this->getLenght())
+    if (i < this->getLength())
         signal.at(i)=value;
     else
         throw param_throw()<<string_error("Failling in setSignal, trying to set signal outside of region boundary at position "+utility::to_string(i)+"\n");
@@ -176,16 +176,16 @@ bool uRegion::isEqual(const uRegion & pCompared)const{
 void uRegion::setSignal(std::vector<float> ourSignal)
 {
     try {
-    if ((int)ourSignal.size()!=getLenght())
+    if ((int)ourSignal.size()!=getLength())
         throw param_throw();
     signal = ourSignal;
     }
     catch(param_throw & e)
     {
         #ifdef DEBUG
-               cerr << "Failling in uRegion setSignal(vector), received a vector of size greater then elem lenght of "+utility::to_string(getLenght())+"\n" <<endl;
+               cerr << "Failling in uRegion setSignal(vector), received a vector of size greater then elem length of "+utility::to_string(getLength())+"\n" <<endl;
         #endif
-        e<<string_error("Failling in uRegion setSignal(vector), received a vector of size greater then elem lenght of "+utility::to_string(getLenght())+"\n");
+        e<<string_error("Failling in uRegion setSignal(vector), received a vector of size greater then elem length of "+utility::to_string(getLength())+"\n");
         e<<region_error(*this);
         throw e;
     }
@@ -388,7 +388,7 @@ try
             try
             {
                 vector<float> signalVector;
-                signalVector.resize(Elem.getLenght());
+                signalVector.resize(Elem.getLength());
                 /**< Ignore if over the reference */
                 if (Elem.getEnd() <=(int)densityValues.size())
                 {
@@ -479,7 +479,7 @@ try
             try
             {
                 vector<float> signalVector;
-                signalVector.resize(Elem.getLenght());
+                signalVector.resize(Elem.getLength());
                 /**< Ignore if over the reference */
                 if (Elem.getEnd() <=(int)densityValues.size())
                 {
@@ -572,7 +572,7 @@ void uRegionChrom::generateSignal(const uBasicNGSChrom& chrToComp)
             try
             {
                 vector<float> signalVector;
-                signalVector.resize(Elem.getLenght());
+                signalVector.resize(Elem.getLength());
                 /**< Ignore if over the reference */
                 if (Elem.getEnd() <=(int)densityValues.size())
                 {
@@ -663,7 +663,7 @@ void uRegionChrom::generateSignal(const uGeneChrom& chrToComp)
             try
             {
                 vector<float> signalVector;
-                signalVector.resize(Elem.getLenght());
+                signalVector.resize(Elem.getLength());
                 /**< Ignore if over the reference */
                 if (Elem.getEnd() <=(int)densityValues.size())
                 {

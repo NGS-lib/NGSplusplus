@@ -115,7 +115,7 @@ public:
     uRegionChrom():uGenericNGSChrom() {};
     uRegionChrom(std::string ourChr):uGenericNGSChrom(ourChr)
     { }
-    uRegionChrom(std::string ourChr, long long int lenght):uGenericNGSChrom(ourChr,lenght)
+    uRegionChrom(std::string ourChr, long long int length):uGenericNGSChrom(ourChr,length)
     { }
     uRegionChrom(const uGenericNGSChrom<uRegionChrom,uRegion>&);
     uRegionChrom& operator=(const uRegionChrom& copFrom);

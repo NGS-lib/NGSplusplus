@@ -66,7 +66,7 @@ private:
     //Using Samtools definition here. Replace above variables by this when possible.
     int flag=0;  /*!<Sam flag as defined by the SAM format*/
     //Pointer to next element of the template, not sure we really want to use this?.
-    int PELenght=0; /**< Lenght of the total segment if paired. Can also be used for estimated lenght */
+    int PELength=0; /**< Length of the total segment if paired. Can also be used for estimated length */
 
 public:
 
@@ -114,8 +114,8 @@ public:
     std::string getName() const;
     bool isPE() const;
 
-    void setPELenght(int lenght);
-    int getPeLenght() const;
+    void setPELength(int length);
+    int getPeLength() const;
 
     void setMapQual(short int score);
     short int getMapQual() const;

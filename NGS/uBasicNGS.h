@@ -64,7 +64,7 @@ public:
     {
     }
 
-    uBasicNGSChrom(std::string chr, long long int lenght):uGenericNGSChrom(chr,lenght)
+    uBasicNGSChrom(std::string chr, long long int length):uGenericNGSChrom(chr,length)
     {
     }
 

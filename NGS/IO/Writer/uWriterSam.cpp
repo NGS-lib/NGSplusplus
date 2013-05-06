@@ -39,12 +39,12 @@ void uWriterSam::writeHeader(){
   if (m_headerData.isParamSet(header_param::CHR))
     {
         auto chrVector=m_headerData.getParamVector(header_param::CHR);
-        auto chrLenghts= m_headerData.getParamVector(header_param::CHR_SIZE);
+        auto chrLengths= m_headerData.getParamVector(header_param::CHR_SIZE);
 
         /**< Write every header */
         for (unsigned int i=0; i<chrVector.size();i++)
             {
-                *m_pOstream<<"@SQ"<<TAB<<SN<<chrVector.at(i)<<TAB<<SQ<<chrLenghts.at(i)<<"\n";
+                *m_pOstream<<"@SQ"<<TAB<<SN<<chrVector.at(i)<<TAB<<SQ<<chrLengths.at(i)<<"\n";
             }
     }
 }
