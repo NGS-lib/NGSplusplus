@@ -106,18 +106,18 @@ TEST(uGeneGENCHR_applyAndGetVecData, EMPTY){
 /**<  computeOnAllSites*/
 TEST(uGeneGENCHR_computeOnAllSites, NORMAL){
        StandardChromsGene testChroms;
-       auto functOp = [&](uGene item)->int{  return item.getLenght();};
+       auto functOp = [&](uGene item)->int{  return item.getLength();};
        auto results=testChroms.manyChr.computeOnAllSites(functOp);
-       EXPECT_EQ(results.at(0),testChroms.manyChr.getSite(0).getLenght());
-       EXPECT_EQ(results.at(1),testChroms.manyChr.getSite(1).getLenght());
-       EXPECT_EQ(results.at(2),testChroms.manyChr.getSite(2).getLenght());
+       EXPECT_EQ(results.at(0),testChroms.manyChr.getSite(0).getLength());
+       EXPECT_EQ(results.at(1),testChroms.manyChr.getSite(1).getLength());
+       EXPECT_EQ(results.at(2),testChroms.manyChr.getSite(2).getLength());
        EXPECT_EQ(results.size(),testChroms.manyChr.count());
 
        EXPECT_EQ(std::accumulate(results.begin(), results.end(), 0), testChroms.manyChr.sumSiteSize());
  }
 TEST(uGeneGENCHR_computeOnAllSites, EMPTY){
        StandardChromsGene testChroms;
-       auto functOp = [&](uGene item)->int{  return item.getLenght();};
+       auto functOp = [&](uGene item)->int{  return item.getLength();};
        auto results=testChroms.emptyChr.computeOnAllSites(functOp);
        EXPECT_EQ(results.size(),testChroms.emptyChr.count());
  }
@@ -125,21 +125,21 @@ TEST(uGeneGENCHR_computeOnAllSites, EMPTY){
 /**<  getSpecificSites*/
 TEST(uGeneGENCHR_getSpecificSites, NONECOUNTED){
        StandardChromsGene testChroms;
-       auto functOp = [](const uGene & item){  return (item.getLenght()>2000);
+       auto functOp = [](const uGene & item){  return (item.getLength()>2000);
        };
        auto results=testChroms.manyChr.getSpecificSites(functOp);
        EXPECT_EQ(results.size(),0);
  }
 TEST(uGeneGENCHR_getSpecificSites, SOMECOUNTED){
        StandardChromsGene testChroms;
-       auto functOp = [](const uGene & item){  return (item.getLenght()>99);
+       auto functOp = [](const uGene & item){  return (item.getLength()>99);
        };
        auto results=testChroms.manyChr.getSpecificSites(functOp);
        EXPECT_EQ(results.size(),2);
  }
 TEST(uGeneGENCHR_getSpecificSites, ALLCOUNTED){
        StandardChromsGene testChroms;
-       auto functOp = [](const uGene & item){  return (item.getLenght()>5);
+       auto functOp = [](const uGene & item){  return (item.getLength()>5);
        };
        auto results=testChroms.manyChr.getSpecificSites(functOp);
        EXPECT_EQ(results.size(),3);
@@ -155,21 +155,21 @@ TEST(uGeneGENCHR_getSpecificSites, ALLCOUNTED){
  */
 TEST(uGeneGENCHR_removeSpecificSites, NONEREMOVED){
        StandardChromsGene testChroms;
-       auto functOp = [](const uGene & item){  return (item.getLenght()>2000); };
+       auto functOp = [](const uGene & item){  return (item.getLength()>2000); };
 
        testChroms.manyChr.removeSpecificSites(functOp);
        EXPECT_EQ(testChroms.manyChr.count(),3);
  }
 TEST(uGeneGENCHR_removeSpecificSites, SOMEREMOVED){
        StandardChromsGene testChroms;
-       auto functOp = [](const uGene & item){  return (item.getLenght()>99);
+       auto functOp = [](const uGene & item){  return (item.getLength()>99);
        };
        testChroms.manyChr.removeSpecificSites(functOp);
        EXPECT_EQ(testChroms.manyChr.count(),1);
  }
 TEST(uGeneGENCHR_removeSpecificSites, ALLREMOVED){
        StandardChromsGene testChroms;
-       auto functOp = [](const uGene & item){  return (item.getLenght()>5);
+       auto functOp = [](const uGene & item){  return (item.getLength()>5);
        };
        testChroms.manyChr.removeSpecificSites(functOp);
        EXPECT_EQ(testChroms.manyChr.count(),0);
@@ -218,7 +218,7 @@ TEST(uGeneGENCHR_applyOnAllSitesConst, EMPTY){
 TEST(uGeneGENCHR_applyOnAllSitesConst, NORMAL){
        const StandardChromsGene testChroms;
        int siteCount=0;
-       auto functOp = [&](const uGene & item){siteCount+=item.getLenght();
+       auto functOp = [&](const uGene & item){siteCount+=item.getLength();
        };
        testChroms.manyChr.applyOnAllSites(functOp);
        EXPECT_EQ(siteCount,  testChroms.manyChr.sumSiteSize());
@@ -234,14 +234,14 @@ TEST(uGeneGENCHR_applyOnAllSitesConst, EXCEPTION){
 TEST(uGeneGENCHR_accumulateSitesInfos, EMPTY){
        const StandardChromsGene testChroms;
        int siteCount=0;
-       auto functOp = [&](int siteCounts,const uGene & item){ return (siteCounts+=item.getLenght());
+       auto functOp = [&](int siteCounts,const uGene & item){ return (siteCounts+=item.getLength());
        };
        EXPECT_EQ(testChroms.emptyChr.accumulateSitesInfo(functOp,siteCount),  testChroms.emptyChr.sumSiteSize());
  }
 TEST(uGeneGENCHR_accumulateSitesInfo, NORMAL){
        const StandardChromsGene testChroms;
        int siteCount=0;
-       auto functOp = [&](int siteCounts,const uGene & item){return siteCounts+=item.getLenght();
+       auto functOp = [&](int siteCounts,const uGene & item){return siteCounts+=item.getLength();
        };
        EXPECT_EQ(testChroms.manyChr.accumulateSitesInfo(functOp,siteCount),  testChroms.manyChr.sumSiteSize());
  }
@@ -259,7 +259,7 @@ TEST(uGeneGENCHR_accumulateSitesInfo, EXCEPTION){
 /**<countSitesWithProperty */
 TEST(uGeneGENCHR_countSitesWithProperty, SOMECOUNTED){
       StandardChromsGene testChroms;
-       auto functOp = [](const uGene & item) mutable {  return (item.getLenght()>99);
+       auto functOp = [](const uGene & item) mutable {  return (item.getLength()>99);
        StandardChromsGene testChroms;
        };
        EXPECT_EQ(  testChroms.manyChr.countSitesWithProperty(functOp),2);
@@ -267,14 +267,14 @@ TEST(uGeneGENCHR_countSitesWithProperty, SOMECOUNTED){
 
  TEST(uGeneGENCHR_countSitesWithProperty, ALLCOUNTED){
        StandardChromsGene testChroms;
-       auto functOp = [](const uGene & item){  return (item.getLenght()>2);
+       auto functOp = [](const uGene & item){  return (item.getLength()>2);
        };
        EXPECT_EQ(  testChroms.manyChr.countSitesWithProperty(functOp),3);
  }
 
  TEST(uGeneGENCHR_countSitesWithProperty, NONECOUNTED){
        StandardChromsGene testChroms;
-       auto functOp = [](const uGene & item){  return (item.getLenght()>200000);
+       auto functOp = [](const uGene & item){  return (item.getLength()>200000);
        };
        EXPECT_EQ(  testChroms.manyChr.countSitesWithProperty(functOp),0);
  }
@@ -301,7 +301,7 @@ TEST(uGeneGENCHR_minSite, EMPTY)
 TEST(uGeneGENCHR_minSite, CUSTOM)
 {
        StandardChromsGene testChroms;
-       auto minItr=  testChroms.manyChr.minSite(uGeneChrom::compareLenght);
+       auto minItr=  testChroms.manyChr.minSite(uGeneChrom::compareLength);
        EXPECT_EQ(minItr->getStart(), uGene("chr1",230,300).getStart() );
 }
 /**< maxSite(comp ) */
@@ -322,13 +322,13 @@ TEST(uGeneGENCHR_maxSite, EMPTY)
 TEST(uGeneGENCHR_maxSite, CUSTOM)
 {
        StandardChromsGene testChroms;
-       auto minItr=  testChroms.manyChr.maxSite(uGeneChrom::compareLenght);
+       auto minItr=  testChroms.manyChr.maxSite(uGeneChrom::compareLength);
        EXPECT_EQ(minItr->getStart(), uGene("chr1",120,250).getStart() );
 }
 /**< MinMaxSites */
 TEST(uGeneGENCHR_minAndMaxSites, VALIDCOMPILE){
        StandardChromsGene testChroms;
-        testChroms.manyChr.minAndMaxSites(uGeneChrom::compareLenght);
+        testChroms.manyChr.minAndMaxSites(uGeneChrom::compareLength);
  }
 
 #define CHROMDIVIDESIZE 500
@@ -512,9 +512,9 @@ TEST(uGeneCHR_generateRandomSite, MAKEITEM){
        std::random_device rd;
        std::mt19937 gen(rd());
        uGene aItem= ourChroms.manyChr.generateRandomSite(100,gen,0);
-       EXPECT_EQ(100,aItem.getLenght());
+       EXPECT_EQ(100,aItem.getLength());
        uGene aItem2= ourChroms.manyChr.generateRandomSite(150,gen,0);
-       EXPECT_EQ(150,aItem2.getLenght());
+       EXPECT_EQ(150,aItem2.getLength());
  }
 TEST(uGeneCHR_generateRandomSite, MAKEMANYDIFFERENTITEMS){
        StandardChromsGene ourChroms;
@@ -525,9 +525,9 @@ TEST(uGeneCHR_generateRandomSite, MAKEMANYDIFFERENTITEMS){
        uGene aItem2= ourChroms.manyChr.generateRandomSite(100,gen,0,"test");
        uGene aItem3= ourChroms.manyChr.generateRandomSite(100,gen,0,"test");
        uGene aItem4= ourChroms.manyChr.generateRandomSite(100,gen,0,"test");
-       EXPECT_EQ(aItem2.getLenght(),aItem.getLenght());
-       EXPECT_EQ(aItem3.getLenght(),aItem2.getLenght());
-       EXPECT_EQ(aItem4.getLenght(),aItem3.getLenght());
+       EXPECT_EQ(aItem2.getLength(),aItem.getLength());
+       EXPECT_EQ(aItem3.getLength(),aItem2.getLength());
+       EXPECT_EQ(aItem4.getLength(),aItem3.getLength());
 
        EXPECT_NE(aItem.getStart(),aItem2.getStart());
        EXPECT_NE(aItem2.getStart(),aItem3.getStart());
@@ -743,7 +743,7 @@ TEST(uGeneCHR_getDistinct, GETNONE)
 TEST(uGeneCHR_getDistinct, CUSTOMSORT)
 {
      StandardChromsGene ourChroms;
-     ourChroms.manyChr.sortSites(ourChroms.manyChr.compareLenght,&uGene::getLenght);
+     ourChroms.manyChr.sortSites(ourChroms.manyChr.compareLength,&uGene::getLength);
      uGeneChrom testChrom =ourChroms.manyChr.getDistinct(80, 130);
      EXPECT_EQ(2,testChrom.count());
 }
@@ -755,7 +755,7 @@ TEST(uGeneCHR_getDistinct, FAILNOSORT)
 TEST(uGeneCHR_getDistinct, MORECUSTOMSORT)
 {
      StandardChromsGene ourChroms;
-     ourChroms.manyChr.sortSites(ourChroms.manyChr.compareLenght,&uGene::getLenght);
+     ourChroms.manyChr.sortSites(ourChroms.manyChr.compareLength,&uGene::getLength);
 
      uGeneChrom testChrom =ourChroms.manyChr.getDistinct(80, 130);
      EXPECT_EQ(2,testChrom.count());
@@ -782,14 +782,14 @@ TEST(uGeneCHR_getSubset, UNSORTED)
 TEST(uGeneCHR_getSubset, CUSTOMEMPTY)
 {
      StandardChromsGene ourChroms;
-     ourChroms.emptyChr.sortSites(ourChroms.emptyChr.compareLenght,&uGene::getLenght);
+     ourChroms.emptyChr.sortSites(ourChroms.emptyChr.compareLength,&uGene::getLength);
      uGeneChrom testChrom =ourChroms.emptyChr.getSubset(80, 130);
      EXPECT_EQ(0,testChrom.count());
 }
 TEST(uGeneCHR_getSubset, CUSTOMESOME)
 {
      StandardChromsGene ourChroms;
-     ourChroms.manyChr.sortSites(ourChroms.manyChr.compareLenght,&uGene::getLenght);
+     ourChroms.manyChr.sortSites(ourChroms.manyChr.compareLength,&uGene::getLength);
      uGeneChrom testChrom =ourChroms.manyChr.getSubset(80, 130);
      EXPECT_EQ(1,testChrom.count());
 }
@@ -797,7 +797,7 @@ TEST(uGeneCHR_getSubset, CUSTOMESOME)
 TEST(uGeneCHR_removeSubset, CUSTOMBORDER)
 {
      StandardChromsGene ourChroms;
-     ourChroms.manyChr.sortSites(ourChroms.manyChr.compareLenght,&uGene::getLenght);
+     ourChroms.manyChr.sortSites(ourChroms.manyChr.compareLength,&uGene::getLength);
      uGeneChrom testChrom =ourChroms.manyChr.removeSubset(80, 130);
 
      EXPECT_EQ(2,ourChroms.manyChr.count());
@@ -807,7 +807,7 @@ TEST(uGeneCHR_removeSubset, CUSTOMBORDER)
 TEST(uGeneCHR_removeSubset, CUSTOMALL)
 {
      StandardChromsGene ourChroms;
-     ourChroms.manyChr.sortSites(ourChroms.manyChr.compareLenght,&uGene::getLenght);
+     ourChroms.manyChr.sortSites(ourChroms.manyChr.compareLength,&uGene::getLength);
      uGeneChrom testChrom =ourChroms.manyChr.removeSubset(0, 200);
      EXPECT_EQ(3,testChrom.count());
 }
@@ -855,7 +855,7 @@ TEST(uGeneCHR_getSubsetCount, EMPTY)
 TEST(uGeneCHR_getSubsetCount, MANYCUSTOMSORT)
 {
      StandardChromsGene ourChroms;
-     ourChroms.manyChr.sortSites(ourChroms.manyChr.compareLenght,&uGene::getLenght);
+     ourChroms.manyChr.sortSites(ourChroms.manyChr.compareLength,&uGene::getLength);
      EXPECT_EQ(2,ourChroms.manyChr.getSubsetCount(40, 120));
 }
 /**< AddData */
@@ -863,7 +863,7 @@ TEST(uGeneCHR_getSubsetCount, MANYCUSTOMSORT)
 TEST(uGeneCHR_addData, VALID)
 {
      StandardChromsGene ourChroms;
-     ourChroms.manyChr.sortSites(ourChroms.manyChr.compareLenght,&uGene::getLenght);
+     ourChroms.manyChr.sortSites(ourChroms.manyChr.compareLength,&uGene::getLength);
      ourChroms.manyChr.addData(uGene("chr1", 2032,3245));
      EXPECT_FALSE(ourChroms.manyChr.getSortedStatus());
      EXPECT_EQ(4,ourChroms.manyChr.count());
@@ -872,7 +872,7 @@ TEST(uGeneCHR_addData, VALID)
 TEST(uGeneCHR_addData, INVALIDCHR)
 {
      StandardChromsGene ourChroms;
-     ourChroms.manyChr.sortSites(ourChroms.manyChr.compareLenght,&uGene::getLenght);
+     ourChroms.manyChr.sortSites(ourChroms.manyChr.compareLength,&uGene::getLength);
      EXPECT_THROW(ourChroms.manyChr.addData(uGene("chr2", 2032,3245)),ugene_exception_base);
 }
 
@@ -881,8 +881,8 @@ TEST(uGeneCHR_addData, INVALIDCHR)
 TEST(uGeneCHR_getStartFunct, HASBEENSET)
 {
      StandardChromsGene ourChroms;
-     ourChroms.manyChr.sortSites(ourChroms.manyChr.compareLenght,&uGene::getLenght);
-     std::function<float(const uGene*)>  my_funct= &uGene::getLenght;
+     ourChroms.manyChr.sortSites(ourChroms.manyChr.compareLength,&uGene::getLength);
+     std::function<float(const uGene*)>  my_funct= &uGene::getLength;
      EXPECT_NE(nullptr,ourChroms.manyChr.getStartFunct());
 }
 TEST(uGeneCHR_getStartFunct, NOTBEENSET)
@@ -894,8 +894,8 @@ TEST(uGeneCHR_getStartFunct, NOTBEENSET)
 TEST(uGeneCHR_getEndFunct, HASBEENSET)
 {
      StandardChromsGene ourChroms;
-     ourChroms.manyChr.sortSites(ourChroms.manyChr.compareLenght,&uGene::getLenght,&uGene::getLenght);
-     std::function<float(const uGene*)>  my_funct= &uGene::getLenght;
+     ourChroms.manyChr.sortSites(ourChroms.manyChr.compareLength,&uGene::getLength,&uGene::getLength);
+     std::function<float(const uGene*)>  my_funct= &uGene::getLength;
      EXPECT_NE(nullptr,ourChroms.manyChr.getEndFunct());
 }
 
@@ -908,7 +908,7 @@ TEST(uGeneCHR_getEndFunct, NOTBEENSET)
 TEST(uGeneCHR_getCompFunct, BEENSET)
 {
       StandardChromsGene ourChroms;
-      ourChroms.manyChr.sortSites(ourChroms.manyChr.compareLenght,&uGene::getLenght,&uGene::getLenght);
+      ourChroms.manyChr.sortSites(ourChroms.manyChr.compareLength,&uGene::getLength,&uGene::getLength);
       EXPECT_NE(nullptr,ourChroms.manyChr.getCompFunct());
 }
 TEST(uGeneCHR_getCompFunct, NOTBEENSET)
@@ -960,7 +960,7 @@ TEST(uGeneCHR_sortSites, DEFAULT)
 TEST(uGeneCHR_sortSites, CUSTOM)
 {
       StandardChromsGene ourChroms;
-      ourChroms.manyChr.sortSites(ourChroms.manyChr.compareLenght,&uGene::getLenght);
+      ourChroms.manyChr.sortSites(ourChroms.manyChr.compareLength,&uGene::getLength);
       //Check manually the order
       EXPECT_TRUE(ourChroms.manyChr.getSite(1).isEqual(uGene("chr1",100,200)));
       EXPECT_TRUE(ourChroms.manyChr.getSite(2).isEqual(uGene("chr1",120,250)));
@@ -978,7 +978,7 @@ TEST(uGeneCHR_findNext, STANDARD)
 TEST(uGeneCHR_findNext, CUSTOM)
 {
       StandardChromsGene ourChroms;
-      ourChroms.manyChr.sortSites(ourChroms.manyChr.compareLenght,&uGene::getLenght,&uGene::getLenght);
+      ourChroms.manyChr.sortSites(ourChroms.manyChr.compareLength,&uGene::getLength,&uGene::getLength);
       auto first=ourChroms.manyChr.findNextSite(125);
       EXPECT_TRUE(first->isEqual(uGene("chr1",120,250)));
       first=ourChroms.manyChr.findNextSite(0);
@@ -1004,7 +1004,7 @@ TEST(uGeneCHR_findPrec, STANDARD)
 TEST(uGeneCHR_findPrec, CUSTOM)
 {
       StandardChromsGene ourChroms;
-      ourChroms.manyChr.sortSites(ourChroms.manyChr.compareLenght,&uGene::getLenght,&uGene::getLenght);
+      ourChroms.manyChr.sortSites(ourChroms.manyChr.compareLength,&uGene::getLength,&uGene::getLength);
       auto first=ourChroms.manyChr.findPrecedingSite(125);
       EXPECT_TRUE(first->isEqual(uGene("chr1",100,200)));
       first=ourChroms.manyChr.findPrecedingSite(400);
@@ -1035,12 +1035,12 @@ TEST(uGeneCHR_isSorted, NORMAL)
        StandardChromsGene ourChroms;
        ourChroms.manyChr.sortSites();
        EXPECT_TRUE(ourChroms.emptyChr.isSorted());
-       EXPECT_FALSE(ourChroms.manyChr.isSorted(uGeneChrom::compareLenght));
+       EXPECT_FALSE(ourChroms.manyChr.isSorted(uGeneChrom::compareLength));
 }
 TEST(uGeneCHR_isSorted, CUSTOM)
 {
        StandardChromsGene ourChroms;
-       ourChroms.manyChr.sortSites(uGeneChrom::compareLenght);
+       ourChroms.manyChr.sortSites(uGeneChrom::compareLength);
        EXPECT_TRUE(ourChroms.manyChr.isSorted());
        EXPECT_FALSE(ourChroms.manyChr.isSorted(uGeneChrom::compareStart));
 }

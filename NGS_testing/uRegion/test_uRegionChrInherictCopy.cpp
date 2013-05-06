@@ -105,18 +105,18 @@ TEST(uRegionGENCHR_applyAndGetVecData, EMPTY){
 /**<  computeOnAllSites*/
 TEST(uRegionGENCHR_computeOnAllSites, NORMAL){
        StandardChromsRegion testChroms;
-       auto functOp = [&](uRegion item)->int{  return item.getLenght();};
+       auto functOp = [&](uRegion item)->int{  return item.getLength();};
        auto results=testChroms.manyChr.computeOnAllSites(functOp);
-       EXPECT_EQ(results.at(0),testChroms.manyChr.getSite(0).getLenght());
-       EXPECT_EQ(results.at(1),testChroms.manyChr.getSite(1).getLenght());
-       EXPECT_EQ(results.at(2),testChroms.manyChr.getSite(2).getLenght());
+       EXPECT_EQ(results.at(0),testChroms.manyChr.getSite(0).getLength());
+       EXPECT_EQ(results.at(1),testChroms.manyChr.getSite(1).getLength());
+       EXPECT_EQ(results.at(2),testChroms.manyChr.getSite(2).getLength());
        EXPECT_EQ(results.size(),testChroms.manyChr.count());
 
        EXPECT_EQ(std::accumulate(results.begin(), results.end(), 0), testChroms.manyChr.sumSiteSize());
  }
 TEST(uRegionGENCHR_computeOnAllSites, EMPTY){
        StandardChromsRegion testChroms;
-       auto functOp = [&](uRegion item)->int{  return item.getLenght();};
+       auto functOp = [&](uRegion item)->int{  return item.getLength();};
        auto results=testChroms.emptyChr.computeOnAllSites(functOp);
        EXPECT_EQ(results.size(),testChroms.emptyChr.count());
  }
@@ -124,21 +124,21 @@ TEST(uRegionGENCHR_computeOnAllSites, EMPTY){
 /**<  getSpecificSites*/
 TEST(uRegionGENCHR_getSpecificSites, NONECOUNTED){
        StandardChromsRegion testChroms;
-       auto functOp = [](const uRegion & item){  return (item.getLenght()>2000);
+       auto functOp = [](const uRegion & item){  return (item.getLength()>2000);
        };
        auto results=testChroms.manyChr.getSpecificSites(functOp);
        EXPECT_EQ(results.size(),0);
  }
 TEST(uRegionGENCHR_getSpecificSites, SOMECOUNTED){
        StandardChromsRegion testChroms;
-       auto functOp = [](const uRegion & item){  return (item.getLenght()>99);
+       auto functOp = [](const uRegion & item){  return (item.getLength()>99);
        };
        auto results=testChroms.manyChr.getSpecificSites(functOp);
        EXPECT_EQ(results.size(),2);
  }
 TEST(uRegionGENCHR_getSpecificSites, ALLCOUNTED){
        StandardChromsRegion testChroms;
-       auto functOp = [](const uRegion & item){  return (item.getLenght()>5);
+       auto functOp = [](const uRegion & item){  return (item.getLength()>5);
        };
        auto results=testChroms.manyChr.getSpecificSites(functOp);
        EXPECT_EQ(results.size(),3);
@@ -154,21 +154,21 @@ TEST(uRegionGENCHR_getSpecificSites, ALLCOUNTED){
  */
 TEST(uRegionGENCHR_removeSpecificSites, NONEREMOVED){
        StandardChromsRegion testChroms;
-       auto functOp = [](const uRegion & item){  return (item.getLenght()>2000); };
+       auto functOp = [](const uRegion & item){  return (item.getLength()>2000); };
 
        testChroms.manyChr.removeSpecificSites(functOp);
        EXPECT_EQ(testChroms.manyChr.count(),3);
  }
 TEST(uRegionGENCHR_removeSpecificSites, SOMEREMOVED){
        StandardChromsRegion testChroms;
-       auto functOp = [](const uRegion & item){  return (item.getLenght()>99);
+       auto functOp = [](const uRegion & item){  return (item.getLength()>99);
        };
        testChroms.manyChr.removeSpecificSites(functOp);
        EXPECT_EQ(testChroms.manyChr.count(),1);
  }
 TEST(uRegionGENCHR_removeSpecificSites, ALLREMOVED){
        StandardChromsRegion testChroms;
-       auto functOp = [](const uRegion & item){  return (item.getLenght()>5);
+       auto functOp = [](const uRegion & item){  return (item.getLength()>5);
        };
        testChroms.manyChr.removeSpecificSites(functOp);
        EXPECT_EQ(testChroms.manyChr.count(),0);
@@ -217,7 +217,7 @@ TEST(uRegionGENCHR_applyOnAllSitesConst, EMPTY){
 TEST(uRegionGENCHR_applyOnAllSitesConst, NORMAL){
        const StandardChromsRegion testChroms;
        int siteCount=0;
-       auto functOp = [&](const uRegion & item){siteCount+=item.getLenght();
+       auto functOp = [&](const uRegion & item){siteCount+=item.getLength();
        };
        testChroms.manyChr.applyOnAllSites(functOp);
        EXPECT_EQ(siteCount,  testChroms.manyChr.sumSiteSize());
@@ -233,14 +233,14 @@ TEST(uRegionGENCHR_applyOnAllSitesConst, EXCEPTION){
 TEST(uRegionGENCHR_accumulateSitesInfos, EMPTY){
        const StandardChromsRegion testChroms;
        int siteCount=0;
-       auto functOp = [&](int siteCounts,const uRegion & item){ return (siteCounts+=item.getLenght());
+       auto functOp = [&](int siteCounts,const uRegion & item){ return (siteCounts+=item.getLength());
        };
        EXPECT_EQ(testChroms.emptyChr.accumulateSitesInfo(functOp,siteCount),  testChroms.emptyChr.sumSiteSize());
  }
 TEST(uRegionGENCHR_accumulateSitesInfo, NORMAL){
        const StandardChromsRegion testChroms;
        int siteCount=0;
-       auto functOp = [&](int siteCounts,const uRegion & item){return siteCounts+=item.getLenght();
+       auto functOp = [&](int siteCounts,const uRegion & item){return siteCounts+=item.getLength();
        };
        EXPECT_EQ(testChroms.manyChr.accumulateSitesInfo(functOp,siteCount),  testChroms.manyChr.sumSiteSize());
  }
@@ -258,7 +258,7 @@ TEST(uRegionGENCHR_accumulateSitesInfo, EXCEPTION){
 /**<countSitesWithProperty */
 TEST(uRegionGENCHR_countSitesWithProperty, SOMECOUNTED){
       StandardChromsRegion testChroms;
-       auto functOp = [](const uRegion & item) mutable {  return (item.getLenght()>99);
+       auto functOp = [](const uRegion & item) mutable {  return (item.getLength()>99);
        StandardChromsRegion testChroms;
        };
        EXPECT_EQ(  testChroms.manyChr.countSitesWithProperty(functOp),2);
@@ -266,14 +266,14 @@ TEST(uRegionGENCHR_countSitesWithProperty, SOMECOUNTED){
 
  TEST(uRegionGENCHR_countSitesWithProperty, ALLCOUNTED){
        StandardChromsRegion testChroms;
-       auto functOp = [](const uRegion & item){  return (item.getLenght()>2);
+       auto functOp = [](const uRegion & item){  return (item.getLength()>2);
        };
        EXPECT_EQ(  testChroms.manyChr.countSitesWithProperty(functOp),3);
  }
 
  TEST(uRegionGENCHR_countSitesWithProperty, NONECOUNTED){
        StandardChromsRegion testChroms;
-       auto functOp = [](const uRegion & item){  return (item.getLenght()>200000);
+       auto functOp = [](const uRegion & item){  return (item.getLength()>200000);
        };
        EXPECT_EQ(  testChroms.manyChr.countSitesWithProperty(functOp),0);
  }
@@ -300,7 +300,7 @@ TEST(uRegionGENCHR_minSite, EMPTY)
 TEST(uRegionGENCHR_minSite, CUSTOM)
 {
        StandardChromsRegion testChroms;
-       auto minItr=  testChroms.manyChr.minSite(uRegionChrom::compareLenght);
+       auto minItr=  testChroms.manyChr.minSite(uRegionChrom::compareLength);
        EXPECT_EQ(minItr->getStart(), uRegion("chr1",230,300).getStart() );
 }
 /**< maxSite(comp ) */
@@ -321,13 +321,13 @@ TEST(uRegionGENCHR_maxSite, EMPTY)
 TEST(uRegionGENCHR_maxSite, CUSTOM)
 {
        StandardChromsRegion testChroms;
-       auto minItr=  testChroms.manyChr.maxSite(uRegionChrom::compareLenght);
+       auto minItr=  testChroms.manyChr.maxSite(uRegionChrom::compareLength);
        EXPECT_EQ(minItr->getStart(), uRegion("chr1",120,250).getStart() );
 }
 /**< MinMaxSites */
 TEST(uRegionGENCHR_minAndMaxSites, VALIDCOMPILE){
        StandardChromsRegion testChroms;
-        testChroms.manyChr.minAndMaxSites(uRegionChrom::compareLenght);
+        testChroms.manyChr.minAndMaxSites(uRegionChrom::compareLength);
  }
 
 #define CHROMDIVIDESIZE 500
@@ -511,9 +511,9 @@ TEST(uRegionCHR_generateRandomSite, MAKEITEM){
        std::random_device rd;
        std::mt19937 gen(rd());
        uRegion aItem= ourChroms.manyChr.generateRandomSite(100,gen,0);
-       EXPECT_EQ(100,aItem.getLenght());
+       EXPECT_EQ(100,aItem.getLength());
        uRegion aItem2= ourChroms.manyChr.generateRandomSite(150,gen,0);
-       EXPECT_EQ(150,aItem2.getLenght());
+       EXPECT_EQ(150,aItem2.getLength());
  }
 TEST(uRegionCHR_generateRandomSite, MAKEMANYDIFFERENTITEMS){
        StandardChromsRegion ourChroms;
@@ -524,9 +524,9 @@ TEST(uRegionCHR_generateRandomSite, MAKEMANYDIFFERENTITEMS){
        uRegion aItem2= ourChroms.manyChr.generateRandomSite(100,gen,0,"test");
        uRegion aItem3= ourChroms.manyChr.generateRandomSite(100,gen,0,"test");
        uRegion aItem4= ourChroms.manyChr.generateRandomSite(100,gen,0,"test");
-       EXPECT_EQ(aItem2.getLenght(),aItem.getLenght());
-       EXPECT_EQ(aItem3.getLenght(),aItem2.getLenght());
-       EXPECT_EQ(aItem4.getLenght(),aItem3.getLenght());
+       EXPECT_EQ(aItem2.getLength(),aItem.getLength());
+       EXPECT_EQ(aItem3.getLength(),aItem2.getLength());
+       EXPECT_EQ(aItem4.getLength(),aItem3.getLength());
 
        EXPECT_NE(aItem.getStart(),aItem2.getStart());
        EXPECT_NE(aItem2.getStart(),aItem3.getStart());
@@ -742,7 +742,7 @@ TEST(uRegionCHR_getDistinct, GETNONE)
 TEST(uRegionCHR_getDistinct, CUSTOMSORT)
 {
      StandardChromsRegion ourChroms;
-     ourChroms.manyChr.sortSites(ourChroms.manyChr.compareLenght,&uRegion::getLenght);
+     ourChroms.manyChr.sortSites(ourChroms.manyChr.compareLength,&uRegion::getLength);
      uRegionChrom testChrom =ourChroms.manyChr.getDistinct(80, 130);
      EXPECT_EQ(2,testChrom.count());
 }
@@ -754,7 +754,7 @@ TEST(uRegionCHR_getDistinct, FAILNOSORT)
 TEST(uRegionCHR_getDistinct, MORECUSTOMSORT)
 {
      StandardChromsRegion ourChroms;
-     ourChroms.manyChr.sortSites(ourChroms.manyChr.compareLenght,&uRegion::getLenght);
+     ourChroms.manyChr.sortSites(ourChroms.manyChr.compareLength,&uRegion::getLength);
 
      uRegionChrom testChrom =ourChroms.manyChr.getDistinct(80, 130);
      EXPECT_EQ(2,testChrom.count());
@@ -781,14 +781,14 @@ TEST(uRegionCHR_getSubset, UNSORTED)
 TEST(uRegionCHR_getSubset, CUSTOMEMPTY)
 {
      StandardChromsRegion ourChroms;
-     ourChroms.emptyChr.sortSites(ourChroms.emptyChr.compareLenght,&uRegion::getLenght);
+     ourChroms.emptyChr.sortSites(ourChroms.emptyChr.compareLength,&uRegion::getLength);
      uRegionChrom testChrom =ourChroms.emptyChr.getSubset(80, 130);
      EXPECT_EQ(0,testChrom.count());
 }
 TEST(uRegionCHR_getSubset, CUSTOMESOME)
 {
      StandardChromsRegion ourChroms;
-     ourChroms.manyChr.sortSites(ourChroms.manyChr.compareLenght,&uRegion::getLenght);
+     ourChroms.manyChr.sortSites(ourChroms.manyChr.compareLength,&uRegion::getLength);
      uRegionChrom testChrom =ourChroms.manyChr.getSubset(80, 130);
      EXPECT_EQ(1,testChrom.count());
 }
@@ -796,7 +796,7 @@ TEST(uRegionCHR_getSubset, CUSTOMESOME)
 TEST(uRegionCHR_removeSubset, CUSTOMBORDER)
 {
      StandardChromsRegion ourChroms;
-     ourChroms.manyChr.sortSites(ourChroms.manyChr.compareLenght,&uRegion::getLenght);
+     ourChroms.manyChr.sortSites(ourChroms.manyChr.compareLength,&uRegion::getLength);
      uRegionChrom testChrom =ourChroms.manyChr.removeSubset(80, 130);
 
      EXPECT_EQ(2,ourChroms.manyChr.count());
@@ -806,7 +806,7 @@ TEST(uRegionCHR_removeSubset, CUSTOMBORDER)
 TEST(uRegionCHR_removeSubset, CUSTOMALL)
 {
      StandardChromsRegion ourChroms;
-     ourChroms.manyChr.sortSites(ourChroms.manyChr.compareLenght,&uRegion::getLenght);
+     ourChroms.manyChr.sortSites(ourChroms.manyChr.compareLength,&uRegion::getLength);
      uRegionChrom testChrom =ourChroms.manyChr.removeSubset(0, 200);
      EXPECT_EQ(3,testChrom.count());
 }
@@ -854,7 +854,7 @@ TEST(uRegionCHR_getSubsetCount, EMPTY)
 TEST(uRegionCHR_getSubsetCount, MANYCUSTOMSORT)
 {
      StandardChromsRegion ourChroms;
-     ourChroms.manyChr.sortSites(ourChroms.manyChr.compareLenght,&uRegion::getLenght);
+     ourChroms.manyChr.sortSites(ourChroms.manyChr.compareLength,&uRegion::getLength);
      EXPECT_EQ(2,ourChroms.manyChr.getSubsetCount(40, 120));
 }
 /**< AddData */
@@ -862,7 +862,7 @@ TEST(uRegionCHR_getSubsetCount, MANYCUSTOMSORT)
 TEST(uRegionCHR_addData, VALID)
 {
      StandardChromsRegion ourChroms;
-     ourChroms.manyChr.sortSites(ourChroms.manyChr.compareLenght,&uRegion::getLenght);
+     ourChroms.manyChr.sortSites(ourChroms.manyChr.compareLength,&uRegion::getLength);
      ourChroms.manyChr.addData(uRegion("chr1", 2032,3245));
      EXPECT_FALSE(ourChroms.manyChr.getSortedStatus());
      EXPECT_EQ(4,ourChroms.manyChr.count());
@@ -871,7 +871,7 @@ TEST(uRegionCHR_addData, VALID)
 TEST(uRegionCHR_addData, INVALIDCHR)
 {
      StandardChromsRegion ourChroms;
-     ourChroms.manyChr.sortSites(ourChroms.manyChr.compareLenght,&uRegion::getLenght);
+     ourChroms.manyChr.sortSites(ourChroms.manyChr.compareLength,&uRegion::getLength);
      EXPECT_THROW(ourChroms.manyChr.addData(uRegion("chr2", 2032,3245)),ugene_exception_base);
 }
 
@@ -880,8 +880,8 @@ TEST(uRegionCHR_addData, INVALIDCHR)
 TEST(uRegionCHR_getStartFunct, HASBEENSET)
 {
      StandardChromsRegion ourChroms;
-     ourChroms.manyChr.sortSites(ourChroms.manyChr.compareLenght,&uRegion::getLenght);
-     std::function<float(const uRegion*)>  my_funct= &uRegion::getLenght;
+     ourChroms.manyChr.sortSites(ourChroms.manyChr.compareLength,&uRegion::getLength);
+     std::function<float(const uRegion*)>  my_funct= &uRegion::getLength;
      EXPECT_NE(nullptr,ourChroms.manyChr.getStartFunct());
 }
 TEST(uRegionCHR_getStartFunct, NOTBEENSET)
@@ -893,8 +893,8 @@ TEST(uRegionCHR_getStartFunct, NOTBEENSET)
 TEST(uRegionCHR_getEndFunct, HASBEENSET)
 {
      StandardChromsRegion ourChroms;
-     ourChroms.manyChr.sortSites(ourChroms.manyChr.compareLenght,&uRegion::getLenght,&uRegion::getLenght);
-     std::function<float(const uRegion*)>  my_funct= &uRegion::getLenght;
+     ourChroms.manyChr.sortSites(ourChroms.manyChr.compareLength,&uRegion::getLength,&uRegion::getLength);
+     std::function<float(const uRegion*)>  my_funct= &uRegion::getLength;
      EXPECT_NE(nullptr,ourChroms.manyChr.getEndFunct());
 }
 
@@ -907,7 +907,7 @@ TEST(uRegionCHR_getEndFunct, NOTBEENSET)
 TEST(uRegionCHR_getCompFunct, BEENSET)
 {
       StandardChromsRegion ourChroms;
-      ourChroms.manyChr.sortSites(ourChroms.manyChr.compareLenght,&uRegion::getLenght,&uRegion::getLenght);
+      ourChroms.manyChr.sortSites(ourChroms.manyChr.compareLength,&uRegion::getLength,&uRegion::getLength);
       EXPECT_NE(nullptr,ourChroms.manyChr.getCompFunct());
 }
 TEST(uRegionCHR_getCompFunct, NOTBEENSET)
@@ -959,7 +959,7 @@ TEST(uRegionCHR_sortSites, DEFAULT)
 TEST(uRegionCHR_sortSites, CUSTOM)
 {
       StandardChromsRegion ourChroms;
-      ourChroms.manyChr.sortSites(ourChroms.manyChr.compareLenght,&uRegion::getLenght);
+      ourChroms.manyChr.sortSites(ourChroms.manyChr.compareLength,&uRegion::getLength);
       //Check manually the order
       EXPECT_TRUE(ourChroms.manyChr.getSite(1).isEqual(uRegion("chr1",100,200)));
       EXPECT_TRUE(ourChroms.manyChr.getSite(2).isEqual(uRegion("chr1",120,250)));
@@ -977,7 +977,7 @@ TEST(uRegionCHR_findNext, STANDARD)
 TEST(uRegionCHR_findNext, CUSTOM)
 {
       StandardChromsRegion ourChroms;
-      ourChroms.manyChr.sortSites(ourChroms.manyChr.compareLenght,&uRegion::getLenght,&uRegion::getLenght);
+      ourChroms.manyChr.sortSites(ourChroms.manyChr.compareLength,&uRegion::getLength,&uRegion::getLength);
       auto first=ourChroms.manyChr.findNextSite(125);
       EXPECT_TRUE(first->isEqual(uRegion("chr1",120,250)));
       first=ourChroms.manyChr.findNextSite(0);
@@ -1003,7 +1003,7 @@ TEST(uRegionCHR_findPrec, STANDARD)
 TEST(uRegionCHR_findPrec, CUSTOM)
 {
       StandardChromsRegion ourChroms;
-      ourChroms.manyChr.sortSites(ourChroms.manyChr.compareLenght,&uRegion::getLenght,&uRegion::getLenght);
+      ourChroms.manyChr.sortSites(ourChroms.manyChr.compareLength,&uRegion::getLength,&uRegion::getLength);
       auto first=ourChroms.manyChr.findPrecedingSite(125);
       EXPECT_TRUE(first->isEqual(uRegion("chr1",100,200)));
       first=ourChroms.manyChr.findPrecedingSite(400);
@@ -1034,12 +1034,12 @@ TEST(uRegionCHR_isSorted, NORMAL)
        StandardChromsRegion ourChroms;
        ourChroms.manyChr.sortSites();
        EXPECT_TRUE(ourChroms.emptyChr.isSorted());
-       EXPECT_FALSE(ourChroms.manyChr.isSorted(uRegionChrom::compareLenght));
+       EXPECT_FALSE(ourChroms.manyChr.isSorted(uRegionChrom::compareLength));
 }
 TEST(uRegionCHR_isSorted, CUSTOM)
 {
        StandardChromsRegion ourChroms;
-       ourChroms.manyChr.sortSites(uRegionChrom::compareLenght);
+       ourChroms.manyChr.sortSites(uRegionChrom::compareLength);
        EXPECT_TRUE(ourChroms.manyChr.isSorted());
        EXPECT_FALSE(ourChroms.manyChr.isSorted(uRegionChrom::compareStart));
 }

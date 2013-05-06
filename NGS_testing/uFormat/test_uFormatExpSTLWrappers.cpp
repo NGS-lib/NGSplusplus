@@ -426,7 +426,7 @@ TEST(uBasicEXP_STL_applyOnSitesConst, NORMAL) {
 	{
 		count++;
 	};
-//	auto functOp = [&](uBasicNGS item)->int{  return item.getLenght();};
+//	auto functOp = [&](uBasicNGS item)->int{  return item.getLength();};
 	EXPECT_EQ(count, 0);
 //	EXPECT_NO_THROW(myExperiments.getExperiment("MultipleChroms")->applyOnSites(functOp));
 	const uBasicNGSExperiment myConstExp = *(myExperiments.getExperiment("MultipleChroms"));

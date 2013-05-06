@@ -24,7 +24,7 @@ public:
 
        PETag.setChr("chr1");
        PETag.setStartEnd(500,600);
-       PETag.setPELenght(200);
+       PETag.setPELength(200);
 
        CompletTag.setChr("chr1");
        CompletTag.setStartEnd(400,405);
@@ -46,7 +46,7 @@ TEST(uTagsTest_getCompletedCopy, VALID) {
 
 	StandardTags myTags;
 	auto completedPE= myTags.PETag.getCompletedCopy();
-	EXPECT_EQ( (301),completedPE.getLenght());
+	EXPECT_EQ( (301),completedPE.getLength());
 	EXPECT_EQ( (600+200),completedPE.getEnd());
     EXPECT_EQ(500,completedPE.getStart());
 }
@@ -75,13 +75,13 @@ TEST(uTagsTest_copyCtr, NORMAL){
 
 TEST(uTagsTest_getCompletedTag, FORWARD){
     uTags  PETag("chr1",100,200);
-    PETag.setPELenght(50);
+    PETag.setPELength(50);
     EXPECT_EQ(PETag.getCompletedCopy().getEnd(),250);
 
 }
 TEST(uTagsTest_getCompletedTag, BACKWARD){
     uTags  PETag("chr1",100,200,StrandDir::REVERSE);
-    PETag.setPELenght(50);
+    PETag.setPELength(50);
     EXPECT_EQ(PETag.getCompletedCopy().getStart(),50);
 
 }
@@ -152,14 +152,14 @@ TEST(uTagsTest_ctr, ASSIGNMENT){
     copyFrom.setName("My Name is");
     copyFrom.setPhred("My Phred is");
     copyFrom.setCigar("Hohoho");
-    copyFrom.setPELenght(10);
+    copyFrom.setPELength(10);
     copyFrom.setMapQual(33);
     copyFrom.setSequence("LalaBonjouLalaBonjouLalaBonjouLalaBonjouLalaBonjouLalaBonjouLalaBonjouLalaBonjouLalaBonjouLalaBonjoud");
     copyTo.setChr("chr22");
 
     copyTo.setMapped(true);
     copyTo=copyFrom;
-    EXPECT_EQ(copyFrom.getPeLenght(), copyTo.getPeLenght());
+    EXPECT_EQ(copyFrom.getPeLength(), copyTo.getPeLength());
     EXPECT_EQ(copyFrom.getSequence(), copyTo.getSequence());
     EXPECT_EQ(copyFrom.getMapQual(), copyTo.getMapQual());
     EXPECT_EQ(copyFrom.getStrand(), copyTo.getStrand());
@@ -255,7 +255,7 @@ TEST(factoryTest, uTagsTest){
 
     uTags ourTest=factory::makeTagfromSamString("HWI-ST333_0111_FC:6:2202:20769:154221#TAGTCG/3	163	chr21	9719905	15	40M	=	9719985	120	AGCAATTATCTTCACATAAAAACTACACAGAAACTTTCTG	aaacceeegggggiiiiiiiiiihiihihiiiiiiiiiih	X0:i:2	X1:i:57	MD:Z:2G2A27T6	XG:i:0	AM:i:0	NM:i:3	SM:i:0	XM:i:3	XO:i:0	XT:A:R");
     EXPECT_EQ(ourTest.getChr(),"chr21");
-    EXPECT_EQ(ourTest.getLenght(),40);
+    EXPECT_EQ(ourTest.getLength(),40);
     EXPECT_EQ(ourTest.getStart(),9719905);
     EXPECT_EQ(ourTest.getEnd(),9719944);
     EXPECT_EQ(ourTest.getStrand(),StrandDir::FORWARD);

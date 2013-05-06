@@ -73,7 +73,7 @@ TEST(uTagsTest, CopyCTR){
     copyFrom.setName("My Name is");
     copyFrom.setPhred("My Phred is");
     copyFrom.setCigar("Hohoho");
-    copyFrom.setPELenght(10);
+    copyFrom.setPELength(10);
     copyFrom.setMapQual(33);
     copyFrom.setSequence("LalaBonjourPatate");
     copyTo.setChr("chr22");
@@ -81,7 +81,7 @@ TEST(uTagsTest, CopyCTR){
     copyTo.setMapped(true);
 
     copyTo=copyFrom;
-    EXPECT_EQ(copyFrom.getPeLenght(), copyTo.getPeLenght());
+    EXPECT_EQ(copyFrom.getPeLength(), copyTo.getPeLength());
     EXPECT_EQ(copyFrom.getSequence(), copyTo.getSequence());
     EXPECT_EQ(copyFrom.getMapQual(), copyTo.getMapQual());
     EXPECT_EQ(copyFrom.getStrand(), copyTo.getStrand());
@@ -114,7 +114,7 @@ TEST(factoryTest, uTagsTest){
 
     uTags ourTest=factory::makeTagfromSamString("HWI-ST333_0111_FC:6:2202:20769:154221#TAGTCG/3	163	chr21	9719905	15	40M	=	9719985	120	AGCAATTATCTTCACATAAAAACTACACAGAAACTTTCTG	aaacceeegggggiiiiiiiiiihiihihiiiiiiiiiih	X0:i:2	X1:i:57	MD:Z:2G2A27T6	XG:i:0	AM:i:0	NM:i:3	SM:i:0	XM:i:3	XO:i:0	XT:A:R");
     EXPECT_EQ(ourTest.getChr(),"chr21");
-    EXPECT_EQ(ourTest.getLenght(),40);
+    EXPECT_EQ(ourTest.getLength(),40);
     EXPECT_EQ(ourTest.getStart(),9719905);
     EXPECT_EQ(ourTest.getEnd(),9719944);
     EXPECT_EQ(ourTest.getStrand(),StrandDir::FORWARD);

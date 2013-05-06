@@ -225,9 +225,9 @@ TEST(uBasicNGSCHR_generateRandomSite, MAKEITEM){
        std::random_device rd;
        std::mt19937 gen(rd());
        uBasicNGS aItem= ourChroms.manyChr.generateRandomSite(100,gen,0);
-       EXPECT_EQ(100,aItem.getLenght());
+       EXPECT_EQ(100,aItem.getLength());
        uBasicNGS aItem2= ourChroms.manyChr.generateRandomSite(150,gen,0);
-       EXPECT_EQ(150,aItem2.getLenght());
+       EXPECT_EQ(150,aItem2.getLength());
  }
 TEST(uBasicNGSCHR_generateRandomSite, MAKEMANYDIFFERENTITEMS){
        StandardChroms ourChroms;
@@ -238,9 +238,9 @@ TEST(uBasicNGSCHR_generateRandomSite, MAKEMANYDIFFERENTITEMS){
        uBasicNGS aItem2= ourChroms.manyChr.generateRandomSite(100,gen,0,"test");
        uBasicNGS aItem3= ourChroms.manyChr.generateRandomSite(100,gen,0,"test");
        uBasicNGS aItem4= ourChroms.manyChr.generateRandomSite(100,gen,0,"test");
-       EXPECT_EQ(aItem2.getLenght(),aItem.getLenght());
-       EXPECT_EQ(aItem3.getLenght(),aItem2.getLenght());
-       EXPECT_EQ(aItem4.getLenght(),aItem3.getLenght());
+       EXPECT_EQ(aItem2.getLength(),aItem.getLength());
+       EXPECT_EQ(aItem3.getLength(),aItem2.getLength());
+       EXPECT_EQ(aItem4.getLength(),aItem3.getLength());
 
        EXPECT_NE(aItem.getStart(),aItem2.getStart());
        EXPECT_NE(aItem2.getStart(),aItem3.getStart());
@@ -461,7 +461,7 @@ TEST(uBasicNGSCHR_getDistinct, GETNONE)
 TEST(uBasicNGSCHR_getDistinct, CUSTOMSORT)
 {
      StandardChroms ourChroms;
-     ourChroms.manyChr.sortSites(ourChroms.manyChr.compareLenght,&uBasicNGS::getLenght);
+     ourChroms.manyChr.sortSites(ourChroms.manyChr.compareLength,&uBasicNGS::getLength);
      uBasicNGSChrom testChrom =ourChroms.manyChr.getDistinct(80, 130);
      EXPECT_EQ(2,testChrom.count());
      EXPECT_EQ(2,ourChroms.manyChr.getDistinctCount(80, 130));
@@ -475,7 +475,7 @@ TEST(uBasicNGSCHR_getDistinct, FAILNOSORT)
 TEST(uBasicNGSCHR_getDistinct, MORECUSTOMSORT)
 {
      StandardChroms ourChroms;
-     ourChroms.manyChr.sortSites(ourChroms.manyChr.compareLenght,&uBasicNGS::getLenght);
+     ourChroms.manyChr.sortSites(ourChroms.manyChr.compareLength,&uBasicNGS::getLength);
 
      uBasicNGSChrom testChrom =ourChroms.manyChr.getDistinct(80, 130);
      EXPECT_EQ(2,testChrom.count());
@@ -510,7 +510,7 @@ TEST(uBasicNGSCHR_removeDistinct, GETNONE)
 TEST(uBasicNGSCHR_removeDistinct, CUSTOMSORT)
 {
      StandardChroms ourChroms;
-     ourChroms.manyChr.sortSites(ourChroms.manyChr.compareLenght,&uBasicNGS::getLenght);
+     ourChroms.manyChr.sortSites(ourChroms.manyChr.compareLength,&uBasicNGS::getLength);
      uBasicNGSChrom testChrom =ourChroms.manyChr.removeDistinct(80, 130);
      EXPECT_EQ(2,testChrom.count());
      EXPECT_EQ(1,ourChroms.manyChr.count());
@@ -543,14 +543,14 @@ TEST(uBasicNGSCHR_getSubset, UNSORTED)
 TEST(uBasicNGSCHR_getSubset, CUSTOMEMPTY)
 {
      StandardChroms ourChroms;
-     ourChroms.emptyChr.sortSites(ourChroms.emptyChr.compareLenght,&uBasicNGS::getLenght);
+     ourChroms.emptyChr.sortSites(ourChroms.emptyChr.compareLength,&uBasicNGS::getLength);
      uBasicNGSChrom testChrom =ourChroms.emptyChr.getSubset(80, 130);
      EXPECT_EQ(0,testChrom.count());
 }
 TEST(uBasicNGSCHR_getSubset, CUSTOMESOME)
 {
      StandardChroms ourChroms;
-     ourChroms.manyChr.sortSites(ourChroms.manyChr.compareLenght,&uBasicNGS::getLenght);
+     ourChroms.manyChr.sortSites(ourChroms.manyChr.compareLength,&uBasicNGS::getLength);
      uBasicNGSChrom testChrom =ourChroms.manyChr.getSubset(80, 130);
      EXPECT_EQ(1,testChrom.count());
 }
@@ -558,7 +558,7 @@ TEST(uBasicNGSCHR_getSubset, CUSTOMESOME)
 TEST(uBasicNGSCHR_removeSubset, CUSTOMBORDER)
 {
      StandardChroms ourChroms;
-     ourChroms.manyChr.sortSites(ourChroms.manyChr.compareLenght,&uBasicNGS::getLenght);
+     ourChroms.manyChr.sortSites(ourChroms.manyChr.compareLength,&uBasicNGS::getLength);
      uBasicNGSChrom testChrom =ourChroms.manyChr.removeSubset(80, 130);
 
      EXPECT_EQ(2,ourChroms.manyChr.count());
@@ -568,7 +568,7 @@ TEST(uBasicNGSCHR_removeSubset, CUSTOMBORDER)
 TEST(uBasicNGSCHR_removeSubset, CUSTOMALL)
 {
      StandardChroms ourChroms;
-     ourChroms.manyChr.sortSites(ourChroms.manyChr.compareLenght,&uBasicNGS::getLenght);
+     ourChroms.manyChr.sortSites(ourChroms.manyChr.compareLength,&uBasicNGS::getLength);
      uBasicNGSChrom testChrom =ourChroms.manyChr.removeSubset(0, 200);
      EXPECT_EQ(3,testChrom.count());
 }
@@ -622,7 +622,7 @@ TEST(uBasicNGSCHR_getSubsetCount, EMPTY)
 TEST(uBasicNGSCHR_getSubsetCount, MANYCUSTOMSORT)
 {
      StandardChroms ourChroms;
-     ourChroms.manyChr.sortSites(ourChroms.manyChr.compareLenght,&uBasicNGS::getLenght);
+     ourChroms.manyChr.sortSites(ourChroms.manyChr.compareLength,&uBasicNGS::getLength);
      EXPECT_EQ(2,ourChroms.manyChr.getSubsetCount(40, 120));
 }
 /**< AddData */
@@ -630,7 +630,7 @@ TEST(uBasicNGSCHR_getSubsetCount, MANYCUSTOMSORT)
 TEST(uBasicNGSCHR_addData, VALID)
 {
      StandardChroms ourChroms;
-     ourChroms.manyChr.sortSites(ourChroms.manyChr.compareLenght,&uBasicNGS::getLenght);
+     ourChroms.manyChr.sortSites(ourChroms.manyChr.compareLength,&uBasicNGS::getLength);
      ourChroms.manyChr.addData(uBasicNGS("chr1", 2032,3245));
      EXPECT_FALSE(ourChroms.manyChr.getSortedStatus());
      EXPECT_EQ(4,ourChroms.manyChr.count());
@@ -639,7 +639,7 @@ TEST(uBasicNGSCHR_addData, VALID)
 TEST(uBasicNGSCHR_addData, INVALIDCHR)
 {
      StandardChroms ourChroms;
-     ourChroms.manyChr.sortSites(ourChroms.manyChr.compareLenght,&uBasicNGS::getLenght);
+     ourChroms.manyChr.sortSites(ourChroms.manyChr.compareLength,&uBasicNGS::getLength);
      EXPECT_THROW(ourChroms.manyChr.addData(uBasicNGS("chr2", 2032,3245)),ugene_exception_base);
 }
 
@@ -648,8 +648,8 @@ TEST(uBasicNGSCHR_addData, INVALIDCHR)
 TEST(uBasicNGSCHR_getStartFunct, HASBEENSET)
 {
      StandardChroms ourChroms;
-     ourChroms.manyChr.sortSites(ourChroms.manyChr.compareLenght,&uBasicNGS::getLenght);
-     std::function<float(const uBasicNGS*)>  my_funct= &uBasicNGS::getLenght;
+     ourChroms.manyChr.sortSites(ourChroms.manyChr.compareLength,&uBasicNGS::getLength);
+     std::function<float(const uBasicNGS*)>  my_funct= &uBasicNGS::getLength;
      EXPECT_NE(nullptr,ourChroms.manyChr.getStartFunct());
 }
 TEST(uBasicNGSCHR_getStartFunct, NOTBEENSET)
@@ -661,8 +661,8 @@ TEST(uBasicNGSCHR_getStartFunct, NOTBEENSET)
 TEST(uBasicNGSCHR_getEndFunct, HASBEENSET)
 {
      StandardChroms ourChroms;
-     ourChroms.manyChr.sortSites(ourChroms.manyChr.compareLenght,&uBasicNGS::getLenght,&uBasicNGS::getLenght);
-     std::function<float(const uBasicNGS*)>  my_funct= &uBasicNGS::getLenght;
+     ourChroms.manyChr.sortSites(ourChroms.manyChr.compareLength,&uBasicNGS::getLength,&uBasicNGS::getLength);
+     std::function<float(const uBasicNGS*)>  my_funct= &uBasicNGS::getLength;
      EXPECT_NE(nullptr,ourChroms.manyChr.getEndFunct());
 }
 
@@ -675,7 +675,7 @@ TEST(uBasicNGSCHR_getEndFunct, NOTBEENSET)
 TEST(uBasicNGSCHR_getCompFunct, BEENSET)
 {
       StandardChroms ourChroms;
-      ourChroms.manyChr.sortSites(ourChroms.manyChr.compareLenght,&uBasicNGS::getLenght,&uBasicNGS::getLenght);
+      ourChroms.manyChr.sortSites(ourChroms.manyChr.compareLength,&uBasicNGS::getLength,&uBasicNGS::getLength);
       EXPECT_NE(nullptr,ourChroms.manyChr.getCompFunct());
 }
 TEST(uBasicNGSCHR_getCompFunct, NOTBEENSET)
@@ -729,7 +729,7 @@ TEST(uBasicNGSCHR_sortSites, DEFAULT)
 TEST(uBasicNGSCHR_sortSites, CUSTOM)
 {
       StandardChroms ourChroms;
-      ourChroms.manyChr.sortSites(ourChroms.manyChr.compareLenght,&uBasicNGS::getLenght);
+      ourChroms.manyChr.sortSites(ourChroms.manyChr.compareLength,&uBasicNGS::getLength);
       //Check manually the order
       auto itr= ourChroms.manyChr.begin();
 
@@ -750,7 +750,7 @@ TEST(uBasicNGSCHR_findNext, STANDARD)
 TEST(uBasicNGSCHR_findNext, CUSTOM)
 {
       StandardChroms ourChroms;
-      ourChroms.manyChr.sortSites(ourChroms.manyChr.compareLenght,&uBasicNGS::getLenght,&uBasicNGS::getLenght);
+      ourChroms.manyChr.sortSites(ourChroms.manyChr.compareLength,&uBasicNGS::getLength,&uBasicNGS::getLength);
       auto first=ourChroms.manyChr.findNextSite(125);
       EXPECT_TRUE(first->isEqual(uBasicNGS("chr1",120,250)));
       first=ourChroms.manyChr.findNextSite(0);
@@ -776,7 +776,7 @@ TEST(uBasicNGSCHR_findPrec, STANDARD)
 TEST(uBasicNGSCHR_findPrec, CUSTOM)
 {
       StandardChroms ourChroms;
-      ourChroms.manyChr.sortSites(ourChroms.manyChr.compareLenght,&uBasicNGS::getLenght,&uBasicNGS::getLenght);
+      ourChroms.manyChr.sortSites(ourChroms.manyChr.compareLength,&uBasicNGS::getLength,&uBasicNGS::getLength);
       auto first=ourChroms.manyChr.findPrecedingSite(125);
       EXPECT_TRUE(first->isEqual(uBasicNGS("chr1",100,200)));
       first=ourChroms.manyChr.findPrecedingSite(400);
@@ -808,12 +808,12 @@ TEST(uBasicNGSCHR_isSorted, NORMAL)
        StandardChroms ourChroms;
        ourChroms.manyChr.sortSites();
        EXPECT_TRUE(ourChroms.emptyChr.isSorted());
-       EXPECT_FALSE(ourChroms.manyChr.isSorted(uBasicNGSChrom::compareLenght));
+       EXPECT_FALSE(ourChroms.manyChr.isSorted(uBasicNGSChrom::compareLength));
 }
 TEST(uBasicNGSCHR_isSorted, CUSTOM)
 {
        StandardChroms ourChroms;
-       ourChroms.manyChr.sortSites(uBasicNGSChrom::compareLenght);
+       ourChroms.manyChr.sortSites(uBasicNGSChrom::compareLength);
        EXPECT_TRUE(ourChroms.manyChr.isSorted());
        EXPECT_FALSE(ourChroms.manyChr.isSorted(uBasicNGSChrom::compareStart));
 }

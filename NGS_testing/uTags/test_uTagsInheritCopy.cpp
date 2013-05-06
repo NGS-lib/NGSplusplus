@@ -139,12 +139,12 @@ TEST(uTagsTestHerit, GETSETCHR)
 TEST(uTagsTestHerit, GETLENGHT)
 {
     uTags uTest("chr1", 150, 200);
-    EXPECT_EQ(51, uTest.getLenght());
+    EXPECT_EQ(51, uTest.getLength());
     /**< Fragment always covers a position. */
     uTags uEmpty;
-    EXPECT_EQ(1, uEmpty.getLenght());
+    EXPECT_EQ(1, uEmpty.getLength());
     uTest.setStart(200);
-    EXPECT_EQ(1, uTest.getLenght());
+    EXPECT_EQ(1, uTest.getLength());
 }
 
 /*
@@ -328,7 +328,7 @@ TEST(uTagsTestHerit, DIVIDEINTOBINADD){
     EXPECT_ANY_THROW(vector<uTags> ourVector= uTest.divideIntoNBin(3));
 
     auto TestVector= uTest.divideIntoNBin(3, SplitType::ADD);
-    EXPECT_EQ( TestVector.at(3).getLenght(), 2);
+    EXPECT_EQ( TestVector.at(3).getLength(), 2);
     EXPECT_EQ( TestVector.at(3).getStart(), 118);
     EXPECT_EQ( TestVector.at(3).getEnd(), 119);
 
@@ -340,7 +340,7 @@ TEST(uTagsTestHerit, DIVIDEINTOBINEXTEND){
      uTags uTest("chr1", 100, 119);
      auto TestVector= uTest.divideIntoNBin(3, SplitType::EXTEND);
      EXPECT_EQ( (int)TestVector.size(), 3);
-     EXPECT_EQ( TestVector.at(2).getLenght(), 8);
+     EXPECT_EQ( TestVector.at(2).getLength(), 8);
      EXPECT_EQ( TestVector.at(2).getStart(), 112);
      EXPECT_EQ( TestVector.at(2).getEnd(), 119);
 }
@@ -357,7 +357,7 @@ TEST(uTagsTestHerit, DIVIDEINTOBINIGNORE){
 
     /**< Test equal size */
     for(uTags x : TestVector)
-        EXPECT_EQ( x.getLenght(), 6);
+        EXPECT_EQ( x.getLength(), 6);
     EXPECT_EQ( TestVector.at(0).getStart(), 100);
     EXPECT_EQ( TestVector.at(0).getEnd(), 105);
     EXPECT_EQ( TestVector.at(1).getStart(), 106);
@@ -375,7 +375,7 @@ TEST(uTagsTestHerit, DIVIDEINTOBINOFSIZESTRICT){
 
     vector<uTags> ourVector= uTest.divideIntoBinofSize(5);
     for(uTags x : ourVector)
-        EXPECT_EQ( x.getLenght(), 5);
+        EXPECT_EQ( x.getLength(), 5);
 }
 
 //TODO
@@ -388,7 +388,7 @@ TEST(uTagsTestHerit, DIVIDEINTOBINOFSIZEIGNORE){
     EXPECT_EQ( (int)TestVector.size(),2);
 
     for(uTags x : TestVector)
-        EXPECT_EQ( x.getLenght(), 7);
+        EXPECT_EQ( x.getLength(), 7);
 
     EXPECT_EQ( TestVector.at(0).getStart(), 100);
     EXPECT_EQ( TestVector.at(0).getEnd(), 106);
@@ -401,7 +401,7 @@ TEST(uTagsTestHerit, DIVIDEINTOBINOFSIZEADD){
 
     vector<uTags> TestVector= uTest.divideIntoBinofSize(7, SplitType::ADD);
     EXPECT_EQ( (int)TestVector.size(), 3);
-    EXPECT_EQ( TestVector.at(2).getLenght(), 6);
+    EXPECT_EQ( TestVector.at(2).getLength(), 6);
     EXPECT_EQ( TestVector.at(2).getStart(), 114);
     EXPECT_EQ( TestVector.at(2).getEnd(), 119);
 
@@ -413,7 +413,7 @@ TEST(uTagsTestHerit, DIVIDEINTOBINOFSIZEEXTEND){
    uTags uTest("chr1", 100, 119);
     vector<uTags> TestVector= uTest.divideIntoBinofSize(7, SplitType::EXTEND);
     EXPECT_EQ( (int)TestVector.size(), 2);
-    EXPECT_EQ( TestVector.at(1).getLenght(), 13);
+    EXPECT_EQ( TestVector.at(1).getLength(), 13);
     EXPECT_EQ( TestVector.at(1).getStart(), 107);
     EXPECT_EQ( TestVector.at(1).getEnd(), 119);
 }
