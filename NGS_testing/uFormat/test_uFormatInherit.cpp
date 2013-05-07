@@ -307,6 +307,16 @@ TEST(uBasicNGS_returnOverlap, SIMPLE)
     EXPECT_EQ(130,overlappedItem.getStart());
     EXPECT_EQ(150,overlappedItem.getEnd());
 }
+TEST(uBasicNGS_returnOverlap, SAMECHRNOOVERLAP){
+    uBasicNGS uTest("chr1", 100, 150);
+    uBasicNGS uTestOverlap("chr1", 151, 200);
+    ASSERT_THROW(uTest.returnOverlapping(uTestOverlap), param_throw);
+}
+TEST(uBasicNGS_returnOverlap, DIFFERENTCHROM){
+    uBasicNGS uTest("chr1", 100, 150);
+    uBasicNGS uTestOverlap("chr2", 100, 200);
+    ASSERT_THROW(uTest.returnOverlapping(uTestOverlap), param_throw);
+}
 TEST(uBasicNGS_returnMerge, MANY)
 {
     uBasicNGS uTest("chr1", 100, 150);
