@@ -317,13 +317,23 @@ TEST(uBasicNGS_returnOverlap, DIFFERENTCHROM){
     uBasicNGS uTestOverlap("chr2", 100, 200);
     ASSERT_THROW(uTest.returnOverlapping(uTestOverlap), param_throw);
 }
-TEST(uBasicNGS_returnMerge, MANY)
+TEST(uBasicNGS_returnMerge, SIMPLE)
 {
     uBasicNGS uTest("chr1", 100, 150);
     uBasicNGS uTestMerge("chr1", 130, 200);
     uBasicNGS mergedItem= uTest.returnMerge(uTestMerge);
     EXPECT_EQ(100,mergedItem.getStart());
     EXPECT_EQ(200,mergedItem.getEnd());
+}
+TEST(uBasicNGS_returnMerge, SAMECHRNOOVERLAP){
+    uBasicNGS uTest("chr1", 100, 150);
+    uBasicNGS uTestMerge("chr1", 151, 200);
+    ASSERT_THROW(uTest.returnMergeping(uTestMerge), param_throw);
+}
+TEST(uBasicNGS_returnMerge, DIFFERENTCHROM){
+    uBasicNGS uTest("chr1", 100, 150);
+    uBasicNGS uTestMerge("chr2", 100, 200);
+    ASSERT_THROW(uTest.returnMergeping(uTestMerge), param_throw);
 }
 
 
