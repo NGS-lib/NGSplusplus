@@ -328,12 +328,12 @@ TEST(uBasicNGS_returnMerge, SIMPLE)
 TEST(uBasicNGS_returnMerge, SAMECHRNOOVERLAP){
     uBasicNGS uTest("chr1", 100, 150);
     uBasicNGS uTestMerge("chr1", 151, 200);
-    ASSERT_THROW(uTest.returnMergeping(uTestMerge), param_throw);
+    ASSERT_THROW(uTest.returnMerge(uTestMerge), param_throw);
 }
 TEST(uBasicNGS_returnMerge, DIFFERENTCHROM){
     uBasicNGS uTest("chr1", 100, 150);
     uBasicNGS uTestMerge("chr2", 100, 200);
-    ASSERT_THROW(uTest.returnMergeping(uTestMerge), param_throw);
+    ASSERT_THROW(uTest.returnMerge(uTestMerge), param_throw);
 }
 
 
