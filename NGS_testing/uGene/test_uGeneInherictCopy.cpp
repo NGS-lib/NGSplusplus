@@ -128,11 +128,11 @@ TEST(uGeneNGSTestHerit, GETSETCHR)
 /*
  * Setters/Getters testing - length
  *	Valid case:
- *		GETLENGHT
+ *		getLength
  *	Invalid case:
  */
 
-TEST(uGeneNGSTestHerit, GETLENGHT)
+TEST(uGeneNGSTestHerit, getLength)
 {
     uGene uTest("chr1", 150, 200);
     EXPECT_EQ(51, uTest.getLength());

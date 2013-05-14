@@ -71,7 +71,7 @@ public:
     int  paramCount(const std::string& name) const;
     std::vector<std::string> getParamVector(token_param name) const;
     uToken& operator=(uToken const& assign_from);
-
+    token_param convertStringToTokenParam(const std::string& pName) const;
     /** \brief Check if a string has a corresponding token_param value
      * \param const std::string& param: The param to check.
      * \return True if there is a matching token_param value, otherwise false.

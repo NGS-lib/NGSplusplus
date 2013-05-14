@@ -132,11 +132,11 @@ TEST(uTagsTestHerit, GETSETCHR)
 /*
  * Setters/Getters testing - length
  *	Valid case:
- *		GETLENGHT
+ *		getLength
  *	Invalid case:
  */
 
-TEST(uTagsTestHerit, GETLENGHT)
+TEST(uTagsTestHerit, getLength)
 {
     uTags uTest("chr1", 150, 200);
     EXPECT_EQ(51, uTest.getLength());

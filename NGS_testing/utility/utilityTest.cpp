@@ -19,8 +19,7 @@ TEST(utility, SDTest)
 
 TEST(utility, QuartTest)
 {
-    const vector<float> ourValues= {22, 11, 30, 0 ,50};
-
+    const vector<long long> ourValues= {22, 11, 30, 0 ,50};
 
     auto quart = utility::quartilesofVector(ourValues);
 

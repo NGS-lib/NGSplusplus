@@ -21,8 +21,9 @@
 
 #ifndef UBASICNGS_H_INCLUDED
 #define UBASICNGS_H_INCLUDED
-
-#include "uFormats.h"
+#include "uFormatBase.h"
+#include "uFormatChrom.h"
+#include "uFormatExperiment.h"
 #include <memory>
 namespace NGS
 {
@@ -52,7 +53,7 @@ public:
     uBasicNGS getCopy()const;
 
 };
-
+#ifndef SWIG
 class uBasicNGSChrom: public uGenericNGSChrom<uBasicNGSChrom,uBasicNGS>
 {
 public:
@@ -84,6 +85,6 @@ class uBasicNGSExperiment : public uGenericNGSExperiment<uBasicNGSExperiment,uBa
     ~uBasicNGSExperiment(){};
     uBasicNGSExperiment& getCopy();
 };
-
+#endif
 } // End of namespace NGS
 #endif // UBASICNGS_H_INCLUDED

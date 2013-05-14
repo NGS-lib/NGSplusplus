@@ -59,10 +59,10 @@ template<class _SELF_, typename _BASE_>
 class uGenericNGSChrom
 {
     /**<  */
-    static_assert(
-        std::is_convertible<_BASE_, uGenericNGS<_BASE_>>::value,
-        "The type does not inherit from uGenericNGS."
-    );
+  //  static_assert(
+  //      std::is_convertible<_BASE_, uGenericNGS<_BASE_>>::value,
+  //      "The type does not inherit from uGenericNGS."
+  //  );
     typedef std::vector<_BASE_> VecGenericNGS;
     typedef typename std::vector<_BASE_>::iterator VecGenIter;
     typedef typename std::vector<_BASE_>::const_iterator VecGenConstIter;
@@ -148,7 +148,7 @@ public:
     unsigned long long minSiteSize() const;
     unsigned long long maxSiteSize() const;
     unsigned long long sumSiteSize() const;
-    void printStats(std::ostream& out) const;
+    void printStats(std::ostream& out);
 
     void inferChrSize();
 
@@ -220,16 +220,17 @@ public:
     /**< Function to add a unitary element */
     virtual void addData(const _BASE_ & newSite);
     virtual void addData(const uToken &);
-
+#ifndef SWIG
     template<class UnaryOperation>
     std::vector<_BASE_> applyAndGetVecData(UnaryOperation unary_op);
-
+#endif
     template<class UnaryOperation>
     _SELF_ applyAndGetChrom(UnaryOperation unary_op);
 
-
+#ifndef SWIG
     template<class UnaryOperation>
     auto computeOnAllSites(UnaryOperation unary_op) -> std::vector<decltype(unary_op(_BASE_()))>;
+#endif
     //NOTE Make a version that returns a chrom?
     template<class UnaryPredicate>
     std::vector<_BASE_> getSpecificSites(UnaryPredicate pred) const;
@@ -275,10 +276,12 @@ public:
      * \return Const random access iterator, pointing to the first element of VecSites
      *
      */
+     #ifndef SWIG
     auto begin()const->decltype(VecSites.cbegin())
     {
         return VecSites.cbegin();
     };
+
     /** \brief Return an const iterator pointing to the last element of  VecSites
      *
      * \return Const random access iterator, pointing to the last element of VecSites
@@ -307,7 +310,7 @@ public:
         return VecSites.end();
     };
 
-
+#endif
 
 };
 
@@ -774,12 +777,11 @@ template <class _SELF_,class _BASE_>
  * \return void
  *
  */
-void uGenericNGSChrom<_SELF_,_BASE_>::printStats(std::ostream& out) const
+void uGenericNGSChrom<_SELF_,_BASE_>::printStats(std::ostream& out)
 {
-    typename std::vector<long long> quarts;
+    typename std::vector<double> quarts;
     /**< Get a vector containing the length of every site */
-    quarts = utility::quartilesofVector(computeOnAllSites([] (_BASE_ elem) -> long long {return elem.getLength();}));
-
+    quarts = utility::quartilesofVector(computeOnAllSites([] (const _BASE_ elem) -> long long {return elem.getLength();}));
     out <<"Number of sites"<< "\t"<< this->count()<<"\n";
     out <<"Average sites size:"<< "\t"<< this->avgSiteSize()<<"\n";
     out <<"Median size: "<< "\t"<< quarts.at(1)<<"\n";
@@ -1546,6 +1548,7 @@ _SELF_ uGenericNGSChrom<_SELF_,_BASE_>::applyAndGetChrom(UnaryOperation unary_op
     * \param unary_op UnaryOperation : Unary operation to perform on the copied sites vector
     * \return A vector of the same type and length as the sites vector but with its sites transformed by unary_op
     */
+#ifndef SWIG
 template <class _SELF_,class _BASE_>
 template<class UnaryOperation>
 auto uGenericNGSChrom<_SELF_,_BASE_>::computeOnAllSites(UnaryOperation unary_op) -> std::vector<decltype(unary_op(_BASE_()))>
@@ -1561,6 +1564,7 @@ auto uGenericNGSChrom<_SELF_,_BASE_>::computeOnAllSites(UnaryOperation unary_op)
         throw;
     }
 }
+#endif
 /** \brief Get the sites for which a certain predicate is true
   *
   * This function take a pointer to a predicate function. It return a vector containing

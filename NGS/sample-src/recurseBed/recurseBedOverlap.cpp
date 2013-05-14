@@ -71,11 +71,13 @@ int main(int argc, char **argv)
     }
     vector<pair<std::string,uBasicNGSExperiment> > vecBedExp;
     vecBedExp.resize(argc-1);
+    int curDebug;
     try
     {
         for (int i=1; i<argc; i++ )
         {
             {
+                curDebug=i;
              string path=argv[i];
              ifstream curStream;
              std::string filename_noext;
@@ -92,6 +94,7 @@ int main(int argc, char **argv)
     {
         /**< If invalid filePath, error message and abort. At this point, we have not validated the file format. */
         cerr << "Error loading files. Check your path"<<endl;
+        cerr << "We had loaded "<< vecBedExp.at(curDebug-1).second.count() <<endl;
         return 0;
     }
 

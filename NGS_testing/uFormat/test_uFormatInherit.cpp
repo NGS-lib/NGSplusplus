@@ -120,11 +120,11 @@ TEST(uBasicNGSTestHerit, GETSETCHR)
 /*
  * Setters/Getters testing - length
  *	Valid case:
- *		GETLENGHT
+ *		getLength
  *	Invalid case:
  */
 
-TEST(uBasicNGSTestHerit, GETLENGHT)
+TEST(uBasicNGSTestHerit, getLength)
 {
     uBasicNGS uTest("chr1", 150, 200);
     EXPECT_EQ(51, uTest.getLength());

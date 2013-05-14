@@ -378,6 +378,17 @@ TEST(uBasicNGSCHR_addNRandomSite, MAKECORRECTNUMBER){
 
 
  }
+
+   TEST(uBasicNGSCHR_printStats, ALLOVERLAP){
+       StandardChroms ourChroms;
+       uBasicNGSChrom twoItems("chr1");
+       twoItems.addData(uBasicNGS("chr1",0,220));
+       twoItems.addData(uBasicNGS("chr1",230,420));
+       EXPECT_NO_THROW(twoItems.printStats(std::cout));
+
+
+ }
+
  TEST(uBasicNGSCHR_getOverlappingCount, NOOVERLAP){
        StandardChroms ourChroms;
        uBasicNGSChrom oneItem("chr1");

@@ -58,7 +58,8 @@ static bool checkOverlap(const int X1, const int X2, const int Y1, const int Y2)
 static bool isRegionAInsideRegionB( int A1, int A2, int B1, int B2 );
 
 /**< Return the quartiles of a given vector */
-static std::vector<float> quartilesofVector(std::vector<float> inputVector);
+static std::vector<double> quartilesofVector(std::vector<long long> inputVector);
+static std::vector<double> quartilesofVector(std::vector<float> inputVector);
 static std::string concatStringInt(std::string ourstring, int ourInt, bool concatstringleft=true);
 /**< Minor statistics */
 static float getSd( std::vector<float>  ourVec, const float & mean);
@@ -152,13 +153,15 @@ namespace STRING{
 class Tokenizer
 {
 public:
-    static const std::string DELIMITERS;
+
+  //  static const std::string DELIMITERS;
+    const std::string DELIMITERS=" \t\n\r";
     Tokenizer(const std::string& str);
     Tokenizer(const std::string& str, const std::string& delimiters);
     bool NextToken();
     bool NextToken(const std::string& delimiters);
     const std::string GetToken() const;
-    void Reset();
+    //void Reset();
 protected:
     size_t m_offset;
     const std::string m_string;
@@ -430,30 +433,42 @@ inline static std::string concatStringInt(std::string ourstring, int ourInt, boo
  * \return std::vector<float> Vector containing 3 values
  *
  */
-inline static std::vector<float> quartilesofVector(std::vector<float> inputVector)
+inline static std::vector<double> quartilesofVector(std::vector<long long> inputVector)
 {
-
-    std::vector<float> returnVector;
+    std::vector<double> returnVector;
     int q1, med, q3;
-    //quartile positions.
-
     q1=inputVector.size()*0.25;
     med=inputVector.size()*0.5;
     q3=inputVector.size()*0.75;
-
     std::nth_element (inputVector.begin(), inputVector.begin()+q1, inputVector.end());
     returnVector.push_back(inputVector.at(q1));
-
     std::nth_element (inputVector.begin(), inputVector.begin()+med, inputVector.end());
     returnVector.push_back(inputVector.at(med));
-
     std::nth_element (inputVector.begin(), inputVector.begin()+q3, inputVector.end());
     returnVector.push_back(inputVector.at(q3));
-
     return returnVector;
 }
-
-
+/** \brief Return a vector containing the first quartile, median and q3 of a vector.
+ *
+ * \param inputVector std::vector<float> Vector of elements
+ * \return std::vector<float> Vector containing 3 values
+ *
+ */
+inline static std::vector<double> quartilesofVector(std::vector<float> inputVector)
+{
+    std::vector<double> returnVector;
+    int q1, med, q3;
+    q1=inputVector.size()*0.25;
+    med=inputVector.size()*0.5;
+    q3=inputVector.size()*0.75;
+    std::nth_element (inputVector.begin(), inputVector.begin()+q1, inputVector.end());
+    returnVector.push_back(inputVector.at(q1));
+    std::nth_element (inputVector.begin(), inputVector.begin()+med, inputVector.end());
+    returnVector.push_back(inputVector.at(med));
+    std::nth_element (inputVector.begin(), inputVector.begin()+q3, inputVector.end());
+    returnVector.push_back(inputVector.at(q3));
+    return returnVector;
+}
 /** \brief Returns quartiles, deprecated , do not use
  *
  */
