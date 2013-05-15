@@ -26,7 +26,7 @@
 //http://stackoverflow.com/questions/53849/how-do-i-tokenize-a-string-in-c
 namespace utility{
 
-    const std::string Tokenizer::DELIMITERS(" \t\n\r");
+
     Tokenizer::Tokenizer(const std::string& s) :
         m_offset(0),
         m_string(s),

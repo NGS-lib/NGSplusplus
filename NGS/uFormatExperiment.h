@@ -147,7 +147,7 @@ public:
 
     void inferChrSize();
     void writeWithWriter(uWriter& pWriter) const;
-
+#ifndef SWIG
     auto begin()->decltype(ExpMap.begin())
     {
         return ExpMap.begin();
@@ -166,7 +166,7 @@ public:
         return ExpMap.cend();
     };
 
-
+#endif
 
     bool F(const std::string & pChrom) const;
 
@@ -206,9 +206,10 @@ public:
     /**< Wrappers around the STL algorithms */
     template<class BinaryOperation, class InitialValue>
     InitialValue accumulateChromsInfo(BinaryOperation binary_op, InitialValue init) const;
+   #ifndef SWIG
     template<class UnaryOperation>
     auto computeOnAllChroms(UnaryOperation unary_op) const -> std::map<std::string, decltype(unary_op(_CHROM_()))>;
-
+#endif
     template<class UnaryFunction>
     UnaryFunction applyOnAllChroms(UnaryFunction f);
     template<class UnaryFunction>
@@ -240,6 +241,7 @@ public:
       * \param p UnaryPredicate : Unary predicate to evaluate on all chromosomes
       * \return A collection containing all the chromosomes for which the predicate is true
       */
+#ifndef SWIG
     //NOTE, should this return an experiment?
     template<class UnaryPredicate>
     auto getSpecificChroms(UnaryPredicate pred) const->decltype(ExpMap)
@@ -251,7 +253,7 @@ public:
         });
         return copyColl;
     }
-
+#endif
     uGenericNGSExperiment() {};
 
 };
@@ -1266,6 +1268,7 @@ InitialValue uGenericNGSExperiment<_SELF_,_CHROM_,_BASE_>::accumulateChromsInfo(
   * \param unary_op UnaryOperation : Unary operation to perform on all the chromosomes of the experiment
   * \return A collection of values computed on each chromosome by unary_op
   */
+#ifndef SWIG
 template<class _SELF_, typename _CHROM_, typename _BASE_>
 template<class UnaryOperation>
 auto uGenericNGSExperiment<_SELF_,_CHROM_,_BASE_>::computeOnAllChroms(UnaryOperation unary_op) const -> std::map<std::string, decltype(unary_op(_CHROM_()))>
@@ -1280,7 +1283,7 @@ auto uGenericNGSExperiment<_SELF_,_CHROM_,_BASE_>::computeOnAllChroms(UnaryOpera
     }catch(...){throw;}
 }
 
-
+#endif
 /** \brief Transform the chromosomes collection by applying a certain function to all chromosomes
   *
   *  Takes the passed function and run them on every chromosome structure, via std::for_each.

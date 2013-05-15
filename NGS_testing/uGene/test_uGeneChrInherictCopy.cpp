@@ -85,14 +85,14 @@ TEST(uGeneGENCHR_applyAndGetVecData, NORMAL){
 TEST(uGeneGENCHR_applyAndGetVecData, SIDEEFFECT){
        StandardChromsGene testChroms;
        long int counter=0;
-       auto functOp = [&](uGene & item){   item.extendSite(20);
+       auto functOp = [&](uGene & item){ item.extendSite(20);
        counter+=20;
        };
        auto results=testChroms.manyChr.applyAndGetVecData(functOp);
        EXPECT_TRUE(results.at(0).isEqual(uGene("chr1",80,220)));
        EXPECT_TRUE(results.at(1).isEqual(uGene("chr1",210,320)));
        EXPECT_TRUE(results.at(2).isEqual(uGene("chr1",100,270)));
-       EXPECT_EQ(results.size(),3);
+       EXPECT_EQ((int)results.size(),3);
        EXPECT_EQ(counter,60);
  }
 TEST(uGeneGENCHR_applyAndGetVecData, EMPTY){
@@ -100,7 +100,7 @@ TEST(uGeneGENCHR_applyAndGetVecData, EMPTY){
        auto functOp = [](uGene & item){   item.extendSite(20);
        };
        auto results=testChroms.emptyChr.applyAndGetVecData(functOp);
-       EXPECT_EQ(results.size(),0);
+       EXPECT_EQ((int)results.size(),0);
  }
 
 /**<  computeOnAllSites*/
@@ -111,15 +111,17 @@ TEST(uGeneGENCHR_computeOnAllSites, NORMAL){
        EXPECT_EQ(results.at(0),testChroms.manyChr.getSite(0).getLength());
        EXPECT_EQ(results.at(1),testChroms.manyChr.getSite(1).getLength());
        EXPECT_EQ(results.at(2),testChroms.manyChr.getSite(2).getLength());
-       EXPECT_EQ(results.size(),testChroms.manyChr.count());
 
-       EXPECT_EQ(std::accumulate(results.begin(), results.end(), 0), testChroms.manyChr.sumSiteSize());
+       EXPECT_EQ((int)results.size(),testChroms.manyChr.count());
+
+
+       EXPECT_EQ((int)std::accumulate(results.begin(), results.end(), 0), testChroms.manyChr.sumSiteSize());
  }
 TEST(uGeneGENCHR_computeOnAllSites, EMPTY){
        StandardChromsGene testChroms;
        auto functOp = [&](uGene item)->int{  return item.getLength();};
        auto results=testChroms.emptyChr.computeOnAllSites(functOp);
-       EXPECT_EQ(results.size(),testChroms.emptyChr.count());
+       EXPECT_EQ((int)results.size(),testChroms.emptyChr.count());
  }
 
 /**<  getSpecificSites*/

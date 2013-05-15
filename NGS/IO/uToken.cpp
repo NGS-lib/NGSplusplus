@@ -100,6 +100,7 @@ std::vector<std::string> uToken::getParamVector(token_param name) const
  * \param const std::string& name: the name in string format.
  * \exception param_not_found when the param is not setted in the token.
  */
+
 std::string uToken::getParam(const std::string& name, unsigned int paramPos) const
 {
 
@@ -815,6 +816,18 @@ std::string uToken::_convertTokenParamToString(const token_param& token) const
     std::stringstream ss;
     ss << token;
     return ss.str();
+}
+
+//TODO, free function
+/** \brief Convert given string into the associated param. Will fail if invalid string is passed
+ *
+ * \param name const std::string& String to convert from
+ * \return token_param The corresponding param enum
+ *
+ */
+token_param uToken::convertStringToTokenParam(const std::string& pName) const
+{
+    return _convertStringToTokenParam(pName);
 }
 
 token_param uToken::_convertStringToTokenParam(const std::string& name) const

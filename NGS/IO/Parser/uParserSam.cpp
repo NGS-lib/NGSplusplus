@@ -279,6 +279,10 @@ void uParserSam::_parseHeader()
         {
 
         }
+	else if (temp.find("@CO")!=std::string::npos)
+        {
+
+        }
         /**< Reference sequence dictionnary line */
         else if (temp.find("@SQ")!=std::string::npos)
         {

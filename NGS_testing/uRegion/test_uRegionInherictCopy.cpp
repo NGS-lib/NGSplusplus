@@ -138,11 +138,11 @@ TEST(uRegionNGSTestHerit, GETSETCHR)
 /*
  * Setters/Getters testing - length
  *	Valid case:
- *		GETLENGHT
+ *		getLength
  *	Invalid case:
  */
 
-TEST(uRegionNGSTestHerit, GETLENGHT)
+TEST(uRegionNGSTestHerit, getLength)
 {
     uRegion uTest("chr1", 150, 200);
     EXPECT_EQ(51, uTest.getLength());
