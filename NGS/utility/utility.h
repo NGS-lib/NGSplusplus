@@ -36,10 +36,10 @@
 /**< When comparing intervals */
 /**< Overlap_Partial is any overlap betwen A and B */
 /**< OVERLAP_COMPLETE mean that A is included in B */
-/**< OVERLAP_CENTRE means the center of A is overlap by B */
+/**< OVERLAP_CENTER means the center of A is overlap by B */
 enum class OverlapType
 {
-    OVERLAP_PARTIAL, OVERLAP_COMPLETE, OVERLAP_CENTRE
+    OVERLAP_PARTIAL, OVERLAP_COMPLETE, OVERLAP_CENTER
 };
 /**< Used when querying a SAM flag */
 enum class SamQuery
@@ -351,7 +351,7 @@ inline static bool isOverlap(int X1, int X2, int Y1, int Y2, OverlapType overlap
         }
         break;
 
-    case OverlapType::OVERLAP_CENTRE:
+    case OverlapType::OVERLAP_CENTER:
         int middle = ((X1+ X2)/2);
         if (utility::isInInterval(middle, Y1, Y2))
         {
