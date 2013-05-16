@@ -758,6 +758,23 @@ TEST(uBasicNGSCHR_findNext, STANDARD)
       auto first=ourChroms.manyChr.findNextSite(195);
       EXPECT_TRUE(first->isEqual(uBasicNGS("chr1",230,300)));
 }
+
+TEST(uBasicNGSCHR_findNext, BEFOREFIRST)
+{
+      StandardChroms ourChroms;
+      ourChroms.manyChr.sortSites();
+      auto first=ourChroms.manyChr.findNextSite(0);
+      EXPECT_TRUE(first->isEqual(uBasicNGS("chr1",100,200)));
+}
+
+TEST(uBasicNGSCHR_findNext, AFTERLAST)
+{
+      StandardChroms ourChroms;
+      ourChroms.manyChr.sortSites();
+      auto first=ourChroms.manyChr.findNextSite(200000);
+      EXPECT_EQ(first,ourChroms.manyChr.end());
+}
+
 TEST(uBasicNGSCHR_findNext, CUSTOM)
 {
       StandardChroms ourChroms;
