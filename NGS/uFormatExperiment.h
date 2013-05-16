@@ -726,7 +726,8 @@ long int uGenericNGSExperiment<_SELF_,_CHROM_, _BASE_>::getSubsetCount(const std
     long int count = 0;
     try
     {
-        count = getpChrom(pChr)->getSubsetCount(pStart, pEnd, overlap);
+        if (isChrom(pChr))
+            count = getpChrom(pChr)->getSubsetCount(pStart, pEnd, overlap);
     }
     catch (...)
     {
@@ -748,9 +749,11 @@ long int uGenericNGSExperiment<_SELF_,_CHROM_, _BASE_>::getSubsetCount(const _BA
     try
     {
         long int count=0;
+        if (this->isChrom(subsetReg.getChr())){
         count = getSubsetCount(subsetReg.getChr(),
                                subsetReg.getStart(),
                                subsetReg.getEnd());
+        }
         return count;
     }
     catch(...)
