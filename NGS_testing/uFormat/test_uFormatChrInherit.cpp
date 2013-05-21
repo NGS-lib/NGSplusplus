@@ -71,11 +71,11 @@ uBasicNGSChrom uChromTestOverlap;
 TEST(uBasicNGSCHR_avgSiteSize, ONESITE){
        StandardChroms ourChroms;
        ourChroms.oneChr.addData(uBasicNGS("chr1",100,200));
-       EXPECT_EQ(101,ourChroms.oneChr.avgSiteSize());
+       EXPECT_EQ(101,(int)ourChroms.oneChr.avgSiteSize());
  }
 TEST(uBasicNGSCHR_avgSiteSize, NOSITE){
        StandardChroms ourChroms;
-       EXPECT_EQ(0,ourChroms.emptyChr.avgSiteSize());
+       EXPECT_EQ(0,(int)ourChroms.emptyChr.avgSiteSize());
  }
  TEST(uBasicNGSCHR_avgSiteSize, MANYSITE){
        StandardChroms ourChroms;
@@ -758,6 +758,23 @@ TEST(uBasicNGSCHR_findNext, STANDARD)
       auto first=ourChroms.manyChr.findNextSite(195);
       EXPECT_TRUE(first->isEqual(uBasicNGS("chr1",230,300)));
 }
+
+TEST(uBasicNGSCHR_findNext, BEFOREFIRST)
+{
+      StandardChroms ourChroms;
+      ourChroms.manyChr.sortSites();
+      auto first=ourChroms.manyChr.findNextSite(0);
+      EXPECT_TRUE(first->isEqual(uBasicNGS("chr1",100,200)));
+}
+
+TEST(uBasicNGSCHR_findNext, AFTERLAST)
+{
+      StandardChroms ourChroms;
+      ourChroms.manyChr.sortSites();
+      auto first=ourChroms.manyChr.findNextSite(200000);
+      EXPECT_EQ(first,ourChroms.manyChr.end());
+}
+
 TEST(uBasicNGSCHR_findNext, CUSTOM)
 {
       StandardChroms ourChroms;

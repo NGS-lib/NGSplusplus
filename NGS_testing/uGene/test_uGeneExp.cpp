@@ -22,7 +22,7 @@ TEST(uGeneExpTest_addData, ParseNormal)
     EXPECT_EQ(1, testExp.count());
 
     auto chr1P= testExp.getpChrom("chr1");
-    EXPECT_EQ(4,chr1P->begin()->featureCount());
+    EXPECT_EQ(4,(int)chr1P->begin()->featureCount());
 
 }
 
@@ -40,7 +40,7 @@ TEST(uGeneExpTest_addData, PARSEIF)
                                                },  1));
     EXPECT_EQ(1, testExp.count());
     auto chr1P= testExp.getpChrom("chr1");
-    EXPECT_EQ(3,chr1P->begin()->featureCount());
+    EXPECT_EQ(3,(int)chr1P->begin()->featureCount());
 
 }
 
@@ -52,7 +52,7 @@ TEST(uGeneExpTest_addData, VIRTUALTEST)
     EXPECT_NO_THROW(curexp.addData(genePred.getNextEntry()));
     EXPECT_EQ(1, curexp.count());
     auto chr1P= curexp.getpChrom("chr1");
-    EXPECT_EQ(4,chr1P->begin()->featureCount());
+    EXPECT_EQ(4,(int)chr1P->begin()->featureCount());
 
 }
 

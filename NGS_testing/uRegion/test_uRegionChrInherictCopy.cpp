@@ -91,7 +91,7 @@ TEST(uRegionGENCHR_applyAndGetVecData, SIDEEFFECT){
        EXPECT_TRUE(results.at(0).isEqual(uRegion("chr1",80,220)));
        EXPECT_TRUE(results.at(1).isEqual(uRegion("chr1",210,320)));
        EXPECT_TRUE(results.at(2).isEqual(uRegion("chr1",100,270)));
-       EXPECT_EQ(results.size(),3);
+       EXPECT_EQ((int)results.size(),3);
        EXPECT_EQ(counter,60);
  }
 TEST(uRegionGENCHR_applyAndGetVecData, EMPTY){
@@ -99,7 +99,7 @@ TEST(uRegionGENCHR_applyAndGetVecData, EMPTY){
        auto functOp = [](uRegion & item){   item.extendSite(20);
        };
        auto results=testChroms.emptyChr.applyAndGetVecData(functOp);
-       EXPECT_EQ(results.size(),0);
+       EXPECT_EQ((int)results.size(),0);
  }
 
 /**<  computeOnAllSites*/
@@ -110,15 +110,15 @@ TEST(uRegionGENCHR_computeOnAllSites, NORMAL){
        EXPECT_EQ(results.at(0),testChroms.manyChr.getSite(0).getLength());
        EXPECT_EQ(results.at(1),testChroms.manyChr.getSite(1).getLength());
        EXPECT_EQ(results.at(2),testChroms.manyChr.getSite(2).getLength());
-       EXPECT_EQ(results.size(),testChroms.manyChr.count());
+       EXPECT_EQ((int)results.size(),testChroms.manyChr.count());
 
-       EXPECT_EQ(std::accumulate(results.begin(), results.end(), 0), testChroms.manyChr.sumSiteSize());
+       EXPECT_EQ(std::accumulate(results.begin(), results.end(), 0), (int)testChroms.manyChr.sumSiteSize());
  }
 TEST(uRegionGENCHR_computeOnAllSites, EMPTY){
        StandardChromsRegion testChroms;
        auto functOp = [&](uRegion item)->int{  return item.getLength();};
        auto results=testChroms.emptyChr.computeOnAllSites(functOp);
-       EXPECT_EQ(results.size(),testChroms.emptyChr.count());
+       EXPECT_EQ((int)results.size(),testChroms.emptyChr.count());
  }
 
 /**<  getSpecificSites*/
@@ -127,28 +127,28 @@ TEST(uRegionGENCHR_getSpecificSites, NONECOUNTED){
        auto functOp = [](const uRegion & item){  return (item.getLength()>2000);
        };
        auto results=testChroms.manyChr.getSpecificSites(functOp);
-       EXPECT_EQ(results.size(),0);
+       EXPECT_EQ((int)results.size(),0);
  }
 TEST(uRegionGENCHR_getSpecificSites, SOMECOUNTED){
        StandardChromsRegion testChroms;
        auto functOp = [](const uRegion & item){  return (item.getLength()>99);
        };
        auto results=testChroms.manyChr.getSpecificSites(functOp);
-       EXPECT_EQ(results.size(),2);
+       EXPECT_EQ((int)results.size(),2);
  }
 TEST(uRegionGENCHR_getSpecificSites, ALLCOUNTED){
        StandardChromsRegion testChroms;
        auto functOp = [](const uRegion & item){  return (item.getLength()>5);
        };
        auto results=testChroms.manyChr.getSpecificSites(functOp);
-       EXPECT_EQ(results.size(),3);
+       EXPECT_EQ((int)results.size(),3);
  }
  TEST(uRegionGENCHR_getSpecificSites, EMPTY){
        StandardChromsRegion testChroms;
        auto functOp = [](const uRegion & item){  return (true);
        };
        auto results=testChroms.emptyChr.getSpecificSites(functOp);
-       EXPECT_EQ(results.size(),0);
+       EXPECT_EQ((int)results.size(),0);
  }
 /**<  removeSpecificSites
  */
@@ -220,7 +220,7 @@ TEST(uRegionGENCHR_applyOnAllSitesConst, NORMAL){
        auto functOp = [&](const uRegion & item){siteCount+=item.getLength();
        };
        testChroms.manyChr.applyOnAllSites(functOp);
-       EXPECT_EQ(siteCount,  testChroms.manyChr.sumSiteSize());
+       EXPECT_EQ(siteCount,  (int)testChroms.manyChr.sumSiteSize());
  }
 TEST(uRegionGENCHR_applyOnAllSitesConst, EXCEPTION){
  StandardChromsRegion testChroms;
@@ -235,14 +235,14 @@ TEST(uRegionGENCHR_accumulateSitesInfos, EMPTY){
        int siteCount=0;
        auto functOp = [&](int siteCounts,const uRegion & item){ return (siteCounts+=item.getLength());
        };
-       EXPECT_EQ(testChroms.emptyChr.accumulateSitesInfo(functOp,siteCount),  testChroms.emptyChr.sumSiteSize());
+       EXPECT_EQ(testChroms.emptyChr.accumulateSitesInfo(functOp,siteCount),  (int)testChroms.emptyChr.sumSiteSize());
  }
 TEST(uRegionGENCHR_accumulateSitesInfo, NORMAL){
        const StandardChromsRegion testChroms;
        int siteCount=0;
        auto functOp = [&](int siteCounts,const uRegion & item){return siteCounts+=item.getLength();
        };
-       EXPECT_EQ(testChroms.manyChr.accumulateSitesInfo(functOp,siteCount),  testChroms.manyChr.sumSiteSize());
+       EXPECT_EQ(testChroms.manyChr.accumulateSitesInfo(functOp,siteCount),  (int)testChroms.manyChr.sumSiteSize());
  }
 TEST(uRegionGENCHR_accumulateSitesInfo, EXCEPTION){
 
@@ -362,83 +362,83 @@ uRegionChrom uChromTestOverlap;
 TEST(uRegionCHR_avgSiteSize, ONESITE){
        StandardChromsRegion ourChroms;
        ourChroms.oneChr.addData(uRegion("chr1",100,200));
-       EXPECT_EQ(101,ourChroms.oneChr.avgSiteSize());
+       EXPECT_EQ(101,(int)ourChroms.oneChr.avgSiteSize());
  }
 TEST(uRegionCHR_avgSiteSize, NOSITE){
        StandardChromsRegion ourChroms;
-       EXPECT_EQ(0,ourChroms.emptyChr.avgSiteSize());
+       EXPECT_EQ(0,(int)ourChroms.emptyChr.avgSiteSize());
  }
  TEST(uRegionCHR_avgSiteSize, MANYSITE){
        StandardChromsRegion ourChroms;
-       EXPECT_EQ(((101+71+131)/3),ourChroms.manyChr.avgSiteSize());
+       EXPECT_EQ(((101+71+131)/3),(int)ourChroms.manyChr.avgSiteSize());
  }
 /**<  */
  TEST(uRegionCHR_minSiteSize, ONESITE){
        StandardChromsRegion ourChroms;
-       EXPECT_EQ(101,ourChroms.oneChr.minSiteSize());
+       EXPECT_EQ(101,(int)ourChroms.oneChr.minSiteSize());
  }
 TEST(uRegionCHR_minSiteSize, NOSITE){
        StandardChromsRegion ourChroms;
-       EXPECT_EQ(0,ourChroms.emptyChr.minSiteSize());
+       EXPECT_EQ(0,(int)ourChroms.emptyChr.minSiteSize());
  }
  TEST(uRegionCHR_minSiteSize, MANYSITE){
        StandardChromsRegion ourChroms;
-       EXPECT_EQ(71,ourChroms.manyChr.minSiteSize());
+       EXPECT_EQ(71,(int)ourChroms.manyChr.minSiteSize());
  }
  /**<  */
  TEST(uRegionCHR_maxSiteSize, ONESITE){
        StandardChromsRegion ourChroms;
-       EXPECT_EQ(101,ourChroms.oneChr.maxSiteSize() );
+       EXPECT_EQ(101,(int)ourChroms.oneChr.maxSiteSize() );
  }
 TEST(uRegionCHR_maxSiteSizee, NOSITE){
        StandardChromsRegion ourChroms;
-       EXPECT_EQ(0,ourChroms.emptyChr.maxSiteSize());
+       EXPECT_EQ(0,(int)ourChroms.emptyChr.maxSiteSize());
  }
  TEST(uRegionCHR_maxSiteSize, MANYSITE){
        StandardChromsRegion ourChroms;
-       EXPECT_EQ(131,ourChroms.manyChr.maxSiteSize());
+       EXPECT_EQ(131,(int)ourChroms.manyChr.maxSiteSize());
  }
  /**<  */
  TEST(uRegionCHR_sumSiteSize, ONESITE){
        StandardChromsRegion ourChroms;
-       EXPECT_EQ(101,ourChroms.oneChr.sumSiteSize());
+       EXPECT_EQ(101,(int)ourChroms.oneChr.sumSiteSize());
  }
 TEST(uRegionCHR_sumSiteSize, NOSITE){
        StandardChromsRegion ourChroms;
-       EXPECT_EQ(0,ourChroms.emptyChr.sumSiteSize());
+       EXPECT_EQ(0,(int)ourChroms.emptyChr.sumSiteSize());
  }
  TEST(uRegionCHR_sumSiteSize, MANYSITE){
        StandardChromsRegion ourChroms;
-       EXPECT_EQ((101+71+131),ourChroms.manyChr.sumSiteSize());
+       EXPECT_EQ((101+71+131),(int)ourChroms.manyChr.sumSiteSize());
  }
 /**<  */
  TEST(uRegionCHR_inferChrSize, ONESITE){
        StandardChromsRegion ourChroms;
        ourChroms.oneChr.inferChrSize();
-       EXPECT_EQ(200,ourChroms.oneChr.getChromSize() );
+       EXPECT_EQ(200,(int)ourChroms.oneChr.getChromSize() );
  }
 TEST(uRegionCHR_inferChrSize, NOSITE){
        StandardChromsRegion ourChroms;
        ourChroms.emptyChr.inferChrSize();
-       EXPECT_EQ(0,ourChroms.emptyChr.getChromSize() );
+       EXPECT_EQ(0,(int)ourChroms.emptyChr.getChromSize() );
  }
  TEST(uRegionCHR_inferChrSize, MANYSITE){
        StandardChromsRegion ourChroms;
        ourChroms.manyChr.inferChrSize();
-       EXPECT_EQ(300,ourChroms.manyChr.getChromSize() );
+       EXPECT_EQ(300,(int)ourChroms.manyChr.getChromSize() );
  }
 /**<  Count Unique*/
  TEST(uRegionCHR_countUnique, ONESITE){
        StandardChromsRegion ourChroms;
-       EXPECT_EQ(1,ourChroms.oneChr.countUnique() );
+       EXPECT_EQ(1,(int)ourChroms.oneChr.countUnique() );
  }
 TEST(uRegionCHR_countUnique, NOSITE){
          StandardChromsRegion ourChroms;
-         EXPECT_EQ(0 , ourChroms.emptyChr.countUnique());
+         EXPECT_EQ(0 , (int)ourChroms.emptyChr.countUnique());
  }
  TEST(uRegionCHR_countUnique, MANYSITENOUNIQUE){
        StandardChromsRegion ourChroms;
-       EXPECT_EQ( 3, ourChroms.manyChr.countUnique());
+       EXPECT_EQ( 3, (int)ourChroms.manyChr.countUnique());
  }
 TEST(uRegionCHR_countUnique, MANYSITEWITHUNIQUE){
        uRegionChrom newManyChr("chr1");
@@ -448,7 +448,7 @@ TEST(uRegionCHR_countUnique, MANYSITEWITHUNIQUE){
        newManyChr.addData(uRegion("chr1",100,2500));
        newManyChr.addData(uRegion("chr1",230,300));
        newManyChr.addData(uRegion("chr1",120,250));
-       EXPECT_EQ(5 , newManyChr.countUnique());
+       EXPECT_EQ(5 , (int)newManyChr.countUnique());
  }
 
 /**< Testing DivideItemsIntoNBin */

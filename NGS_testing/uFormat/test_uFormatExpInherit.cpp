@@ -621,7 +621,7 @@ TEST(uBasicNGSEXP_getSubsetCount, NONAMECHROM){
 TEST(uBasicNGSEXP_getSubsetCount, CHROMNOEXIST){
 	validExperiments myExperiments;
 	myExperiments.getExperiment("MultipleChroms")->getpChrom("chr4")->sortSites();
-	EXPECT_THROW(myExperiments.getExperiment("NoName_Empty")->getSubsetCount("chr4", 100, 200), param_throw);
+	EXPECT_EQ(myExperiments.getExperiment("NoName_Empty")->getSubsetCount("chr4", 100, 200), 0);
 }
 
 /*

@@ -147,7 +147,7 @@ public:
 
     void inferChrSize();
     void writeWithWriter(uWriter& pWriter) const;
-#ifndef SWIG
+
     auto begin()->decltype(ExpMap.begin())
     {
         return ExpMap.begin();
@@ -166,9 +166,8 @@ public:
         return ExpMap.cend();
     };
 
-#endif
 
-    bool F(const std::string & pChrom) const;
+ //   bool F(const std::string & pChrom) const;
 
     _CHROM_ getChrom(const std::string & chrom) const;
     const _CHROM_* getpChrom(const std::string & chrom) const;
@@ -206,10 +205,10 @@ public:
     /**< Wrappers around the STL algorithms */
     template<class BinaryOperation, class InitialValue>
     InitialValue accumulateChromsInfo(BinaryOperation binary_op, InitialValue init) const;
-   #ifndef SWIG
+
     template<class UnaryOperation>
     auto computeOnAllChroms(UnaryOperation unary_op) const -> std::map<std::string, decltype(unary_op(_CHROM_()))>;
-#endif
+
     template<class UnaryFunction>
     UnaryFunction applyOnAllChroms(UnaryFunction f);
     template<class UnaryFunction>
@@ -241,7 +240,7 @@ public:
       * \param p UnaryPredicate : Unary predicate to evaluate on all chromosomes
       * \return A collection containing all the chromosomes for which the predicate is true
       */
-#ifndef SWIG
+
     //NOTE, should this return an experiment?
     template<class UnaryPredicate>
     auto getSpecificChroms(UnaryPredicate pred) const->decltype(ExpMap)
@@ -253,7 +252,7 @@ public:
         });
         return copyColl;
     }
-#endif
+
     uGenericNGSExperiment() {};
 
 };
@@ -471,8 +470,8 @@ void uGenericNGSExperiment<_SELF_,_CHROM_, _BASE_>::loadWithParser(std::ifstream
     try
     {
         std::istream& refStream = pStream;
-        uParser Curparser(&refStream, pType,pBlockCount);
-        loadWithParser(Curparser);
+        uParser ourParser(&refStream, pType);
+        loadWithParser(ourParser,pBlockCount);
     }
     catch (...)
     {
@@ -490,8 +489,8 @@ void uGenericNGSExperiment<_SELF_,_CHROM_, _BASE_>::loadWithParser(std::string f
 
     try
     {
-        uParser ourParser(filepath, pType,pBlockCount);
-        loadWithParser(ourParser);
+        uParser ourParser(filepath, pType);
+        loadWithParser(ourParser,pBlockCount);
     }
     catch (...)
     {
@@ -594,7 +593,7 @@ template<class _SELF_, typename _CHROM_, typename _BASE_>
 bool uGenericNGSExperiment<_SELF_,_CHROM_, _BASE_>::isChrom(const std::string & pChrom) const
 {
     try {
-    return (ExpMap.count(pChrom));
+        return (ExpMap.count(pChrom));
     }
     catch(...){throw;}
 }
@@ -727,7 +726,8 @@ long int uGenericNGSExperiment<_SELF_,_CHROM_, _BASE_>::getSubsetCount(const std
     long int count = 0;
     try
     {
-        count = getpChrom(pChr)->getSubsetCount(pStart, pEnd, overlap);
+        if (isChrom(pChr))
+            count = getpChrom(pChr)->getSubsetCount(pStart, pEnd, overlap);
     }
     catch (...)
     {
@@ -749,9 +749,11 @@ long int uGenericNGSExperiment<_SELF_,_CHROM_, _BASE_>::getSubsetCount(const _BA
     try
     {
         long int count=0;
+        if (this->isChrom(subsetReg.getChr())){
         count = getSubsetCount(subsetReg.getChr(),
                                subsetReg.getStart(),
                                subsetReg.getEnd());
+        }
         return count;
     }
     catch(...)
@@ -1268,7 +1270,7 @@ InitialValue uGenericNGSExperiment<_SELF_,_CHROM_,_BASE_>::accumulateChromsInfo(
   * \param unary_op UnaryOperation : Unary operation to perform on all the chromosomes of the experiment
   * \return A collection of values computed on each chromosome by unary_op
   */
-#ifndef SWIG
+
 template<class _SELF_, typename _CHROM_, typename _BASE_>
 template<class UnaryOperation>
 auto uGenericNGSExperiment<_SELF_,_CHROM_,_BASE_>::computeOnAllChroms(UnaryOperation unary_op) const -> std::map<std::string, decltype(unary_op(_CHROM_()))>
@@ -1283,7 +1285,7 @@ auto uGenericNGSExperiment<_SELF_,_CHROM_,_BASE_>::computeOnAllChroms(UnaryOpera
     }catch(...){throw;}
 }
 
-#endif
+
 /** \brief Transform the chromosomes collection by applying a certain function to all chromosomes
   *
   *  Takes the passed function and run them on every chromosome structure, via std::for_each.
