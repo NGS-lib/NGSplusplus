@@ -59,10 +59,10 @@ template<class _SELF_, typename _BASE_>
 class uGenericNGSChrom
 {
     /**<  */
-  //  static_assert(
-  //      std::is_convertible<_BASE_, uGenericNGS<_BASE_>>::value,
-  //      "The type does not inherit from uGenericNGS."
-  //  );
+    //  static_assert(
+    //      std::is_convertible<_BASE_, uGenericNGS<_BASE_>>::value,
+    //      "The type does not inherit from uGenericNGS."
+    //  );
     typedef std::vector<_BASE_> VecGenericNGS;
     typedef typename std::vector<_BASE_>::iterator VecGenIter;
     typedef typename std::vector<_BASE_>::const_iterator VecGenConstIter;
@@ -141,7 +141,9 @@ public:
     uGenericNGSChrom& operator=(const uGenericNGSChrom& copFrom);
     uGenericNGSChrom(const uGenericNGSChrom&);
     virtual ~uGenericNGSChrom<_SELF_,_BASE_> ()
-    { ;  }
+    {
+        ;
+    }
 
     /**< Utility wrappers to query collection */
     unsigned long long avgSiteSize() const;
@@ -340,13 +342,17 @@ uGenericNGSChrom<_SELF_,_BASE_>::uGenericNGSChrom(const std::string & consString
 template <class _SELF_, class _BASE_>
 uGenericNGSChrom<_SELF_,_BASE_>::uGenericNGSChrom(const std::vector<_BASE_> & copyVec)
 {
-try {
-    if (copyVec.size())
-        setChr(copyVec.at(0).getChr());
-    for (_BASE_ elem: copyVec)
-        addData(elem);
-}
-catch(...){throw;}
+    try
+    {
+        if (copyVec.size())
+            setChr(copyVec.at(0).getChr());
+        for (_BASE_ elem: copyVec)
+            addData(elem);
+    }
+    catch(...)
+    {
+        throw;
+    }
 }
 
 template <class _SELF_, class _BASE_>
@@ -1174,10 +1180,9 @@ _SELF_ uGenericNGSChrom<_SELF_,_BASE_>::getOverlapping(long int pStart, long int
     for(auto it= VecSites.begin(); it!=VecSites.end(); it++)
     {
 
-         if (utility::isOverlap(it->getStart(), it->getEnd(),pStart,pEnd,pOverlap))
+        if (utility::isOverlap(it->getStart(), it->getEnd(),pStart,pEnd,pOverlap))
         {
             returnChr.addDataNoCheck(*it);
-            break;
         }
 
     }
@@ -1196,28 +1201,60 @@ _SELF_ uGenericNGSChrom<_SELF_,_BASE_>::getOverlapping(_BASE_ &pBase ,OverlapTyp
     return getOverlapping(pBase.getStart(), pBase.getEnd(), pOverlap);
 }
 
-    /** \brief Return the number of elements of this overlapping the genomic positions between start and end
-     *
-     * \param pStart long int : Beginning of region
-     * \param pEnd long int : End of region
-     * \param pOverlap OverlapType : Overlap type
-     * \sa getOverlappingCount
-     * \return long long int Number of regions overlapping range.
-     *
-     */
-     template <class _SELF_,class _BASE_>
-    long long int uGenericNGSChrom<_SELF_,_BASE_>::getOverlappingCount(long int pStart, long int pEnd,OverlapType pOverlap) const{
-     long long int overlapCount=0;
+/** \brief Return the number of elements of this overlapping the genomic positions between start and end
+ *
+ * \param pStart long int : Beginning of region
+ * \param pEnd long int : End of region
+ * \param pOverlap OverlapType : Overlap type
+ * \sa getOverlappingCount
+ * \return long long int Number of regions overlapping range.
+ *
+ */
+template <class _SELF_,class _BASE_>
+long long int uGenericNGSChrom<_SELF_,_BASE_>::getOverlappingCount(long int pStart, long int pEnd,OverlapType pOverlap) const
+{
+    long long int overlapCount=0;
 
-  try {
-    for(auto it= VecSites.begin(); it!=VecSites.end(); it++)
+    try
     {
-        if (utility::isOverlap(it->getStart(), it->getEnd(),pStart,pEnd,pOverlap))
+        for(auto it= VecSites.begin(); it!=VecSites.end(); it++)
         {
-           overlapCount++;
+            if (utility::isOverlap(it->getStart(), it->getEnd(),pStart,pEnd,pOverlap))
+            {
+                overlapCount++;
+            }
         }
+        return overlapCount;
+
     }
-    return overlapCount;
+    catch(...)
+    {
+        throw;
+    }
+}
+/** \brief Return the number of elements of this overlapping the genomic positions between start and end
+ *
+ * \param pBase _BASE_ : Unit element that serves as regino to compare to
+ * \param pOverlap OverlapType : Overlap type
+ * \sa getOverlappingCount
+ * \return long long int Number of regions overlapping range.
+ *
+ */
+template <class _SELF_,class _BASE_>
+long long int uGenericNGSChrom<_SELF_,_BASE_>::getOverlappingCount(_BASE_ &pBase, OverlapType pOverlap) const
+{
+    long long int overlapCount=0;
+
+    try
+    {
+        for(auto it= VecSites.begin(); it!=VecSites.end(); it++)
+        {
+            if (utility::isOverlap(it->getStart(), it->getEnd(),(pBase.getStart()),(pBase.getEnd()),pOverlap))
+            {
+                overlapCount++;
+            }
+        }
+        return overlapCount;
 
     }
     catch(...)
@@ -1226,26 +1263,6 @@ _SELF_ uGenericNGSChrom<_SELF_,_BASE_>::getOverlapping(_BASE_ &pBase ,OverlapTyp
     }
 }
 
-     template <class _SELF_,class _BASE_>
-    long long int uGenericNGSChrom<_SELF_,_BASE_>::getOverlappingCount(_BASE_ &pBase, OverlapType pOverlap) const{
-     long long int overlapCount=0;
-
-  try {
-    for(auto it= VecSites.begin(); it!=VecSites.end(); it++)
-    {
-        if (utility::isOverlap(it->getStart(), it->getEnd(),(int)(pBase.getStart()),(int)(pBase.getEnd()),pOverlap))
-        {
-           overlapCount++;
-        }
-    }
-    return overlapCount;
-
-    }
-    catch(...)
-    {
-        throw;
-    }
-}
 /**< Return the number of elements of A that overlap B */
 /** \brief Wrapper function that returns the number of elements of that overlap at least one element of param
  *
@@ -1913,155 +1930,155 @@ std::pair<typename std::vector<_BASE_>::const_iterator, typename std::vector<_BA
 
 
 
-    /** \brief Return a copy of the functor  used to access to current Start value
-      *
-      *  This will return a copy of the assigned functor to access the start value. Will equal nullptr if not set
-      *
-      *
-      * \return std::function<float(const _BASE_*)> const Copy of the fucntor to access start.
-      */
-    template <class _SELF_,class _BASE_>
-    std::function<double(const _BASE_*)> uGenericNGSChrom<_SELF_,_BASE_>::getStartFunct() const
-    {
-        return sortGetStart;
-    }
-    /** \brief Return a copy of the functor  used to access to current end value
-    *
-    *  This will return a copy of the assigned functor to access the end value. Will equal nullptr if not set
-    *
-    * \return std::function<float(const _BASE_*)> const Copy of the fucntor to access end.
-    */
-    template <class _SELF_,class _BASE_>
-    std::function<double(const _BASE_*)> uGenericNGSChrom<_SELF_,_BASE_>::getEndFunct() const
-    {
-        return sortGetEnd;
-    }
+/** \brief Return a copy of the functor  used to access to current Start value
+  *
+  *  This will return a copy of the assigned functor to access the start value. Will equal nullptr if not set
+  *
+  *
+  * \return std::function<float(const _BASE_*)> const Copy of the fucntor to access start.
+  */
+template <class _SELF_,class _BASE_>
+std::function<double(const _BASE_*)> uGenericNGSChrom<_SELF_,_BASE_>::getStartFunct() const
+{
+    return sortGetStart;
+}
+/** \brief Return a copy of the functor  used to access to current end value
+*
+*  This will return a copy of the assigned functor to access the end value. Will equal nullptr if not set
+*
+* \return std::function<float(const _BASE_*)> const Copy of the fucntor to access end.
+*/
+template <class _SELF_,class _BASE_>
+std::function<double(const _BASE_*)> uGenericNGSChrom<_SELF_,_BASE_>::getEndFunct() const
+{
+    return sortGetEnd;
+}
 
-    /** \brief Return a copy of the comparison functor currently used
-     *
-     *  Will return a copy of the comparisong functor used for sorting. The comparison functor takes
-     *  two _BASE_ elements and returns true or false comparison. Set to nullptr by default
-     *
-     *
-     * \return std::function<bool(const _BASE_ &item1, const _BASE_ &item2)> Comparison functor
-     *
-     */
-    template <class _SELF_,class _BASE_>
-    std::function<bool(const _BASE_ &item1, const _BASE_ &item2)> uGenericNGSChrom<_SELF_,_BASE_>::getCompFunct() const
-    {
-        return m_comptFunc;
-    }
+/** \brief Return a copy of the comparison functor currently used
+ *
+ *  Will return a copy of the comparisong functor used for sorting. The comparison functor takes
+ *  two _BASE_ elements and returns true or false comparison. Set to nullptr by default
+ *
+ *
+ * \return std::function<bool(const _BASE_ &item1, const _BASE_ &item2)> Comparison functor
+ *
+ */
+template <class _SELF_,class _BASE_>
+std::function<bool(const _BASE_ &item1, const _BASE_ &item2)> uGenericNGSChrom<_SELF_,_BASE_>::getCompFunct() const
+{
+    return m_comptFunc;
+}
 
-    /** \brief Return sorted status of the elements
-     *
-     * \return bool. True if sorted.
-     *
-     */
-    template <class _SELF_,class _BASE_>
-    bool uGenericNGSChrom<_SELF_,_BASE_>::getSortedStatus() const
-    {
-        return m_isSorted;
-    }
+/** \brief Return sorted status of the elements
+ *
+ * \return bool. True if sorted.
+ *
+ */
+template <class _SELF_,class _BASE_>
+bool uGenericNGSChrom<_SELF_,_BASE_>::getSortedStatus() const
+{
+    return m_isSorted;
+}
 
-    /** \brief  Return number of elements
-     *
-     * \return int. Number of elements contained
-     *
-     */
-    template <class _SELF_,class _BASE_>
-    long int uGenericNGSChrom<_SELF_,_BASE_>::count() const
-    {
-        return VecSites.size();
-    }
+/** \brief  Return number of elements
+ *
+ * \return int. Number of elements contained
+ *
+ */
+template <class _SELF_,class _BASE_>
+long int uGenericNGSChrom<_SELF_,_BASE_>::count() const
+{
+    return VecSites.size();
+}
 
-    /** \brief Return size of scaffold/chrom. 0 if not set
-     *
-     * \return long long int. Size of the scaffold/chrom.
-     *
-     */
-    template <class _SELF_,class _BASE_>
-    long long int uGenericNGSChrom<_SELF_,_BASE_>::getChromSize() const
-    {
-        return chromSize;
-    }
+/** \brief Return size of scaffold/chrom. 0 if not set
+ *
+ * \return long long int. Size of the scaffold/chrom.
+ *
+ */
+template <class _SELF_,class _BASE_>
+long long int uGenericNGSChrom<_SELF_,_BASE_>::getChromSize() const
+{
+    return chromSize;
+}
 
-    /** \brief Set scaffold/chrom size
-     *
-     *  Set the scaffold/chrom size. Must be above 0
-     * \param chromS long int. Size to set the scaffold/chrom size to
-     * \exception param_throw. Parameter chromS is < then 0.
-     * \return void
-     *
-     */
-    template <class _SELF_,class _BASE_>
-    void uGenericNGSChrom<_SELF_,_BASE_>::setChromSize(long long int chromS)
-    {
-        if (chromS<0)
-            throw param_throw()<<string_error("failling in setChromSize, value "+utility::to_string(chromS)+" is below 0\n");
-        chromSize= chromS;
-    }
+/** \brief Set scaffold/chrom size
+ *
+ *  Set the scaffold/chrom size. Must be above 0
+ * \param chromS long int. Size to set the scaffold/chrom size to
+ * \exception param_throw. Parameter chromS is < then 0.
+ * \return void
+ *
+ */
+template <class _SELF_,class _BASE_>
+void uGenericNGSChrom<_SELF_,_BASE_>::setChromSize(long long int chromS)
+{
+    if (chromS<0)
+        throw param_throw()<<string_error("failling in setChromSize, value "+utility::to_string(chromS)+" is below 0\n");
+    chromSize= chromS;
+}
 
-    /** \brief return name of the scaffold/chrom
-     *
-     *  Returns a std::string containing the name of the scaffold.
-     *  An empty string ("") is a valid name.
-     *
-     * \return std::string. Name of the scaffold/chrom
-     *
-     */
-    template <class _SELF_,class _BASE_>
-    std::string uGenericNGSChrom<_SELF_,_BASE_>::getChr() const
-    {
-        return chr;
-    }
+/** \brief return name of the scaffold/chrom
+ *
+ *  Returns a std::string containing the name of the scaffold.
+ *  An empty string ("") is a valid name.
+ *
+ * \return std::string. Name of the scaffold/chrom
+ *
+ */
+template <class _SELF_,class _BASE_>
+std::string uGenericNGSChrom<_SELF_,_BASE_>::getChr() const
+{
+    return chr;
+}
 
-    /** \brief Set the name of the scaffold/chr.
-     *
-     *   Set the name of the scaffold/chr. This function is included for
-     *   working directly with a chrom structure. If working through a Exp structure, this should be set
-     *   via a call to the corresponding Exp function, otherwise mapping may be throw off.
-     *
-     *  \param pChr std::string. Scaffold name to set to.
-     *  \return void
-     *
-     */
-    template <class _SELF_,class _BASE_>
-    void uGenericNGSChrom<_SELF_,_BASE_>::setChr(std::string pChr)
-    {
-        chr = move(pChr);
-    }
+/** \brief Set the name of the scaffold/chr.
+ *
+ *   Set the name of the scaffold/chr. This function is included for
+ *   working directly with a chrom structure. If working through a Exp structure, this should be set
+ *   via a call to the corresponding Exp function, otherwise mapping may be throw off.
+ *
+ *  \param pChr std::string. Scaffold name to set to.
+ *  \return void
+ *
+ */
+template <class _SELF_,class _BASE_>
+void uGenericNGSChrom<_SELF_,_BASE_>::setChr(std::string pChr)
+{
+    chr = move(pChr);
+}
 
 
-    /** \brief  Return copy of the element at .begin()+position count from iterator
-     *
-     * \param position int. Position of the _BASE_ in Vecsites to returné (Unrelated to the start and end position of the element)
-     * \exception param_throw. Throw if the requested element is an invalid position.
-     * \return _BASE_ Copy of the element at the asked for position.
-     *
-     */
-    template <class _SELF_,class _BASE_>
-    _BASE_ uGenericNGSChrom<_SELF_,_BASE_>::getSite(long long pPos) const
+/** \brief  Return copy of the element at .begin()+position count from iterator
+ *
+ * \param position int. Position of the _BASE_ in Vecsites to returné (Unrelated to the start and end position of the element)
+ * \exception param_throw. Throw if the requested element is an invalid position.
+ * \return _BASE_ Copy of the element at the asked for position.
+ *
+ */
+template <class _SELF_,class _BASE_>
+_BASE_ uGenericNGSChrom<_SELF_,_BASE_>::getSite(long long pPos) const
+{
+    try
     {
-        try
-        {
-            return VecSites.at(pPos);
-        }
-        catch (std::exception &e)
-        {
-            throw param_throw()<<string_error("Failling in getSite(), out_of_range error");
-        }
+        return VecSites.at(pPos);
     }
+    catch (std::exception &e)
+    {
+        throw param_throw()<<string_error("Failling in getSite(), out_of_range error");
+    }
+}
 
-    /** \brief  Return a vector containing all elements of chrom structure.
-     *
-     * \return std::vector<_BASE_> std::vector containing all _BASE_ elements in chrom structure
-     *
-     */
-    template <class _SELF_,class _BASE_>
-    std::vector<_BASE_> uGenericNGSChrom<_SELF_,_BASE_>::returnVecData() const
-    {
-        return VecSites;
-    }
+/** \brief  Return a vector containing all elements of chrom structure.
+ *
+ * \return std::vector<_BASE_> std::vector containing all _BASE_ elements in chrom structure
+ *
+ */
+template <class _SELF_,class _BASE_>
+std::vector<_BASE_> uGenericNGSChrom<_SELF_,_BASE_>::returnVecData() const
+{
+    return VecSites;
+}
 
 
 } // End of namespace NGS

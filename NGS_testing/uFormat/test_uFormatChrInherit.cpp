@@ -344,6 +344,25 @@ TEST(uBasicNGSCHR_addNRandomSite, MAKECORRECTNUMBER){
        uBasicNGSChrom retChr=ourChroms.manyChr.getOverlapping(oneItem);
        EXPECT_EQ(0,retChr.count());
  }
+
+  TEST(uBasicNGSCHR_getOverlapping, REGIONALLOVERLAP){
+       StandardChroms ourChroms;
+       uBasicNGS oneItem("chr1",0,1000);
+       uBasicNGSChrom retChr=ourChroms.manyChr.getOverlapping(oneItem);
+       EXPECT_EQ(3,retChr.count());
+ }
+  TEST(uBasicNGSCHR_getOverlapping, REGIONNOOVERLAP){
+       StandardChroms ourChroms;
+       uBasicNGS oneItem("chr1",9900,10000);
+       uBasicNGSChrom retChr=ourChroms.manyChr.getOverlapping(oneItem);
+       EXPECT_EQ(0,retChr.count());
+ }
+  TEST(uBasicNGSCHR_getOverlapping, REGIONDIFFERENTCHR){
+       StandardChroms ourChroms;
+       uBasicNGS oneItem("chr2",0,1000);
+       uBasicNGSChrom retChr=ourChroms.manyChr.getOverlapping(oneItem);
+       EXPECT_EQ(0,retChr.count());
+ }
 /**< Get overlapping Count */
 
  TEST(uBasicNGSCHR_getOverlappingCount, NORMAL){
