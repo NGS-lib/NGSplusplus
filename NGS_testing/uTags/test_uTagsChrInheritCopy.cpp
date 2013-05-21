@@ -117,7 +117,7 @@ TEST(uTagsGENCHR_applyAndGetVecData, SIDEEFFECT){
        EXPECT_TRUE(results.at(0).isEqual(uTags("chr1",80,220)));
        EXPECT_TRUE(results.at(1).isEqual(uTags("chr1",210,320)));
        EXPECT_TRUE(results.at(2).isEqual(uTags("chr1",100,270)));
-       EXPECT_EQ(results.size(),3);
+       EXPECT_EQ((int)results.size(),3);
        EXPECT_EQ(counter,60);
  }
 TEST(uTagsGENCHR_applyAndGetVecData, EMPTY){
@@ -125,7 +125,7 @@ TEST(uTagsGENCHR_applyAndGetVecData, EMPTY){
        auto functOp = [](uTags & item){   item.extendSite(20);
        };
        auto results=testChroms.emptyChr.applyAndGetVecData(functOp);
-       EXPECT_EQ(results.size(),0);
+       EXPECT_EQ((int)results.size(),0);
  }
 
 /**<  computeOnAllSites*/
@@ -136,15 +136,15 @@ TEST(uTagsGENCHR_computeOnAllSites, NORMAL){
        EXPECT_EQ(results.at(0),testChroms.manyChr.getSite(0).getLength());
        EXPECT_EQ(results.at(1),testChroms.manyChr.getSite(1).getLength());
        EXPECT_EQ(results.at(2),testChroms.manyChr.getSite(2).getLength());
-       EXPECT_EQ(results.size(),testChroms.manyChr.count());
+       EXPECT_EQ((int)results.size(),testChroms.manyChr.count());
 
-       EXPECT_EQ(std::accumulate(results.begin(), results.end(), 0), testChroms.manyChr.sumSiteSize());
+       EXPECT_EQ(std::accumulate(results.begin(), results.end(), 0), (int)testChroms.manyChr.sumSiteSize());
  }
 TEST(uTagsGENCHR_computeOnAllSites, EMPTY){
        StandardChromsTags testChroms;
        auto functOp = [&](uTags item)->int{  return item.getLength();};
        auto results=testChroms.emptyChr.computeOnAllSites(functOp);
-       EXPECT_EQ(results.size(),testChroms.emptyChr.count());
+       EXPECT_EQ((int)results.size(),testChroms.emptyChr.count());
  }
 
 /**<  getSpecificSites*/
@@ -153,28 +153,28 @@ TEST(uTagsGENCHR_getSpecificSites, NONECOUNTED){
        auto functOp = [](const uTags & item){  return (item.getLength()>2000);
        };
        auto results=testChroms.manyChr.getSpecificSites(functOp);
-       EXPECT_EQ(results.size(),0);
+       EXPECT_EQ((int)results.size(),0);
  }
 TEST(uTagsGENCHR_getSpecificSites, SOMECOUNTED){
        StandardChromsTags testChroms;
        auto functOp = [](const uTags & item){  return (item.getLength()>99);
        };
        auto results=testChroms.manyChr.getSpecificSites(functOp);
-       EXPECT_EQ(results.size(),2);
+       EXPECT_EQ((int)results.size(),2);
  }
 TEST(uTagsGENCHR_getSpecificSites, ALLCOUNTED){
        StandardChromsTags testChroms;
        auto functOp = [](const uTags & item){  return (item.getLength()>5);
        };
        auto results=testChroms.manyChr.getSpecificSites(functOp);
-       EXPECT_EQ(results.size(),3);
+       EXPECT_EQ((int)results.size(),3);
  }
  TEST(uTagsGENCHR_getSpecificSites, EMPTY){
        StandardChromsTags testChroms;
        auto functOp = [](const uTags & item){  return (true);
        };
        auto results=testChroms.emptyChr.getSpecificSites(functOp);
-       EXPECT_EQ(results.size(),0);
+       EXPECT_EQ((int)results.size(),0);
  }
 /**<  removeSpecificSites
  */

@@ -90,7 +90,7 @@ TEST(uBasicNGSGENCHR_applyAndGetVecData, SIDEEFFECT){
        EXPECT_TRUE(results.at(0).isEqual(uBasicNGS("chr1",80,220)));
        EXPECT_TRUE(results.at(1).isEqual(uBasicNGS("chr1",210,320)));
        EXPECT_TRUE(results.at(2).isEqual(uBasicNGS("chr1",100,270)));
-       EXPECT_EQ(results.size(),3);
+       EXPECT_EQ((int)results.size(),3);
        EXPECT_EQ(counter,60);
  }
 TEST(uBasicNGSGENCHR_applyAndGetVecData, EMPTY){
@@ -98,7 +98,7 @@ TEST(uBasicNGSGENCHR_applyAndGetVecData, EMPTY){
        auto functOp = [](uBasicNGS & item){   item.extendSite(20);
        };
        auto results=testChroms.emptyChr.applyAndGetVecData(functOp);
-       EXPECT_EQ(results.size(),0);
+       EXPECT_EQ((int)results.size(),0);
  }
 
 /**<  computeOnAllSites*/
@@ -109,15 +109,15 @@ TEST(uBasicNGSGENCHR_computeOnAllSites, NORMAL){
        EXPECT_EQ(results.at(0),testChroms.manyChr.getSite(0).getLength());
        EXPECT_EQ(results.at(1),testChroms.manyChr.getSite(1).getLength());
        EXPECT_EQ(results.at(2),testChroms.manyChr.getSite(2).getLength());
-       EXPECT_EQ(results.size(),testChroms.manyChr.count());
+       EXPECT_EQ((int)results.size(),testChroms.manyChr.count());
 
-       EXPECT_EQ(std::accumulate(results.begin(), results.end(), 0), testChroms.manyChr.sumSiteSize());
+       EXPECT_EQ(std::accumulate(results.begin(), results.end(), 0), (int)testChroms.manyChr.sumSiteSize());
  }
 TEST(uBasicNGSGENCHR_computeOnAllSites, EMPTY){
        StandardChroms testChroms;
        auto functOp = [&](uBasicNGS item)->int{  return item.getLength();};
        auto results=testChroms.emptyChr.computeOnAllSites(functOp);
-       EXPECT_EQ(results.size(),testChroms.emptyChr.count());
+       EXPECT_EQ((int)results.size(),testChroms.emptyChr.count());
  }
 
 /**<  getSpecificSites*/
@@ -126,28 +126,28 @@ TEST(uBasicNGSGENCHR_getSpecificSites, NONECOUNTED){
        auto functOp = [](const uBasicNGS & item){  return (item.getLength()>2000);
        };
        auto results=testChroms.manyChr.getSpecificSites(functOp);
-       EXPECT_EQ(results.size(),0);
+       EXPECT_EQ((int)results.size(),0);
  }
 TEST(uBasicNGSGENCHR_getSpecificSites, SOMECOUNTED){
        StandardChroms testChroms;
        auto functOp = [](const uBasicNGS & item){  return (item.getLength()>99);
        };
        auto results=testChroms.manyChr.getSpecificSites(functOp);
-       EXPECT_EQ(results.size(),2);
+       EXPECT_EQ((int)results.size(),2);
  }
 TEST(uBasicNGSGENCHR_getSpecificSites, ALLCOUNTED){
        StandardChroms testChroms;
        auto functOp = [](const uBasicNGS & item){  return (item.getLength()>5);
        };
        auto results=testChroms.manyChr.getSpecificSites(functOp);
-       EXPECT_EQ(results.size(),3);
+       EXPECT_EQ((int)results.size(),3);
  }
  TEST(uBasicNGSGENCHR_getSpecificSites, EMPTY){
        StandardChroms testChroms;
        auto functOp = [](const uBasicNGS & item){  return (true);
        };
        auto results=testChroms.emptyChr.getSpecificSites(functOp);
-       EXPECT_EQ(results.size(),0);
+       EXPECT_EQ((int)results.size(),0);
  }
 /**<  removeSpecificSites
  */
@@ -219,7 +219,7 @@ TEST(uBasicNGSGENCHR_applyOnAllSitesConst, NORMAL){
        auto functOp = [&](const uBasicNGS & item){siteCount+=item.getLength();
        };
        testChroms.manyChr.applyOnAllSites(functOp);
-       EXPECT_EQ(siteCount,  testChroms.manyChr.sumSiteSize());
+       EXPECT_EQ(siteCount,  (int)testChroms.manyChr.sumSiteSize());
  }
 TEST(uBasicNGSGENCHR_applyOnAllSitesConst, EXCEPTION){
  StandardChroms testChroms;
@@ -234,14 +234,14 @@ TEST(uBasicNGSGENCHR_accumulateSitesInfos, EMPTY){
        int siteCount=0;
        auto functOp = [&](int siteCounts,const uBasicNGS & item){ return (siteCounts+=item.getLength());
        };
-       EXPECT_EQ(testChroms.emptyChr.accumulateSitesInfo(functOp,siteCount),  testChroms.emptyChr.sumSiteSize());
+       EXPECT_EQ(testChroms.emptyChr.accumulateSitesInfo(functOp,siteCount),  (int)testChroms.emptyChr.sumSiteSize());
  }
 TEST(uBasicNGSGENCHR_accumulateSitesInfo, NORMAL){
        const StandardChroms testChroms;
        int siteCount=0;
        auto functOp = [&](int siteCounts,const uBasicNGS & item){return siteCounts+=item.getLength();
        };
-       EXPECT_EQ(testChroms.manyChr.accumulateSitesInfo(functOp,siteCount),  testChroms.manyChr.sumSiteSize());
+       EXPECT_EQ(testChroms.manyChr.accumulateSitesInfo(functOp,siteCount),  (int)testChroms.manyChr.sumSiteSize());
  }
 TEST(uBasicNGSGENCHR_accumulateSitesInfo, EXCEPTION){
 

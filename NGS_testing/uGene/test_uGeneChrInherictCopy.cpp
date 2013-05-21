@@ -115,7 +115,7 @@ TEST(uGeneGENCHR_computeOnAllSites, NORMAL){
        EXPECT_EQ((int)results.size(),testChroms.manyChr.count());
 
 
-       EXPECT_EQ((int)std::accumulate(results.begin(), results.end(), 0), testChroms.manyChr.sumSiteSize());
+       EXPECT_EQ(std::accumulate(results.begin(), results.end(), 0), (int)testChroms.manyChr.sumSiteSize());
  }
 TEST(uGeneGENCHR_computeOnAllSites, EMPTY){
        StandardChromsGene testChroms;
@@ -130,28 +130,28 @@ TEST(uGeneGENCHR_getSpecificSites, NONECOUNTED){
        auto functOp = [](const uGene & item){  return (item.getLength()>2000);
        };
        auto results=testChroms.manyChr.getSpecificSites(functOp);
-       EXPECT_EQ(results.size(),0);
+       EXPECT_EQ((int)results.size(),0);
  }
 TEST(uGeneGENCHR_getSpecificSites, SOMECOUNTED){
        StandardChromsGene testChroms;
        auto functOp = [](const uGene & item){  return (item.getLength()>99);
        };
        auto results=testChroms.manyChr.getSpecificSites(functOp);
-       EXPECT_EQ(results.size(),2);
+       EXPECT_EQ((int)results.size(),2);
  }
 TEST(uGeneGENCHR_getSpecificSites, ALLCOUNTED){
        StandardChromsGene testChroms;
        auto functOp = [](const uGene & item){  return (item.getLength()>5);
        };
        auto results=testChroms.manyChr.getSpecificSites(functOp);
-       EXPECT_EQ(results.size(),3);
+       EXPECT_EQ((int)results.size(),3);
  }
  TEST(uGeneGENCHR_getSpecificSites, EMPTY){
        StandardChromsGene testChroms;
        auto functOp = [](const uGene & item){  return (true);
        };
        auto results=testChroms.emptyChr.getSpecificSites(functOp);
-       EXPECT_EQ(results.size(),0);
+       EXPECT_EQ((int)results.size(),0);
  }
 /**<  removeSpecificSites
  */
@@ -223,7 +223,7 @@ TEST(uGeneGENCHR_applyOnAllSitesConst, NORMAL){
        auto functOp = [&](const uGene & item){siteCount+=item.getLength();
        };
        testChroms.manyChr.applyOnAllSites(functOp);
-       EXPECT_EQ(siteCount,  testChroms.manyChr.sumSiteSize());
+       EXPECT_EQ(siteCount,  (int)testChroms.manyChr.sumSiteSize());
  }
 TEST(uGeneGENCHR_applyOnAllSitesConst, EXCEPTION){
  StandardChromsGene testChroms;
@@ -238,14 +238,14 @@ TEST(uGeneGENCHR_accumulateSitesInfos, EMPTY){
        int siteCount=0;
        auto functOp = [&](int siteCounts,const uGene & item){ return (siteCounts+=item.getLength());
        };
-       EXPECT_EQ(testChroms.emptyChr.accumulateSitesInfo(functOp,siteCount),  testChroms.emptyChr.sumSiteSize());
+       EXPECT_EQ((int)testChroms.emptyChr.accumulateSitesInfo(functOp,siteCount),  (int)testChroms.emptyChr.sumSiteSize());
  }
 TEST(uGeneGENCHR_accumulateSitesInfo, NORMAL){
        const StandardChromsGene testChroms;
        int siteCount=0;
        auto functOp = [&](int siteCounts,const uGene & item){return siteCounts+=item.getLength();
        };
-       EXPECT_EQ(testChroms.manyChr.accumulateSitesInfo(functOp,siteCount),  testChroms.manyChr.sumSiteSize());
+       EXPECT_EQ((int)testChroms.manyChr.accumulateSitesInfo(functOp,siteCount),  (int)testChroms.manyChr.sumSiteSize());
  }
 TEST(uGeneGENCHR_accumulateSitesInfo, EXCEPTION){
 
@@ -365,54 +365,54 @@ uGeneChrom uChromTestOverlap;
 TEST(uGeneCHR_avgSiteSize, ONESITE){
        StandardChromsGene ourChroms;
        ourChroms.oneChr.addData(uGene("chr1",100,200));
-       EXPECT_EQ(101,ourChroms.oneChr.avgSiteSize());
+       EXPECT_EQ(101,(int)ourChroms.oneChr.avgSiteSize());
  }
 TEST(uGeneCHR_avgSiteSize, NOSITE){
        StandardChromsGene ourChroms;
-       EXPECT_EQ(0,ourChroms.emptyChr.avgSiteSize());
+       EXPECT_EQ(0,(int)ourChroms.emptyChr.avgSiteSize());
  }
  TEST(uGeneCHR_avgSiteSize, MANYSITE){
        StandardChromsGene ourChroms;
-       EXPECT_EQ(((101+71+131)/3),ourChroms.manyChr.avgSiteSize());
+       EXPECT_EQ(((101+71+131)/3),(int)ourChroms.manyChr.avgSiteSize());
  }
 /**<  */
  TEST(uGeneCHR_minSiteSize, ONESITE){
        StandardChromsGene ourChroms;
-       EXPECT_EQ(101,ourChroms.oneChr.minSiteSize());
+       EXPECT_EQ(101,(int)ourChroms.oneChr.minSiteSize());
  }
 TEST(uGeneCHR_minSiteSize, NOSITE){
        StandardChromsGene ourChroms;
-       EXPECT_EQ(0,ourChroms.emptyChr.minSiteSize());
+       EXPECT_EQ(0,(int)ourChroms.emptyChr.minSiteSize());
  }
  TEST(uGeneCHR_minSiteSize, MANYSITE){
        StandardChromsGene ourChroms;
-       EXPECT_EQ(71,ourChroms.manyChr.minSiteSize());
+       EXPECT_EQ(71,(int)ourChroms.manyChr.minSiteSize());
  }
  /**<  */
  TEST(uGeneCHR_maxSiteSize, ONESITE){
        StandardChromsGene ourChroms;
-       EXPECT_EQ(101,ourChroms.oneChr.maxSiteSize() );
+       EXPECT_EQ(101,(int)ourChroms.oneChr.maxSiteSize() );
  }
 TEST(uGeneCHR_maxSiteSizee, NOSITE){
        StandardChromsGene ourChroms;
-       EXPECT_EQ(0,ourChroms.emptyChr.maxSiteSize());
+       EXPECT_EQ(0,(int)ourChroms.emptyChr.maxSiteSize());
  }
  TEST(uGeneCHR_maxSiteSize, MANYSITE){
        StandardChromsGene ourChroms;
-       EXPECT_EQ(131,ourChroms.manyChr.maxSiteSize());
+       EXPECT_EQ(131,(int)ourChroms.manyChr.maxSiteSize());
  }
  /**<  */
  TEST(uGeneCHR_sumSiteSize, ONESITE){
        StandardChromsGene ourChroms;
-       EXPECT_EQ(101,ourChroms.oneChr.sumSiteSize());
+       EXPECT_EQ(101,(int)ourChroms.oneChr.sumSiteSize());
  }
 TEST(uGeneCHR_sumSiteSize, NOSITE){
        StandardChromsGene ourChroms;
-       EXPECT_EQ(0,ourChroms.emptyChr.sumSiteSize());
+       EXPECT_EQ(0,(int)ourChroms.emptyChr.sumSiteSize());
  }
  TEST(uGeneCHR_sumSiteSize, MANYSITE){
        StandardChromsGene ourChroms;
-       EXPECT_EQ((101+71+131),ourChroms.manyChr.sumSiteSize());
+       EXPECT_EQ((101+71+131),(int)ourChroms.manyChr.sumSiteSize());
  }
 /**<  */
  TEST(uGeneCHR_inferChrSize, ONESITE){

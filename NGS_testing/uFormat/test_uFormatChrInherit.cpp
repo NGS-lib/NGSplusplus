@@ -71,11 +71,11 @@ uBasicNGSChrom uChromTestOverlap;
 TEST(uBasicNGSCHR_avgSiteSize, ONESITE){
        StandardChroms ourChroms;
        ourChroms.oneChr.addData(uBasicNGS("chr1",100,200));
-       EXPECT_EQ(101,ourChroms.oneChr.avgSiteSize());
+       EXPECT_EQ(101,(int)ourChroms.oneChr.avgSiteSize());
  }
 TEST(uBasicNGSCHR_avgSiteSize, NOSITE){
        StandardChroms ourChroms;
-       EXPECT_EQ(0,ourChroms.emptyChr.avgSiteSize());
+       EXPECT_EQ(0,(int)ourChroms.emptyChr.avgSiteSize());
  }
  TEST(uBasicNGSCHR_avgSiteSize, MANYSITE){
        StandardChroms ourChroms;

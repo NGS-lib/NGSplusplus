@@ -112,7 +112,7 @@ TEST(uGenesTest_ctr, MULTITOKEN){
     EXPECT_EQ("myGene",newGene.getID());
     EXPECT_EQ("MyTranscript",newGene.getTranscript());
 
-    EXPECT_EQ(1,newGene.featureCount());
+    EXPECT_EQ(1,(int)newGene.featureCount());
     auto featureItr= newGene.featureBegin();
     EXPECT_EQ(10,featureItr->getStart());
     EXPECT_EQ(21,featureItr->getEnd());
@@ -240,7 +240,7 @@ TEST(uGeneTest_removeFeature, REMOVEONE){
     auto itr = myGenes.manyFeaturesGene.featureBegin();
     itr ++;
     myGenes.manyFeaturesGene.removeFeature(itr);
-    EXPECT_EQ(2, myGenes.manyFeaturesGene.featureCount());
+    EXPECT_EQ(2, (int)myGenes.manyFeaturesGene.featureCount());
 }
 
 TEST(uGeneTest_removeFeature, REMOVEALL){
@@ -248,7 +248,7 @@ TEST(uGeneTest_removeFeature, REMOVEALL){
     auto itrstart = myGenes.manyFeaturesGene.featureBegin();
     auto itrEnd= myGenes.manyFeaturesGene.featureEnd();
     myGenes.manyFeaturesGene.removeFeature(itrstart,itrEnd);
-    EXPECT_EQ(0, myGenes.manyFeaturesGene.featureCount());
+    EXPECT_EQ(0, (int)myGenes.manyFeaturesGene.featureCount());
 }
 
 TEST(uGeneTest_createToken, VALID){

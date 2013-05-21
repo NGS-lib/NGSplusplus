@@ -127,7 +127,7 @@ TEST(uGeneChromTest_addDataGFF, ParseOne)
     }
 
     std::vector<uGene>::const_iterator itr= newChrom.findGene("touch1");
-    EXPECT_EQ(1,itr->featureCount());
+    EXPECT_EQ(1,(int)itr->featureCount());
 
 }
 TEST(uGeneChromTest_addDataGFF, ParseALL)
