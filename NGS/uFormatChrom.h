@@ -175,9 +175,11 @@ public:
     template <class _OTHER_>
     _SELF_ getOverlapping(_OTHER_ &pCompareChr,OverlapType pOverlap=OverlapType::OVERLAP_PARTIAL) const;
     _SELF_ getOverlapping(long int, long int,OverlapType pOverlap=OverlapType::OVERLAP_PARTIAL) const;
+    _SELF_ getOverlapping(_BASE_ &pBase ,OverlapType pOverlap=OverlapType::OVERLAP_PARTIAL) const;
     template <class _OTHER_>
     long long int getOverlappingCount(_OTHER_ &pCompareChr,OverlapType pOverlap=OverlapType::OVERLAP_PARTIAL) const;
     long long int getOverlappingCount(long int, long int,OverlapType pOverlap=OverlapType::OVERLAP_PARTIAL) const;
+    long long int getOverlappingCount(_BASE_ &pBase,OverlapType pOverlap=OverlapType::OVERLAP_PARTIAL) const;
 
     template <class _OTHER_>
     _SELF_ getNotOverlapping(_OTHER_ &compareChr,OverlapType pOverlap=OverlapType::OVERLAP_PARTIAL) const;
@@ -1183,6 +1185,17 @@ _SELF_ uGenericNGSChrom<_SELF_,_BASE_>::getOverlapping(long int pStart, long int
     return returnChr;
 }
 
+template <class _SELF_,class _BASE_>
+_SELF_ uGenericNGSChrom<_SELF_,_BASE_>::getOverlapping(_BASE_ &pBase ,OverlapType pOverlap) const
+{
+    if (getChr()!=pBase.getChr())
+    {
+        _SELF_ returnChr;
+        return returnChr;
+    }
+
+    return getOverlapping(pBase.getStart(), pBase.getEnd(), pOverlap);
+}
 
     /** \brief Return the number of elements of this overlapping the genomic positions between start and end
      *
@@ -1214,6 +1227,26 @@ _SELF_ uGenericNGSChrom<_SELF_,_BASE_>::getOverlapping(long int pStart, long int
     }
 }
 
+     template <class _SELF_,class _BASE_>
+    long long int uGenericNGSChrom<_SELF_,_BASE_>::getOverlappingCount(_BASE_ &pBase, OverlapType pOverlap) const{
+     long long int overlapCount=0;
+
+  try {
+    for(auto it= VecSites.begin(); it!=VecSites.end(); it++)
+    {
+        if (utility::isOverlap(it->getStart(), it->getEnd(),(int)(pBase.getStart()),(int)(pBase.getEnd()),pOverlap))
+        {
+           overlapCount++;
+        }
+    }
+    return overlapCount;
+
+    }
+    catch(...)
+    {
+        throw;
+    }
+}
 /**< Return the number of elements of A that overlap B */
 /** \brief Wrapper function that returns the number of elements of that overlap at least one element of param
  *
