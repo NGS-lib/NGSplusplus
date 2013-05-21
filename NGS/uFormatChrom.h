@@ -220,17 +220,17 @@ public:
     /**< Function to add a unitary element */
     virtual void addData(const _BASE_ & newSite);
     virtual void addData(const uToken &);
-#ifndef SWIG
+
     template<class UnaryOperation>
     std::vector<_BASE_> applyAndGetVecData(UnaryOperation unary_op);
-#endif
+
     template<class UnaryOperation>
     _SELF_ applyAndGetChrom(UnaryOperation unary_op);
 
-#ifndef SWIG
+
     template<class UnaryOperation>
     auto computeOnAllSites(UnaryOperation unary_op) -> std::vector<decltype(unary_op(_BASE_()))>;
-#endif
+
     //NOTE Make a version that returns a chrom?
     template<class UnaryPredicate>
     std::vector<_BASE_> getSpecificSites(UnaryPredicate pred) const;
@@ -276,7 +276,7 @@ public:
      * \return Const random access iterator, pointing to the first element of VecSites
      *
      */
-     #ifndef SWIG
+
     auto begin()const->decltype(VecSites.cbegin())
     {
         return VecSites.cbegin();
@@ -310,7 +310,6 @@ public:
         return VecSites.end();
     };
 
-#endif
 
 };
 
@@ -1548,7 +1547,7 @@ _SELF_ uGenericNGSChrom<_SELF_,_BASE_>::applyAndGetChrom(UnaryOperation unary_op
     * \param unary_op UnaryOperation : Unary operation to perform on the copied sites vector
     * \return A vector of the same type and length as the sites vector but with its sites transformed by unary_op
     */
-#ifndef SWIG
+
 template <class _SELF_,class _BASE_>
 template<class UnaryOperation>
 auto uGenericNGSChrom<_SELF_,_BASE_>::computeOnAllSites(UnaryOperation unary_op) -> std::vector<decltype(unary_op(_BASE_()))>
@@ -1564,7 +1563,7 @@ auto uGenericNGSChrom<_SELF_,_BASE_>::computeOnAllSites(UnaryOperation unary_op)
         throw;
     }
 }
-#endif
+
 /** \brief Get the sites for which a certain predicate is true
   *
   * This function take a pointer to a predicate function. It return a vector containing
