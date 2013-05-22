@@ -5,14 +5,16 @@ IO_DIR=./IO
 WRITER_DIR=./IO/Writer
 PARSER_DIR=./IO/Parser
 SRC_DIR=.
-DESTDIR=/usr/lib
-INCLUDE_DIR=/usr/include/NGS
+#DESTDIR=/usr/lib
+DESTDIR=~/tests/lib
+#INCLUDE_DIR=/usr/include/NGS
+INCLUDE_DIR=~/tests/include
 SAMPLE_DIR=./sample-src
 OBJ_DIR=./obj
 OBJ_DIR_STATIC=$(OBJ_DIR)/static
-OBJ_DIR_DYNAMIC=$(OBJ_DIR)/dynamic
+OBJ_DIR_SHARED=$(OBJ_DIR)/shared
 PROJECT_NAME_STATIC=libNGS.a
-PROJECT_NAME_DYNAMIC=libNGS.so
+PROJECT_NAME_SHARED=libNGS.so
 PROJECT_DIR=../libs
 NGS_DIR=.
 API_DIR=./api
@@ -84,12 +86,12 @@ OBJECTS += $(API_DIR)/SamSequence.o
 OBJECTS += $(API_DIR)/SamSequenceDictionary.o
 
 OBJPROJ_STATIC = $(addprefix $(OBJ_DIR_STATIC)/, $(OBJECTS))
-OBJPROJ_DYNAMIC = $(addprefix $(OBJ_DIR_DYNAMIC)/, $(OBJECTS))
+OBJPROJ_SHARED = $(addprefix $(OBJ_DIR_SHARED)/, $(OBJECTS))
 PROJECT_STATIC = $(PROJECT_DIR)/$(PROJECT_NAME_STATIC)
-PROJECT_DYNAMIC = $(PROJECT_DIR)/$(PROJECT_NAME_DYNAMIC)
+PROJECT_SHARED = $(PROJECT_DIR)/$(PROJECT_NAME_SHARED)
 
 CFLAGS_STATIC  =-O2 -std=c++11 -lz
-CFLAGS_DYNAMIC = $(CFLAGS_STATIC) -fPIC
+CFLAGS_SHARED = $(CFLAGS_STATIC) -fPIC
 LFLAGS =-s -static-libgcc -lz -s
 INCLUDES =-I$(NGS_DIR) 
 
@@ -105,51 +107,42 @@ $(shell mkdir -p $(OBJ_DIR_STATIC)/$(API_IO_DIR))
 $(shell mkdir -p $(OBJ_DIR_STATIC)/$(API_UTILS_DIR))
 $(shell mkdir -p $(OBJ_DIR_STATIC)/$(API_INDEX_DIR))
 $(shell mkdir -p $(OBJ_DIR_STATIC)/$(API_SHARED_DIR))
-$(shell mkdir -p $(OBJ_DIR_DYNAMIC)/$(WRITER_DIR))
-$(shell mkdir -p $(OBJ_DIR_DYNAMIC)/$(PARSER_DIR))
-$(shell mkdir -p $(OBJ_DIR_DYNAMIC)/$(UTIL_DIR))
-$(shell mkdir -p $(OBJ_DIR_DYNAMIC)/$(API_DIR))
-$(shell mkdir -p $(OBJ_DIR_DYNAMIC)/$(API_ALGORITHMS_DIR))
-$(shell mkdir -p $(OBJ_DIR_DYNAMIC)/$(API_INTERNAL_DIR))
-$(shell mkdir -p $(OBJ_DIR_DYNAMIC)/$(API_BAM_DIR))
-$(shell mkdir -p $(OBJ_DIR_DYNAMIC)/$(API_SAM_DIR))
-$(shell mkdir -p $(OBJ_DIR_DYNAMIC)/$(API_IO_DIR))
-$(shell mkdir -p $(OBJ_DIR_DYNAMIC)/$(API_UTILS_DIR))
-$(shell mkdir -p $(OBJ_DIR_DYNAMIC)/$(API_INDEX_DIR))
-$(shell mkdir -p $(OBJ_DIR_DYNAMIC)/$(API_SHARED_DIR))
+$(shell mkdir -p $(OBJ_DIR_SHARED)/$(WRITER_DIR))
+$(shell mkdir -p $(OBJ_DIR_SHARED)/$(PARSER_DIR))
+$(shell mkdir -p $(OBJ_DIR_SHARED)/$(UTIL_DIR))
+$(shell mkdir -p $(OBJ_DIR_SHARED)/$(API_DIR))
+$(shell mkdir -p $(OBJ_DIR_SHARED)/$(API_ALGORITHMS_DIR))
+$(shell mkdir -p $(OBJ_DIR_SHARED)/$(API_INTERNAL_DIR))
+$(shell mkdir -p $(OBJ_DIR_SHARED)/$(API_BAM_DIR))
+$(shell mkdir -p $(OBJ_DIR_SHARED)/$(API_SAM_DIR))
+$(shell mkdir -p $(OBJ_DIR_SHARED)/$(API_IO_DIR))
+$(shell mkdir -p $(OBJ_DIR_SHARED)/$(API_UTILS_DIR))
+$(shell mkdir -p $(OBJ_DIR_SHARED)/$(API_INDEX_DIR))
+$(shell mkdir -p $(OBJ_DIR_SHARED)/$(API_SHARED_DIR))
 
 .PHONY: static
-#static: makeflags_static $(PROJECT_STATIC)
 static: $(PROJECT_STATIC)
 	ar -r -s $(PROJECT_STATIC) $(OBJPROJ_STATIC)
 
-.PHONY: dynamic
-#dynamic: makeflags_dynamic $(PROJECT_DYNAMIC)
-dynamic: $(PROJECT_DYNAMIC)
-	$(GXX) -shared -o $(PROJECT_DYNAMIC) $(OBJPROJ_DYNAMIC) $(LFLAGS)
-
-#.PHONY: makeflags_static
-#makeflags_static:
-#	$(eval flags=-O2 -std=c++11 -lz)
-
-#.PHONY: makeflags_dynamic
-#makeflags_dynamic:
-#	$(eval flags=-O2 -std=c++11 -lz -fPIC)
+.PHONY: shared
+shared: $(PROJECT_SHARED)
+	$(GXX) -shared -o $(PROJECT_SHARED) $(OBJPROJ_SHARED) $(LFLAGS)
 
 $(PROJECT_STATIC): $(OBJPROJ_STATIC)
 	mkdir -p $(PROJECT_DIR)
 
-$(PROJECT_DYNAMIC): $(OBJPROJ_DYNAMIC)
+$(PROJECT_SHARED): $(OBJPROJ_SHARED)
 	mkdir -p $(PROJECT_DIR)
 
 $(OBJ_DIR_STATIC)/%.o: %.cpp
 	$(GXX) -c $(CFLAGS_STATIC) $(INCLUDES) -c -o $@ $<
 
-$(OBJ_DIR_DYNAMIC)/%.o: %.cpp
-	$(GXX) -c $(CFLAGS_DYNAMIC) $(INCLUDES) -c -o $@ $<
+$(OBJ_DIR_SHARED)/%.o: %.cpp
+	$(GXX) -c $(CFLAGS_SHARED) $(INCLUDES) -c -o $@ $<
 
 install:
-	cp $(PROJECT) $(DESTDIR)
+	cp $(PROJECT_STATIC) $(DESTDIR) 2> /dev/null
+	cp $(PROJECT_SHARED) $(DESTDIR) 2> /dev/null
 	mkdir -p $(INCLUDE_DIR)/$(WRITER_DIR)
 	mkdir -p $(INCLUDE_DIR)/$(PARSER_DIR)
 	mkdir -p $(INCLUDE_DIR)/$(UTIL_DIR)
@@ -179,9 +172,10 @@ install:
 
 uninstall:
 	rm -f $(DESTDIR)/$(PROJECT_NAME_STATIC)
+	rm -f $(DESTDIR)/$(PROJECT_NAME_SHARED)
 	rm -f $(INCLUDE_DIR)/../NGS++.h
 	rm -rf $(INCLUDE_DIR)
 
 .PHONY : clean
 clean: 
-	rm -f $(OBJPROJ_STATIC) $(OBJPROJ_DYNAMIC) $(PROJECT)
+	rm -f $(OBJPROJ_STATIC) $(OBJPROJ_SHARED) $(PROJECT_STATIC) $(PROJECT_SHARED)
