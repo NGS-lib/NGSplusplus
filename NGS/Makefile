@@ -139,8 +139,9 @@ $(OBJ_DIR_SHARED)/%.o: %.cpp
 	$(GXX) -c $(CFLAGS_SHARED) $(INCLUDES) -c -o $@ $<
 
 install:
-	cp $(PROJECT_STATIC) $(DESTDIR) 2> /dev/null
-	cp $(PROJECT_SHARED) $(DESTDIR) 2> /dev/null
+	if [ -f $(PROJECT_STATIC) ]; then cp $(PROJECT_STATIC) $(DESTDIR); fi;		
+	if [ -f $(PROJECT_SHARED) ]; then cp $(PROJECT_SHARED) $(DESTDIR); fi;		
+
 	mkdir -p $(INCLUDE_DIR)/$(WRITER_DIR)
 	mkdir -p $(INCLUDE_DIR)/$(PARSER_DIR)
 	mkdir -p $(INCLUDE_DIR)/$(UTIL_DIR)
