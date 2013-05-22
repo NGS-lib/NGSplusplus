@@ -9,7 +9,10 @@ DESTDIR=/usr/lib
 INCLUDE_DIR=/usr/include/NGS
 SAMPLE_DIR=./sample-src
 OBJ_DIR=./obj
-PROJECT_NAME=libNGS.a
+OBJ_DIR_STATIC=$(OBJ_DIR)/static
+OBJ_DIR_DYNAMIC=$(OBJ_DIR)/dynamic
+PROJECT_NAME_STATIC=libNGS.a
+PROJECT_NAME_DYNAMIC=libNGS.so
 PROJECT_DIR=../libs
 NGS_DIR=.
 API_DIR=./api
@@ -80,32 +83,70 @@ OBJECTS += $(API_DIR)/SamReadGroupDictionary.o
 OBJECTS += $(API_DIR)/SamSequence.o
 OBJECTS += $(API_DIR)/SamSequenceDictionary.o
 
-OBJPROJ = $(addprefix $(OBJ_DIR)/, $(OBJECTS))
-PROJECT = $(PROJECT_DIR)/$(PROJECT_NAME)
+OBJPROJ_STATIC = $(addprefix $(OBJ_DIR_STATIC)/, $(OBJECTS))
+OBJPROJ_DYNAMIC = $(addprefix $(OBJ_DIR_DYNAMIC)/, $(OBJECTS))
+PROJECT_STATIC = $(PROJECT_DIR)/$(PROJECT_NAME_STATIC)
+PROJECT_DYNAMIC = $(PROJECT_DIR)/$(PROJECT_NAME_DYNAMIC)
 
-CFLAGS  = -O2 -std=c++11 -lz -fPIC
-INCLUDES = -I$(NGS_DIR) 
+CFLAGS_STATIC  =-O2 -std=c++11 -lz
+CFLAGS_DYNAMIC = $(CFLAGS_STATIC) -fPIC
+LFLAGS =-s -static-libgcc -lz -s
+INCLUDES =-I$(NGS_DIR) 
 
-$(shell mkdir -p $(OBJ_DIR)/$(WRITER_DIR))
-$(shell mkdir -p $(OBJ_DIR)/$(PARSER_DIR))
-$(shell mkdir -p $(OBJ_DIR)/$(UTIL_DIR))
-$(shell mkdir -p $(OBJ_DIR)/$(API_DIR))
-$(shell mkdir -p $(OBJ_DIR)/$(API_ALGORITHMS_DIR))
-$(shell mkdir -p $(OBJ_DIR)/$(API_INTERNAL_DIR))
-$(shell mkdir -p $(OBJ_DIR)/$(API_BAM_DIR))
-$(shell mkdir -p $(OBJ_DIR)/$(API_SAM_DIR))
-$(shell mkdir -p $(OBJ_DIR)/$(API_IO_DIR))
-$(shell mkdir -p $(OBJ_DIR)/$(API_UTILS_DIR))
-$(shell mkdir -p $(OBJ_DIR)/$(API_INDEX_DIR))
-$(shell mkdir -p $(OBJ_DIR)/$(API_SHARED_DIR))
+$(shell mkdir -p $(OBJ_DIR_STATIC)/$(WRITER_DIR))
+$(shell mkdir -p $(OBJ_DIR_STATIC)/$(PARSER_DIR))
+$(shell mkdir -p $(OBJ_DIR_STATIC)/$(UTIL_DIR))
+$(shell mkdir -p $(OBJ_DIR_STATIC)/$(API_DIR))
+$(shell mkdir -p $(OBJ_DIR_STATIC)/$(API_ALGORITHMS_DIR))
+$(shell mkdir -p $(OBJ_DIR_STATIC)/$(API_INTERNAL_DIR))
+$(shell mkdir -p $(OBJ_DIR_STATIC)/$(API_BAM_DIR))
+$(shell mkdir -p $(OBJ_DIR_STATIC)/$(API_SAM_DIR))
+$(shell mkdir -p $(OBJ_DIR_STATIC)/$(API_IO_DIR))
+$(shell mkdir -p $(OBJ_DIR_STATIC)/$(API_UTILS_DIR))
+$(shell mkdir -p $(OBJ_DIR_STATIC)/$(API_INDEX_DIR))
+$(shell mkdir -p $(OBJ_DIR_STATIC)/$(API_SHARED_DIR))
+$(shell mkdir -p $(OBJ_DIR_DYNAMIC)/$(WRITER_DIR))
+$(shell mkdir -p $(OBJ_DIR_DYNAMIC)/$(PARSER_DIR))
+$(shell mkdir -p $(OBJ_DIR_DYNAMIC)/$(UTIL_DIR))
+$(shell mkdir -p $(OBJ_DIR_DYNAMIC)/$(API_DIR))
+$(shell mkdir -p $(OBJ_DIR_DYNAMIC)/$(API_ALGORITHMS_DIR))
+$(shell mkdir -p $(OBJ_DIR_DYNAMIC)/$(API_INTERNAL_DIR))
+$(shell mkdir -p $(OBJ_DIR_DYNAMIC)/$(API_BAM_DIR))
+$(shell mkdir -p $(OBJ_DIR_DYNAMIC)/$(API_SAM_DIR))
+$(shell mkdir -p $(OBJ_DIR_DYNAMIC)/$(API_IO_DIR))
+$(shell mkdir -p $(OBJ_DIR_DYNAMIC)/$(API_UTILS_DIR))
+$(shell mkdir -p $(OBJ_DIR_DYNAMIC)/$(API_INDEX_DIR))
+$(shell mkdir -p $(OBJ_DIR_DYNAMIC)/$(API_SHARED_DIR))
 
+.PHONY: static
+#static: makeflags_static $(PROJECT_STATIC)
+static: $(PROJECT_STATIC)
+	ar -r -s $(PROJECT_STATIC) $(OBJPROJ_STATIC)
 
-$(PROJECT): $(OBJPROJ)
+.PHONY: dynamic
+#dynamic: makeflags_dynamic $(PROJECT_DYNAMIC)
+dynamic: $(PROJECT_DYNAMIC)
+	$(GXX) -shared -o $(PROJECT_DYNAMIC) $(OBJPROJ_DYNAMIC) $(LFLAGS)
+
+#.PHONY: makeflags_static
+#makeflags_static:
+#	$(eval flags=-O2 -std=c++11 -lz)
+
+#.PHONY: makeflags_dynamic
+#makeflags_dynamic:
+#	$(eval flags=-O2 -std=c++11 -lz -fPIC)
+
+$(PROJECT_STATIC): $(OBJPROJ_STATIC)
 	mkdir -p $(PROJECT_DIR)
-	ar -r -s $(PROJECT) $(OBJPROJ)
 
-$(OBJ_DIR)/%.o: %.cpp
-	$(GXX) -c $(CFLAGS) $(INCLUDES) -c -o $@ $<
+$(PROJECT_DYNAMIC): $(OBJPROJ_DYNAMIC)
+	mkdir -p $(PROJECT_DIR)
+
+$(OBJ_DIR_STATIC)/%.o: %.cpp
+	$(GXX) -c $(CFLAGS_STATIC) $(INCLUDES) -c -o $@ $<
+
+$(OBJ_DIR_DYNAMIC)/%.o: %.cpp
+	$(GXX) -c $(CFLAGS_DYNAMIC) $(INCLUDES) -c -o $@ $<
 
 install:
 	cp $(PROJECT) $(DESTDIR)
@@ -137,10 +178,10 @@ install:
 	cp -r $(BOOST_DIR) $(INCLUDE_DIR)
 
 uninstall:
-	rm -f $(DESTDIR)/$(PROJECT_NAME)
+	rm -f $(DESTDIR)/$(PROJECT_NAME_STATIC)
 	rm -f $(INCLUDE_DIR)/../NGS++.h
 	rm -rf $(INCLUDE_DIR)
 
 .PHONY : clean
 clean: 
-	rm -f $(OBJPROJ) $(PROJECT)
+	rm -f $(OBJPROJ_STATIC) $(OBJPROJ_DYNAMIC) $(PROJECT)

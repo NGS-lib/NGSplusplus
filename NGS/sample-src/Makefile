@@ -1,7 +1,7 @@
 GXX?=g++
 FLAGS=-O2 -Wall -std=c++11
 ZLIB=-lz
-INCLUDE=-I../../NGS
+INCLUDE=-I../../NGS -I../../
 LIB=../../libs/libNGS.a
 
 TARGETS = bedToBedgraph/bedTobedgraph
