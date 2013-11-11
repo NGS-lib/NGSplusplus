@@ -168,7 +168,7 @@ _SELF_ uGenericNGS<_SELF_>::returnOverlapping(const _SELF_ & otherItem)const
         throw param_throw();
 }
 
-/** \brief Return an element with the boundaries merged between this and comparison.
+/** \brief Return an element with the boundaries merged between this and comparison. Suggested to always test overlap before calling
  *
  * \param otherItem const _SELF_& : Element to merge with.
  * \exception param_throw : When element do not overlap.
