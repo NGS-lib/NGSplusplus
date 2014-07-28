@@ -35,7 +35,6 @@ class uBasicNGS: public uGenericNGS<uBasicNGS>
 {
 public:
 
-
     uBasicNGS(std::string pChr, long long int pStart, long long int pEnd, StrandDir pStrand=StrandDir::FORWARD);
     uBasicNGS():uGenericNGS(){}
     uBasicNGS(std::string pChr, long long int pStart, long long int pEnd, StrandDir pStrand, float pScore );
@@ -53,7 +52,7 @@ public:
     uBasicNGS getCopy()const;
 
 };
-#ifndef SWIG
+
 class uBasicNGSChrom: public uGenericNGSChrom<uBasicNGSChrom,uBasicNGS>
 {
 public:
@@ -68,7 +67,6 @@ public:
     uBasicNGSChrom(std::string chr, long long int length):uGenericNGSChrom(chr,length)
     {
     }
-
   //  uBasicNGSChrom(const uGenericNGSChrom<uBasicNGSChrom,uBasicNGS> & copyCop);
     uBasicNGSChrom(const uBasicNGSChrom& initFrom);
     uBasicNGSChrom& operator=(const uBasicNGSChrom& copFrom);
@@ -85,6 +83,6 @@ class uBasicNGSExperiment : public uGenericNGSExperiment<uBasicNGSExperiment,uBa
     ~uBasicNGSExperiment(){};
     uBasicNGSExperiment& getCopy();
 };
-#endif
+
 } // End of namespace NGS
 #endif // UBASICNGS_H_INCLUDED

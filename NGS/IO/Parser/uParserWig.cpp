@@ -66,14 +66,14 @@ void uParserWig::init(const std::string& filename, bool header )
             if (m_pIostream->eof())
                 throw end_of_file_throw()<<string_error("Badly formed wig file, track definition line with no entries following \n");
            try {
-            if (cur_token=="variableStep")
-            {
-                _processVariabledWigLine(m_tokens);
-            }
-            else
-            {
-                _processFixedWigLine(m_tokens);
-            }
+                if (cur_token=="variableStep")
+                {
+                    _processVariabledWigLine(m_tokens);
+                }
+                else
+                {
+                    _processFixedWigLine(m_tokens);
+                }
             }
             catch(uParser_missing_mandatory_values &e){
                 throw e;
@@ -311,7 +311,8 @@ void uParserWig::_processVariabledWigLine(std::vector<std::string> & curSStream)
     chrom=chrom.substr(chrom.find(CHROMSYMBOL)+CHROMSYMBOL.size());
     /**< Optional Span parameter */
     curSpan=1;
-    span=curSStream.at(2);
+    if (curSStream.size()>1){
+        span=curSStream.at(2);}
     if(span.size())
     {
         /**< If good, yay, if not, fail again*/
