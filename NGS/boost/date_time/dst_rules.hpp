@@ -6,7 +6,7 @@
  * Boost Software License, Version 1.0. (See accompanying
  * file LICENSE_1_0.txt or http://www.boost.org/LICENSE_1_0.txt)
  * Author: Jeff Garland, Bart Garst
- * $Date: 2012-09-30 16:25:22 -0700 (Sun, 30 Sep 2012) $
+ * $Date$
  */
 
 /*! @file dst_rules.hpp
@@ -94,7 +94,7 @@ namespace boost {
        *  @param dst_start_offset Time offset within day for dst boundary
        *  @param dst_end_day    Ending day of dst for the given locality
        *  @param dst_end_offset Time offset within day given in dst for dst boundary
-       *  @param dst_length length of dst adjusment
+       *  @param dst_length lenght of dst adjusment
        *  @retval The time is either ambiguous, invalid, in dst, or not in dst
        */
       static time_is_dst_result 

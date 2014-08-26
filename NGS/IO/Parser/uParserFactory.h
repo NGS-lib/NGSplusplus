@@ -33,6 +33,7 @@
 #include "uParserCustom.h"
 #include "uParserGenePred.h"
 #include "uParserBAM.h"
+#include "uParserBW.h"
 namespace NGS{
 
 template<typename T> uParserBase * createT() { return new T; }
@@ -82,7 +83,7 @@ struct uParserBaseFactory {
         Register("CUSTOM", &uParserCustom::Create);
         Register("GENEPRED", &uParserGenePred::Create);
         Register("BAM", &uParserBAM::Create);
-
+        Register("BW", &uParserBW::Create);
     }
 protected:
     static parser_map_type * mapItem;

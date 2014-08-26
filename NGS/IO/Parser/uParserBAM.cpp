@@ -56,7 +56,7 @@ void uParserBAM::init(const std::string& filename, bool header )
 //            m_headerData._addToParam(header_param::CHR,chrom);
  //           m_headerData._addToParam(header_param::CHR_SIZE,utility::to_string(refSeqlength));
 }
-/** \brief Called when created, reads from stream and parses BAM file header, loading mandatory info
+/** \brief
  *
  * \param stream std::istream*
  * \param header bool leave at false, ignored if set

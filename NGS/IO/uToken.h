@@ -164,6 +164,7 @@ private:
 	friend class uParserGFF2;
 	friend class uParserGenePred;
 	friend class uParserBAM;
+	friend class uParserBW;
 }; // End of class Token
 
 /**< Overloading of stream operator for token_param */
