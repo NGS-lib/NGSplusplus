@@ -25,7 +25,7 @@ API_SAM_DIR=./api/internal/sam
 API_UTILS_DIR=./api/internal/utils
 SHARED_DIR=./shared
 BOOST_DIR=./boost
-
+BOOST_IOSTREAM=./libs/iostreams/src
 # Nothing should have to be changed after this.
 VPATH=UTIL:IO:IO/Parser:IO/Writer
 OBJECTS = $(UTIL_DIR)/utility.o
@@ -38,13 +38,15 @@ OBJECTS += $(WRITER_DIR)/uWriterSam.o $(WRITER_DIR)/uWriterWig.o $(WRITER_DIR)/u
 OBJECTS += $(WRITER_DIR)/uWriterGFF.o $(WRITER_DIR)/uWriterGTF.o
 OBJECTS += $(PARSER_DIR)/uParser.o $(PARSER_DIR)/uParserBase.o $(PARSER_DIR)/uParserWig.o 
 OBJECTS += $(PARSER_DIR)/uParserSam.o $(PARSER_DIR)/uParserBed.o $(PARSER_DIR)/uParserCustom.o
-OBJECTS += $(PARSER_DIR)/uParserBedGraph.o $(PARSER_DIR)/uParserGTF.o $(PARSER_DIR)/uParserGFF.o
+OBJECTS += $(PARSER_DIR)/uParserBedGraph.o $(PARSER_DIR)/uParserGTF.o $(PARSER_DIR)/uParserGFF.o $(PARSER_DIR)/uParserBW.o
 OBJECTS += $(PARSER_DIR)/uParserGenePred.o $(PARSER_DIR)/uParserBAM.o
 OBJECTS += $(SRC_DIR)/uBasicNGS.o $(SRC_DIR)/uRegion.o $(SRC_DIR)/uTags.o
 OBJECTS += $(SRC_DIR)/uGene.o
 
 # Third-Party
 OBJECTS += $(API_DIR)/BamAlignment.o
+OBJECTS += $(BOOST_IOSTREAM)/zlib.o
+OBJECTS += $(BOOST_IOSTREAM)/gzip.o
 OBJECTS += $(API_DIR)/BamMultiReader.o
 OBJECTS += $(API_DIR)/BamReader.o
 OBJECTS += $(API_DIR)/BamWriter.o
@@ -82,6 +84,9 @@ OBJECTS += $(API_DIR)/SamReadGroup.o
 OBJECTS += $(API_DIR)/SamReadGroupDictionary.o
 OBJECTS += $(API_DIR)/SamSequence.o
 OBJECTS += $(API_DIR)/SamSequenceDictionary.o
+OBJECTS += $(API_DIR)/SamSequenceDictionary.o
+OBJECTS += $(API_DIR)/SamSequenceDictionary.o
+
 
 OBJPROJ_STATIC = $(addprefix $(OBJ_DIR_STATIC)/, $(OBJECTS))
 OBJPROJ_SHARED = $(addprefix $(OBJ_DIR_SHARED)/, $(OBJECTS))
@@ -97,6 +102,7 @@ $(shell mkdir -p $(OBJ_DIR_STATIC)/$(WRITER_DIR))
 $(shell mkdir -p $(OBJ_DIR_STATIC)/$(PARSER_DIR))
 $(shell mkdir -p $(OBJ_DIR_STATIC)/$(UTIL_DIR))
 $(shell mkdir -p $(OBJ_DIR_STATIC)/$(API_DIR))
+$(shell mkdir -p $(OBJ_DIR_STATIC)/$(BOOST_IOSTREAM))
 $(shell mkdir -p $(OBJ_DIR_STATIC)/$(API_ALGORITHMS_DIR))
 $(shell mkdir -p $(OBJ_DIR_STATIC)/$(API_INTERNAL_DIR))
 $(shell mkdir -p $(OBJ_DIR_STATIC)/$(API_BAM_DIR))
@@ -108,6 +114,7 @@ $(shell mkdir -p $(OBJ_DIR_STATIC)/$(API_SHARED_DIR))
 $(shell mkdir -p $(OBJ_DIR_SHARED)/$(WRITER_DIR))
 $(shell mkdir -p $(OBJ_DIR_SHARED)/$(PARSER_DIR))
 $(shell mkdir -p $(OBJ_DIR_SHARED)/$(UTIL_DIR))
+$(shell mkdir -p $(OBJ_DIR_SHARED)/$(BOOST_LIB))
 $(shell mkdir -p $(OBJ_DIR_SHARED)/$(API_DIR))
 $(shell mkdir -p $(OBJ_DIR_SHARED)/$(API_ALGORITHMS_DIR))
 $(shell mkdir -p $(OBJ_DIR_SHARED)/$(API_INTERNAL_DIR))
@@ -146,6 +153,7 @@ install:
 	mkdir -p $(INCLUDE_DIR)/$(PARSER_DIR)
 	mkdir -p $(INCLUDE_DIR)/$(UTIL_DIR)
 	mkdir -p $(INCLUDE_DIR)/$(API_DIR)
+	mkdir -p $(INCLUDE_DIR)/$(BOOST_LIB)
 	mkdir -p $(INCLUDE_DIR)/$(API_ALGORITHMS_DIR)
 	mkdir -p $(INCLUDE_DIR)/$(SHARED_DIR)
 	mkdir -p $(INCLUDE_DIR)/$(API_INDEX_DIR)
