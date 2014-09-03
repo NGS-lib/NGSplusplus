@@ -84,9 +84,6 @@ OBJECTS += $(API_DIR)/SamReadGroup.o
 OBJECTS += $(API_DIR)/SamReadGroupDictionary.o
 OBJECTS += $(API_DIR)/SamSequence.o
 OBJECTS += $(API_DIR)/SamSequenceDictionary.o
-OBJECTS += $(API_DIR)/SamSequenceDictionary.o
-OBJECTS += $(API_DIR)/SamSequenceDictionary.o
-
 
 OBJPROJ_STATIC = $(addprefix $(OBJ_DIR_STATIC)/, $(OBJECTS))
 OBJPROJ_SHARED = $(addprefix $(OBJ_DIR_SHARED)/, $(OBJECTS))
@@ -103,6 +100,7 @@ $(shell mkdir -p $(OBJ_DIR_STATIC)/$(PARSER_DIR))
 $(shell mkdir -p $(OBJ_DIR_STATIC)/$(UTIL_DIR))
 $(shell mkdir -p $(OBJ_DIR_STATIC)/$(API_DIR))
 $(shell mkdir -p $(OBJ_DIR_STATIC)/$(BOOST_IOSTREAM))
+$(shell mkdir -p $(OBJ_DIR_STATIC)/$(BOOST_LIB))
 $(shell mkdir -p $(OBJ_DIR_STATIC)/$(API_ALGORITHMS_DIR))
 $(shell mkdir -p $(OBJ_DIR_STATIC)/$(API_INTERNAL_DIR))
 $(shell mkdir -p $(OBJ_DIR_STATIC)/$(API_BAM_DIR))
@@ -115,6 +113,7 @@ $(shell mkdir -p $(OBJ_DIR_SHARED)/$(WRITER_DIR))
 $(shell mkdir -p $(OBJ_DIR_SHARED)/$(PARSER_DIR))
 $(shell mkdir -p $(OBJ_DIR_SHARED)/$(UTIL_DIR))
 $(shell mkdir -p $(OBJ_DIR_SHARED)/$(BOOST_LIB))
+$(shell mkdir -p $(OBJ_DIR_SHARED)/$(BOOST_IOSTREAM))
 $(shell mkdir -p $(OBJ_DIR_SHARED)/$(API_DIR))
 $(shell mkdir -p $(OBJ_DIR_SHARED)/$(API_ALGORITHMS_DIR))
 $(shell mkdir -p $(OBJ_DIR_SHARED)/$(API_INTERNAL_DIR))
