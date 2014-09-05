@@ -26,6 +26,9 @@ API_UTILS_DIR=./api/internal/utils
 SHARED_DIR=./shared
 BOOST_DIR=./boost
 BOOST_IOSTREAM=./libs/iostreams/src
+BB_SRC_DIR=./bbfile/src
+BB_INCLUDE_DIR=./bbfile/include/
+
 # Nothing should have to be changed after this.
 VPATH=UTIL:IO:IO/Parser:IO/Writer
 OBJECTS = $(UTIL_DIR)/utility.o
@@ -42,6 +45,17 @@ OBJECTS += $(PARSER_DIR)/uParserBedGraph.o $(PARSER_DIR)/uParserGTF.o $(PARSER_D
 OBJECTS += $(PARSER_DIR)/uParserGenePred.o $(PARSER_DIR)/uParserBAM.o
 OBJECTS += $(SRC_DIR)/uBasicNGS.o $(SRC_DIR)/uRegion.o $(SRC_DIR)/uTags.o
 OBJECTS += $(SRC_DIR)/uGene.o
+
+OBJECTS += $(BB_SRC_DIR)/BBFileReader.o $(BB_SRC_DIR)/BBTotalSummaryBlock.o $(BB_SRC_DIR)/BBZoomLevelFormat.o $(BB_SRC_DIR)/BBZoomLevelHeader.o 
+OBJECTS += $(BB_SRC_DIR)/BBZoomLevels.o $(BB_SRC_DIR)/BigWigDataBlock.o $(BB_SRC_DIR)/BigWigIterator.o $(BB_SRC_DIR)/BigWigSection.o 
+OBJECTS += $(BB_SRC_DIR)/BigWigSectionHeader.o $(BB_SRC_DIR)/BigWigSectionHelper.o $(BB_SRC_DIR)/BPTree.o $(BB_SRC_DIR)/BPTreeChildNode.o 
+OBJECTS += $(BB_SRC_DIR)/BPTreeChildNodeItem.o $(BB_SRC_DIR)/BPTreeHeader.o $(BB_SRC_DIR)/BPTreeLeafNode.o $(BB_SRC_DIR)/BPTreeLeafNodeItem.o 
+OBJECTS += $(BB_SRC_DIR)/endian_helper.o $(BB_SRC_DIR)/RPChromosomeRegion.o $(BB_SRC_DIR)/RPTree.o $(BB_SRC_DIR)/RPTreeChildNode.o 
+OBJECTS += $(BB_SRC_DIR)/RPTreeChildNodeItem.o $(BB_SRC_DIR)/RPTreeHeader.o $(BB_SRC_DIR)/RPTreeLeafNode.o $(BB_SRC_DIR)/RPTreeLeafNodeItem.o 
+OBJECTS += $(BB_SRC_DIR)/RPTreeNodeProxy.o $(BB_SRC_DIR)/ZoomDataRecord.o $(BB_SRC_DIR)/ZoomLevelIterator.o 
+
+
+
 
 # Third-Party
 OBJECTS += $(API_DIR)/BamAlignment.o
@@ -85,6 +99,10 @@ OBJECTS += $(API_DIR)/SamReadGroupDictionary.o
 OBJECTS += $(API_DIR)/SamSequence.o
 OBJECTS += $(API_DIR)/SamSequenceDictionary.o
 
+
+
+
+
 OBJPROJ_STATIC = $(addprefix $(OBJ_DIR_STATIC)/, $(OBJECTS))
 OBJPROJ_SHARED = $(addprefix $(OBJ_DIR_SHARED)/, $(OBJECTS))
 PROJECT_STATIC = $(PROJECT_DIR)/$(PROJECT_NAME_STATIC)
@@ -93,7 +111,7 @@ PROJECT_SHARED = $(PROJECT_DIR)/$(PROJECT_NAME_SHARED)
 CFLAGS_STATIC  =-O2 -std=c++11 -lz
 CFLAGS_SHARED = $(CFLAGS_STATIC) -fPIC
 LFLAGS =-s -static-libgcc -lz -s
-INCLUDES =-I$(NGS_DIR) 
+INCLUDES =-I$(NGS_DIR) -I$(BB_INCLUDE_DIR) 
 
 $(shell mkdir -p $(OBJ_DIR_STATIC)/$(WRITER_DIR))
 $(shell mkdir -p $(OBJ_DIR_STATIC)/$(PARSER_DIR))
@@ -123,6 +141,7 @@ $(shell mkdir -p $(OBJ_DIR_SHARED)/$(API_IO_DIR))
 $(shell mkdir -p $(OBJ_DIR_SHARED)/$(API_UTILS_DIR))
 $(shell mkdir -p $(OBJ_DIR_SHARED)/$(API_INDEX_DIR))
 $(shell mkdir -p $(OBJ_DIR_SHARED)/$(API_SHARED_DIR))
+$(shell mkdir -p $(OBJ_DIR_SHARED)/$(BB_SRC_DIR))
 
 .PHONY: static
 static: $(PROJECT_STATIC)
