@@ -453,8 +453,8 @@ BPTree::~BPTree()
                    chromosomeMap[chromID]=key;
                }
                // leaf ID's are in ascending order; check for going out of range
-               else if(chromID > endChromID)
-                   break;
+              // else if(chromID > endChromID)
+              //     break;
            }
         }
         else {
@@ -474,8 +474,8 @@ BPTree::~BPTree()
                     findChromosomeMap(childNode, startChromID, endChromID, chromosomeMap);
 
                // test node ID range which is always in ascending order going out of range
-               else if(lowestID > endChromID)
-                   break;   //
+              // else if(lowestID > endChromID)
+              //     break;   //
            }
         }
     }
