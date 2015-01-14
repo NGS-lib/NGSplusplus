@@ -585,7 +585,7 @@ BPTree::~BPTree()
                else {
                    // get the child node pointed to in the node item
                    fis.read( reinterpret_cast<char*>(&childOffset) , sizeof(uint64_t) );
-                   childOffset=endian::LittleDouble(itemCount);
+                   childOffset=endian::LittleDouble(childOffset);
 
                    childNode = readBPTreeNode(*fis_, childOffset, thisNode);
                    // insert child node item
